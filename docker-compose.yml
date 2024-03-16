@@ -10,6 +10,8 @@ services:
             - ./google.json:/app/google.json
     frontend:
         image: extender777/my-frontend
+        environment:
+            - NODE_ENV=production
         ports:
             - "8585:80"
         depends_on:

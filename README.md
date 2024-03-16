@@ -4,6 +4,9 @@ Node.js backend and a React MUI frontend for an application that interacts with 
 
 ![image](https://github.com/msveshnikov/freechat/assets/8682996/42b2e4f2-b91b-4712-8ef2-630ebb8919e9)
 
+## Demo
+https://allchat.online/
+
 **Backend (Node.js)**
 
 1. Set up a new Node.js project and install the necessary dependencies, such as `express`, `cors`, and any libraries required for interacting with the Gemini Pro model.
@@ -242,11 +245,11 @@ Inside the `http` block, add two upstream blocks to define the locations of your
 
 ```nginx
 upstream backend {
-    server <backend_container_ip>:6000;
+    server <backend_container_ip>:6000/;
 }
 
 upstream frontend {
-    server <frontend_container_ip>:80;
+    server <frontend_container_ip>:80/;
 }
 ```
 
@@ -261,7 +264,7 @@ server {
     listen 80;
     server_name allchat.online www.allchat.online;
 
-    location /api {
+    location /api/ {
         proxy_pass http://backend;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
