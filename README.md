@@ -1,4 +1,6 @@
-To build a Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro model, we'll need to follow these general steps:
+# FREECHAT
+
+Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro model, with history, image painting via Amazon Titan and markdown support.
 
 **Backend (Node.js)**
 
