@@ -24,7 +24,7 @@ function App() {
             if (response.ok) {
                 const data = await response.json();
                 const newChatHistory = [
-                    ...chatHistory,//.slice(0, -1),
+                    ...chatHistory,
                     { user: input, assistant: data.textResponse, image: data.imageResponse },
                 ];
                 setChatHistory(newChatHistory);
