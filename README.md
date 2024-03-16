@@ -84,6 +84,8 @@ export default App;
 
 This is a basic example, and you'll need to adapt it to fit your specific requirements and integrate with the Gemini Pro model's API or client library. Additionally, you'll want to add error handling, input validation, and other features to create a robust and user-friendly application.
 
+# DOCKER
+
 To containerize the Node.js backend and React MUI frontend for easy deployment, we can use Docker. Here's how you can create Docker containers for your application:
 
 **Backend (Node.js)**
