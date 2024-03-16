@@ -13,13 +13,18 @@ function App() {
             setInput("");
             setIsModelResponding(true);
 
-            const response = await fetch("http://localhost:5000/interact", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ input }),
-            });
+            const response = await fetch(
+                process.env.NODE_ENV === "production"
+                    ? "https://allchat.online/api/interact"
+                    : "http://localhost:5000/interact",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ input }),
+                }
+            );
 
             if (response.ok) {
                 const data = await response.json();

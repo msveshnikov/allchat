@@ -1,13 +1,15 @@
 version: "3.8"
 services:
     backend:
-        image: my-backend
+        image: extender777/my-backend
         ports:
             - "6000:5000"
         environment:
             - GOOGLE_KEY=${GOOGLE_KEY}
+        volumes:
+            - ./google.json:/app/google.json
     frontend:
-        image: my-frontend
+        image: extender777/my-frontend
         ports:
             - "8585:80"
         depends_on:
