@@ -1,31 +1,9 @@
 import React, { useState } from "react";
 import { Box, TextField, Button, Typography, Container, Grid } from "@mui/material";
 import ReactMarkdown from "react-markdown";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-const darkTheme = createTheme({
-    palette: {
-        // mode: "dark",
-        primary: {
-            main: "#7986cb",
-        },
-        secondary: {
-            main: "#e53935",
-        },
-        background: {
-            default: "#000000",
-            paper: "#121212",
-        },
-        text: {
-            primary: "#ffffff",
-            secondary: "#e0e0e0",
-        },
-    },
-});
 
 function App() {
     const [input, setInput] = useState("");
-    const [temperature, setTemperature] = useState(0.5);
     const [textResponse, setTextResponse] = useState("");
     const [imageResponse, setImageResponse] = useState(null);
     const [chatHistory, setChatHistory] = useState([]);
@@ -37,7 +15,7 @@ function App() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ input, temperature }),
+                body: JSON.stringify({ input }),
             });
 
             if (response.ok) {
@@ -56,9 +34,8 @@ function App() {
     };
 
     return (
-        // <ThemeProvider theme={darkTheme}>
         <Container maxWidth="md">
-            <Grid container spacing={2} justifyContent="center" alignItems="center" style={{ minHeight: "100vh" }}>
+            <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <TextField
                         fullWidth
@@ -68,16 +45,7 @@ function App() {
                     />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField
-                        fullWidth
-                        label="Temperature"
-                        type="number"
-                        value={temperature}
-                        onChange={(e) => setTemperature(e.target.value)}
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <Button fullWidth variant="contained" color="primary" onClick={handleSubmit}>
+                    <Button variant="contained" color="primary" onClick={handleSubmit}>
                         Submit
                     </Button>
                 </Grid>
@@ -101,7 +69,6 @@ function App() {
                 </Grid>
             </Grid>
         </Container>
-        // </ThemeProvider>
     );
 }
 
