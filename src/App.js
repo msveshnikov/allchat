@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography, Container, Grid } from "@mui/material";
+import { Box, TextField, Button, Typography, Container } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 
 function App() {
@@ -27,40 +27,40 @@ function App() {
     };
 
     return (
-        <Container maxWidth="md">
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <TextField
-                        fullWidth
-                        label="Enter your input"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <Button variant="contained" color="primary" onClick={handleSubmit}>
-                        Submit
-                    </Button>
-                </Grid>
-                <Grid item xs={12}>
-                    <Box>
-                        {chatHistory.map((chat, index) => (
-                            <Box key={index}>
-                                <Typography variant="subtitle1">You:</Typography>
-                                <Typography>{chat.user}</Typography>
-                                <Typography variant="subtitle1">Model:</Typography>
-                                <ReactMarkdown>{chat.assistant}</ReactMarkdown>
-                                {chat.image && (
-                                    <img
-                                        src={`data:image/png;base64,${chat.image.toString("base64")}`}
-                                        alt="Model output"
-                                    />
-                                )}
-                            </Box>
-                        ))}
+        <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+            <Box flex={1} overflow="auto" padding={2}>
+                {chatHistory.map((chat, index) => (
+                    <Box key={index} marginBottom={2}>
+                        <Typography variant="subtitle1">You:</Typography>
+                        <Typography>{chat.user}</Typography>
+                        <Typography variant="subtitle1">Model:</Typography>
+                        <ReactMarkdown>{chat.assistant}</ReactMarkdown>
+                        {chat.image && (
+                            <img
+                                src={`data:image/png;base64,${chat.image.toString("base64")}`}
+                                alt="Model output"
+                                style={{ maxWidth: "100%" }}
+                            />
+                        )}
                     </Box>
-                </Grid>
-            </Grid>
+                ))}
+            </Box>
+            <Box display="flex" padding={2}>
+                <TextField
+                    fullWidth
+                    label="Enter your input"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                            handleSubmit();
+                        }
+                    }}
+                />
+                <Button variant="contained" color="primary" onClick={handleSubmit} style={{ marginLeft: 8 }}>
+                    Submit
+                </Button>
+            </Box>
         </Container>
     );
 }
