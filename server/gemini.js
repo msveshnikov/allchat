@@ -1,22 +1,9 @@
-import { JWT } from "google-auth-library";
 import { VertexAI } from "@google-cloud/vertexai";
 import dotenv from "dotenv";
 dotenv.config({ override: true });
 
 const vertex_ai = new VertexAI({ project: process.env.GOOGLE_KEY, location: "us-central1" });
 const model = "gemini-pro";
-
-export const getIdToken = async () => {
-    const client = new JWT({
-        keyFile: "./google.json",
-        scopes: [
-            "https://www.googleapis.com/auth/cloud-platform",
-            "https://www.googleapis.com/auth/firebase.messaging",
-        ],
-    });
-    const idToken = await client.authorize();
-    return idToken.access_token;
-};
 
 export const getTextGemini = async (prompt, temperature) => {
     const generativeModel = vertex_ai.preview.getGenerativeModel({
