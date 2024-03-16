@@ -1,28 +1,42 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Container } from "@mui/material";
+import { Box, TextField, Button, Container, CircularProgress } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 
 function App() {
     const [input, setInput] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
+    const [isModelResponding, setIsModelResponding] = useState(false);
 
     const handleSubmit = async () => {
-        const response = await fetch("http://localhost:5000/interact", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ input }),
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            const newChatHistory = [
-                ...chatHistory,
-                { user: input, assistant: data.textResponse, image: data.imageResponse },
-            ];
-            setChatHistory(newChatHistory);
+        if (input.trim()) {
+            setChatHistory([...chatHistory, { user: input, assistant: null }]);
             setInput("");
+            setIsModelResponding(true);
+
+            const response = await fetch("http://localhost:5000/interact", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ input }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const newChatHistory = [
+                    ...chatHistory,//.slice(0, -1),
+                    { user: input, assistant: data.textResponse, image: data.imageResponse },
+                ];
+                setChatHistory(newChatHistory);
+            } else {
+                const newChatHistory = [
+                    ...chatHistory.slice(0, -1),
+                    { user: input, assistant: "Error: Failed to get response from the server." },
+                ];
+                setChatHistory(newChatHistory);
+            }
+
+            setIsModelResponding(false);
         }
     };
 
@@ -42,7 +56,8 @@ function App() {
                             borderRadius={2}
                             marginTop={1}
                         >
-                            <ReactMarkdown>{chat.assistant}</ReactMarkdown>
+                            {isModelResponding && chat.assistant === null && <CircularProgress size={20} />}
+                            {chat.assistant !== null && <ReactMarkdown>{chat.assistant}</ReactMarkdown>}
                             {chat.image && (
                                 <img
                                     src={`data:image/png;base64,${chat.image.toString("base64")}`}
