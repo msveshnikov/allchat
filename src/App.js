@@ -72,7 +72,7 @@ function App() {
             <Box display="flex" padding={2}>
                 <TextField
                     fullWidth
-                    label="Enter your input"
+                    label="Enter your question"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyPress={(e) => {

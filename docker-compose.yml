@@ -3,7 +3,7 @@ services:
     backend:
         image: my-backend
         ports:
-            - "5000:5000"
+            - "6000:5000"
         environment:
             - GOOGLE_KEY=${GOOGLE_KEY}
     frontend:

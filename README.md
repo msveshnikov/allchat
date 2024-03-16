@@ -242,7 +242,7 @@ Inside the `http` block, add two upstream blocks to define the locations of your
 
 ```nginx
 upstream backend {
-    server <backend_container_ip>:3000;
+    server <backend_container_ip>:6000;
 }
 
 upstream frontend {
@@ -259,7 +259,7 @@ Next, configure the server blocks for your domain. Inside the `http` block, add 
 ```nginx
 server {
     listen 80;
-    server_name freechat.space www.freechat.space;
+    server_name allchat.online www.allchat.online;
 
     location /api {
         proxy_pass http://backend;
@@ -277,7 +277,7 @@ server {
 }
 ```
 
-This configuration listens on port 80 for requests to `freechat.space` and `www.freechat.space`. It forwards requests to `/api` to your backend container, and all other requests to your frontend container.
+This configuration listens on port 80 for requests to `allchat.online` and `www.allchat.online`. It forwards requests to `/api` to your backend container, and all other requests to your frontend container.
 
 5. **Restart Nginx**
 
@@ -287,6 +287,6 @@ Save the changes to the configuration file, and restart Nginx for the changes to
 sudo systemctl restart nginx
 ```
 
-After completing these steps, your Nginx server should now be correctly configured to act as a reverse proxy for your containerized Node.js backend and React MUI frontend applications, serving them at `freechat.space` and `www.freechat.space`.
+After completing these steps, your Nginx server should now be correctly configured to act as a reverse proxy for your containerized Node.js backend and React MUI frontend applications, serving them at `allchat.online` and `www.allchat.online`.
 
 Note: Make sure that your backend and frontend containers are running and accessible from your Nginx server. You may need to adjust the firewall rules or security groups on your VM instance to allow incoming traffic on the necessary ports.
