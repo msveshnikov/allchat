@@ -10,7 +10,7 @@ const bedrock = new BedrockRuntime({
     region: "us-east-1",
 });
 
-export const getImageTitan = async (prompt, vertical) => {
+export const getImageTitan = async (prompt) => {
     try {
         const inferenceParams = {
             taskType: "TEXT_IMAGE",
@@ -20,8 +20,8 @@ export const getImageTitan = async (prompt, vertical) => {
             imageGenerationConfig: {
                 numberOfImages: 1,
                 quality: "premium",
-                height: vertical ? 704 : 384,
-                width: vertical ? 384 : 704,
+                height: 384,
+                width: 704,
                 cfgScale: 7.0,
                 seed: Math.round(Math.random() * 100000),
             },

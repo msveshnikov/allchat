@@ -10,14 +10,15 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/interact", async (req, res) => {
-    const userInput = req.body.input;
+    let userInput = req.body.input;
     const temperature = req.body.temperature || 0.5;
 
     try {
         const textResponse = await getTextGemini(userInput, temperature);
+        userInput = userInput?.toLowerCase();
         let imageResponse;
-        if (userInput.includes("Paint")) {
-            imageResponse = await getImageTitan(userInput, false, "amazon.titan-image-generator-v1");
+        if (userInput.includes("paint") || userInput.includes("draw") || userInput.includes("generate")) {
+            imageResponse = await getImageTitan(textResponse.substr(0, 200));
         }
 
         res.json({ textResponse, imageResponse });
