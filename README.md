@@ -2,6 +2,8 @@
 
 Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro model, with history, image painting via Amazon Titan and markdown support.
 
+![image](https://github.com/msveshnikov/freechat/assets/8682996/42b2e4f2-b91b-4712-8ef2-630ebb8919e9)
+
 **Backend (Node.js)**
 
 1. Set up a new Node.js project and install the necessary dependencies, such as `express`, `cors`, and any libraries required for interacting with the Gemini Pro model.
