@@ -1,6 +1,6 @@
 # FREECHAT
 
-Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro model, with history, image painting via Amazon Titan and markdown support.
+Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro model, with history, image painting via Amazon Titan and markdown support. Written fully by *Claude 3 Sonnet*.
 
 ![image](https://github.com/msveshnikov/freechat/assets/8682996/42b2e4f2-b91b-4712-8ef2-630ebb8919e9)
 
