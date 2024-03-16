@@ -10,7 +10,7 @@ const bedrock = new BedrockRuntime({
     region: "us-east-1",
 });
 
-export const getImageTitan = async (prompt, vertical, imageModel) => {
+export const getImageTitan = async (prompt, vertical) => {
     try {
         const inferenceParams = {
             taskType: "TEXT_IMAGE",
@@ -36,8 +36,7 @@ export const getImageTitan = async (prompt, vertical, imageModel) => {
 
         const responseBody = JSON.parse(response.body.transformToString());
 
-        const image = responseBody.images[0];
-        return image;
+        return responseBody.images[0];
     } catch (e) {
         console.error(e.message, `prompt:` + prompt);
         return null;

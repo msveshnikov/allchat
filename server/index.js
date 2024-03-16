@@ -15,7 +15,10 @@ app.post("/interact", async (req, res) => {
 
     try {
         const textResponse = await getTextGemini(userInput, temperature);
-        const imageResponse = await getImageTitan(userInput, false, "amazon.titan-image-generator-v1");
+        let imageResponse;
+        if (userInput.includes("Paint")) {
+            imageResponse = await getImageTitan(userInput, false, "amazon.titan-image-generator-v1");
+        }
 
         res.json({ textResponse, imageResponse });
     } catch (error) {
