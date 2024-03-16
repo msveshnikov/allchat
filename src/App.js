@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography, Container } from "@mui/material";
+import { Box, TextField, Button, Container } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 
 function App() {
@@ -28,20 +28,29 @@ function App() {
 
     return (
         <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-            <Box flex={1} overflow="auto" padding={2}>
+            <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column">
                 {chatHistory.map((chat, index) => (
-                    <Box key={index} marginBottom={2}>
-                        <Typography variant="subtitle1">You:</Typography>
-                        <Typography>{chat.user}</Typography>
-                        <Typography variant="subtitle1">Model:</Typography>
-                        <ReactMarkdown>{chat.assistant}</ReactMarkdown>
-                        {chat.image && (
-                            <img
-                                src={`data:image/png;base64,${chat.image.toString("base64")}`}
-                                alt="Model output"
-                                style={{ maxWidth: "100%" }}
-                            />
-                        )}
+                    <Box key={index} display="flex" flexDirection="column" marginBottom={2}>
+                        <Box alignSelf="flex-end" bgcolor="#d4edda" color="#155724" padding={1} borderRadius={2}>
+                            {chat.user}
+                        </Box>
+                        <Box
+                            alignSelf="flex-start"
+                            bgcolor="#cff4fc"
+                            color="#0c5460"
+                            padding={1}
+                            borderRadius={2}
+                            marginTop={1}
+                        >
+                            <ReactMarkdown>{chat.assistant}</ReactMarkdown>
+                            {chat.image && (
+                                <img
+                                    src={`data:image/png;base64,${chat.image.toString("base64")}`}
+                                    alt="Model output"
+                                    style={{ maxWidth: "100%" }}
+                                />
+                            )}
+                        </Box>
                     </Box>
                 ))}
             </Box>
