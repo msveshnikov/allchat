@@ -7,6 +7,7 @@ import { getImageTitan } from "./aws.js";
 
 const app = express();
 const port = 5000;
+const MAX_CONTEXT_LENGTH = 4000;
 
 app.use(cors());
 app.use(express.json());
@@ -30,7 +31,7 @@ app.post("/interact", async (req, res) => {
     try {
         const contextPrompt = `${chatHistory
             .map((chat) => `${chat.user}\n${chat.assistant}`)
-            .join("\n")}\n\nHuman: ${userInput}\nAssistant:`;
+            .join("\n")}\n\nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
         const textResponse = await getTextGemini(contextPrompt, temperature);
         userInput = userInput?.toLowerCase();
         let imageResponse;

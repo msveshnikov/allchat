@@ -8,6 +8,22 @@ function App() {
     const [isModelResponding, setIsModelResponding] = useState(false);
     const chatContainerRef = useRef(null);
 
+    useEffect(() => {
+        const storedHistory = localStorage.getItem("chatHistory");
+        if (storedHistory) {
+            setChatHistory(JSON.parse(storedHistory));
+        }
+    }, []);
+
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+        if (chatHistory.length > 0) {
+            localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+        }
+    }, [chatHistory]);
+
     const handleSubmit = async () => {
         if (input.trim()) {
             setChatHistory([...chatHistory, { user: input, assistant: null }]);
@@ -48,12 +64,6 @@ function App() {
             setIsModelResponding(false);
         }
     };
-
-    useEffect(() => {
-        if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        }
-    }, [chatHistory]);
 
     return (
         <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "95vh" }}>
