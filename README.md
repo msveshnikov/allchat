@@ -28,7 +28,7 @@ https://allchat.online/
 
 You have to get those APIs and set environment variables (or put to .env file):
 
--   GOOGLE_KEY - key of Google Cloud Project with Vertex AI enabled
+-   GOOGLE_KEY - key of Google Cloud Project with Vertex AI API enabled
 -   google.json - https://console.cloud.google.com/apis/credentials/key
 -   AWS_SECRET_KEY
 -   AWS_ACCESS_KEY - Titan - https://eu-central-1.console.aws.amazon.com/console/home?region=eu-central-1
