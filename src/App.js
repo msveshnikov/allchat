@@ -2,6 +2,9 @@ import React, { useState, useRef, useEffect } from "react";
 import { Box, TextField, Button, Container, CircularProgress } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 
+const APP_URL =
+    process.env.NODE_ENV === "production" ? "https://allchat.online/api/interact" : "http://localhost:5000/interact";
+    
 function App() {
     const [input, setInput] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
@@ -30,21 +33,16 @@ function App() {
             setInput("");
             setIsModelResponding(true);
 
-            const response = await fetch(
-                process.env.NODE_ENV === "production"
-                    ? "https://allchat.online/api/interact"
-                    : "http://localhost:5000/interact",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        input,
-                        chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
-                    }),
-                }
-            );
+            const response = await fetch(APP_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    input,
+                    chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
+                }),
+            });
 
             if (response.ok) {
                 const data = await response.json();
