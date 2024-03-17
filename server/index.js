@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import morgan from "morgan"; // Import morgan
-import rateLimit from "express-rate-limit"; // Import express-rate-limit
+import morgan from "morgan"; 
+import rateLimit from "express-rate-limit"; 
 import { getTextGemini } from "./gemini.js";
 import { getImageTitan } from "./aws.js";
 

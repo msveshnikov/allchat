@@ -8,6 +8,7 @@ services:
             - GOOGLE_KEY=${GOOGLE_KEY}
             - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
             - AWS_SECRET_KEY=${AWS_SECRET_KEY}            
+        restart: unless-stopped
         volumes:
             - ./google.json:/app/google.json
     frontend:
@@ -16,5 +17,6 @@ services:
             - NODE_ENV=production
         ports:
             - "8585:80"
+        restart: unless-stopped
         depends_on:
             - backend

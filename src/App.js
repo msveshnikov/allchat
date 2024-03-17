@@ -66,7 +66,7 @@ function App() {
     };
 
     return (
-        <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "95vh" }}>
+        <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "92vh" }}>
             <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column" ref={chatContainerRef}>
                 {chatHistory.map((chat, index) => (
                     <Box key={index} display="flex" flexDirection="column" marginBottom={2}>
