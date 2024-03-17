@@ -1,14 +1,13 @@
 import express from "express";
 import cors from "cors";
-import morgan from "morgan"; 
-import rateLimit from "express-rate-limit"; 
+import morgan from "morgan";
+import rateLimit from "express-rate-limit";
 import { getTextGemini } from "./gemini.js";
 import { getImageTitan } from "./aws.js";
 
-const app = express();
-const port = 5000;
 const MAX_CONTEXT_LENGTH = 4000;
 
+const app = express();
 app.use(cors());
 app.use(express.json());
 
@@ -19,7 +18,6 @@ app.use(morgan(loggerFormat));
 const limiter = rateLimit({
     windowMs: 60 * 1000,
     max: 10,
-    message: "Too many requests from this IP, please try again after a minute",
 });
 
 app.use(limiter);
@@ -43,13 +41,11 @@ app.post("/interact", async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({
-            error: "An error occurred while interacting with the Gemini Pro model",
+            error: "Gemini Pro Error",
         });
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+app.listen(5000);
 
 process.env["GOOGLE_APPLICATION_CREDENTIALS"] = "./google.json";
