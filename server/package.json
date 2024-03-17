@@ -1,7 +1,7 @@
 {
-    "name": "freechat",
+    "name": "allchat",
     "version": "1.0.0",
-    "description": "API for freechat",
+    "description": "API for allchat",
     "main": "index.js",
     "scripts": {
         "api": "node index.js"
