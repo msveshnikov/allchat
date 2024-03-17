@@ -56,7 +56,7 @@ function App() {
     }, [chatHistory]);
 
     return (
-        <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "97vh" }}>
+        <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "95vh" }}>
             <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column" ref={chatContainerRef}>
                 {chatHistory.map((chat, index) => (
                     <Box key={index} display="flex" flexDirection="column" marginBottom={2}>
@@ -97,7 +97,7 @@ function App() {
                     }}
                 />
                 <Button variant="contained" color="primary" onClick={handleSubmit} style={{ marginLeft: 8 }}>
-                    Submit
+                    Send
                 </Button>
             </Box>
         </Container>

@@ -35,10 +35,10 @@ app.post("/interact", async (req, res) => {
         userInput = userInput?.toLowerCase();
         let imageResponse;
         if (userInput.includes("paint") || userInput.includes("draw") || userInput.includes("generate")) {
-            imageResponse = await getImageTitan(textResponse.substr(0, 200));
+            imageResponse = await getImageTitan(textResponse.trim().substr(0, 200));
         }
 
-        res.json({ textResponse, imageResponse });
+        res.json({ textResponse: textResponse.trim(), imageResponse });
     } catch (error) {
         console.error(error);
         res.status(500).json({
