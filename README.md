@@ -1,10 +1,11 @@
 # FREECHAT
 
-Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro model, with history, image painting via Amazon Titan and markdown support. Written fully by *Claude 3 Sonnet*.
+Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro model, with history, image painting via Amazon Titan and markdown support. Written fully by _Claude 3 Sonnet_.
 
 ![image](https://github.com/msveshnikov/freechat/assets/8682996/42b2e4f2-b91b-4712-8ef2-630ebb8919e9)
 
 ## Demo
+
 https://allchat.online/
 
 **Backend (Node.js)**
@@ -22,6 +23,15 @@ https://allchat.online/
 4. Use React hooks or state management libraries (e.g., Redux) to manage the application state and handle user interactions.
 5. Implement the logic for sending HTTP requests to the Node.js backend and handling the responses.
 6. Integrate the MUI components with the application logic to create a visually appealing and user-friendly interface.
+
+## Environment variables
+
+You have to get those APIs and set environment variables (or put to .env file):
+
+-   GOOGLE_KEY - key of Google Cloud Project with Vertex AI enabled
+-   google.json - https://console.cloud.google.com/apis/credentials/key
+-   AWS_SECRET_KEY
+-   AWS_ACCESS_KEY - Titan - https://eu-central-1.console.aws.amazon.com/console/home?region=eu-central-1
 
 **Example Code**
 
