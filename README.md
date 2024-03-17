@@ -142,10 +142,10 @@ This will prevent copying the `node_modules` and `.git` directories into the Doc
 3. Build the Docker image by running the following command in the backend directory:
 
 ```
-docker build -t my-backend .
+docker build -t allchat-backend .
 ```
 
-Replace `my-backend` with your desired image name.
+Replace `allchat-backend` with your desired image name.
 
 **Frontend (React MUI)**
 
@@ -190,10 +190,10 @@ This will prevent copying the `node_modules`, `.git`, and `build` directories in
 3. Build the Docker image by running the following command in the frontend directory:
 
 ```
-docker build -t my-frontend .
+docker build -t allchat-frontend .
 ```
 
-Replace `my-frontend` with your desired image name.
+Replace `allchat-frontend` with your desired image name.
 
 **Running the Containers**
 
@@ -203,20 +203,20 @@ After building the Docker images, you can run the containers using Docker Compos
 version: "3"
 services:
     backend:
-        image: my-backend
+        image: allchat-backend
         ports:
             - "3000:3000"
         environment:
             - GOOGLE_KEY=your_google_cloud_project_id
     frontend:
-        image: my-frontend
+        image: allchat-frontend
         ports:
             - "80:80"
         depends_on:
             - backend
 ```
 
-Make sure to replace `my-backend` and `my-frontend` with the names you used when building the Docker images, and replace `your_google_cloud_project_id` with your actual Google Cloud project ID.
+Make sure to replace `allchat-backend` and `allchat-frontend` with the names you used when building the Docker images, and replace `your_google_cloud_project_id` with your actual Google Cloud project ID.
 
 Now, you can start the containers by running the following command in the root directory of your project:
 

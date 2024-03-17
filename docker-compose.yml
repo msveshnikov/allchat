@@ -1,7 +1,7 @@
 version: "3.8"
 services:
     backend:
-        image: extender777/my-backend
+        image: extender777/allchat-backend
         ports:
             - "6000:5000"
         environment:
@@ -11,7 +11,7 @@ services:
         volumes:
             - ./google.json:/app/google.json
     frontend:
-        image: extender777/my-frontend
+        image: extender777/allchat-frontend
         environment:
             - NODE_ENV=production
         ports:

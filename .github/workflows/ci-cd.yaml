@@ -7,8 +7,8 @@ on:
 env:
     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-    BACKEND_IMAGE_NAME: my-backend
-    FRONTEND_IMAGE_NAME: my-frontend
+    BACKEND_IMAGE_NAME: allchat-backend
+    FRONTEND_IMAGE_NAME: allchat-frontend
     SSH_HOST: ${{ secrets.SSH_HOST }}
     SSH_USER: ${{ secrets.SSH_USER }}
     SSH_KEY: ${{ secrets.SSH_KEY }}
