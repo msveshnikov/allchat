@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Box, TextField, Button, Container, CircularProgress } from "@mui/material";
+import { Box, TextField, Button, Container, CircularProgress, Typography } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import Drawer from "@mui/material/Drawer";
+import Drawer from "@mui/material/SwipeableDrawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -81,6 +81,7 @@ function App() {
         localStorage.removeItem("chatHistory");
         setDrawerOpen(false);
     };
+
     return (
         <>
             <AppBar position="static">
@@ -88,16 +89,19 @@ function App() {
                     <IconButton color="inherit" aria-label="open drawer" edge="start" onClick={toggleDrawer}>
                         <MenuIcon />
                     </IconButton>
+                    <Typography sx={{ ml: 2 }} variant="h6" noWrap>
+                        AllChat
+                    </Typography>
                 </Toolbar>
             </AppBar>
-            <Drawer open={drawerOpen} onClose={toggleDrawer}>
+            <Drawer PaperProps={{ sx: { width: 150 } }} open={drawerOpen} onClose={toggleDrawer} onOpen={toggleDrawer}>
                 <List>
                     <ListItem button onClick={clearChatHistory}>
                         <ListItemText primary="Clear Chat" />
                     </ListItem>
                 </List>
             </Drawer>
-            <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "92vh" }}>
+            <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "90vh" }}>
                 <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column" ref={chatContainerRef}>
                     {chatHistory.map((chat, index) => (
                         <Box key={index} display="flex" flexDirection="column" marginBottom={2}>
