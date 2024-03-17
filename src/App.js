@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Box, TextField, Button, Container, CircularProgress } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 
@@ -6,6 +6,7 @@ function App() {
     const [input, setInput] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
     const [isModelResponding, setIsModelResponding] = useState(false);
+    const chatContainerRef = useRef(null);
 
     const handleSubmit = async () => {
         if (input.trim()) {
@@ -45,9 +46,15 @@ function App() {
         }
     };
 
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [chatHistory]);
+
     return (
-        <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-            <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column">
+        <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "95vh" }}>
+            <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column" ref={chatContainerRef}>
                 {chatHistory.map((chat, index) => (
                     <Box key={index} display="flex" flexDirection="column" marginBottom={2}>
                         <Box alignSelf="flex-end" bgcolor="#d4edda" color="#155724" padding={1} borderRadius={2}>

@@ -1,0 +1,48 @@
+name: CI/CD Pipeline
+
+on:
+    push:
+        branches: [master]
+
+env:
+    DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    BACKEND_IMAGE_NAME: my-backend
+    FRONTEND_IMAGE_NAME: my-frontend
+    SSH_HOST: ${{ secrets.SSH_HOST }}
+    SSH_USER: ${{ secrets.SSH_USER }}
+    SSH_KEY: ${{ secrets.SSH_KEY }}
+
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Build and Push Backend Image
+              run: |
+                  docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }} ./backend
+                  docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ env.DOCKER_PASSWORD }}
+                  docker push ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }}
+
+            - name: Build and Push Frontend Image
+              run: |
+                  docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }} ./frontend
+                  docker push ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }}
+
+    deploy:
+        needs: build-and-push
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Deploy to SSH Host
+              env:
+                  SSH_KEY: ${{ env.SSH_KEY }}
+              run: |
+                  ssh ${{ env.SSH_USER }}@${{ env.SSH_HOST }} '
+                    docker pull ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }}
+                    docker pull ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }}
+                    docker-compose down
+                    docker-compose up -d
+                  '

@@ -14,6 +14,8 @@
         "@google-cloud/vertexai": "^0.5.0",
         "cors": "^2.8.5",
         "dotenv": "^16.4.5",
-        "express": "^4.18.3"
+        "express": "^4.18.3",
+        "express-rate-limit": "^7.2.0",
+        "morgan": "^1.10.0"
     }
 }
