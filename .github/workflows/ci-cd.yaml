@@ -18,17 +18,17 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@master
 
             - name: Build and Push Backend Image
               run: |
-                  docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }} ./backend
+                  docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }} ./server
                   docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ env.DOCKER_PASSWORD }}
                   docker push ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }}
 
             - name: Build and Push Frontend Image
               run: |
-                  docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }} ./frontend
+                  docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }} .
                   docker push ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }}
 
     deploy:

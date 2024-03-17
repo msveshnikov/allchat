@@ -11,28 +11,27 @@ const port = 5000;
 app.use(cors());
 app.use(express.json());
 
-// Custom Morgan format to log request bodies
 morgan.token("body", (req) => JSON.stringify(req.body));
-
 const loggerFormat = ":method :url :status :response-time ms - :res[content-length] :body";
-
 app.use(morgan(loggerFormat));
 
 const limiter = rateLimit({
-    windowMs: 60 * 1000, // 1 minute
-    max: 10, // Limit each IP to 10 requests per windowMs
+    windowMs: 60 * 1000,
+    max: 10,
     message: "Too many requests from this IP, please try again after a minute",
 });
 
-// Apply the rate limiter to all requests
 app.use(limiter);
-
 app.post("/interact", async (req, res) => {
     let userInput = req.body.input;
+    const chatHistory = req.body.chatHistory || [];
     const temperature = req.body.temperature || 0.5;
 
     try {
-        const textResponse = await getTextGemini(userInput, temperature);
+        const contextPrompt = `${chatHistory
+            .map((chat) => `${chat.user}\n${chat.assistant}`)
+            .join("\n")}\n\nHuman: ${userInput}\nAssistant:`;
+        const textResponse = await getTextGemini(contextPrompt, temperature);
         userInput = userInput?.toLowerCase();
         let imageResponse;
         if (userInput.includes("paint") || userInput.includes("draw") || userInput.includes("generate")) {

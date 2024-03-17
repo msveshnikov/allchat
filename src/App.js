@@ -23,7 +23,10 @@ function App() {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ input }),
+                    body: JSON.stringify({
+                        input,
+                        chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
+                    }),
                 }
             );
 
@@ -53,7 +56,7 @@ function App() {
     }, [chatHistory]);
 
     return (
-        <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "95vh" }}>
+        <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "97vh" }}>
             <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column" ref={chatContainerRef}>
                 {chatHistory.map((chat, index) => (
                     <Box key={index} display="flex" flexDirection="column" marginBottom={2}>
