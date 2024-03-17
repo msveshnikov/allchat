@@ -6,6 +6,8 @@ services:
             - "6000:5000"
         environment:
             - GOOGLE_KEY=${GOOGLE_KEY}
+            - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+            - AWS_SECRET_KEY=${AWS_SECRET_KEY}            
         volumes:
             - ./google.json:/app/google.json
     frontend:
