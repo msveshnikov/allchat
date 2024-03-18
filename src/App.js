@@ -16,14 +16,21 @@ const APP_URL =
 function App() {
     const [input, setInput] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
+    const [storedChatHistories, setStoredChatHistories] = useState([]);
     const [isModelResponding, setIsModelResponding] = useState(false);
     const chatContainerRef = useRef(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     useEffect(() => {
         const storedHistory = localStorage.getItem("chatHistory");
+        const storedChatHistories = localStorage.getItem("storedChatHistories");
+
         if (storedHistory) {
             setChatHistory(JSON.parse(storedHistory));
+        }
+
+        if (storedChatHistories) {
+            setStoredChatHistories(JSON.parse(storedChatHistories));
         }
     }, []);
 
@@ -34,7 +41,10 @@ function App() {
         if (chatHistory.length > 0) {
             localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
         }
-    }, [chatHistory]);
+        if (storedChatHistories.length > 0) {
+            localStorage.setItem("storedChatHistories", JSON.stringify(storedChatHistories));
+        }
+    }, [chatHistory, storedChatHistories]);
 
     const handleSubmit = async () => {
         if (input.trim()) {
@@ -76,9 +86,31 @@ function App() {
         setDrawerOpen(!drawerOpen);
     };
 
-    const clearChatHistory = () => {
+    const clearAllChatHistory = () => {
+        setChatHistory([]);
+        setStoredChatHistories([]);
+        localStorage.removeItem("chatHistory");
+        localStorage.removeItem("storedChatHistories");
+        setDrawerOpen(false);
+    };
+
+    const handleNewChat = () => {
+        if (chatHistory.length > 0) {
+            setStoredChatHistories([chatHistory, ...storedChatHistories.slice(0, 9)]);
+        }
         setChatHistory([]);
         localStorage.removeItem("chatHistory");
+        setDrawerOpen(false);
+    };
+
+    const handleHistorySelection = (index) => {
+        const updatedStoredChatHistories = [...storedChatHistories];
+        if (updatedStoredChatHistories.length === 10) {
+            updatedStoredChatHistories.shift();
+        }
+        updatedStoredChatHistories[index] = chatHistory;
+        setStoredChatHistories(updatedStoredChatHistories);
+        setChatHistory(storedChatHistories[index]);
         setDrawerOpen(false);
     };
 
@@ -95,11 +127,22 @@ function App() {
                 </Toolbar>
             </AppBar>
             <Drawer PaperProps={{ sx: { width: 150 } }} open={drawerOpen} onClose={toggleDrawer} onOpen={toggleDrawer}>
-                <List>
-                    <ListItem button onClick={clearChatHistory}>
-                        <ListItemText primary="Clear Chat" />
+                <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                    <List style={{ flexGrow: 1, overflowY: "auto" }}>
+                        <ListItem button onClick={handleNewChat}>
+                            <ListItemText primary="New Chat" />
+                        </ListItem>
+                        {Array.isArray(storedChatHistories) &&
+                            storedChatHistories.map((history, index) => (
+                                <ListItem button key={index} onClick={() => handleHistorySelection(index)}>
+                                    <ListItemText primary={`Chat ${index + 1}`} />
+                                </ListItem>
+                            ))}
+                    </List>
+                    <ListItem button onClick={clearAllChatHistory} style={{ backgroundColor: "#ffcdd2" }}>
+                        <ListItemText primary="Clear All" />
                     </ListItem>
-                </List>
+                </div>
             </Drawer>
             <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "90vh" }}>
                 <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column" ref={chatContainerRef}>
