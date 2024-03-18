@@ -162,7 +162,7 @@ function App() {
                             </ListItem>
                         ))}
                     </List>
-                    <ListItem button onClick={clearAllChatHistory} style={{ backgroundColor: "#ffcdd2" }}>
+                    <ListItem button onClick={clearAllChatHistory} style={{ color:"white", backgroundColor: "#F50057" }}>
                         <ListItemText primary="Clear All" />
                     </ListItem>
                 </div>
@@ -170,7 +170,13 @@ function App() {
             <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "90vh" }}>
                 <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column" ref={chatContainerRef}>
                     {chatHistory.map((chat, index) => (
-                        <Box key={index} display="flex" flexDirection="column" marginBottom={2}>
+                        <Box
+                            style={{ fontFamily: "PT Sans" }}
+                            key={index}
+                            display="flex"
+                            flexDirection="column"
+                            marginBottom={2}
+                        >
                             <Box alignSelf="flex-end" bgcolor="#d4edda" color="#155724" padding={1} borderRadius={2}>
                                 {chat.user}
                             </Box>
