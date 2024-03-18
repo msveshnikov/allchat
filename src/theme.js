@@ -4,9 +4,9 @@ const theme = (mode) =>
     createTheme({
         palette: {
             mode: mode,
-            // primary: {
-            //     main: "#F50057",
-            // },
+            primary: {
+                main: "#F50057",
+            },
             secondary: {
                 main: "#673ab7",
             },
