@@ -176,7 +176,7 @@ function App() {
                                 bgcolor="#d4edda"
                                 color="#155724"
                                 padding={1}
-                                style={{ fontFamily: "Chilanka, cursive" }}
+                                style={{ fontFamily: "Chilanka" }}
                                 borderRadius={2}
                             >
                                 {chat.user}
@@ -188,7 +188,7 @@ function App() {
                                 padding={1}
                                 marginTop={1}
                                 borderRadius={2}
-                                style={{ fontFamily: "Chilanka, cursive" }}
+                                style={{ fontFamily: "Chilanka" }}
                             >
                                 {isModelResponding && chat.assistant === null && <CircularProgress size={20} />}
                                 {chat.assistant !== null && <ReactMarkdown>{chat.assistant}</ReactMarkdown>}

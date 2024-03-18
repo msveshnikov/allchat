@@ -12,7 +12,7 @@ const theme = (mode) =>
             },
         },
         typography: {
-            fontFamily: ["Chilanka", "cursive"].join(","),
+            fontFamily: "Chilanka",
         },
     });
 
