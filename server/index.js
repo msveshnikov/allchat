@@ -4,6 +4,7 @@ import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import { getTextGemini } from "./gemini.js";
 import { getImageTitan } from "./aws.js";
+import hasPaintWord from "./paint.js";
 
 const MAX_CONTEXT_LENGTH = 4000;
 
@@ -33,7 +34,7 @@ app.post("/interact", async (req, res) => {
         const textResponse = await getTextGemini(contextPrompt, temperature);
         userInput = userInput?.toLowerCase();
         let imageResponse;
-        if (userInput.includes("paint") || userInput.includes("draw") || userInput.includes("generate")) {
+        if (hasPaintWord(userInput)) {
             imageResponse = await getImageTitan(userInput + textResponse?.trim()?.substr(0, 200));
         }
 
@@ -46,6 +47,8 @@ app.post("/interact", async (req, res) => {
     }
 });
 
-app.listen(5000);
+app.listen(5000, () => {
+    console.log(`🚀 Server started on port 5000`);
+});
 
 process.env["GOOGLE_APPLICATION_CREDENTIALS"] = "./google.json";

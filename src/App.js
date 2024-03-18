@@ -171,7 +171,14 @@ function App() {
                 <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column" ref={chatContainerRef}>
                     {chatHistory.map((chat, index) => (
                         <Box key={index} display="flex" flexDirection="column" marginBottom={2}>
-                            <Box alignSelf="flex-end" bgcolor="#d4edda" color="#155724" padding={1} borderRadius={2}>
+                            <Box
+                                alignSelf="flex-end"
+                                bgcolor="#d4edda"
+                                color="#155724"
+                                padding={1}
+                                style={{ fontFamily: "Chilanka, cursive" }}
+                                borderRadius={2}
+                            >
                                 {chat.user}
                             </Box>
                             <Box
@@ -179,8 +186,9 @@ function App() {
                                 bgcolor="#cff4fc"
                                 color="#0c5460"
                                 padding={1}
-                                borderRadius={2}
                                 marginTop={1}
+                                borderRadius={2}
+                                style={{ fontFamily: "Chilanka, cursive" }}
                             >
                                 {isModelResponding && chat.assistant === null && <CircularProgress size={20} />}
                                 {chat.assistant !== null && <ReactMarkdown>{chat.assistant}</ReactMarkdown>}
