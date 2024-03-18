@@ -82,6 +82,28 @@ function App() {
         }
     };
 
+    const generateChatSummary = async (chatHistory) => {
+        const response = await fetch(APP_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                input: "Summarize this chat in one short statement and simply return it.",
+                chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
+            }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data?.textResponse?.slice(0, 40) + "...";
+        } else {
+            const messages = chatHistory.map((chat) => chat.user + (chat.assistant || ""));
+            const summary = messages.join(" ").slice(0, 40) + "...";
+            return summary;
+        }
+    };
+
     const toggleDrawer = () => {
         setDrawerOpen(!drawerOpen);
     };
@@ -94,23 +116,25 @@ function App() {
         setDrawerOpen(false);
     };
 
-    const handleNewChat = () => {
+    const handleNewChat = async () => {
         if (chatHistory.length > 0) {
-            setStoredChatHistories([chatHistory, ...storedChatHistories.slice(0, 9)]);
+            const summary = await generateChatSummary(chatHistory);
+            setStoredChatHistories([{ chatHistory, summary }, ...storedChatHistories.slice(0, 9)]);
         }
         setChatHistory([]);
         localStorage.removeItem("chatHistory");
         setDrawerOpen(false);
     };
 
-    const handleHistorySelection = (index) => {
+    const handleHistorySelection = async (index) => {
         const updatedStoredChatHistories = [...storedChatHistories];
         if (updatedStoredChatHistories.length === 10) {
             updatedStoredChatHistories.shift();
         }
-        updatedStoredChatHistories[index] = chatHistory;
+        const summary = await generateChatSummary(chatHistory);
+        updatedStoredChatHistories[index] = { chatHistory, summary };
         setStoredChatHistories(updatedStoredChatHistories);
-        setChatHistory(storedChatHistories[index]);
+        setChatHistory(storedChatHistories[index].chatHistory);
         setDrawerOpen(false);
     };
 
@@ -126,18 +150,17 @@ function App() {
                     </Typography>
                 </Toolbar>
             </AppBar>
-            <Drawer PaperProps={{ sx: { width: 150 } }} open={drawerOpen} onClose={toggleDrawer} onOpen={toggleDrawer}>
+            <Drawer PaperProps={{ sx: { width: 200 } }} open={drawerOpen} onClose={toggleDrawer} onOpen={toggleDrawer}>
                 <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
                     <List style={{ flexGrow: 1, overflowY: "auto" }}>
                         <ListItem button onClick={handleNewChat}>
                             <ListItemText primary="New Chat" />
                         </ListItem>
-                        {Array.isArray(storedChatHistories) &&
-                            storedChatHistories.map((history, index) => (
-                                <ListItem button key={index} onClick={() => handleHistorySelection(index)}>
-                                    <ListItemText primary={`Chat ${index + 1}`} />
-                                </ListItem>
-                            ))}
+                        {storedChatHistories.map((history, index) => (
+                            <ListItem button key={index} onClick={() => handleHistorySelection(index)}>
+                                <ListItemText primary={history.summary} />
+                            </ListItem>
+                        ))}
                     </List>
                     <ListItem button onClick={clearAllChatHistory} style={{ backgroundColor: "#ffcdd2" }}>
                         <ListItemText primary="Clear All" />
