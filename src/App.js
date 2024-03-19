@@ -9,6 +9,7 @@ import Drawer from "@mui/material/SwipeableDrawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import PDFUploader from "./PDFUploader";
 
 const APP_URL =
     process.env.NODE_ENV === "production" ? "https://allchat.online/api/interact" : "http://localhost:5000/interact";
@@ -138,6 +139,33 @@ function App() {
         setDrawerOpen(false);
     };
 
+    const handlePDFUpload = async (pdfData) => {
+        const pdfBytesBase64 = pdfData.split(",")[1];
+
+        // Send the base64-encoded PDF bytes to the server
+        const response = await fetch(APP_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                pdfBytesBase64,
+                chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
+            }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const newChatHistory = [
+                ...chatHistory,
+                { user: "PDF Document", assistant: data.textResponse, image: data.imageResponse },
+            ];
+            setChatHistory(newChatHistory);
+        } else {
+            console.error("Error:", response.status);
+        }
+    };
+
     return (
         <>
             <AppBar position="static">
@@ -162,7 +190,11 @@ function App() {
                             </ListItem>
                         ))}
                     </List>
-                    <ListItem button onClick={clearAllChatHistory} style={{ color:"white", backgroundColor: "#F50057" }}>
+                    <ListItem
+                        button
+                        onClick={clearAllChatHistory}
+                        style={{ color: "white", backgroundColor: "#F50057" }}
+                    >
                         <ListItemText primary="Clear All" />
                     </ListItem>
                 </div>
@@ -213,6 +245,7 @@ function App() {
                             }
                         }}
                     />
+                    <PDFUploader onPDFUpload={handlePDFUpload} />
                     <Button variant="contained" color="primary" onClick={handleSubmit} style={{ marginLeft: 8 }}>
                         Send
                     </Button>

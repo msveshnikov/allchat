@@ -1,6 +1,6 @@
 # ALLCHAT
 
-Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro model, with history, image painting via Amazon Titan and markdown support. Written fully by _Claude 3 Sonnet_.
+Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro model, with history, image painting by Amazon Titan, PDF upload and markdown support. Written fully by _Claude 3 Sonnet_.
 
 ![image](https://github.com/msveshnikov/allchat/assets/8682996/42b2e4f2-b91b-4712-8ef2-630ebb8919e9)
 
