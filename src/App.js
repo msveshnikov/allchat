@@ -89,17 +89,17 @@ function App() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                input: "Summarize this chat in one short statement and simply return it.",
+                input: "!!! Extract main topic from this chat in one simple short statement and return it without anything else: ",
                 chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
             }),
         });
 
         if (response.ok) {
             const data = await response.json();
-            return data?.textResponse?.slice(0, 40) + "...";
+            return data?.textResponse?.slice(0, 50) + "...";
         } else {
             const messages = chatHistory.map((chat) => chat.user + (chat.assistant || ""));
-            const summary = messages.join(" ").slice(0, 40) + "...";
+            const summary = messages.join(" ").slice(0, 50) + "...";
             return summary;
         }
     };
