@@ -199,7 +199,7 @@ function App() {
                     </ListItem>
                 </div>
             </Drawer>
-            <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "90vh" }}>
+            <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "93vh" }}>
                 <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column" ref={chatContainerRef}>
                     {chatHistory.map((chat, index) => (
                         <Box

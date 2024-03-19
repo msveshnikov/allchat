@@ -7,7 +7,7 @@ import { getImageTitan } from "./aws.js";
 import hasPaintWord from "./paint.js";
 import pdfParser from "pdf-parse";
 
-const MAX_CONTEXT_LENGTH = 4000;
+const MAX_CONTEXT_LENGTH = 8000;
 
 const app = express();
 app.use(cors());
