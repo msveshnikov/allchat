@@ -112,8 +112,8 @@ const paintingWords = [
 ];
 
 function hasPaintWord(text) {
-    const lowerCaseText = text.toLowerCase();
-    return paintingWords.some((word) => lowerCaseText.includes(word));
+    const lowerCaseText = text?.toLowerCase();
+    return paintingWords.some((word) => lowerCaseText?.includes(word));
 }
 
 export default hasPaintWord;

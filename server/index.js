@@ -6,6 +6,8 @@ import { getTextGemini } from "./gemini.js";
 import { getImageTitan } from "./aws.js";
 import hasPaintWord from "./paint.js";
 import pdfParser from "pdf-parse";
+import mammoth from "mammoth";
+import * as xlsx from "xlsx";
 
 const MAX_CONTEXT_LENGTH = 8000;
 
@@ -15,9 +17,9 @@ app.use(express.json({ limit: "10mb" }));
 
 morgan.token("body", (req, res) => {
     const body = req.body;
-    if (body && typeof body === "object" && "pdfBytesBase64" in body) {
+    if (body && typeof body === "object" && "fileBytesBase64" in body) {
         const clonedBody = { ...body };
-        clonedBody.pdfBytesBase64 = "<PDF_BYTES_REDACTED>";
+        clonedBody.fileBytesBase64 = "<FILE_BYTES_REDACTED>";
         return JSON.stringify(clonedBody);
     }
     return JSON.stringify(body);
@@ -28,21 +30,45 @@ app.use(morgan(loggerFormat));
 
 const limiter = rateLimit({
     windowMs: 60 * 1000,
-    max: 10,
+    limit: 10,
+    standardHeaders: "draft-7",
+    legacyHeaders: false,
 });
 
 app.use(limiter);
+
 app.post("/interact", async (req, res) => {
     let userInput = req.body.input;
     const chatHistory = req.body.chatHistory || [];
     const temperature = req.body.temperature || 0.5;
-    const pdfBytesBase64 = req.body.pdfBytesBase64;
+    const fileBytesBase64 = req.body.fileBytesBase64;
+    const fileType = req.body.fileType;
 
     try {
-        if (pdfBytesBase64) {
-            const pdfBytes = Buffer.from(pdfBytesBase64, "base64");
-            const data = await pdfParser(pdfBytes);
-            userInput = data.text;
+        if (fileBytesBase64) {
+            const fileBytes = Buffer.from(fileBytesBase64, "base64");
+            if (fileType === "pdf") {
+                const data = await pdfParser(fileBytes);
+                userInput = data.text;
+            } else if (
+                fileType === "msword" ||
+                fileType === "vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ) {
+                const docResult = await mammoth.convertToHtml({ buffer: fileBytes });
+                userInput = docResult.value;
+            } else if (fileType === "xlsx" || fileType === "vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+                const workbook = xlsx.read(fileBytes, { type: "buffer" });
+                const sheetNames = workbook.SheetNames;
+                let excelText = "";
+                sheetNames.forEach((sheetName) => {
+                    const worksheet = workbook.Sheets[sheetName];
+                    excelText += xlsx.utils.sheet_to_txt(worksheet);
+                });
+                userInput = excelText;
+            } else {
+                console.error("Unsupported file type");
+                return res.status(400).json({ error: "Unsupported file type" });
+            }
         }
 
         const contextPrompt = `${chatHistory
