@@ -200,18 +200,28 @@ Replace `allchat-frontend` with your desired image name.
 After building the Docker images, you can run the containers using Docker Compose. Create a `docker-compose.yml` file in the root directory of your project with the following contents:
 
 ```yaml
-version: "3"
+version: "3.8"
+
 services:
     backend:
-        image: allchat-backend
+        image: extender777/allchat-backend
         ports:
-            - "3000:3000"
+            - "6000:5000"
         environment:
-            - GOOGLE_KEY=your_google_cloud_project_id
+            - GOOGLE_KEY=${GOOGLE_KEY}
+            - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+            - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+        restart: unless-stopped
+        volumes:
+            - ./allchat.json:/app/allchat.json
+
     frontend:
-        image: allchat-frontend
+        image: extender777/allchat-frontend
+        environment:
+            - NODE_ENV=production
         ports:
-            - "80:80"
+            - "8585:80"
+        restart: unless-stopped
         depends_on:
             - backend
 ```
@@ -249,45 +259,36 @@ Open the default Nginx configuration file, usually located at `/etc/nginx/nginx.
 sudo nano /etc/nginx/conf.d/default.conf
 ```
 
-3. **Add Upstream Blocks**
-
-Inside the `http` block, add two upstream blocks to define the locations of your backend and frontend containers:
-
-```nginx
-upstream backend {
-    server <backend_container_ip>:6000/;
-}
-
-upstream frontend {
-    server <frontend_container_ip>:80/;
-}
-```
-
-Replace `<backend_container_ip>` and `<frontend_container_ip>` with the actual IP addresses of your backend and frontend containers, respectively.
-
-4. **Configure Server Blocks**
+3. **Configure Server Blocks**
 
 Next, configure the server blocks for your domain. Inside the `http` block, add the following:
 
 ```nginx
 server {
-    listen 80;
     server_name allchat.online www.allchat.online;
 
     location /api/ {
-        proxy_pass http://backend;
+        proxy_pass http://localhost:6000/;
         proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Real-IP       $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 
     location / {
-        proxy_pass http://frontend;
+        proxy_pass http://localhost:8585;
         proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	    proxy_set_header X-Real-IP       $remote_addr;
+	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/allchat.online/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/allchat.online/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
 }
+
 ```
 
 This configuration listens on port 80 for requests to `allchat.online` and `www.allchat.online`. It forwards requests to `/api` to your backend container, and all other requests to your frontend container.

@@ -19,9 +19,14 @@ app.use(express.json({ limit: "10mb" }));
 
 morgan.token("body", (req, res) => {
     const body = req.body;
-    if (body && typeof body === "object" && "fileBytesBase64" in body) {
+    if (body && typeof body === "object") {
         const clonedBody = { ...body };
-        clonedBody.fileBytesBase64 = "<FILE_BYTES_REDACTED>";
+        if ("fileBytesBase64" in clonedBody) {
+            clonedBody.fileBytesBase64 = "<FILE_BYTES_REDACTED>";
+        }
+        if ("chatHistory" in clonedBody) {
+            clonedBody.chatHistory = "<CHAT_HISTORY_REDACTED>";
+        }
         return JSON.stringify(clonedBody);
     }
     return JSON.stringify(body);

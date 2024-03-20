@@ -1,5 +1,7 @@
 version: "3.8"
+
 services:
+
     backend:
         image: extender777/allchat-backend
         ports:
@@ -11,6 +13,7 @@ services:
         restart: unless-stopped
         volumes:
             - ./allchat.json:/app/allchat.json
+            
     frontend:
         image: extender777/allchat-frontend
         environment:

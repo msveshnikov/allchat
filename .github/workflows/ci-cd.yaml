@@ -44,6 +44,10 @@ jobs:
                   echo "$SSH_KEY" > ~/.ssh/id_rsa
                   chmod 600 ~/.ssh/id_rsa
                   ssh-keyscan -H ${{ env.SSH_HOST }} >> ~/.ssh/known_hosts
+
+                  # Copy docker-compose.yml to the remote server
+                  scp ./docker-compose.yml ${{ env.SSH_USER }}@${{ env.SSH_HOST }}:allchat
+
                   ssh ${{ env.SSH_USER }}@${{ env.SSH_HOST }} '
                     docker pull ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }}
                     docker pull ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }}
