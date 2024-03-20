@@ -11,6 +11,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import FileSelector from "./FileSelector";
 
+const MAX_CHAT_HISTORY_LENGTH = 30; // Adjust this value as needed
 const API_URL =
     process.env.NODE_ENV === "production" ? "https://allchat.online/api/interact" : "http://localhost:5000/interact";
 
@@ -41,15 +42,18 @@ function App() {
     }, []);
 
     useEffect(() => {
-        if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        }
-        if (chatHistory.length > 0) {
-            localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
-        }
-        if (storedChatHistories.length > 0) {
-            localStorage.setItem("storedChatHistories", JSON.stringify(storedChatHistories));
-        }
+        try {
+            if (chatContainerRef.current) {
+                chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+            }
+            if (chatHistory.length > 0) {
+                const chatHistoryToStore = chatHistory.slice(-MAX_CHAT_HISTORY_LENGTH);
+                localStorage.setItem("chatHistory", JSON.stringify(chatHistoryToStore));
+            }
+            if (storedChatHistories.length > 0) {
+                localStorage.setItem("storedChatHistories", JSON.stringify(storedChatHistories));
+            }
+        } catch {}
     }, [chatHistory, storedChatHistories]);
 
     const handleSubmit = async () => {
@@ -143,10 +147,12 @@ function App() {
         setSelectedFile(null);
     };
 
-    const handleNewChat = async () => {
+    const handleNewChat = () => {
         if (chatHistory.length > 0) {
-            const summary = await generateChatSummary(chatHistory);
-            setStoredChatHistories([{ chatHistory, summary }, ...storedChatHistories.slice(0, 9)]);
+            Promise.resolve().then(async () => {
+                const summary = await generateChatSummary(chatHistory);
+                setStoredChatHistories([{ chatHistory, summary }, ...storedChatHistories.slice(0, 7)]);
+            });
         }
         setChatHistory([]);
         localStorage.removeItem("chatHistory");
@@ -154,14 +160,16 @@ function App() {
         setSelectedFile(null);
     };
 
-    const handleHistorySelection = async (index) => {
+    const handleHistorySelection = (index) => {
         const updatedStoredChatHistories = [...storedChatHistories];
-        if (updatedStoredChatHistories.length === 10) {
+        if (updatedStoredChatHistories.length >= 8) {
             updatedStoredChatHistories.shift();
         }
-        const summary = await generateChatSummary(chatHistory);
-        updatedStoredChatHistories[index] = { chatHistory, summary };
-        setStoredChatHistories(updatedStoredChatHistories);
+        Promise.resolve().then(async () => {
+            const summary = await generateChatSummary(chatHistory);
+            updatedStoredChatHistories[index] = { chatHistory, summary };
+            setStoredChatHistories(updatedStoredChatHistories);
+        });
         setChatHistory(storedChatHistories[index].chatHistory);
         setDrawerOpen(false);
     };
