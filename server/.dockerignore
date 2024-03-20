@@ -2,3 +2,4 @@ node_modules
 .git
 .env
 google.json
+allchat.json

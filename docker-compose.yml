@@ -10,7 +10,7 @@ services:
             - AWS_SECRET_KEY=${AWS_SECRET_KEY}            
         restart: unless-stopped
         volumes:
-            - ./google.json:/app/google.json
+            - ./allchat.json:/app/allchat.json
     frontend:
         image: extender777/allchat-frontend
         environment:
