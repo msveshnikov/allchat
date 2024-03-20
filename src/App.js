@@ -11,7 +11,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import FileUploader from "./FileUploader";
 
-const APP_URL =
+const API_URL =
     process.env.NODE_ENV === "production" ? "https://allchat.online/api/interact" : "http://localhost:5000/interact";
 
 function App() {
@@ -53,7 +53,7 @@ function App() {
             setInput("");
             setIsModelResponding(true);
 
-            const response = await fetch(APP_URL, {
+            const response = await fetch(API_URL, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -84,7 +84,7 @@ function App() {
     };
 
     const generateChatSummary = async (chatHistory) => {
-        const response = await fetch(APP_URL, {
+        const response = await fetch(API_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -146,7 +146,7 @@ function App() {
         setChatHistory([...chatHistory, { user: `${fileType.toUpperCase()} Document`, assistant: null }]);
         setIsModelResponding(true);
 
-        const response = await fetch(APP_URL, {
+        const response = await fetch(API_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
