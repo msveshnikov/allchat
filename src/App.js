@@ -62,8 +62,6 @@ function App() {
                     const fileData = reader.result;
                     fileType = fileData.split(";")[0].split("/")[1];
                     const fileBytesBase64 = fileData.split(",")[1];
-
-                    // Send the file type and base64-encoded file bytes to the server
                     sendFileAndQuery(fileType, fileBytesBase64, input);
                 };
                 reader.readAsDataURL(selectedFile);
@@ -142,6 +140,7 @@ function App() {
         localStorage.removeItem("chatHistory");
         localStorage.removeItem("storedChatHistories");
         setDrawerOpen(false);
+        setSelectedFile(null);
     };
 
     const handleNewChat = async () => {
@@ -152,6 +151,7 @@ function App() {
         setChatHistory([]);
         localStorage.removeItem("chatHistory");
         setDrawerOpen(false);
+        setSelectedFile(null);
     };
 
     const handleHistorySelection = async (index) => {
@@ -245,7 +245,7 @@ function App() {
                             }
                         }}
                     />
-                    <FileSelector onFileSelect={handleFileSelect} />
+                    <FileSelector onFileSelect={handleFileSelect} selectedFile={selectedFile} />
                     <Button variant="contained" color="primary" onClick={handleSubmit} style={{ marginLeft: 8 }}>
                         Send
                     </Button>
