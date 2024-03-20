@@ -55,7 +55,7 @@ app.post("/interact", async (req, res) => {
                 fileType === "msword" ||
                 fileType === "vnd.openxmlformats-officedocument.wordprocessingml.document"
             ) {
-                const docResult = await mammoth.convertToHtml({ buffer: fileBytes });
+                const docResult = await mammoth.extractRawText({ buffer: fileBytes });
                 userInput = `${docResult.value}\n\n${userInput}`;
             } else if (fileType === "xlsx" || fileType === "vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
                 const workbook = xlsx.read(fileBytes, { type: "buffer" });
