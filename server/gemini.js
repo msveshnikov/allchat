@@ -9,8 +9,8 @@ export const getTextGemini = async (prompt, temperature) => {
     const generativeModel = vertex_ai.preview.getGenerativeModel({
         model: model,
         generation_config: {
-            max_output_tokens: 2048,
-            temperature: temperature || 0.5,
+            max_output_tokens: 4096,
+            temperature: temperature || 0.8,
             top_p: 0.8,
         },
     });
