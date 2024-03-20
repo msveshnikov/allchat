@@ -115,7 +115,7 @@ function App() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                input: "!!! Extract main topic from this chat in one simple short statement and return it without anything else: ",
+                input: "!!! Extract main topic of this chat in one simple short statement and return it without anything else: ",
                 chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
             }),
         });
