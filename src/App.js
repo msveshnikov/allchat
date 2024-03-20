@@ -9,7 +9,7 @@ import Drawer from "@mui/material/SwipeableDrawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import FileUploader from "./FileUploader";
+import FileSelector from "./FileSelector";
 
 const API_URL =
     process.env.NODE_ENV === "production" ? "https://allchat.online/api/interact" : "http://localhost:5000/interact";
@@ -21,6 +21,11 @@ function App() {
     const [isModelResponding, setIsModelResponding] = useState(false);
     const chatContainerRef = useRef(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+
+    const handleFileSelect = (file) => {
+        setSelectedFile(file);
+    };
 
     useEffect(() => {
         const storedHistory = localStorage.getItem("chatHistory");
@@ -48,39 +53,61 @@ function App() {
     }, [chatHistory, storedChatHistories]);
 
     const handleSubmit = async () => {
-        if (input.trim()) {
-            setChatHistory([...chatHistory, { user: input, assistant: null }]);
-            setInput("");
-            setIsModelResponding(true);
+        if (input.trim() || selectedFile) {
+            let fileType = "";
 
-            const response = await fetch(API_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    input,
-                    chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
-                }),
-            });
+            if (selectedFile) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const fileData = reader.result;
+                    fileType = fileData.split(";")[0].split("/")[1];
+                    const fileBytesBase64 = fileData.split(",")[1];
 
-            if (response.ok) {
-                const data = await response.json();
-                const newChatHistory = [
-                    ...chatHistory,
-                    { user: input, assistant: data.textResponse, image: data.imageResponse },
-                ];
-                setChatHistory(newChatHistory);
+                    // Send the file type and base64-encoded file bytes to the server
+                    sendFileAndQuery(fileType, fileBytesBase64, input);
+                };
+                reader.readAsDataURL(selectedFile);
             } else {
-                const newChatHistory = [
-                    ...chatHistory.slice(0, -1),
-                    { user: input, assistant: "Error: Failed to get response from the server." },
-                ];
-                setChatHistory(newChatHistory);
+                sendFileAndQuery("", "", input);
             }
-
-            setIsModelResponding(false);
         }
+    };
+
+    const sendFileAndQuery = async (fileType, fileBytesBase64, input) => {
+        setChatHistory([...chatHistory, { user: input, assistant: null }]);
+        setInput("");
+        setIsModelResponding(true);
+
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                input,
+                fileType,
+                fileBytesBase64,
+                chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
+            }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const newChatHistory = [
+                ...chatHistory,
+                { user: input, assistant: data.textResponse, image: data.imageResponse },
+            ];
+            setChatHistory(newChatHistory);
+        } else {
+            const newChatHistory = [
+                ...chatHistory.slice(0, -1),
+                { user: input, assistant: "Error: Failed to get response from the server." },
+            ];
+            setChatHistory(newChatHistory);
+        }
+
+        setIsModelResponding(false);
+        setSelectedFile(null);
     };
 
     const generateChatSummary = async (chatHistory) => {
@@ -137,36 +164,6 @@ function App() {
         setStoredChatHistories(updatedStoredChatHistories);
         setChatHistory(storedChatHistories[index].chatHistory);
         setDrawerOpen(false);
-    };
-
-    const handleFileUpload = async (fileData) => {
-        const fileBytesBase64 = fileData.split(",")[1];
-        const fileType = fileData.split(";")[0].split("/")[1];
-
-        setChatHistory([...chatHistory, { user: `${fileType.toUpperCase()} Document`, assistant: null }]);
-        setIsModelResponding(true);
-
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                fileType,
-                fileBytesBase64,
-                chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
-            }),
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            const newChatHistory = [
-                ...chatHistory,
-                { user: `${fileType.toUpperCase()} Document`, assistant: data.textResponse, image: data.imageResponse },
-            ];
-            setChatHistory(newChatHistory);
-        }
-        setIsModelResponding(false);
     };
 
     return (
@@ -248,7 +245,7 @@ function App() {
                             }
                         }}
                     />
-                    <FileUploader onFileUpload={handleFileUpload} />
+                    <FileSelector onFileSelect={handleFileSelect} />
                     <Button variant="contained" color="primary" onClick={handleSubmit} style={{ marginLeft: 8 }}>
                         Send
                     </Button>

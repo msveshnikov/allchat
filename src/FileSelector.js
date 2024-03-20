@@ -2,17 +2,9 @@ import React from "react";
 import { IconButton, Tooltip } from "@mui/material";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 
-const FileUploader = ({ onFileUpload }) => {
+const FileSelector = ({ onFileSelect }) => {
     const handleFileChange = (event) => {
-        const file = event.target.files[0];
-
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                onFileUpload(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
+        onFileSelect(event.target.files[0]);
     };
 
     return (
@@ -30,4 +22,4 @@ const FileUploader = ({ onFileUpload }) => {
     );
 };
 
-export default FileUploader;
+export default FileSelector;

@@ -41,7 +41,7 @@ app.use(limiter);
 app.post("/interact", async (req, res) => {
     let userInput = req.body.input;
     const chatHistory = req.body.chatHistory || [];
-    const temperature = req.body.temperature || 0.5;
+    const temperature = req.body.temperature || 0.8;
     const fileBytesBase64 = req.body.fileBytesBase64;
     const fileType = req.body.fileType;
 
@@ -50,13 +50,13 @@ app.post("/interact", async (req, res) => {
             const fileBytes = Buffer.from(fileBytesBase64, "base64");
             if (fileType === "pdf") {
                 const data = await pdfParser(fileBytes);
-                userInput = data.text;
+                userInput = `${data.text}\n\n${userInput}`;
             } else if (
                 fileType === "msword" ||
                 fileType === "vnd.openxmlformats-officedocument.wordprocessingml.document"
             ) {
                 const docResult = await mammoth.convertToHtml({ buffer: fileBytes });
-                userInput = docResult.value;
+                userInput = `${docResult.value}\n\n${userInput}`;
             } else if (fileType === "xlsx" || fileType === "vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
                 const workbook = xlsx.read(fileBytes, { type: "buffer" });
                 const sheetNames = workbook.SheetNames;
@@ -65,7 +65,7 @@ app.post("/interact", async (req, res) => {
                     const worksheet = workbook.Sheets[sheetName];
                     excelText += xlsx.utils.sheet_to_txt(worksheet);
                 });
-                userInput = excelText;
+                userInput = `${excelText}\n\n${userInput}`;
             } else {
                 console.error("Unsupported file type");
                 return res.status(400).json({ error: "Unsupported file type" });
@@ -79,7 +79,7 @@ app.post("/interact", async (req, res) => {
         userInput = userInput?.toLowerCase();
         let imageResponse;
         if (hasPaintWord(userInput)) {
-            imageResponse = await getImageTitan(userInput + textResponse?.trim()?.substr(0, 200));
+            imageResponse = await getImageTitan(userInput?.substr(0, 200) + textResponse?.trim()?.substr(0, 200));
         }
 
         res.json({ textResponse: textResponse?.trim(), imageResponse });
