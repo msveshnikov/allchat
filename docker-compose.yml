@@ -1,7 +1,6 @@
 version: "3.8"
 
 services:
-
     backend:
         image: extender777/allchat-backend
         ports:
@@ -9,11 +8,12 @@ services:
         environment:
             - GOOGLE_KEY=${GOOGLE_KEY}
             - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
-            - AWS_SECRET_KEY=${AWS_SECRET_KEY}            
+            - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+            - CLAUDE_KEY=${CLAUDE_KEY}
         restart: unless-stopped
         volumes:
             - ./allchat.json:/app/allchat.json
-            
+
     frontend:
         image: extender777/allchat-frontend
         environment:

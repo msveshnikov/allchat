@@ -4,6 +4,7 @@ dotenv.config({ override: true });
 
 const vertex_ai = new VertexAI({ project: process.env.GOOGLE_KEY, location: "us-central1" });
 const model = "gemini-pro";
+// const model = "gemini-1.5-pro-latest";
 const model_vision = "gemini-1.0-pro-vision-001";
 
 export const getTextGemini = async (prompt, temperature) => {

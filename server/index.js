@@ -8,14 +8,27 @@ import hasPaintWord from "./paint.js";
 import pdfParser from "pdf-parse";
 import mammoth from "mammoth";
 import * as xlsx from "xlsx";
+import { getTextClaude } from "./claude.js";
+import promBundle from "express-prom-bundle";
 
 const MAX_CONTEXT_LENGTH = 8000;
 const systemPrompt = `You are Claude, an AI assistant created by Anthropic to be helpful, harmless, and honest. You can speak any language and respond to user on his preferred one. Your responses should be informative, insightful, and relevant to the given context. You should tailor your responses based on the user's query and provide meaningful and engaging information. When applicable, you can use examples, analogies, or visual aids to enhance your explanations. However, you should avoid generating or sharing any explicit, offensive, or harmful content. If the user's query is ambiguous or unclear, you should politely ask for clarification before responding. Your ultimate goal is to provide an excellent user experience while adhering to ethical principles.`;
+
+promBundle.normalizePath = (req, opts) => {
+    return req.route?.path ?? "No";
+};
+
+const metricsMiddleware = promBundle({
+    metricType: "summary",
+    includeMethod: true,
+    includePath: true,
+});
 
 const app = express();
 app.set("trust proxy", 1);
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
+app.use(metricsMiddleware);
 
 morgan.token("body", (req, res) => {
     const body = req.body;
@@ -37,7 +50,7 @@ app.use(morgan(loggerFormat));
 
 const limiter = rateLimit({
     windowMs: 60 * 1000,
-    limit: 20,
+    limit: 10,
     standardHeaders: "draft-7",
     legacyHeaders: false,
 });
@@ -50,6 +63,7 @@ app.post("/interact", async (req, res) => {
     const temperature = req.body.temperature || 0.8;
     const fileBytesBase64 = req.body.fileBytesBase64;
     const fileType = req.body.fileType;
+    const model = req.body.model || "gemini";
 
     try {
         if (fileBytesBase64) {
@@ -84,7 +98,14 @@ app.post("/interact", async (req, res) => {
         const contextPrompt = `System: ${systemPrompt} ${chatHistory
             .map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`)
             .join("\n")}\n\nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
-        const textResponse = await getTextGemini(contextPrompt, temperature);
+
+        let textResponse;
+        if (model === "gemini") {
+            textResponse = await getTextGemini(contextPrompt, temperature);
+        } else if (model === "claude") {
+            textResponse = await getTextClaude(contextPrompt, "claude-3-haiku-20240307", temperature);
+        }
+
         userInput = userInput?.toLowerCase();
         let imageResponse;
         if (hasPaintWord(userInput)) {

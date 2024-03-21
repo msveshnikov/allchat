@@ -10,6 +10,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import FileSelector from "./FileSelector";
+import ModelSwitch from "./ModelSwitch";
 
 const MAX_CHAT_HISTORY_LENGTH = 30;
 const API_URL =
@@ -23,6 +24,7 @@ function App() {
     const chatContainerRef = useRef(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [model, setModel] = useState("gemini");
 
     const handleFileSelect = (file) => {
         setSelectedFile(file);
@@ -108,6 +110,7 @@ function App() {
                 input,
                 fileType,
                 fileBytesBase64,
+                model,
                 chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
             }),
         });
@@ -222,6 +225,9 @@ function App() {
                                 <ListItemText primary={history.summary} />
                             </ListItem>
                         ))}
+                        <ListItem>
+                            <ModelSwitch model={model} onModelChange={setModel} />
+                        </ListItem>
                     </List>
                     <ListItem
                         button
