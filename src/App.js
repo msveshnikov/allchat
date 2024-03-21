@@ -256,7 +256,7 @@ function App() {
                                 {chat.fileType && getFileTypeIcon(chat.fileType) !== null && (
                                     <span className="file-icon">{getFileTypeIcon(chat.fileType)}</span>
                                 )}
-                                {chat.userImageData && (
+                                {!getFileTypeIcon(chat.fileType) && chat.userImageData && (
                                     <img
                                         src={`data:image/${chat.fileType.split("/")[1]};base64,${chat.userImageData}`}
                                         alt="User input"
