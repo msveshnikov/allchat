@@ -24,7 +24,7 @@ function App() {
     const chatContainerRef = useRef(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
-    const [model, setModel] = useState("gemini");
+    const [model, setModel] = useState(localStorage.getItem("selectedModel") || "gemini");
 
     const handleFileSelect = (file) => {
         setSelectedFile(file);
@@ -55,8 +55,9 @@ function App() {
             if (storedChatHistories.length > 0) {
                 localStorage.setItem("storedChatHistories", JSON.stringify(storedChatHistories));
             }
+            localStorage.setItem("selectedModel", model);
         } catch {}
-    }, [chatHistory, storedChatHistories]);
+    }, [chatHistory, model, storedChatHistories]);
 
     const getFileTypeIcon = (mimeType) => {
         switch (mimeType) {
