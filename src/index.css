@@ -3,3 +3,8 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+.file-icon {
+    font-size: 3rem; /* Adjust the value as needed */
+  }
+  

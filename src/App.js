@@ -11,7 +11,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import FileSelector from "./FileSelector";
 
-const MAX_CHAT_HISTORY_LENGTH = 30; 
+const MAX_CHAT_HISTORY_LENGTH = 30;
 const API_URL =
     process.env.NODE_ENV === "production" ? "https://allchat.online/api/interact" : "http://localhost:5000/interact";
 
@@ -56,6 +56,25 @@ function App() {
         } catch {}
     }, [chatHistory, storedChatHistories]);
 
+    const getFileTypeIcon = (mimeType) => {
+        switch (mimeType) {
+            case "pdf":
+                return "📃";
+            case "msword":
+            case "vnd.openxmlformats-officedocument.wordprocessingml.document":
+                return "📝";
+            case "vnd.ms-excel":
+            case "vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                return "📊";
+            case "png":
+            case "jpeg":
+            case "jpg":
+                return null;
+            default:
+                return "📁";
+        }
+    };
+
     const handleSubmit = async () => {
         if (input.trim() || selectedFile) {
             let fileType = "";
@@ -76,7 +95,7 @@ function App() {
     };
 
     const sendFileAndQuery = async (fileType, fileBytesBase64, input) => {
-        setChatHistory([...chatHistory, { user: input, assistant: null }]);
+        setChatHistory([...chatHistory, { user: input, assistant: null, fileType, userImageData: fileBytesBase64 }]);
         setInput("");
         setIsModelResponding(true);
 
@@ -97,7 +116,13 @@ function App() {
             const data = await response.json();
             const newChatHistory = [
                 ...chatHistory,
-                { user: input, assistant: data.textResponse, image: data.imageResponse },
+                {
+                    user: input,
+                    assistant: data.textResponse,
+                    image: data.imageResponse,
+                    fileType,
+                    userImageData: fileBytesBase64,
+                },
             ];
             setChatHistory(newChatHistory);
         } else {
@@ -219,6 +244,16 @@ function App() {
                         >
                             <Box alignSelf="flex-end" bgcolor="#d4edda" color="#155724" padding={1} borderRadius={2}>
                                 {chat.user}
+                                {chat.fileType && getFileTypeIcon(chat.fileType) !== null && (
+                                    <span className="file-icon">{getFileTypeIcon(chat.fileType)}</span>
+                                )}
+                                {chat.userImageData && (
+                                    <img
+                                        src={`data:image/${chat.fileType.split("/")[1]};base64,${chat.userImageData}`}
+                                        alt="User input"
+                                        style={{ maxWidth: "100%" }}
+                                    />
+                                )}
                             </Box>
                             <Box
                                 alignSelf="flex-start"

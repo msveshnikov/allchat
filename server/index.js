@@ -55,7 +55,7 @@ app.post("/interact", async (req, res) => {
         if (fileBytesBase64) {
             const fileBytes = Buffer.from(fileBytesBase64, "base64");
             if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
-                const response = await getTextVision(userInput, fileBytesBase64, temperature);
+                const response = await getTextVision(userInput || "what's this", fileBytesBase64, temperature);
                 return res.json({ textResponse: response?.trim() });
             } else if (fileType === "pdf") {
                 const data = await pdfParser(fileBytes);
