@@ -1,7 +1,7 @@
 {
     "name": "allchat",
     "version": "1.1.0",
-    "description": "API for allchat",
+    "description": "API for AllChat",
     "main": "index.js",
     "scripts": {
         "api": "node index.js"

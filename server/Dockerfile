@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 5000
 
 # Start the backend application
-CMD ["npm", "run", "api"]
+CMD [ "node", "index.js" ]

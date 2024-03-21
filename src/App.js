@@ -11,7 +11,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import FileSelector from "./FileSelector";
 
-const MAX_CHAT_HISTORY_LENGTH = 30; // Adjust this value as needed
+const MAX_CHAT_HISTORY_LENGTH = 30; 
 const API_URL =
     process.env.NODE_ENV === "production" ? "https://allchat.online/api/interact" : "http://localhost:5000/interact";
 
