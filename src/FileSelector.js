@@ -10,11 +10,11 @@ const FileSelector = ({ onFileSelect, selectedFile }) => {
     };
 
     return (
-        <Tooltip title="Upload PDF, Word, Excel">
+        <Tooltip title="Upload PDF, Word, Excel or image">
             <div style={{ position: "relative", display: "inline-block" }}>
                 <IconButton component="label" color="primary" style={{ position: "relative" }}>
                     <input
-                        accept=".pdf,.doc,.docx,.xls,.xlsx"
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpeg,.jpg"
                         type="file"
                         onChange={handleFileChange}
                         style={{ display: "none" }}

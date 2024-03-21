@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
-import { getTextGemini } from "./gemini.js";
+import { getTextGemini, getTextVision } from "./gemini.js";
 import { getImageTitan } from "./aws.js";
 import hasPaintWord from "./paint.js";
 import pdfParser from "pdf-parse";
@@ -54,7 +54,10 @@ app.post("/interact", async (req, res) => {
     try {
         if (fileBytesBase64) {
             const fileBytes = Buffer.from(fileBytesBase64, "base64");
-            if (fileType === "pdf") {
+            if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+                const response = await getTextVision(userInput, fileBytesBase64, temperature);
+                return res.json({ textResponse: response?.trim() });
+            } else if (fileType === "pdf") {
                 const data = await pdfParser(fileBytes);
                 userInput = `${data.text}\n\n${userInput}`;
             } else if (
