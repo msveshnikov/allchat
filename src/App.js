@@ -225,10 +225,12 @@ function App() {
                                 <ListItemText primary={history.summary} />
                             </ListItem>
                         ))}
+                    </List>
+                    <div style={{ marginBottom: "auto" }}>
                         <ListItem>
                             <ModelSwitch model={model} onModelChange={setModel} />
                         </ListItem>
-                    </List>
+                    </div>
                     <ListItem
                         button
                         onClick={clearAllChatHistory}
