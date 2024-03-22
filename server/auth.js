@@ -2,9 +2,12 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
+export const MONGODB_URI =
+    process.env.NODE_ENV === "production" ? "mongodb://mongo-db:27017/allchat" : "mongodb://localhost:27017/allchat";
+
 // MongoDB connection
 mongoose
-    .connect("mongodb://localhost/allchat")
+    .connect(MONGODB_URI)
     .then(() => console.log("MongoDB connected"))
     .catch((err) => console.error("MongoDB connection error:", err));
 
