@@ -5,7 +5,7 @@ import rateLimit from "express-rate-limit";
 import { getTextGemini, getTextVision } from "./gemini.js";
 import { getImageTitan } from "./aws.js";
 import hasPaintWord from "./paint.js";
-import pdfParser from "pdf-parse";
+import pdfParser from "pdf-parse/lib/pdf-parse.js"
 import mammoth from "mammoth";
 import * as xlsx from "xlsx";
 import { getTextClaude } from "./claude.js";

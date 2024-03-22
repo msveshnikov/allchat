@@ -254,7 +254,7 @@ function App() {
                             <Box alignSelf="flex-end" bgcolor="#d4edda" color="#155724" padding={1} borderRadius={2}>
                                 {chat.user}
                                 {chat.fileType && getFileTypeIcon(chat.fileType) !== null && (
-                                    <span className="file-icon">{getFileTypeIcon(chat.fileType)}</span>
+                                    <span style={{ fontSize: "3rem" }}>{getFileTypeIcon(chat.fileType)}</span>
                                 )}
                                 {!getFileTypeIcon(chat.fileType) && chat.userImageData && (
                                     <img
