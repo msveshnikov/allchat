@@ -4,10 +4,7 @@ import mongoose from "mongoose";
 
 // MongoDB connection
 mongoose
-    .connect("mongodb://localhost/allchat", {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
+    .connect("mongodb://localhost/allchat")
     .then(() => console.log("MongoDB connected"))
     .catch((err) => console.error("MongoDB connection error:", err));
 
@@ -41,13 +38,13 @@ export const authenticateUser = async (email, password) => {
         if (!user) {
             return { success: false, error: "Invalid email or password" };
         }
-
         const isValidPassword = await bcrypt.compare(password, user.password);
         if (!isValidPassword) {
             return { success: false, error: "Invalid email or password" };
         }
-
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_TOKEN, { expiresIn: "1h" });
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_TOKEN, {
+            expiresIn: "1h",
+        });
         return { success: true, token };
     } catch (error) {
         console.error("Authentication error:", error);

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 
 const AuthForm = ({ onAuthentication }) => {
     const [email, setEmail] = useState("");
@@ -9,14 +8,26 @@ const AuthForm = ({ onAuthentication }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`/${isLogin ? "login" : "register"}`, { email, password });
-            if (isLogin) {
-                // Store the JWT token in localStorage or React context
-                localStorage.setItem("token", response.data.token);
-                onAuthentication(response.data.token); // Call the onAuthentication prop function
+            const response = await fetch(`/${isLogin ? "login" : "register"}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                if (isLogin) {
+                    // Store the JWT token in localStorage or React context
+                    localStorage.setItem("token", data.token);
+                    onAuthentication(data.token); // Call the onAuthentication prop function
+                } else {
+                    // Handle successful registration
+                    console.log("Registration successful");
+                }
             } else {
-                // Handle successful registration
-                console.log("Registration successful");
+                // Handle error
+                console.error(data.error);
             }
         } catch (error) {
             console.error(error);
