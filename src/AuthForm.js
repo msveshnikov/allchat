@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import { API_URL } from "./App";
 
 const AuthForm = ({ onAuthentication }) => {
     const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ const AuthForm = ({ onAuthentication }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`/${isLogin ? "login" : "register"}`, {
+            const response = await fetch(`${API_URL}/${isLogin ? "login" : "register"}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

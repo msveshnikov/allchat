@@ -19,8 +19,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 
 const MAX_CHAT_HISTORY_LENGTH = 30;
-const API_URL =
-    process.env.NODE_ENV === "production" ? "https://allchat.online/api/interact" : "http://localhost:5000/interact";
+export const API_URL = process.env.NODE_ENV === "production" ? "https://allchat.online/api" : "http://localhost:5000";
 
 function App() {
     const [input, setInput] = useState("");
@@ -134,7 +133,7 @@ function App() {
             setInput("");
             setIsModelResponding(true);
 
-            const response = await fetch(API_URL, {
+            const response = await fetch(API_URL + "/interact", {
                 method: "POST",
                 headers,
                 body: JSON.stringify({
@@ -179,7 +178,7 @@ function App() {
     };
 
     const generateChatSummary = async (chatHistory) => {
-        const response = await fetch(API_URL, {
+        const response = await fetch(API_URL + "/interact", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -250,15 +249,18 @@ function App() {
                     <Typography sx={{ ml: 2 }} variant="h6" noWrap>
                         AllChat
                     </Typography>
-                    {isAuthenticated ? (
-                        <IconButton>
-                            <AccountCircleIcon />
-                        </IconButton>
-                    ) : (
-                        <Button color="inherit" onClick={handleOpenAuthModal}>
-                            Sign In
-                        </Button>
-                    )}
+                    <Box sx={{ ml: "auto" }}>
+                        {" "}
+                        {isAuthenticated ? (
+                            <IconButton>
+                                <AccountCircleIcon />
+                            </IconButton>
+                        ) : (
+                            <Button color="inherit" onClick={handleOpenAuthModal}>
+                                Sign In
+                            </Button>
+                        )}
+                    </Box>
                 </Toolbar>
             </AppBar>
 
