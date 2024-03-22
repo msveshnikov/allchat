@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+import * as React from "react"; // Existing import
+import { useState } from "react"; // Existing import
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
 const AuthForm = ({ onAuthentication }) => {
     const [email, setEmail] = useState("");
@@ -42,22 +48,42 @@ const AuthForm = ({ onAuthentication }) => {
     };
 
     return (
-        <div>
-            <h2>{isLogin ? "Login" : "Register"}</h2>
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 2 }}>
+            <Typography variant="h4" gutterBottom>
+                {isLogin ? "Login" : "Register"}
+            </Typography>
             <form onSubmit={handleSubmit}>
-                <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <button type="submit">{isLogin ? "Login" : "Register"}</button>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            margin="normal" // Added for spacing
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            margin="normal"
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button type="submit" variant="contained" fullWidth>
+                            {isLogin ? "Login" : "Register"}
+                        </Button>
+                    </Grid>
+                </Grid>
             </form>
-            <button onClick={toggleMode}>
+            <Button onClick={toggleMode} sx={{ mt: 2 }}>
                 {isLogin ? "Don't have an account? Register" : "Already have an account? Login"}
-            </button>
-        </div>
+            </Button>
+        </Box>
     );
 };
 
