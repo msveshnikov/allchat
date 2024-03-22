@@ -1,14 +1,6 @@
 # ALLCHAT
 
-An elegant full-stack application, conceived by Claude 3 Sonnet, seamlessly blending the power of Node.js and the elegance of React MUI. The backend, a harmonious symphony of Node.js, orchestrates interactions with the sophisticated Gemini Pro model, enabling users to engage in natural language conversations.
-
-Complementing this linguistic prowess, the application embraces the visual realm through the integration of Amazon Titan's image painting capabilities, allowing users to express their creativity through vibrant digital canvases. Furthermore, it empowers users to effortlessly upload and process a diverse array of file formats, including PDFs, Word documents, and Excel spreadsheets, enhancing productivity and collaboration.
-
-Elevating the user experience, the frontend, a masterpiece crafted with React and adorned with the elegance of Material-UI components, provides an intuitive and visually stunning interface. Users can seamlessly navigate through the application, accessing its features with ease and efficiency.
-
-Enhancing the application's functionality, a comprehensive history feature ensures that users can seamlessly revisit and reference their previous interactions, fostering continuity and enabling efficient collaboration. Moreover, the inclusion of markdown support empowers users to express themselves with rich formatting, adding depth and clarity to their communications.
-
-In this harmonious fusion of cutting-edge technologies, Claude 3 Sonnet has orchestrated a symphony of innovation, blending the multifaceted capabilities of language models, image processing, and user-centric design into a cohesive and captivating experience.
+Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro model, with history, image painting by Amazon Titan, PDF/Word/Excel upload and markdown support. Written fully by _Claude 3 Sonnet_.
 
 ![image](https://github.com/msveshnikov/allchat/assets/8682996/42b2e4f2-b91b-4712-8ef2-630ebb8919e9)
 
