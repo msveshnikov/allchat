@@ -13,6 +13,10 @@ import ListItemText from "@mui/material/ListItemText";
 import FileSelector from "./FileSelector";
 import ModelSwitch from "./ModelSwitch";
 import AuthForm from "./AuthForm";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 
 const MAX_CHAT_HISTORY_LENGTH = 30;
 const API_URL =
@@ -28,10 +32,20 @@ function App() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [model, setModel] = useState(localStorage.getItem("selectedModel") || "gemini");
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [openAuthModal, setOpenAuthModal] = useState(false);
 
     const handleAuthentication = (token) => {
         localStorage.setItem("token", token);
         setIsAuthenticated(true);
+        setOpenAuthModal(false);
+    };
+
+    const handleOpenAuthModal = () => {
+        setOpenAuthModal(true);
+    };
+
+    const handleCloseAuthModal = () => {
+        setOpenAuthModal(false);
     };
 
     const handleFileSelect = (file) => {
@@ -241,10 +255,23 @@ function App() {
                             <AccountCircleIcon />
                         </IconButton>
                     ) : (
-                        <AuthForm onAuthentication={handleAuthentication} />
+                        <Button color="inherit" onClick={handleOpenAuthModal}>
+                            Sign In
+                        </Button>
                     )}
                 </Toolbar>
             </AppBar>
+
+            <Dialog open={openAuthModal} onClose={handleCloseAuthModal}>
+                <DialogTitle>Sign In</DialogTitle>
+                <DialogContent>
+                    <AuthForm onAuthentication={handleAuthentication} />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseAuthModal}>Cancel</Button>
+                </DialogActions>
+            </Dialog>
+
             <Drawer PaperProps={{ sx: { width: 200 } }} open={drawerOpen} onClose={toggleDrawer} onOpen={toggleDrawer}>
                 <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
                     <List style={{ flexGrow: 1, overflowY: "auto" }}>
