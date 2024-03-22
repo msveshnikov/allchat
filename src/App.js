@@ -102,37 +102,45 @@ function App() {
         setInput("");
         setIsModelResponding(true);
 
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                input,
-                fileType,
-                fileBytesBase64,
-                model,
-                chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
-            }),
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            const newChatHistory = [
-                ...chatHistory,
-                {
-                    user: input,
-                    assistant: data.textResponse,
-                    image: data.imageResponse,
-                    fileType,
-                    userImageData: fileBytesBase64,
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                 },
-            ];
-            setChatHistory(newChatHistory);
-        } else {
+                body: JSON.stringify({
+                    input,
+                    fileType,
+                    fileBytesBase64,
+                    model,
+                    chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
+                }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const newChatHistory = [
+                    ...chatHistory,
+                    {
+                        user: input,
+                        assistant: data.textResponse,
+                        image: data.imageResponse,
+                        fileType,
+                        userImageData: fileBytesBase64,
+                    },
+                ];
+                setChatHistory(newChatHistory);
+            } else {
+                const newChatHistory = [
+                    ...chatHistory.slice(0, -1),
+                    { user: input, assistant: null, error: "Failed response from the server." },
+                ];
+                setChatHistory(newChatHistory);
+            }
+        } catch (error) {
             const newChatHistory = [
                 ...chatHistory.slice(0, -1),
-                { user: input, assistant: "Error: Failed to get response from the server." },
+                { user: input, assistant: null, error: "Failed to connect to the server." },
             ];
             setChatHistory(newChatHistory);
         }
@@ -266,14 +274,17 @@ function App() {
                             </Box>
                             <Box
                                 alignSelf="flex-start"
-                                bgcolor="#cff4fc"
-                                color="#0c5460"
+                                bgcolor={chat.error ? "#f8d7da" : "#cff4fc"}
+                                color={chat.error ? "#721c24" : "#0c5460"}
                                 padding={1}
                                 marginTop={1}
                                 borderRadius={2}
                             >
-                                {isModelResponding && chat.assistant === null && <CircularProgress size={20} />}
+                                {isModelResponding &&
+                                    chat.assistant === null &&
+                                    chatHistory[chatHistory.length - 1] === chat && <CircularProgress size={20} />}
                                 {chat.assistant !== null && <ReactMarkdown>{chat.assistant}</ReactMarkdown>}
+                                {chat.error && chat.error}
                                 {chat.image && (
                                     <img
                                         src={`data:image/png;base64,${chat.image.toString("base64")}`}

@@ -23,11 +23,7 @@ const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro
 - Generating images based on text descriptions using the Amazon Titan image generation model.
 - Asking for clarification if the user's query is ambiguous or unclear.
 
-Your ultimate goal is to provide an excellent user experience by leveraging the capabilities of the Gemini Pro and Claude Haiku models while adhering to ethical principles.`;
-
-promBundle.normalizePath = (req, opts) => {
-    return req.route?.path ?? "No";
-};
+Your ultimate goal is to provide an excellent user experience by leveraging the capabilities of AI while adhering to ethical principles.`;
 
 const metricsMiddleware = promBundle({
     metricType: "summary",
@@ -48,9 +44,9 @@ morgan.token("body", (req, res) => {
         if ("fileBytesBase64" in clonedBody) {
             clonedBody.fileBytesBase64 = "<FILE_BYTES_REDACTED>";
         }
-        if ("chatHistory" in clonedBody) {
-            clonedBody.chatHistory = "<CHAT_HISTORY_REDACTED>";
-        }
+        // if ("chatHistory" in clonedBody) {
+        //     clonedBody.chatHistory = "<CHAT_HISTORY_REDACTED>";
+        // }
         return JSON.stringify(clonedBody);
     }
     return JSON.stringify(body);
@@ -127,7 +123,7 @@ app.post("/interact", async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({
-            error: "Gemini Pro Error",
+            error: "Model Returned Error",
         });
     }
 });
