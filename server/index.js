@@ -68,7 +68,7 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-app.post("/interact", verifyToken, async (req, res) => {
+app.post("/interact", async (req, res) => {
     let userInput = req.body.input;
     const chatHistory = req.body.chatHistory || [];
     const temperature = req.body.temperature || 0.8;

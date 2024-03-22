@@ -30,7 +30,7 @@ function App() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [model, setModel] = useState(localStorage.getItem("selectedModel") || "gemini");
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [openAuthModal, setOpenAuthModal] = useState(false);
 
     const handleAuthentication = (token) => {
@@ -178,11 +178,15 @@ function App() {
     };
 
     const generateChatSummary = async (chatHistory) => {
+        const token = localStorage.getItem("token");
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+
         const response = await fetch(API_URL + "/interact", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers,
             body: JSON.stringify({
                 input: "!!! Extract main topic of this chat in one simple short statement and return it without anything else: ",
                 chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),

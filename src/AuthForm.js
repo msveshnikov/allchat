@@ -26,10 +26,10 @@ const AuthForm = ({ onAuthentication }) => {
             if (response.ok) {
                 if (isLogin) {
                     // Store the JWT token in localStorage or React context
-                    localStorage.setItem("token", data.token);
+                    // localStorage.setItem("token", data.token);
                     onAuthentication(data.token); // Call the onAuthentication prop function
                 } else {
-                    // Handle successful registration
+                    // TODO Handle successful registration
                     console.log("Registration successful");
                 }
             } else {
