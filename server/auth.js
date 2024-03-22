@@ -46,11 +46,27 @@ export const authenticateUser = async (email, password) => {
             return { success: false, error: "Invalid email or password" };
         }
         const token = jwt.sign({ userId: user._id }, process.env.JWT_TOKEN, {
-            expiresIn: "1h",
+            expiresIn: "720h",
         });
         return { success: true, token };
     } catch (error) {
         console.error("Authentication error:", error);
         return { success: false, error: "Authentication failed" };
+    }
+};
+
+// JWT verification middleware
+export const verifyToken = (req, res, next) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_TOKEN);
+        req.userId = decoded.userId;
+        next();
+    } catch (error) {
+        return res.status(403).json({ error: "Invalid token" });
     }
 };

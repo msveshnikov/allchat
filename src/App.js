@@ -118,7 +118,7 @@ function App() {
         }
     };
 
-    const sendFileAndQuery = async (fileType, fileBytesBase64, input, selectedModel) => {
+    const sendFileAndQuery = async (fileType, fileBytesBase64, input) => {
         try {
             const token = localStorage.getItem("token");
             const headers = {
@@ -140,7 +140,7 @@ function App() {
                     input,
                     fileType,
                     fileBytesBase64,
-                    selectedModel,
+                    model,
                     chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
                 }),
             });
@@ -252,7 +252,7 @@ function App() {
                     <Box sx={{ ml: "auto" }}>
                         {" "}
                         {isAuthenticated ? (
-                            <IconButton>
+                            <IconButton color="inherit">
                                 <AccountCircleIcon />
                             </IconButton>
                         ) : (

@@ -10,8 +10,7 @@ import mammoth from "mammoth";
 import * as xlsx from "xlsx";
 import { getTextClaude } from "./claude.js";
 import promBundle from "express-prom-bundle";
-import { authenticateUser, registerUser } from "./auth.js";
-import jwt from "jsonwebtoken";
+import { authenticateUser, registerUser, verifyToken } from "./auth.js";
 
 const MAX_CONTEXT_LENGTH = 8000;
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro and Claude Haiku language models. Your capabilities include:
@@ -39,28 +38,15 @@ app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(metricsMiddleware);
 
-// JWT verification middleware
-const verifyToken = (req, res, next) => {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-        return res.status(401).json({ error: "Unauthorized" });
-    }
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_TOKEN);
-        req.userId = decoded.userId;
-        next();
-    } catch (error) {
-        return res.status(403).json({ error: "Invalid token" });
-    }
-};
-
 morgan.token("body", (req, res) => {
     const body = req.body;
     if (body && typeof body === "object") {
         const clonedBody = { ...body };
         if ("fileBytesBase64" in clonedBody) {
             clonedBody.fileBytesBase64 = "<FILE_BYTES_REDACTED>";
+        }
+        if ("password" in clonedBody) {
+            clonedBody.password = "<PASSWORD_REDACTED>";
         }
         // if ("chatHistory" in clonedBody) {
         //     clonedBody.chatHistory = "<CHAT_HISTORY_REDACTED>";
