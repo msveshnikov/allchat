@@ -10,6 +10,7 @@ services:
             - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
             - AWS_SECRET_KEY=${AWS_SECRET_KEY}
             - CLAUDE_KEY=${CLAUDE_KEY}
+            - JWT_TOKEN=${JWT_TOKEN}
         restart: unless-stopped
         volumes:
             - ./allchat.json:/app/allchat.json

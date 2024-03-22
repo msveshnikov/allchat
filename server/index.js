@@ -10,6 +10,8 @@ import mammoth from "mammoth";
 import * as xlsx from "xlsx";
 import { getTextClaude } from "./claude.js";
 import promBundle from "express-prom-bundle";
+import { authenticateUser, registerUser } from "./auth.js";
+import jwt from "jsonwebtoken";
 
 const MAX_CONTEXT_LENGTH = 8000;
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro and Claude Haiku language models. Your capabilities include:
@@ -36,6 +38,22 @@ app.set("trust proxy", 1);
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(metricsMiddleware);
+
+// JWT verification middleware
+const verifyToken = (req, res, next) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+        const decoded = jwt.verify(token, "your-secret-key");
+        req.userId = decoded.userId;
+        next();
+    } catch (error) {
+        return res.status(403).json({ error: "Invalid token" });
+    }
+};
 
 morgan.token("body", (req, res) => {
     const body = req.body;
@@ -64,7 +82,7 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-app.post("/interact", async (req, res) => {
+app.post("/interact", verifyToken, async (req, res) => {
     let userInput = req.body.input;
     const chatHistory = req.body.chatHistory || [];
     const temperature = req.body.temperature || 0.8;
@@ -125,6 +143,27 @@ app.post("/interact", async (req, res) => {
         res.status(500).json({
             error: "Model Returned Error",
         });
+    }
+});
+
+app.post("/register", async (req, res) => {
+    const { email, password } = req.body;
+    const result = await registerUser(email, password);
+    if (result.success) {
+        res.status(200).json({ message: "Registration successful" });
+    } else {
+        res.status(400).json({ error: result.error });
+    }
+});
+
+// User authentication
+app.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+    const result = await authenticateUser(email, password);
+    if (result.success) {
+        res.status(200).json({ token: result.token });
+    } else {
+        res.status(401).json({ error: result.error });
     }
 });
 

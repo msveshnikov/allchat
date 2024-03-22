@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import Drawer from "@mui/material/SwipeableDrawer";
 import List from "@mui/material/List";
@@ -11,6 +12,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import FileSelector from "./FileSelector";
 import ModelSwitch from "./ModelSwitch";
+import AuthForm from "./AuthForm";
 
 const MAX_CHAT_HISTORY_LENGTH = 30;
 const API_URL =
@@ -25,6 +27,12 @@ function App() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [model, setModel] = useState(localStorage.getItem("selectedModel") || "gemini");
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    const handleAuthentication = (token) => {
+        localStorage.setItem("token", token);
+        setIsAuthenticated(true);
+    };
 
     const handleFileSelect = (file) => {
         setSelectedFile(file);
@@ -97,22 +105,29 @@ function App() {
         }
     };
 
-    const sendFileAndQuery = async (fileType, fileBytesBase64, input) => {
-        setChatHistory([...chatHistory, { user: input, assistant: null, fileType, userImageData: fileBytesBase64 }]);
-        setInput("");
-        setIsModelResponding(true);
-
+    const sendFileAndQuery = async (fileType, fileBytesBase64, input, selectedModel) => {
         try {
+            const token = localStorage.getItem("token");
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            };
+
+            setChatHistory([
+                ...chatHistory,
+                { user: input, assistant: null, fileType, userImageData: fileBytesBase64 },
+            ]);
+            setInput("");
+            setIsModelResponding(true);
+
             const response = await fetch(API_URL, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers,
                 body: JSON.stringify({
                     input,
                     fileType,
                     fileBytesBase64,
-                    model,
+                    selectedModel,
                     chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
                 }),
             });
@@ -221,6 +236,13 @@ function App() {
                     <Typography sx={{ ml: 2 }} variant="h6" noWrap>
                         AllChat
                     </Typography>
+                    {isAuthenticated ? (
+                        <IconButton>
+                            <AccountCircleIcon />
+                        </IconButton>
+                    ) : (
+                        <AuthForm onAuthentication={handleAuthentication} />
+                    )}
                 </Toolbar>
             </AppBar>
             <Drawer PaperProps={{ sx: { width: 200 } }} open={drawerOpen} onClose={toggleDrawer} onOpen={toggleDrawer}>
