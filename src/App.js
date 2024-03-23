@@ -7,6 +7,8 @@ import ChatInput from "./components/ChatInput";
 import AuthForm from "./components/AuthForm";
 
 const MAX_CHAT_HISTORY_LENGTH = 30;
+const MAX_CHATS = 8;
+
 export const API_URL = process.env.NODE_ENV === "production" ? "https://allchat.online/api" : "http://localhost:5000";
 
 function App() {
@@ -230,7 +232,7 @@ function App() {
         if (chatHistory.length > 0) {
             Promise.resolve().then(async () => {
                 const summary = await generateChatSummary(chatHistory);
-                setStoredChatHistories([{ chatHistory, summary }, ...storedChatHistories.slice(0, 7)]);
+                setStoredChatHistories([{ chatHistory, summary }, ...storedChatHistories.slice(0, MAX_CHATS - 1)]);
             });
         }
         setChatHistory([]);
@@ -241,7 +243,7 @@ function App() {
 
     const handleHistorySelection = (index) => {
         const updatedStoredChatHistories = [...storedChatHistories];
-        if (updatedStoredChatHistories.length >= 8) {
+        if (updatedStoredChatHistories.length >= MAX_CHATS) {
             updatedStoredChatHistories.shift();
         }
         Promise.resolve().then(async () => {
