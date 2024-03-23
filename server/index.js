@@ -144,7 +144,6 @@ app.post("/register", async (req, res) => {
     }
 });
 
-// User authentication
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const result = await authenticateUser(email, password);

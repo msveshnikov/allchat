@@ -28,10 +28,11 @@ https://allchat.online/
 
 You have to get those APIs and set environment variables (or put to .env file):
 
--   GOOGLE_KEY - key of Google Cloud Project with Vertex AI API enabled
+-   GOOGLE_KEY - key of Google Cloud Project with Vertex AI API enabled (for Gemini Pro)
 -   google.json - https://console.cloud.google.com/apis/credentials/key
 -   AWS_SECRET_KEY
--   AWS_ACCESS_KEY - Titan - https://eu-central-1.console.aws.amazon.com/console/home?region=eu-central-1
+-   AWS_ACCESS_KEY - (for Titan iamge generation) - https://eu-central-1.console.aws.amazon.com/console/home?region=eu-central-1
+-   CLAUDE_KEY - Anthropic Key (for Haiku)
 
 **Example Code**
 

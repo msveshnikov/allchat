@@ -36,23 +36,22 @@ const AuthForm = ({ onAuthentication }) => {
             const data = await response.json();
             if (response.ok) {
                 if (isLogin) {
-                    onAuthentication(data.token); // Call the onAuthentication prop function
+                    onAuthentication(data.token); 
                 } else {
                     setIsLogin(true); // Transition to login form after successful registration
                     setEmail("");
                     setPassword("");
-                    setError(""); // Clear any previous error
+                    setError("");
                     setSuccessMessage("Registration successful. Please log in now."); // Set success message
                 }
             } else {
-                // Handle error
-                setError(data.error); // Set the error message
-                setSuccessMessage(""); // Clear any previous success message
+                setError(data.error);
+                setSuccessMessage(""); 
             }
         } catch (error) {
             console.error(error);
-            setError("An error occurred"); // Set a generic error message
-            setSuccessMessage(""); // Clear any previous success message
+            setError("An error occurred"); 
+            setSuccessMessage("");
         }
     };
 
@@ -60,8 +59,8 @@ const AuthForm = ({ onAuthentication }) => {
         setIsLogin(!isLogin);
         setEmail("");
         setPassword("");
-        setError(""); // Clear any previous error
-        setSuccessMessage(""); // Clear any previous success message
+        setError(""); 
+        setSuccessMessage(""); 
     };
 
     return (
@@ -69,12 +68,12 @@ const AuthForm = ({ onAuthentication }) => {
             <Typography variant="h4" gutterBottom>
                 {isLogin ? "Login" : "Register"}
             </Typography>
-            {error && ( // Display error message if it exists
+            {error && ( 
                 <Typography variant="body1" color="error" gutterBottom>
                     {error}
                 </Typography>
             )}
-            {successMessage && ( // Display success message if it exists
+            {successMessage && ( 
                 <Typography variant="body1" color="success" gutterBottom>
                     {successMessage}
                 </Typography>
