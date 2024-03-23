@@ -14,7 +14,6 @@ import FileSelector from "./FileSelector";
 import ModelSwitch from "./ModelSwitch";
 import AuthForm from "./AuthForm";
 import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 
