@@ -9,6 +9,7 @@ import {
     Menu,
     MenuItem,
     Snackbar,
+    Avatar,
 } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import AppBar from "@mui/material/AppBar";
@@ -26,6 +27,7 @@ import AuthForm from "./AuthForm";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+import md5 from "md5";
 
 const MAX_CHAT_HISTORY_LENGTH = 30;
 export const API_URL = process.env.NODE_ENV === "production" ? "https://allchat.online/api" : "http://localhost:5000";
@@ -40,14 +42,17 @@ function App() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [model, setModel] = useState(localStorage.getItem("selectedModel") || "gemini");
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
+    const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
     const [openAuthModal, setOpenAuthModal] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState("info");
 
-    const handleAuthentication = (token) => {
+    const handleAuthentication = (token, email) => {
         localStorage.setItem("token", token);
+        localStorage.setItem("userEmail", email);
+        setUserEmail(email);
         setIsAuthenticated(true);
         setOpenAuthModal(false);
     };
@@ -173,10 +178,13 @@ function App() {
                 setChatHistory(newChatHistory);
             } else if (response.status === 403) {
                 // Handle 403 Forbidden error (force sign-out)
+                setIsAuthenticated(false);
                 setSnackbarMessage("Authentication failed. Please sign in.");
                 setSnackbarSeverity("error");
                 setSnackbarOpen(true);
                 localStorage.removeItem("token");
+                localStorage.removeItem("userEmail");
+                setUserEmail("");
                 setIsAuthenticated(false);
                 const newChatHistory = [
                     ...chatHistory.slice(0, -1),
@@ -279,6 +287,8 @@ function App() {
 
     const handleSignOut = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("userEmail");
+        setUserEmail("");
         setIsAuthenticated(false);
         handleProfileMenuClose();
     };
@@ -298,11 +308,19 @@ function App() {
                         AllChat
                     </Typography>
                     <Box sx={{ ml: "auto" }}>
-                        {" "}
                         {isAuthenticated ? (
                             <div>
                                 <IconButton color="inherit" onClick={handleProfileMenuOpen}>
-                                    <AccountCircleIcon />
+                                    {userEmail ? (
+                                        <Avatar
+                                            src={`https://www.gravatar.com/avatar/${md5(
+                                                userEmail.trim().toLowerCase()
+                                            )}?d=retro`}
+                                            alt="User Avatar"
+                                        />
+                                    ) : (
+                                        <AccountCircleIcon />
+                                    )}
                                 </IconButton>
                                 <Menu
                                     anchorEl={anchorEl}

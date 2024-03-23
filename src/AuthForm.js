@@ -36,7 +36,7 @@ const AuthForm = ({ onAuthentication }) => {
             const data = await response.json();
             if (response.ok) {
                 if (isLogin) {
-                    onAuthentication(data.token); 
+                    onAuthentication(data.token, email);
                 } else {
                     setIsLogin(true); // Transition to login form after successful registration
                     setEmail("");
@@ -46,11 +46,11 @@ const AuthForm = ({ onAuthentication }) => {
                 }
             } else {
                 setError(data.error);
-                setSuccessMessage(""); 
+                setSuccessMessage("");
             }
         } catch (error) {
             console.error(error);
-            setError("An error occurred"); 
+            setError("An error occurred");
             setSuccessMessage("");
         }
     };
@@ -59,8 +59,8 @@ const AuthForm = ({ onAuthentication }) => {
         setIsLogin(!isLogin);
         setEmail("");
         setPassword("");
-        setError(""); 
-        setSuccessMessage(""); 
+        setError("");
+        setSuccessMessage("");
     };
 
     return (
@@ -68,12 +68,12 @@ const AuthForm = ({ onAuthentication }) => {
             <Typography variant="h4" gutterBottom>
                 {isLogin ? "Login" : "Register"}
             </Typography>
-            {error && ( 
+            {error && (
                 <Typography variant="body1" color="error" gutterBottom>
                     {error}
                 </Typography>
             )}
-            {successMessage && ( 
+            {successMessage && (
                 <Typography variant="body1" color="success" gutterBottom>
                     {successMessage}
                 </Typography>
