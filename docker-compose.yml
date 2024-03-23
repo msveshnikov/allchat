@@ -29,7 +29,7 @@ services:
             - backend
 
     mongodb:
-        image: mongo:3.8
+        image: mongo:latest
         volumes:
             - mongo-data:/data/db
         restart: unless-stopped
