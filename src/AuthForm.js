@@ -7,14 +7,24 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { API_URL } from "./App";
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const AuthForm = ({ onAuthentication }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLogin, setIsLogin] = useState(true);
     const [error, setError] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Email validation
+        if (!emailRegex.test(email)) {
+            setError("Please enter a valid email address.");
+            return;
+        }
+
         try {
             const response = await fetch(`${API_URL}/${isLogin ? "login" : "register"}`, {
                 method: "POST",
@@ -28,19 +38,21 @@ const AuthForm = ({ onAuthentication }) => {
                 if (isLogin) {
                     onAuthentication(data.token); // Call the onAuthentication prop function
                 } else {
-                    // Handle successful registration
                     setIsLogin(true); // Transition to login form after successful registration
                     setEmail("");
                     setPassword("");
                     setError(""); // Clear any previous error
+                    setSuccessMessage("Registration successful. Please log in now."); // Set success message
                 }
             } else {
                 // Handle error
                 setError(data.error); // Set the error message
+                setSuccessMessage(""); // Clear any previous success message
             }
         } catch (error) {
             console.error(error);
             setError("An error occurred"); // Set a generic error message
+            setSuccessMessage(""); // Clear any previous success message
         }
     };
 
@@ -49,6 +61,7 @@ const AuthForm = ({ onAuthentication }) => {
         setEmail("");
         setPassword("");
         setError(""); // Clear any previous error
+        setSuccessMessage(""); // Clear any previous success message
     };
 
     return (
@@ -61,6 +74,11 @@ const AuthForm = ({ onAuthentication }) => {
                     {error}
                 </Typography>
             )}
+            {successMessage && ( // Display success message if it exists
+                <Typography variant="body1" color="success" gutterBottom>
+                    {successMessage}
+                </Typography>
+            )}
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -70,6 +88,8 @@ const AuthForm = ({ onAuthentication }) => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             margin="normal"
+                            error={!!error && error.includes("email")} // Highlight the email field if the error message includes "email"
+                            helperText={error && error.includes("email") ? error : ""} // Display the error message as helper text
                         />
                     </Grid>
                     <Grid item xs={12}>

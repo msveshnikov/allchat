@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Box, TextField, Button, Container, CircularProgress, Typography } from "@mui/material";
+import { Box, TextField, Button, Container, CircularProgress, Typography, Menu, MenuItem } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -32,6 +32,7 @@ function App() {
     const [model, setModel] = useState(localStorage.getItem("selectedModel") || "gemini");
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [openAuthModal, setOpenAuthModal] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
 
     const handleAuthentication = (token) => {
         localStorage.setItem("token", token);
@@ -158,6 +159,15 @@ function App() {
                     },
                 ];
                 setChatHistory(newChatHistory);
+            } else if (response.status === 403) {
+                // Handle 403 Forbidden error (force sign-out)
+                localStorage.removeItem("token");
+                setIsAuthenticated(false);
+                const newChatHistory = [
+                    ...chatHistory.slice(0, -1),
+                    { user: input, assistant: null, error: "Authentication failed. Please sign in again." },
+                ];
+                setChatHistory(newChatHistory);
             } else {
                 const newChatHistory = [
                     ...chatHistory.slice(0, -1),
@@ -243,6 +253,20 @@ function App() {
         setDrawerOpen(false);
     };
 
+    const handleProfileMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleProfileMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleSignOut = () => {
+        localStorage.removeItem("token");
+        setIsAuthenticated(false);
+        handleProfileMenuClose();
+    };
+
     return (
         <>
             <AppBar position="static">
@@ -256,9 +280,26 @@ function App() {
                     <Box sx={{ ml: "auto" }}>
                         {" "}
                         {isAuthenticated ? (
-                            <IconButton color="inherit">
-                                <AccountCircleIcon />
-                            </IconButton>
+                            <div>
+                                <IconButton color="inherit" onClick={handleProfileMenuOpen}>
+                                    <AccountCircleIcon />
+                                </IconButton>
+                                <Menu
+                                    anchorEl={anchorEl}
+                                    open={Boolean(anchorEl)}
+                                    onClose={handleProfileMenuClose}
+                                    anchorOrigin={{
+                                        vertical: "bottom",
+                                        horizontal: "right",
+                                    }}
+                                    transformOrigin={{
+                                        vertical: "top",
+                                        horizontal: "right",
+                                    }}
+                                >
+                                    <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
+                                </Menu>
+                            </div>
                         ) : (
                             <Button color="inherit" onClick={handleOpenAuthModal}>
                                 Sign In
@@ -269,7 +310,6 @@ function App() {
             </AppBar>
 
             <Dialog open={openAuthModal} onClose={handleCloseAuthModal}>
-                <DialogTitle>Sign In</DialogTitle>
                 <DialogContent>
                     <AuthForm onAuthentication={handleAuthentication} />
                 </DialogContent>
@@ -334,6 +374,9 @@ function App() {
                                 padding={1}
                                 marginTop={1}
                                 borderRadius={2}
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
                             >
                                 {isModelResponding &&
                                     chat.assistant === null &&
