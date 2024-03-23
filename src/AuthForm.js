@@ -1,5 +1,5 @@
-import * as React from "react"; 
-import { useState } from "react"; 
+import * as React from "react";
+import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
@@ -11,6 +11,7 @@ const AuthForm = ({ onAuthentication }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLogin, setIsLogin] = useState(true);
+    const [error, setError] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,16 +28,19 @@ const AuthForm = ({ onAuthentication }) => {
                 if (isLogin) {
                     onAuthentication(data.token); // Call the onAuthentication prop function
                 } else {
-                    // TODO Handle successful registration
-                    console.log("Registration successful");
+                    // Handle successful registration
+                    setIsLogin(true); // Transition to login form after successful registration
+                    setEmail("");
+                    setPassword("");
+                    setError(""); // Clear any previous error
                 }
             } else {
                 // Handle error
-                console.error(data.error);
+                setError(data.error); // Set the error message
             }
         } catch (error) {
             console.error(error);
-            // Handle error
+            setError("An error occurred"); // Set a generic error message
         }
     };
 
@@ -44,6 +48,7 @@ const AuthForm = ({ onAuthentication }) => {
         setIsLogin(!isLogin);
         setEmail("");
         setPassword("");
+        setError(""); // Clear any previous error
     };
 
     return (
@@ -51,6 +56,11 @@ const AuthForm = ({ onAuthentication }) => {
             <Typography variant="h4" gutterBottom>
                 {isLogin ? "Login" : "Register"}
             </Typography>
+            {error && ( // Display error message if it exists
+                <Typography variant="body1" color="error" gutterBottom>
+                    {error}
+                </Typography>
+            )}
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -59,7 +69,7 @@ const AuthForm = ({ onAuthentication }) => {
                             label="Email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            margin="normal" // Added for spacing
+                            margin="normal"
                         />
                     </Grid>
                     <Grid item xs={12}>
