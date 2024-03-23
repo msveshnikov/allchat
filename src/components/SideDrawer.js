@@ -1,5 +1,5 @@
 import React from "react";
-import { Drawer, List, ListItem, ListItemText } from "@mui/material";
+import { List, ListItem, ListItemText, SwipeableDrawer } from "@mui/material";
 import ModelSwitch from "./ModelSwitch";
 
 const SideDrawer = ({
@@ -13,7 +13,7 @@ const SideDrawer = ({
     onClearAll,
 }) => {
     return (
-        <Drawer PaperProps={{ sx: { width: 200 } }} open={isOpen} onClose={onToggle} onOpen={onToggle}>
+        <SwipeableDrawer PaperProps={{ sx: { width: 200 } }} open={isOpen} onClose={onToggle} onOpen={onToggle}>
             <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
                 <List style={{ flexGrow: 1, overflowY: "auto" }}>
                     <ListItem button onClick={onNewChat}>
@@ -34,7 +34,7 @@ const SideDrawer = ({
                     <ListItemText primary="Clear All" />
                 </ListItem>
             </div>
-        </Drawer>
+        </SwipeableDrawer>
     );
 };
 
