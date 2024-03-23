@@ -373,9 +373,7 @@ function App() {
                                 padding={1}
                                 marginTop={1}
                                 borderRadius={2}
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="center"
+                          
                             >
                                 {isModelResponding &&
                                     chat.assistant === null &&
