@@ -2,9 +2,10 @@ const paintingWords = [
     // English
     "paint",
     "painting",
+    "picture",
     "draw",
     "drawing",
-    "brush",
+    "generate",
     "canvas",
     "color",
     "palette",

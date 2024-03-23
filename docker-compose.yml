@@ -6,13 +6,17 @@ services:
         ports:
             - "6000:5000"
         environment:
+            - NODE_ENV=production
             - GOOGLE_KEY=${GOOGLE_KEY}
             - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
             - AWS_SECRET_KEY=${AWS_SECRET_KEY}
             - CLAUDE_KEY=${CLAUDE_KEY}
+            - JWT_TOKEN=${JWT_TOKEN}
         restart: unless-stopped
         volumes:
             - ./allchat.json:/app/allchat.json
+        depends_on:
+            - mongodb
 
     frontend:
         image: extender777/allchat-frontend
@@ -23,3 +27,12 @@ services:
         restart: unless-stopped
         depends_on:
             - backend
+
+    mongodb:
+        image: mongo:3.8
+        volumes:
+            - mongo-data:/data/db
+        restart: unless-stopped
+
+volumes:
+    mongo-data:

@@ -7,6 +7,8 @@ const model = "gemini-pro";
 // const model = "gemini-1.5-pro-latest";
 const model_vision = "gemini-1.0-pro-vision-001";
 
+process.env["GOOGLE_APPLICATION_CREDENTIALS"] = "./allchat.json";
+
 export const getTextGemini = async (prompt, temperature) => {
     const generativeModel = vertex_ai.preview.getGenerativeModel({
         model: model,

@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Box, TextField, Button, Container, CircularProgress, Typography } from "@mui/material";
+import { Box, TextField, Button, Container, CircularProgress, Typography, Menu, MenuItem } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import Drawer from "@mui/material/SwipeableDrawer";
 import List from "@mui/material/List";
@@ -11,10 +12,13 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import FileSelector from "./FileSelector";
 import ModelSwitch from "./ModelSwitch";
+import AuthForm from "./AuthForm";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 
 const MAX_CHAT_HISTORY_LENGTH = 30;
-const API_URL =
-    process.env.NODE_ENV === "production" ? "https://allchat.online/api/interact" : "http://localhost:5000/interact";
+export const API_URL = process.env.NODE_ENV === "production" ? "https://allchat.online/api" : "http://localhost:5000";
 
 function App() {
     const [input, setInput] = useState("");
@@ -25,6 +29,23 @@ function App() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [model, setModel] = useState(localStorage.getItem("selectedModel") || "gemini");
+    const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
+    const [openAuthModal, setOpenAuthModal] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handleAuthentication = (token) => {
+        localStorage.setItem("token", token);
+        setIsAuthenticated(true);
+        setOpenAuthModal(false);
+    };
+
+    const handleOpenAuthModal = () => {
+        setOpenAuthModal(true);
+    };
+
+    const handleCloseAuthModal = () => {
+        setOpenAuthModal(false);
+    };
 
     const handleFileSelect = (file) => {
         setSelectedFile(file);
@@ -98,16 +119,23 @@ function App() {
     };
 
     const sendFileAndQuery = async (fileType, fileBytesBase64, input) => {
-        setChatHistory([...chatHistory, { user: input, assistant: null, fileType, userImageData: fileBytesBase64 }]);
-        setInput("");
-        setIsModelResponding(true);
-
         try {
-            const response = await fetch(API_URL, {
+            const token = localStorage.getItem("token");
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            };
+
+            setChatHistory([
+                ...chatHistory,
+                { user: input, assistant: null, fileType, userImageData: fileBytesBase64 },
+            ]);
+            setInput("");
+            setIsModelResponding(true);
+
+            const response = await fetch(API_URL + "/interact", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers,
                 body: JSON.stringify({
                     input,
                     fileType,
@@ -130,6 +158,15 @@ function App() {
                     },
                 ];
                 setChatHistory(newChatHistory);
+            } else if (response.status === 403) {
+                // Handle 403 Forbidden error (force sign-out)
+                localStorage.removeItem("token");
+                setIsAuthenticated(false);
+                const newChatHistory = [
+                    ...chatHistory.slice(0, -1),
+                    { user: input, assistant: null, error: "Authentication failed. Please sign in again." },
+                ];
+                setChatHistory(newChatHistory);
             } else {
                 const newChatHistory = [
                     ...chatHistory.slice(0, -1),
@@ -150,11 +187,15 @@ function App() {
     };
 
     const generateChatSummary = async (chatHistory) => {
-        const response = await fetch(API_URL, {
+        const token = localStorage.getItem("token");
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+
+        const response = await fetch(API_URL + "/interact", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers,
             body: JSON.stringify({
                 input: "!!! Extract main topic of this chat in one simple short statement and return it without anything else: ",
                 chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
@@ -211,6 +252,20 @@ function App() {
         setDrawerOpen(false);
     };
 
+    const handleProfileMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleProfileMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleSignOut = () => {
+        localStorage.removeItem("token");
+        setIsAuthenticated(false);
+        handleProfileMenuClose();
+    };
+
     return (
         <>
             <AppBar position="static">
@@ -221,8 +276,47 @@ function App() {
                     <Typography sx={{ ml: 2 }} variant="h6" noWrap>
                         AllChat
                     </Typography>
+                    <Box sx={{ ml: "auto" }}>
+                        {" "}
+                        {isAuthenticated ? (
+                            <div>
+                                <IconButton color="inherit" onClick={handleProfileMenuOpen}>
+                                    <AccountCircleIcon />
+                                </IconButton>
+                                <Menu
+                                    anchorEl={anchorEl}
+                                    open={Boolean(anchorEl)}
+                                    onClose={handleProfileMenuClose}
+                                    anchorOrigin={{
+                                        vertical: "bottom",
+                                        horizontal: "right",
+                                    }}
+                                    transformOrigin={{
+                                        vertical: "top",
+                                        horizontal: "right",
+                                    }}
+                                >
+                                    <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
+                                </Menu>
+                            </div>
+                        ) : (
+                            <Button color="inherit" onClick={handleOpenAuthModal}>
+                                Sign In
+                            </Button>
+                        )}
+                    </Box>
                 </Toolbar>
             </AppBar>
+
+            <Dialog open={openAuthModal} onClose={handleCloseAuthModal}>
+                <DialogContent>
+                    <AuthForm onAuthentication={handleAuthentication} />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseAuthModal}>Cancel</Button>
+                </DialogActions>
+            </Dialog>
+
             <Drawer PaperProps={{ sx: { width: 200 } }} open={drawerOpen} onClose={toggleDrawer} onOpen={toggleDrawer}>
                 <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
                     <List style={{ flexGrow: 1, overflowY: "auto" }}>
@@ -279,6 +373,9 @@ function App() {
                                 padding={1}
                                 marginTop={1}
                                 borderRadius={2}
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
                             >
                                 {isModelResponding &&
                                     chat.assistant === null &&

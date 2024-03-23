@@ -10,6 +10,7 @@ import mammoth from "mammoth";
 import * as xlsx from "xlsx";
 import { getTextClaude } from "./claude.js";
 import promBundle from "express-prom-bundle";
+import { authenticateUser, registerUser, verifyToken } from "./auth.js";
 
 const MAX_CONTEXT_LENGTH = 8000;
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro and Claude Haiku language models. Your capabilities include:
@@ -21,6 +22,7 @@ const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro
 - Supporting file uploads and integrating content from PDFs, Word documents, and Excel spreadsheets into the conversation.
 - Rendering Markdown formatting in your responses for better readability.
 - Generating images based on text descriptions using the Amazon Titan image generation model.
+- If user request picture generation, you are NOT generatig ASCII but provide detail scene description like for MidJourney
 - Asking for clarification if the user's query is ambiguous or unclear.
 
 Your ultimate goal is to provide an excellent user experience by leveraging the capabilities of AI while adhering to ethical principles.`;
@@ -43,6 +45,9 @@ morgan.token("body", (req, res) => {
         const clonedBody = { ...body };
         if ("fileBytesBase64" in clonedBody) {
             clonedBody.fileBytesBase64 = "<FILE_BYTES_REDACTED>";
+        }
+        if ("password" in clonedBody) {
+            clonedBody.password = "<PASSWORD_REDACTED>";
         }
         // if ("chatHistory" in clonedBody) {
         //     clonedBody.chatHistory = "<CHAT_HISTORY_REDACTED>";
@@ -128,8 +133,27 @@ app.post("/interact", async (req, res) => {
     }
 });
 
+app.post("/register", async (req, res) => {
+    const { email, password } = req.body;
+    const result = await registerUser(email, password);
+    if (result.success) {
+        res.status(200).json({ message: "Registration successful" });
+    } else {
+        res.status(400).json({ error: result.error });
+    }
+});
+
+// User authentication
+app.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+    const result = await authenticateUser(email, password);
+    if (result.success) {
+        res.status(200).json({ token: result.token });
+    } else {
+        res.status(401).json({ error: result.error });
+    }
+});
+
 app.listen(5000, () => {
     console.log(`🚀 Server started on port 5000`);
 });
-
-process.env["GOOGLE_APPLICATION_CREDENTIALS"] = "./allchat.json";
