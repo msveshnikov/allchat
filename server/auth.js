@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
 export const MONGODB_URI =
-    process.env.NODE_ENV === "production" ? "mongodb://mongo-db:27017/allchat" : "mongodb://localhost:27017/allchat";
+    process.env.NODE_ENV === "production" ? "mongodb://mongodb:27017/allchat" : "mongodb://localhost:27017/allchat";
 
 // MongoDB connection
 mongoose
