@@ -1,5 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Box, TextField, Button, Container, CircularProgress, Typography, Menu, MenuItem } from "@mui/material";
+import {
+    Box,
+    TextField,
+    Button,
+    Container,
+    CircularProgress,
+    Typography,
+    Menu,
+    MenuItem,
+    Snackbar,
+} from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -32,6 +42,9 @@ function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [openAuthModal, setOpenAuthModal] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+    const [snackbarSeverity, setSnackbarSeverity] = useState("info");
 
     const handleAuthentication = (token) => {
         localStorage.setItem("token", token);
@@ -160,13 +173,17 @@ function App() {
                 setChatHistory(newChatHistory);
             } else if (response.status === 403) {
                 // Handle 403 Forbidden error (force sign-out)
+                setSnackbarMessage("Authentication failed. Please sign in.");
+                setSnackbarSeverity("error");
+                setSnackbarOpen(true);
                 localStorage.removeItem("token");
                 setIsAuthenticated(false);
                 const newChatHistory = [
                     ...chatHistory.slice(0, -1),
-                    { user: input, assistant: null, error: "Authentication failed. Please sign in again." },
+                    { user: input, assistant: null, error: "Authentication failed." },
                 ];
                 setChatHistory(newChatHistory);
+                setOpenAuthModal(true);
             } else {
                 const newChatHistory = [
                     ...chatHistory.slice(0, -1),
@@ -264,6 +281,10 @@ function App() {
         localStorage.removeItem("token");
         setIsAuthenticated(false);
         handleProfileMenuClose();
+    };
+
+    const handleSnackbarClose = () => {
+        setSnackbarOpen(false);
     };
 
     return (
@@ -373,7 +394,6 @@ function App() {
                                 padding={1}
                                 marginTop={1}
                                 borderRadius={2}
-                          
                             >
                                 {isModelResponding &&
                                     chat.assistant === null &&
@@ -409,6 +429,13 @@ function App() {
                     </Button>
                 </Box>
             </Container>
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={handleSnackbarClose}
+                message={snackbarMessage}
+                severity={snackbarSeverity}
+            />
         </>
     );
 }
