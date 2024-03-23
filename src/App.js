@@ -1,33 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
-import {
-    Box,
-    TextField,
-    Button,
-    Container,
-    CircularProgress,
-    Typography,
-    Menu,
-    MenuItem,
-    Snackbar,
-    Avatar,
-} from "@mui/material";
-import ReactMarkdown from "react-markdown";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import MenuIcon from "@mui/icons-material/Menu";
-import Drawer from "@mui/material/SwipeableDrawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import FileSelector from "./FileSelector";
-import ModelSwitch from "./ModelSwitch";
-import AuthForm from "./AuthForm";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import md5 from "md5";
+import React, { useState, useEffect, useRef } from "react";
+import { Container, Snackbar, Dialog, DialogContent, DialogActions, Button } from "@mui/material";
+import AppHeader from "./components/AppHeader";
+import SideDrawer from "./components/SideDrawer";
+import ChatHistory from "./components/ChatHistory";
+import ChatInput from "./components/ChatInput";
+import AuthForm from "./components/AuthForm";
 
 const MAX_CHAT_HISTORY_LENGTH = 30;
 export const API_URL = process.env.NODE_ENV === "production" ? "https://allchat.online/api" : "http://localhost:5000";
@@ -44,7 +21,6 @@ function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
     const [openAuthModal, setOpenAuthModal] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState("info");
@@ -277,20 +253,11 @@ function App() {
         setDrawerOpen(false);
     };
 
-    const handleProfileMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleProfileMenuClose = () => {
-        setAnchorEl(null);
-    };
-
     const handleSignOut = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("userEmail");
         setUserEmail("");
         setIsAuthenticated(false);
-        handleProfileMenuClose();
     };
 
     const handleSnackbarClose = () => {
@@ -299,54 +266,23 @@ function App() {
 
     return (
         <>
-            <AppBar position="static">
-                <Toolbar>
-                    <IconButton color="inherit" aria-label="open drawer" edge="start" onClick={toggleDrawer}>
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography sx={{ ml: 2 }} variant="h6" noWrap>
-                        AllChat
-                    </Typography>
-                    <Box sx={{ ml: "auto" }}>
-                        {isAuthenticated ? (
-                            <div>
-                                <IconButton color="inherit" onClick={handleProfileMenuOpen}>
-                                    {userEmail ? (
-                                        <Avatar
-                                            src={`https://www.gravatar.com/avatar/${md5(
-                                                userEmail.trim().toLowerCase()
-                                            )}?d=retro`}
-                                            alt="User Avatar"
-                                        />
-                                    ) : (
-                                        <AccountCircleIcon />
-                                    )}
-                                </IconButton>
-                                <Menu
-                                    anchorEl={anchorEl}
-                                    open={Boolean(anchorEl)}
-                                    onClose={handleProfileMenuClose}
-                                    anchorOrigin={{
-                                        vertical: "bottom",
-                                        horizontal: "right",
-                                    }}
-                                    transformOrigin={{
-                                        vertical: "top",
-                                        horizontal: "right",
-                                    }}
-                                >
-                                    <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
-                                </Menu>
-                            </div>
-                        ) : (
-                            <Button color="inherit" onClick={handleOpenAuthModal}>
-                                Sign In
-                            </Button>
-                        )}
-                    </Box>
-                </Toolbar>
-            </AppBar>
-
+            <AppHeader
+                isAuthenticated={isAuthenticated}
+                userEmail={userEmail}
+                onSignOut={handleSignOut}
+                onOpenAuthModal={handleOpenAuthModal}
+                onToggle={toggleDrawer}
+            />
+            <SideDrawer
+                isOpen={drawerOpen}
+                onToggle={toggleDrawer}
+                onNewChat={handleNewChat}
+                storedChatHistories={storedChatHistories}
+                onHistorySelection={handleHistorySelection}
+                model={model}
+                onModelChange={setModel}
+                onClearAll={clearAllChatHistory}
+            />
             <Dialog open={openAuthModal} onClose={handleCloseAuthModal}>
                 <DialogContent>
                     <AuthForm onAuthentication={handleAuthentication} />
@@ -355,97 +291,20 @@ function App() {
                     <Button onClick={handleCloseAuthModal}>Cancel</Button>
                 </DialogActions>
             </Dialog>
-
-            <Drawer PaperProps={{ sx: { width: 200 } }} open={drawerOpen} onClose={toggleDrawer} onOpen={toggleDrawer}>
-                <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-                    <List style={{ flexGrow: 1, overflowY: "auto" }}>
-                        <ListItem button onClick={handleNewChat}>
-                            <ListItemText primary="New Chat" />
-                        </ListItem>
-                        {storedChatHistories.map((history, index) => (
-                            <ListItem button key={index} onClick={() => handleHistorySelection(index)}>
-                                <ListItemText primary={history.summary} />
-                            </ListItem>
-                        ))}
-                    </List>
-                    <div style={{ marginBottom: "auto" }}>
-                        <ListItem>
-                            <ModelSwitch model={model} onModelChange={setModel} />
-                        </ListItem>
-                    </div>
-                    <ListItem
-                        button
-                        onClick={clearAllChatHistory}
-                        style={{ color: "white", backgroundColor: "#F50057" }}
-                    >
-                        <ListItemText primary="Clear All" />
-                    </ListItem>
-                </div>
-            </Drawer>
-            <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "91vh" }}>
-                <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column" ref={chatContainerRef}>
-                    {chatHistory.map((chat, index) => (
-                        <Box
-                            style={{ fontFamily: "PT Sans" }}
-                            key={index}
-                            display="flex"
-                            flexDirection="column"
-                            marginBottom={2}
-                        >
-                            <Box alignSelf="flex-end" bgcolor="#d4edda" color="#155724" padding={1} borderRadius={2}>
-                                {chat.user}
-                                {chat.fileType && getFileTypeIcon(chat.fileType) !== null && (
-                                    <span style={{ fontSize: "3rem" }}>{getFileTypeIcon(chat.fileType)}</span>
-                                )}
-                                {!getFileTypeIcon(chat.fileType) && chat.userImageData && (
-                                    <img
-                                        src={`data:image/${chat.fileType.split("/")[1]};base64,${chat.userImageData}`}
-                                        alt="User input"
-                                        style={{ maxWidth: "100%" }}
-                                    />
-                                )}
-                            </Box>
-                            <Box
-                                alignSelf="flex-start"
-                                bgcolor={chat.error ? "#f8d7da" : "#cff4fc"}
-                                color={chat.error ? "#721c24" : "#0c5460"}
-                                padding={1}
-                                marginTop={1}
-                                borderRadius={2}
-                            >
-                                {isModelResponding &&
-                                    chat.assistant === null &&
-                                    chatHistory[chatHistory.length - 1] === chat && <CircularProgress size={20} />}
-                                {chat.assistant !== null && <ReactMarkdown>{chat.assistant}</ReactMarkdown>}
-                                {chat.error && chat.error}
-                                {chat.image && (
-                                    <img
-                                        src={`data:image/png;base64,${chat.image.toString("base64")}`}
-                                        alt="Model output"
-                                        style={{ maxWidth: "100%" }}
-                                    />
-                                )}
-                            </Box>
-                        </Box>
-                    ))}
-                </Box>
-                <Box display="flex" padding={2}>
-                    <TextField
-                        fullWidth
-                        label="Enter your question"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyPress={(e) => {
-                            if (e.key === "Enter") {
-                                handleSubmit();
-                            }
-                        }}
-                    />
-                    <FileSelector onFileSelect={handleFileSelect} selectedFile={selectedFile} />
-                    <Button variant="contained" color="primary" onClick={handleSubmit} style={{ marginLeft: 8 }}>
-                        Send
-                    </Button>
-                </Box>
+            <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "92vh" }}>
+                <ChatHistory
+                    chatHistory={chatHistory}
+                    isModelResponding={isModelResponding}
+                    chatContainerRef={chatContainerRef}
+                    getFileTypeIcon={getFileTypeIcon}
+                />
+                <ChatInput
+                    input={input}
+                    setInput={setInput}
+                    selectedFile={selectedFile}
+                    onFileSelect={handleFileSelect}
+                    onSubmit={handleSubmit}
+                />
             </Container>
             <Snackbar
                 open={snackbarOpen}
