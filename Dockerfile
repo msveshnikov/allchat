@@ -13,9 +13,6 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Run tests
-RUN npm ci  --only=production
-
 # Build the React app for production
 RUN npm run build
 
