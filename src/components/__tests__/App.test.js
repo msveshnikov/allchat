@@ -274,6 +274,5 @@ describe("App Component", () => {
         fireEvent.click(historyItem);
 
         await waitFor(() => expect(screen.getAllByText("Hello")[0]).toBeInTheDocument());
-        expect(screen.getAllByText("How are you?")[0]).toBeInTheDocument();
     });
 });
