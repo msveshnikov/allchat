@@ -39,18 +39,18 @@ describe("ChatHistory", () => {
         return null;
     });
 
-    // test("renders chat history", () => {
-    //     render(
-    //         <ChatHistory
-    //             chatHistory={mockChatHistory}
-    //             isModelResponding={false}
-    //             chatContainerRef={null}
-    //             getFileTypeIcon={mockGetFileTypeIcon}
-    //         />
-    //     );
-    //     const chatItems = screen.getAllByRole("listitem");
-    //     expect(chatItems).toHaveLength(mockChatHistory.length);
-    // });
+    test("renders chat history", () => {
+        render(
+            <ChatHistory
+                chatHistory={mockChatHistory}
+                isModelResponding={false}
+                chatContainerRef={null}
+                getFileTypeIcon={mockGetFileTypeIcon}
+            />
+        );
+        const chatItems = screen.getAllByTestId("chat-item");
+        expect(chatItems).toHaveLength(mockChatHistory.length);
+    });
 
     test("renders user message", () => {
         render(

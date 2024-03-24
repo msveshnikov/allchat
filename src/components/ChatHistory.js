@@ -7,6 +7,7 @@ const ChatHistory = ({ chatHistory, isModelResponding, chatContainerRef, getFile
         <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column" ref={chatContainerRef}>
             {chatHistory.map((chat, index) => (
                 <Box
+                    data-testid="chat-item"
                     style={{ fontFamily: "PT Sans" }}
                     key={index}
                     display="flex"
@@ -16,7 +17,7 @@ const ChatHistory = ({ chatHistory, isModelResponding, chatContainerRef, getFile
                     <Box alignSelf="flex-end" bgcolor="#d4edda" color="#155724" padding={1} borderRadius={2}>
                         {chat.user}
                         {chat.fileType && getFileTypeIcon(chat.fileType) !== null && (
-                            <span style={{ fontSize: "3rem" }}>{getFileTypeIcon(chat.fileType)}</span>
+                            <span style={{ fontSize: "3rem" }}>{getFileTypeIcon(chat.fileType)} 📷</span>
                         )}
                         {!getFileTypeIcon(chat.fileType) && chat.userImageData && (
                             <img
