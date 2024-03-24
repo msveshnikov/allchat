@@ -25,18 +25,22 @@ jobs:
 
             - name: Run tests
               run: npm run test
-
+            - name: Create Multi-Platform Build Context
+              run: |
+                  docker buildx create --use --name mybuilder
+                  docker buildx inspect --bootstrap
             - name: Build and Push Backend Image
               if: success()
               run: |
-                  docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }} ./server
+                  docker buildx build --platform linux/amd64,linux/arm64 -t ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }} --push ./server
                   docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ env.DOCKER_PASSWORD }}
                   docker push ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }}
-
             - name: Build and Push Frontend Image
               run: |
-                  docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }} .
+                  docker buildx build --platform linux/amd64,linux/arm64 -t ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }} --push .
                   docker push ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }}
+            - name: Remove Multi-Platform Build Context
+              run: docker buildx rm mybuilder
 
     deploy:
         needs: build-and-push
