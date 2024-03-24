@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import AuthForm from "../AuthForm";
 import "@testing-library/jest-dom/extend-expect";
 
@@ -10,6 +10,39 @@ jest.mock("../../App", () => ({
 describe("AuthForm Component", () => {
     it("renders without crashing", () => {
         render(<AuthForm />);
+    });
+
+    it("should register a new user", async () => {
+        const onAuthentication = jest.fn();
+        render(<AuthForm onAuthentication={onAuthentication} />);
+
+        // Mock the successful fetch response
+        global.fetch = jest.fn().mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({ token: "mock_token" }),
+        });
+
+        // Switch to registration mode
+        fireEvent.click(screen.getByText("Don't have an account? Register"));
+
+        // Fill in the registration form
+        const emailInput = screen.getByLabelText("Email");
+        const passwordInput = screen.getByLabelText("Password");
+        fireEvent.change(emailInput, { target: { value: "test@example.com" } });
+        fireEvent.change(passwordInput, { target: { value: "password123" } });
+
+        // Submit the registration form
+        fireEvent.click(screen.getByRole("button", { name: "Register" }));
+
+        // Wait for the registration success message to appear
+        await waitFor(() => expect(screen.getByText("Registration successful. Please log in now.")).toBeInTheDocument());
+
+        // Check that the onAuthentication function was not called (registration should not authenticate)
+        expect(onAuthentication).not.toHaveBeenCalled();
+
+        // Check that the form was reset
+        expect(emailInput.value).toBe("");
+        expect(passwordInput.value).toBe("");
     });
 
     it("handles form submission correctly", async () => {
