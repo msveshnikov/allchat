@@ -33,6 +33,8 @@ services:
         volumes:
             - mongo-data:/data/db
         restart: unless-stopped
+        logging:
+            driver: none
 
 volumes:
     mongo-data:

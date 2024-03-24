@@ -11,6 +11,8 @@ import * as xlsx from "xlsx";
 import { getTextClaude } from "./claude.js";
 import promBundle from "express-prom-bundle";
 import { authenticateUser, registerUser, verifyToken } from "./auth.js";
+import mongoose from "mongoose";
+import { countCharacters, countTokens, storeUsageStats } from "./model/User.js";
 
 const MAX_CONTEXT_LENGTH = 8000;
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro and Claude Haiku language models. Your capabilities include:
@@ -113,17 +115,38 @@ app.post("/interact", verifyToken, async (req, res) => {
             .join("\n")}\n\nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
 
         let textResponse;
+        let inputTokens = 0;
+        let outputTokens = 0;
+        let inputCharacters = 0;
+        let outputCharacters = 0;
+        let imagesGenerated = 0;
+
         if (model === "gemini") {
+            inputCharacters = countCharacters(contextPrompt);
             textResponse = await getTextGemini(contextPrompt, temperature);
+            outputCharacters = countCharacters(textResponse);
         } else if (model === "claude") {
+            inputTokens = countTokens(contextPrompt);
             textResponse = await getTextClaude(contextPrompt, "claude-3-haiku-20240307", temperature);
+            outputTokens = countTokens(textResponse);
         }
 
         userInput = userInput?.toLowerCase();
         let imageResponse;
         if (hasPaintWord(userInput)) {
             imageResponse = await getImageTitan(userInput?.substr(0, 200) + textResponse?.trim()?.substr(0, 200));
+            imagesGenerated = 1;
         }
+
+        storeUsageStats(
+            req.user.id,
+            model,
+            inputTokens,
+            outputTokens,
+            inputCharacters,
+            outputCharacters,
+            imagesGenerated
+        );
 
         res.json({ textResponse: textResponse?.trim(), imageResponse });
     } catch (error) {
@@ -157,3 +180,12 @@ app.post("/login", async (req, res) => {
 app.listen(5000, () => {
     console.log(`🚀 Server started on port 5000`);
 });
+
+export const MONGODB_URI =
+    process.env.NODE_ENV === "production" ? "mongodb://mongodb:27017/allchat" : "mongodb://localhost:27017/allchat";
+
+// MongoDB connection
+mongoose
+    .connect(MONGODB_URI)
+    .then(() => console.log("🚀 MongoDB connected"))
+    .catch((err) => console.error("MongoDB connection error:", err));

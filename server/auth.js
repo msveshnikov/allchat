@@ -1,24 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
-
-export const MONGODB_URI =
-    process.env.NODE_ENV === "production" ? "mongodb://mongodb:27017/allchat" : "mongodb://localhost:27017/allchat";
-
-// MongoDB connection
-mongoose
-    .connect(MONGODB_URI)
-    .then(() => console.log("MongoDB connected"))
-    .catch((err) => console.error("MongoDB connection error:", err));
-
-// User schema
-const userSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-});
-
-// User model
-const User = mongoose.model("User", userSchema);
+import { User } from "./model/User.js";
 
 // Register a new user
 export const registerUser = async (email, password) => {
@@ -61,10 +43,9 @@ export const verifyToken = (req, res, next) => {
     if (!token) {
         return res.status(401).json({ error: "Unauthorized" });
     }
-
     try {
         const decoded = jwt.verify(token, process.env.JWT_TOKEN);
-        req.userId = decoded.userId;
+        req.user = { id: decoded.userId }; // Set req.user.id instead of req.userId
         next();
     } catch (error) {
         return res.status(403).json({ error: "Invalid token" });
