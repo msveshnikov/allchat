@@ -8,7 +8,7 @@
         "md5": "^2.3.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-markdown": "^9.0.1",
+        "react-markdown": "^8.0.0",
         "react-scripts": "5.0.1"
     },
     "scripts": {
@@ -45,7 +45,13 @@
     },
     "jest": {
         "transform": {
-            "^.+\\.jsx?$": "babel-jest"
+            "^.+\\.(js|jsx)$": "babel-jest"
+        },
+        "moduleNameMapper": {
+            "next/router": "<rootDir>/__mocks__/next/router.js",
+            "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
+            "^.+\\.(jpg|jpeg|png|gif|webp|avif|svg)$": "<rootDir>/__mocks__/file-mock.js",
+            "react-markdown": "<rootDir>/node_modules/react-markdown/react-markdown.min.js"
         }
     }
 }

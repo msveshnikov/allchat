@@ -6,6 +6,7 @@ const ChatInput = ({ input, setInput, selectedFile, onFileSelect, onSubmit }) =>
     return (
         <Box display="flex" padding={2}>
             <TextField
+                data-testid="input-field"
                 fullWidth
                 label="Enter your question"
                 value={input}

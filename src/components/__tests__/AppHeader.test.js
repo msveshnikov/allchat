@@ -1,6 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import AppHeader from "../AppHeader";
+import "@testing-library/jest-dom/extend-expect";
 
 describe("AppHeader Component", () => {
     const mockOnToggle = jest.fn();

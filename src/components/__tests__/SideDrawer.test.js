@@ -1,6 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import SideDrawer from "../SideDrawer";
+import "@testing-library/jest-dom/extend-expect";
 
 describe("SideDrawer Component", () => {
     const mockOnToggle = jest.fn();
