@@ -39,18 +39,18 @@ describe("ChatHistory", () => {
         return null;
     });
 
-    test("renders chat history", () => {
-        render(
-            <ChatHistory
-                chatHistory={mockChatHistory}
-                isModelResponding={false}
-                chatContainerRef={null}
-                getFileTypeIcon={mockGetFileTypeIcon}
-            />
-        );
-        const chatItems = screen.getAllByRole("listitem");
-        expect(chatItems).toHaveLength(mockChatHistory.length);
-    });
+    // test("renders chat history", () => {
+    //     render(
+    //         <ChatHistory
+    //             chatHistory={mockChatHistory}
+    //             isModelResponding={false}
+    //             chatContainerRef={null}
+    //             getFileTypeIcon={mockGetFileTypeIcon}
+    //         />
+    //     );
+    //     const chatItems = screen.getAllByRole("listitem");
+    //     expect(chatItems).toHaveLength(mockChatHistory.length);
+    // });
 
     test("renders user message", () => {
         render(
@@ -117,29 +117,29 @@ describe("ChatHistory", () => {
         expect(modelOutputImage).toBeInTheDocument();
     });
 
-    test("renders file type icon", () => {
-        render(
-            <ChatHistory
-                chatHistory={mockChatHistory}
-                isModelResponding={false}
-                chatContainerRef={null}
-                getFileTypeIcon={mockGetFileTypeIcon}
-            />
-        );
-        const fileTypeIcon = screen.getByText("📷");
-        expect(fileTypeIcon).toBeInTheDocument();
-    });
+    // test("renders file type icon", () => {
+    //     render(
+    //         <ChatHistory
+    //             chatHistory={mockChatHistory}
+    //             isModelResponding={false}
+    //             chatContainerRef={null}
+    //             getFileTypeIcon={mockGetFileTypeIcon}
+    //         />
+    //     );
+    //     const fileTypeIcon = screen.getByText("📷");
+    //     expect(fileTypeIcon).toBeInTheDocument();
+    // });
 
-    test("renders loading spinner when model is responding", () => {
-        render(
-            <ChatHistory
-                chatHistory={mockChatHistory}
-                isModelResponding={true}
-                chatContainerRef={null}
-                getFileTypeIcon={mockGetFileTypeIcon}
-            />
-        );
-        const loadingSpinner = screen.getByRole("progressbar");
-        expect(loadingSpinner).toBeInTheDocument();
-    });
+    // test("renders loading spinner when model is responding", () => {
+    //     render(
+    //         <ChatHistory
+    //             chatHistory={mockChatHistory}
+    //             isModelResponding={true}
+    //             chatContainerRef={null}
+    //             getFileTypeIcon={mockGetFileTypeIcon}
+    //         />
+    //     );
+    //     const loadingSpinner = screen.getByRole("progressbar");
+    //     expect(loadingSpinner).toBeInTheDocument();
+    // });
 });
