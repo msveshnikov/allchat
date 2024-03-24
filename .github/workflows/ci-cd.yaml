@@ -32,8 +32,8 @@ jobs:
             - name: Build and Push Backend Image
               if: success()
               run: |
-                  docker buildx build --platform linux/amd64,linux/arm64 -t ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }} --push ./server
                   docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ env.DOCKER_PASSWORD }}
+                  docker buildx build --platform linux/amd64,linux/arm64 -t ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }} --push ./server
                   docker push ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }}
             - name: Build and Push Frontend Image
               run: |
