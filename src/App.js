@@ -293,7 +293,7 @@ function App() {
                     <Button onClick={handleCloseAuthModal}>Cancel</Button>
                 </DialogActions>
             </Dialog>
-            <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "92vh" }}>
+            <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "91vh" }}>
                 <ChatHistory
                     chatHistory={chatHistory}
                     isModelResponding={isModelResponding}
