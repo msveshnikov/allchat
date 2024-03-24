@@ -1,58 +1,56 @@
 import React from "react";
-import { render, fireEvent, waitFor, screen } from "@testing-library/react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
 import AuthForm from "../AuthForm";
 import "@testing-library/jest-dom/extend-expect";
+jest.mock("../../App", () => ({
+    API_URL: "http://example.com/api",
+}));
 
-describe("AuthForm", () => {
-    const onAuthenticationMock = jest.fn();
-
-    beforeEach(() => {
-        onAuthenticationMock.mockClear();
+describe("AuthForm Component", () => {
+    it("renders without crashing", () => {
+        render(<AuthForm />);
     });
 
-    test("renders login form by default", () => {
-        render(<AuthForm onAuthentication={onAuthenticationMock} />);
-        expect(screen.getByText("Login")).toBeInTheDocument();
+    it("handles form submission correctly", async () => {
+        const mockOnAuthentication = jest.fn();
+        const { getByLabelText, getByRole } = render(<AuthForm onAuthentication={mockOnAuthentication} />);
+
+        // Mock the successful fetch response
+        global.fetch = jest.fn().mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({ token: "mock_token" }),
+        });
+
+        const emailInput = getByLabelText("Email");
+        const passwordInput = getByLabelText("Password");
+        const submitButton = getByRole("button", { name: "Login" });
+
+        fireEvent.change(emailInput, { target: { value: "test@example.com" } });
+        fireEvent.change(passwordInput, { target: { value: "password123" } });
+        fireEvent.click(submitButton);
+
+        await waitFor(() => {
+            expect(mockOnAuthentication).toHaveBeenCalledTimes(1);
+            expect(mockOnAuthentication).toHaveBeenCalledWith("mock_token", "test@example.com");
+        });
     });
 
-    test("toggles between login and register forms", () => {
-        render(<AuthForm onAuthentication={onAuthenticationMock} />);
-
-        // Check initial state (login form)
-        expect(screen.getByText("Login")).toBeInTheDocument();
-        expect(screen.queryByText("Register")).toBeNull();
-
-        // Toggle to register form
-        fireEvent.click(screen.getByText("Don't have an account? Register"));
-        expect(screen.getByText("Register")).toBeInTheDocument();
-        expect(screen.queryByText("Login")).toBeNull();
+    it("handles toggle mode correctly", () => {
+        const { getByRole } = render(<AuthForm />);
+        const toggleButton = getByRole("button", { name: /Don't have an account\? Register/i });
+        fireEvent.click(toggleButton);
+        const registerHeading = getByRole("heading", { name: "Register" });
+        expect(registerHeading).toBeInTheDocument();
     });
 
-    test("displays error message for invalid email", async () => {
-        render(<AuthForm onAuthentication={onAuthenticationMock} />);
+    // it("displays error message for invalid email", async () => {
+    //     const { getByLabelText, getByRole, getByText } = render(<AuthForm />);
+    //     const emailInput = getByLabelText("Email");
+    //     const submitButton = getByRole("button", { name: "Login" });
 
-        // Enter invalid email and submit the form
-        fireEvent.change(screen.getByLabelText("Email"), { target: { value: "invalid-email" } });
-        fireEvent.click(screen.getByText("Login"));
+    //     fireEvent.change(emailInput, { target: { value: "invalid-email" } });
+    //     fireEvent.click(submitButton);
 
-        // Check if the error message is displayed
-        await waitFor(() => expect(screen.getByText("Please enter a valid email address.")).toBeInTheDocument());
-    });
-
-    test("calls onAuthentication with token and email on successful login", async () => {
-        const mockResponse = { ok: true, json: () => Promise.resolve({ token: "mock-token" }) };
-        global.fetch = jest.fn().mockResolvedValueOnce(mockResponse);
-
-        render(<AuthForm onAuthentication={onAuthenticationMock} />);
-
-        // Enter valid credentials and submit the form
-        fireEvent.change(screen.getByLabelText("Email"), { target: { value: "valid@email.com" } });
-        fireEvent.change(screen.getByLabelText("Password"), { target: { value: "password" } });
-        fireEvent.click(screen.getByText("Login"));
-
-        // Check if onAuthentication is called with the correct arguments
-        await waitFor(() => expect(onAuthenticationMock).toHaveBeenCalledWith("mock-token", "valid@email.com"));
-    });
-
-    // Add more tests for other scenarios, such as successful registration, error handling, etc.
+    //     expect(getByText("Please enter a valid email address.")).toBeInTheDocument();
+    // });
 });

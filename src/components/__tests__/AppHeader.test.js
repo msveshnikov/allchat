@@ -7,7 +7,7 @@ describe("AppHeader Component", () => {
     const mockOnToggle = jest.fn();
     const mockOnSignOut = jest.fn();
     const mockOnOpenAuthModal = jest.fn();
-
+ 
     it("renders without crashing", () => {
         render(
             <AppHeader

@@ -2,6 +2,7 @@ import React from "react";
 import { render, fireEvent, screen } from "@testing-library/react";
 import ChatInput from "../ChatInput";
 import "@testing-library/jest-dom/extend-expect";
+import userEvent from "@testing-library/user-event";
 
 describe("ChatInput", () => {
     const mockSetInput = jest.fn();
@@ -20,22 +21,29 @@ describe("ChatInput", () => {
 
     test("updates input value on change", () => {
         render(<ChatInput input="" setInput={mockSetInput} onSubmit={mockOnSubmit} onFileSelect={mockOnFileSelect} />);
-        const inputField = screen.getByTestId("input-field");
+        const inputField = screen.getByLabelText("Enter your question");
         fireEvent.change(inputField, { target: { value: "Hello, world!" } });
         expect(mockSetInput).toHaveBeenCalledWith("Hello, world!");
     });
 
-    test("calls onSubmit when Enter key is pressed", () => {
+    test("calls onSubmit when Enter key is pressed", async () => {
+        const mockSetInput = jest.fn();
+        const mockOnSubmit = jest.fn();
+        const mockOnFileSelect = jest.fn();
+
         render(
             <ChatInput
                 input="Test input"
                 setInput={mockSetInput}
                 onSubmit={mockOnSubmit}
                 onFileSelect={mockOnFileSelect}
+                selectedFile={null}
             />
         );
-        const inputField = screen.getByTestId("input-field");
-        fireEvent.keyPress(inputField, { key: "Enter", code: "Enter" });
+
+        const inputField = screen.getByLabelText("Enter your question");
+        await userEvent.type(inputField, "Test input{enter}");
+
         expect(mockOnSubmit).toHaveBeenCalled();
     });
 
