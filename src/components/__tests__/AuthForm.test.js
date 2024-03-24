@@ -35,7 +35,9 @@ describe("AuthForm Component", () => {
         fireEvent.click(screen.getByRole("button", { name: "Register" }));
 
         // Wait for the registration success message to appear
-        await waitFor(() => expect(screen.getByText("Registration successful. Please log in now.")).toBeInTheDocument());
+        await waitFor(() =>
+            expect(screen.getByText("Registration successful. Please log in now.")).toBeInTheDocument()
+        );
 
         // Check that the onAuthentication function was not called (registration should not authenticate)
         expect(onAuthentication).not.toHaveBeenCalled();
@@ -43,6 +45,37 @@ describe("AuthForm Component", () => {
         // Check that the form was reset
         expect(emailInput.value).toBe("");
         expect(passwordInput.value).toBe("");
+    });
+
+    it("should display registration error message", async () => {
+        const mockedOnAuthentication = jest.fn();
+        global.fetch = jest.fn(() =>
+            Promise.resolve({
+                ok: false,
+                json: () => Promise.resolve({ error: "Invalid email or password" }),
+            })
+        );
+
+        render(<AuthForm onAuthentication={mockedOnAuthentication} />);
+
+        // Switch to registration mode
+        fireEvent.click(screen.getByRole("button", { name: /register/i }));
+
+        // Fill in email and password
+        fireEvent.change(screen.getByLabelText(/email/i), {
+            target: { value: "email@rmail.com" },
+        });
+        fireEvent.change(screen.getByLabelText(/password/i), {
+            target: { value: "password" },
+        });
+ 
+        // Submit the form
+        fireEvent.click(screen.getByRole("button", { name: /register/i }));
+
+        // Wait for the error message to appear
+        await waitFor(() => {
+            expect(screen.getAllByText(/invalid email or password/i)[0]).toBeInTheDocument();
+        });
     });
 
     it("handles form submission correctly", async () => {

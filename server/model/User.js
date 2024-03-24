@@ -53,7 +53,7 @@ export function storeUsageStats(
     if (model === "gemini") {
         const inputCharactersCost = (inputCharacters / 1000) * 0.000125;
         const outputCharactersCost = (outputCharacters / 1000) * 0.000375;
-        const imagesGeneratedCost = imagesGenerated * 0.0025;
+        const imagesGeneratedCost = imagesGenerated * 0.01;
         moneyConsumed = inputCharactersCost + outputCharactersCost + imagesGeneratedCost;
     } else if (model === "claude") {
         const inputTokensCost = (inputTokens * 0.25) / 1000000;
