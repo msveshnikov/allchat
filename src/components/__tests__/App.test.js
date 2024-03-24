@@ -197,19 +197,23 @@ describe("App Component", () => {
 
         // Add some chat history
         fireEvent.change(inputField, { target: { value: "Hello" } });
-        fireEvent.click(submitButton);
-
+        await act(async () => {
+            fireEvent.click(submitButton);
+        });
         fireEvent.change(inputField, { target: { value: "How are you?" } });
-        fireEvent.click(submitButton);
-
+        await act(async () => {
+            fireEvent.click(submitButton);
+        });
         // Open the SideDrawer
         const drawerToggleButton = screen.getByRole("button", { name: "open drawer" });
-        fireEvent.click(drawerToggleButton);
-
+        await act(async () => {
+            fireEvent.click(drawerToggleButton);
+        });
         // Clear all chat history
         const clearHistoryButton = screen.getByRole("button", { name: "Clear All" });
-        fireEvent.click(clearHistoryButton);
-
+        await act(async () => {
+            fireEvent.click(clearHistoryButton);
+        });
         expect(localStorage.getItem("chatHistory")).toBeNull();
         expect(localStorage.getItem("storedChatHistories")).toBeNull();
         expect(screen.queryByText("Hello")).not.toBeInTheDocument();
@@ -227,16 +231,21 @@ describe("App Component", () => {
 
         // Add some chat history
         fireEvent.change(inputField, { target: { value: "Hello" } });
-        fireEvent.click(submitButton);
+        await act(async () => {
+            fireEvent.click(submitButton);
+        }); 
 
         // Open the SideDrawer
         const drawerToggleButton = screen.getByRole("button", { name: "open drawer" });
-        fireEvent.click(drawerToggleButton);
+        await act(async () => {
+            fireEvent.click(drawerToggleButton);
+        });
 
         // Start a new chat
         const newChatButton = screen.getByRole("button", { name: "New Chat" });
-        fireEvent.click(newChatButton);
-
+        await act(async () => {
+            fireEvent.click(newChatButton);
+        });
         expect(localStorage.getItem("chatHistory")).toBeNull();
         expect(screen.queryByText("Hello")).not.toBeInTheDocument();
     });
