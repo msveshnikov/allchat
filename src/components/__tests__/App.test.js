@@ -3,7 +3,6 @@ import { render, fireEvent, waitFor, screen, act } from "@testing-library/react"
 import App from "../../App";
 import "@testing-library/jest-dom/extend-expect";
 
-// Mock the fetch function
 global.fetch = jest.fn();
 
 describe("App Component", () => {
@@ -118,5 +117,74 @@ describe("App Component", () => {
         await waitFor(() => {
             expect(inputField.value).toBe("");
         });
+    });
+
+    it("should handle authentication failure on API response", async () => {
+        const mockResponse = { ok: false, status: 403 };
+        global.fetch.mockResolvedValueOnce(mockResponse);
+
+        render(<App />);
+
+        const inputField = screen.getByRole("textbox");
+        const submitButton = screen.getByRole("button", { name: "Send" });
+
+        fireEvent.change(inputField, { target: { value: "Test query" } });
+        await act(async () => {
+            fireEvent.click(submitButton);
+        });
+
+        await waitFor(() => expect(screen.getByText("Authentication failed.")).toBeInTheDocument());
+        expect(localStorage.getItem("token")).toBeNull();
+        expect(localStorage.getItem("userEmail")).toBeNull();
+    });
+
+    it("should handle failed API response with different error", async () => {
+        const mockResponse = { ok: false, status: 500 };
+        global.fetch.mockResolvedValueOnce(mockResponse);
+
+        render(<App />);
+
+        const inputField = screen.getByRole("textbox");
+        const submitButton = screen.getByRole("button", { name: "Send" });
+
+        fireEvent.change(inputField, { target: { value: "Test query" } });
+        await act(async () => {
+            fireEvent.click(submitButton);
+        });
+
+        await waitFor(() => expect(screen.getAllByText("Failed response from the server.")[0]).toBeInTheDocument());
+    });
+
+    it("should handle failed API response without error message", async () => {
+        const mockResponse = { ok: false, status: 500, json: () => Promise.resolve({}) };
+        global.fetch.mockResolvedValueOnce(mockResponse);
+
+        render(<App />);
+
+        const inputField = screen.getByRole("textbox");
+        const submitButton = screen.getByRole("button", { name: "Send" });
+
+        fireEvent.change(inputField, { target: { value: "Test query" } });
+        await act(async () => {
+            fireEvent.click(submitButton);
+        });
+
+        await waitFor(() => expect(screen.getAllByText("Failed response from the server.")[0]).toBeInTheDocument());
+    });
+
+    it("should handle network error when sending API request", async () => {
+        global.fetch.mockRejectedValueOnce(new Error("Network error"));
+
+        render(<App />);
+
+        const inputField = screen.getByRole("textbox");
+        const submitButton = screen.getByRole("button", { name: "Send" });
+
+        fireEvent.change(inputField, { target: { value: "Test query" } });
+        await act(async () => {
+            fireEvent.click(submitButton);
+        });
+
+        await waitFor(() => expect(screen.getByText("Failed to connect to the server.")).toBeInTheDocument());
     });
 });
