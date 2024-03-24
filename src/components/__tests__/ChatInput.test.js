@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent, screen } from "@testing-library/react";
+import { render, fireEvent, screen, act } from "@testing-library/react";
 import ChatInput from "../ChatInput";
 import "@testing-library/jest-dom/extend-expect";
 import userEvent from "@testing-library/user-event";
@@ -42,7 +42,9 @@ describe("ChatInput", () => {
         );
 
         const inputField = screen.getByLabelText("Enter your question");
-        await userEvent.type(inputField, "Test input{enter}");
+        await act(async () => {
+            await userEvent.type(inputField, "Test input{enter}");
+        });
 
         expect(mockOnSubmit).toHaveBeenCalled();
     });

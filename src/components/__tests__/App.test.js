@@ -45,5 +45,4 @@ describe("App Component", () => {
         });
     });
 
-    // Add more tests as needed...
 });
