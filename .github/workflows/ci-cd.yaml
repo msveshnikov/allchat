@@ -20,7 +20,14 @@ jobs:
         steps:
             - uses: actions/checkout@master
 
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run tests
+              run: npm run test
+
             - name: Build and Push Backend Image
+              if: success()
               run: |
                   docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }} ./server
                   docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ env.DOCKER_PASSWORD }}
