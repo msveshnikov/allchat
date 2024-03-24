@@ -1,6 +1,7 @@
 import React from "react";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 import App from "../../App";
+import "@testing-library/jest-dom/extend-expect";
 
 describe("App Component", () => {
     it("renders without crashing", () => {
@@ -8,13 +9,13 @@ describe("App Component", () => {
     });
 
     it("opens authentication modal when authentication button is clicked", async () => {
-        const { getByTestId, getByText } = render(<App />);
-        const authButton = getByTestId("auth-button");
+        const { getByText, getByRole } = render(<App />);
+        const authButton = getByText("Sign In");
 
         fireEvent.click(authButton);
 
         await waitFor(() => {
-            expect(getByText("Authentication Form")).toBeInTheDocument();
+            expect(getByRole("heading", "Login")).toBeInTheDocument();
         });
     });
 
@@ -32,7 +33,7 @@ describe("App Component", () => {
     });
 
     it("submits input correctly", async () => {
-        const { getByTestId, getByText } = render(<App />);
+        const { getByText } = render(<App />);
         const inputField = screen.getByLabelText("Enter your question");
         const submitButton = getByText("Send");
 
