@@ -2,6 +2,7 @@ import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import AuthForm from "../AuthForm";
 import "@testing-library/jest-dom/extend-expect";
+
 jest.mock("../../App", () => ({
     API_URL: "http://example.com/api",
 }));
@@ -43,14 +44,14 @@ describe("AuthForm Component", () => {
         expect(registerHeading).toBeInTheDocument();
     });
 
-    // it("displays error message for invalid email", async () => {
-    //     const { getByLabelText, getByRole, getByText } = render(<AuthForm />);
-    //     const emailInput = getByLabelText("Email");
-    //     const submitButton = getByRole("button", { name: "Login" });
+    it("displays error message for invalid email", async () => {
+        const { getByLabelText, getByRole, getAllByText } = render(<AuthForm />);
+        const emailInput = getByLabelText("Email");
+        const submitButton = getByRole("button", { name: "Login" });
 
-    //     fireEvent.change(emailInput, { target: { value: "invalid-email" } });
-    //     fireEvent.click(submitButton);
+        fireEvent.change(emailInput, { target: { value: "invalid-email" } });
+        fireEvent.click(submitButton);
 
-    //     expect(getByText("Please enter a valid email address.")).toBeInTheDocument();
-    // });
+        expect(getAllByText("Please enter a valid email address.")[0]).toBeInTheDocument();
+    });
 });

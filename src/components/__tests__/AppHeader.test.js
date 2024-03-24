@@ -20,19 +20,19 @@ describe("AppHeader Component", () => {
         );
     });
 
-    // it("displays user avatar when authenticated", () => {
-    //     const { container } = render(
-    //         <AppHeader
-    //             isAuthenticated={true}
-    //             userEmail="test@example.com"
-    //             onSignOut={mockOnSignOut}
-    //             onOpenAuthModal={mockOnOpenAuthModal}
-    //             onToggle={mockOnToggle}
-    //         />
-    //     );
-    //     const avatar = container.querySelector('img[alt="User Avatar"]'); // Find the avatar by querying the container
-    //     expect(avatar).toBeInTheDocument();
-    // });
+    it("displays user avatar when authenticated", () => {
+        const { container } = render(
+            <AppHeader
+                isAuthenticated={true}
+                userEmail="test@example.com"
+                onSignOut={mockOnSignOut}
+                onOpenAuthModal={mockOnOpenAuthModal}
+                onToggle={mockOnToggle}
+            />
+        );
+        const avatar = container.querySelector('img[alt="User Avatar"]'); // Find the avatar by querying the container
+        expect(avatar).toBeInTheDocument();
+    });
 
     it("calls onSignOut when 'Sign Out' is clicked", () => {
         const { container, getByText } = render(
