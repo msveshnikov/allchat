@@ -65,22 +65,22 @@ describe("SideDrawer Component", () => {
         expect(mockOnHistorySelection).toHaveBeenCalledWith(1);
     });
 
-    // it("calls onModelChange when ModelSwitch is toggled", () => {
-    //     const { getByLabelText } = render(
-    //         <SideDrawer
-    //             isOpen={true}
-    //             onToggle={mockOnToggle}
-    //             onNewChat={mockOnNewChat}
-    //             storedChatHistories={storedChatHistories}
-    //             onHistorySelection={mockOnHistorySelection}
-    //             model="gemini"
-    //             onModelChange={mockOnModelChange}
-    //             onClearAll={mockOnClearAll}
-    //         />
-    //     );
-    //     fireEvent.click(getByLabelText("Claude Haiku"));
-    //     expect(mockOnModelChange).toHaveBeenCalledWith("claude");
-    // });
+    it("calls onModelChange when ModelSwitch is toggled", () => {
+        const { getByLabelText } = render(
+            <SideDrawer
+                isOpen={true}
+                onToggle={mockOnToggle}
+                onNewChat={mockOnNewChat}
+                storedChatHistories={storedChatHistories}
+                onHistorySelection={mockOnHistorySelection}
+                model="gemini"
+                onModelChange={mockOnModelChange}
+                onClearAll={mockOnClearAll}
+            />
+        );
+        fireEvent.click(getByLabelText("Gemini Pro"));
+        expect(mockOnModelChange).toHaveBeenCalledWith("claude");
+    });
 
     it("calls onClearAll when 'Clear All' item is clicked", () => {
         const { getByText } = render(

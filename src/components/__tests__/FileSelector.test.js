@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import FileSelector from "../FileSelector";
 import "@testing-library/jest-dom/extend-expect";
 
@@ -8,24 +8,24 @@ describe("FileSelector Component", () => {
         render(<FileSelector />);
     });
 
-    // it("calls onFileSelect callback when a file is selected", () => {
-    //     const onFileSelectMock = jest.fn();
-    //     const { getByLabelText } = render(<FileSelector onFileSelect={onFileSelectMock} />);
-    //     const fileInput = getByLabelText("Upload PDF, Word, Excel or image");
+    it("calls onFileSelect callback when a file is selected", () => {
+        const onFileSelectMock = jest.fn();
+        const { getByTestId } = render(<FileSelector onFileSelect={onFileSelectMock} />);
+        const fileInput = getByTestId("file-input");
 
-    //     fireEvent.change(fileInput, { target: { files: [new File([""], "test.png", { type: "image/png" })] } });
+        const file = new File(["(⌐□_□)"], "test.png", { type: "image/png" });
 
-    //     expect(onFileSelectMock).toHaveBeenCalledTimes(1);
-    //     expect(onFileSelectMock).toHaveBeenCalledWith(expect.any(File));
-    // });
+        fireEvent.change(fileInput, { target: { files: [file] } });
 
-    // it("displays a circle icon when a file is selected", () => {
-    //     const { getByTestId, getByLabelText } = render(<FileSelector />);
-    //     const fileInput = getByLabelText("Upload PDF, Word, Excel or image");
+        expect(onFileSelectMock).toHaveBeenCalledTimes(1);
+        expect(onFileSelectMock).toHaveBeenCalledWith(expect.any(File));
+    });
 
-    //     fireEvent.change(fileInput, { target: { files: [new File([""], "test.png", { type: "image/png" })] } });
+    it("displays a circle icon when a file is selected", async () => {
+        const file = new File(["(⌐□_□)"], "test.png", { type: "image/png" });
+        const { getByTestId } = render(<FileSelector selectedFile={file} />);
 
-    //     const circleIcon = getByTestId("circle-icon");
-    //     expect(circleIcon).toBeInTheDocument();
-    // });
+        const circleIcon = getByTestId("circle-icon");
+        expect(circleIcon).toBeInTheDocument();
+    });
 });

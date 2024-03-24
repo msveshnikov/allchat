@@ -22,6 +22,7 @@ const FileSelector = ({ onFileSelect, selectedFile }) => {
                     <AttachFileIcon />
                     {selectedFile && (
                         <CircleIcon
+                            data-testid="circle-icon"
                             style={{
                                 position: "absolute",
                                 top: 0,
