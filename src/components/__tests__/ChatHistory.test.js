@@ -15,7 +15,7 @@ describe("ChatHistory", () => {
         },
         {
             user: "User",
-            assistant: null,
+            assistant: "Here is the response with an image",
             fileType: "image/png",
             userImageData: "base64data...",
             error: null,
@@ -24,7 +24,7 @@ describe("ChatHistory", () => {
         { user: "User", assistant: null, fileType: null, userImageData: null, error: "An error occurred", image: null },
         {
             user: "User",
-            assistant: "Here is the response with an image",
+            assistant: null,
             fileType: null,
             userImageData: null,
             error: null,
@@ -117,29 +117,29 @@ describe("ChatHistory", () => {
         expect(modelOutputImage).toBeInTheDocument();
     });
 
-    // test("renders file type icon", () => {
-    //     render(
-    //         <ChatHistory
-    //             chatHistory={mockChatHistory}
-    //             isModelResponding={false}
-    //             chatContainerRef={null}
-    //             getFileTypeIcon={mockGetFileTypeIcon}
-    //         />
-    //     );
-    //     const fileTypeIcon = screen.getByText("📷");
-    //     expect(fileTypeIcon).toBeInTheDocument();
-    // });
+    test("renders file type icon", () => {
+        render(
+            <ChatHistory
+                chatHistory={mockChatHistory}
+                isModelResponding={false}
+                chatContainerRef={null}
+                getFileTypeIcon={mockGetFileTypeIcon}
+            />
+        );
+        const fileTypeIcon = screen.getByText("📷");
+        expect(fileTypeIcon).toBeInTheDocument();
+    });
 
-    // test("renders loading spinner when model is responding", () => {
-    //     render(
-    //         <ChatHistory
-    //             chatHistory={mockChatHistory}
-    //             isModelResponding={true}
-    //             chatContainerRef={null}
-    //             getFileTypeIcon={mockGetFileTypeIcon}
-    //         />
-    //     );
-    //     const loadingSpinner = screen.getByRole("progressbar");
-    //     expect(loadingSpinner).toBeInTheDocument();
-    // });
+    test("renders loading spinner when model is responding", () => {
+        render(
+            <ChatHistory
+                chatHistory={mockChatHistory}
+                isModelResponding={true}
+                chatContainerRef={null}
+                getFileTypeIcon={mockGetFileTypeIcon}
+            />
+        );
+        const loadingSpinner = screen.getByRole("progressbar");
+        expect(loadingSpinner).toBeInTheDocument();
+    });
 });
