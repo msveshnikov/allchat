@@ -8,6 +8,7 @@ global.fetch = jest.fn();
 describe("App Component", () => {
     afterEach(() => {
         jest.clearAllMocks();
+        localStorage.clear();
     });
 
     it("renders without crashing", () => {
@@ -186,5 +187,93 @@ describe("App Component", () => {
         });
 
         await waitFor(() => expect(screen.getByText("Failed to connect to the server.")).toBeInTheDocument());
+    });
+
+    it("should clear all chat history", async () => {
+        render(<App />);
+
+        const inputField = screen.getByRole("textbox");
+        const submitButton = screen.getByRole("button", { name: "Send" });
+
+        // Add some chat history
+        fireEvent.change(inputField, { target: { value: "Hello" } });
+        fireEvent.click(submitButton);
+
+        fireEvent.change(inputField, { target: { value: "How are you?" } });
+        fireEvent.click(submitButton);
+
+        // Open the SideDrawer
+        const drawerToggleButton = screen.getByRole("button", { name: "open drawer" });
+        fireEvent.click(drawerToggleButton);
+
+        // Clear all chat history
+        const clearHistoryButton = screen.getByRole("button", { name: "Clear All" });
+        fireEvent.click(clearHistoryButton);
+
+        expect(localStorage.getItem("chatHistory")).toBeNull();
+        expect(localStorage.getItem("storedChatHistories")).toBeNull();
+        expect(screen.queryByText("Hello")).not.toBeInTheDocument();
+        expect(screen.queryByText("How are you?")).not.toBeInTheDocument();
+    });
+
+    it("should handle new chat", async () => {
+        const mockResponse = { ok: true, json: () => Promise.resolve({ textResponse: "Test summary" }) };
+        global.fetch.mockResolvedValueOnce(mockResponse);
+
+        render(<App />);
+
+        const inputField = screen.getByRole("textbox");
+        const submitButton = screen.getByRole("button", { name: "Send" });
+
+        // Add some chat history
+        fireEvent.change(inputField, { target: { value: "Hello" } });
+        fireEvent.click(submitButton);
+
+        // Open the SideDrawer
+        const drawerToggleButton = screen.getByRole("button", { name: "open drawer" });
+        fireEvent.click(drawerToggleButton);
+
+        // Start a new chat
+        const newChatButton = screen.getByRole("button", { name: "New Chat" });
+        fireEvent.click(newChatButton);
+
+        expect(localStorage.getItem("chatHistory")).toBeNull();
+        expect(screen.queryByText("Hello")).not.toBeInTheDocument();
+    });
+
+    it("should handle history selection", async () => {
+        const mockResponse = { ok: true, json: () => Promise.resolve({ textResponse: "Test summary" }) };
+        global.fetch.mockResolvedValueOnce(mockResponse);
+
+        render(<App />);
+
+        const inputField = screen.getByRole("textbox");
+        const submitButton = screen.getByRole("button", { name: "Send" });
+
+        // Add some chat history
+        fireEvent.change(inputField, { target: { value: "Hello" } });
+        fireEvent.click(submitButton);
+
+        fireEvent.change(inputField, { target: { value: "How are you?" } });
+        fireEvent.click(submitButton);
+
+        // Open the SideDrawer
+        let drawerToggleButton = screen.getByRole("button", { name: "open drawer" });
+        fireEvent.click(drawerToggleButton);
+
+        // Start a new chat
+        const newChatButton = screen.getByRole("button", { name: "New Chat" });
+        fireEvent.click(newChatButton);
+
+        // Open the SideDrawer
+        drawerToggleButton = screen.getByRole("button", { name: "open drawer" });
+        fireEvent.click(drawerToggleButton);
+
+        // Select the first history item
+        const historyItem = (await screen.findAllByRole("button", "Test summary"))[0];
+        fireEvent.click(historyItem);
+
+        await waitFor(() => expect(screen.getAllByText("Hello")[0]).toBeInTheDocument());
+        expect(screen.getAllByText("How are you?")[0]).toBeInTheDocument();
     });
 });

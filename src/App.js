@@ -205,7 +205,7 @@ function App() {
             }),
         });
 
-        if (response.ok) {
+        if (response?.ok) {
             const data = await response.json();
             return data?.textResponse?.slice(0, 50) + "...";
         } else {
