@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import FileSelector from "../FileSelector";
-import "@testing-library/jest-dom/extend-expect";
+import '@testing-library/jest-dom'
 
 describe("FileSelector Component", () => {
     it("renders without crashing", () => {

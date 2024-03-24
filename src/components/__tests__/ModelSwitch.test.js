@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import ModelSwitch from "../ModelSwitch";
-import "@testing-library/jest-dom/extend-expect";
+import '@testing-library/jest-dom'
 
 describe("ModelSwitch Component", () => {
     it("renders with default props", () => {

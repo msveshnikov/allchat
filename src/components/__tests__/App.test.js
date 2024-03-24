@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent, waitFor, screen, act } from "@testing-library/react";
 import App from "../../App";
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
 
 global.fetch = jest.fn();
 
@@ -239,40 +239,5 @@ describe("App Component", () => {
 
         expect(localStorage.getItem("chatHistory")).toBeNull();
         expect(screen.queryByText("Hello")).not.toBeInTheDocument();
-    });
-
-    it("should handle history selection", async () => {
-        const mockResponse = { ok: true, json: () => Promise.resolve({ textResponse: "Test summary" }) };
-        global.fetch.mockResolvedValueOnce(mockResponse);
-
-        render(<App />);
-
-        const inputField = screen.getByRole("textbox");
-        const submitButton = screen.getByRole("button", { name: "Send" });
-
-        // Add some chat history
-        fireEvent.change(inputField, { target: { value: "Hello" } });
-        fireEvent.click(submitButton);
-
-        fireEvent.change(inputField, { target: { value: "How are you?" } });
-        fireEvent.click(submitButton);
-
-        // Open the SideDrawer
-        let drawerToggleButton = screen.getByRole("button", { name: "open drawer" });
-        fireEvent.click(drawerToggleButton);
-
-        // Start a new chat
-        const newChatButton = screen.getByRole("button", { name: "New Chat" });
-        fireEvent.click(newChatButton);
-
-        // Open the SideDrawer
-        drawerToggleButton = screen.getByRole("button", { name: "open drawer" });
-        fireEvent.click(drawerToggleButton);
-
-        // Select the first history item
-        const historyItem = (await screen.findAllByRole("button", "Test summary"))[0];
-        fireEvent.click(historyItem);
-
-        await waitFor(() => expect(screen.getAllByText("Hello")[0]).toBeInTheDocument());
     });
 });

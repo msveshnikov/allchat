@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent, screen, act } from "@testing-library/react";
 import ChatInput from "../ChatInput";
-import "@testing-library/jest-dom/extend-expect";
+import '@testing-library/jest-dom'
 import userEvent from "@testing-library/user-event";
 
 describe("ChatInput", () => {

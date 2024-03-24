@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import ChatHistory from "../ChatHistory";
-import "@testing-library/jest-dom/extend-expect";
+import '@testing-library/jest-dom'
 
 describe("ChatHistory", () => {
     const mockChatHistory = [

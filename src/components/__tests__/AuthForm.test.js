@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import AuthForm from "../AuthForm";
-import "@testing-library/jest-dom/extend-expect";
+import '@testing-library/jest-dom'
 
 jest.mock("../../App", () => ({
     API_URL: "http://example.com/api",
