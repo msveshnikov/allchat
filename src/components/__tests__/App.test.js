@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react";
+import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 import App from "../../App";
 
 describe("App Component", () => {
@@ -33,7 +33,7 @@ describe("App Component", () => {
 
     it("submits input correctly", async () => {
         const { getByTestId, getByText } = render(<App />);
-        const inputField = getByTestId("input-field");
+        const inputField = screen.getByLabelText("Enter your question");
         const submitButton = getByText("Send");
 
         fireEvent.change(inputField, { target: { value: "Test message" } });

@@ -15,7 +15,7 @@ describe("ChatInput", () => {
 
     test("renders input field", () => {
         render(<ChatInput input="" setInput={mockSetInput} onSubmit={mockOnSubmit} onFileSelect={mockOnFileSelect} />);
-        const inputField = screen.getByTestId("input-field");
+        const inputField = screen.getByLabelText("Enter your question");
         expect(inputField).toBeInTheDocument();
     });
 
