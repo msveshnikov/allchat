@@ -11,13 +11,14 @@ const userAgents = [
 ];
 
 export async function fetchSearchResults(query) {
+    console.log(query);
     const browser = await puppeteer.launch({
         product: "firefox",
         executablePath: "/usr/bin/firefox-esr",
     });
     const page = await browser.newPage();
-    const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
-    await page.setUserAgent(randomUserAgent);
+    // const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
+    // await page.setUserAgent(randomUserAgent);
 
     // Navigate to Google Search
     const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
@@ -27,9 +28,9 @@ export async function fetchSearchResults(query) {
     const extractedData = await page.evaluate(() => {
         const results = Array.from(document.querySelectorAll(".g"));
         return results.map((result) => {
-            const title = result.querySelector("h3").innerText;
-            const link = result.querySelector("a").href;
-            const snippet = result.querySelector(".VwiC3b").innerText;
+            const title = result.querySelector("h3")?.innerText;
+            const link = result.querySelector("a")?.href;
+            const snippet = result.querySelector(".VwiC3b")?.innerText;
             return { title, link, snippet };
         });
     });

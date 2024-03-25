@@ -115,6 +115,7 @@ app.post("/interact", verifyToken, async (req, res) => {
         if (userInput?.toLowerCase()?.includes("search") || userInput?.toLowerCase()?.includes("google")) {
             const searchQuery = userInput.replace("search", "").trim();
             searchResults = await fetchSearchResults(searchQuery);
+            console.log(searchResults);
         }
 
         const contextPrompt = `System: ${systemPrompt} ${chatHistory
