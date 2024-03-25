@@ -1,9 +1,7 @@
 FROM node:20.9.0-bullseye
 
-ENV NODE_ENV production
-
 RUN sed -i'.bak' 's/$/ contrib/' /etc/apt/sources.list
-RUN apt-get update && apt-get install chromium-browser -y
+RUN apt-get update && apt-get install firefox -y
 
 
 # Set the working directory in the container
