@@ -12,10 +12,7 @@ const userAgents = [
 
 export async function fetchSearchResults(query) {
     console.log(query);
-    const browser = await puppeteer.launch({
-        product: "firefox",
-        executablePath: "/usr/bin/firefox-esr",
-    });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     // const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
     // await page.setUserAgent(randomUserAgent);
@@ -40,10 +37,7 @@ export async function fetchSearchResults(query) {
 }
 
 export async function fetchPageContent(url) {
-    const browser = await puppeteer.launch({
-        product: "firefox",
-        executablePath: "/usr/bin/firefox-esr",
-    });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
     await page.setUserAgent(randomUserAgent);
