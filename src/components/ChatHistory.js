@@ -2,7 +2,26 @@ import React from "react";
 import { Box, CircularProgress } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 
-const ChatHistory = ({ chatHistory, isModelResponding, chatContainerRef, getFileTypeIcon }) => {
+const getFileTypeIcon = (mimeType) => {
+    switch (mimeType) {
+        case "pdf":
+            return "📃";
+        case "msword":
+        case "vnd.openxmlformats-officedocument.wordprocessingml.document":
+            return "📝";
+        case "vnd.ms-excel":
+        case "vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+            return "📊";
+        case "png":
+        case "jpeg":
+        case "jpg":
+            return null;
+        default:
+            return "📁";
+    }
+};
+
+const ChatHistory = ({ chatHistory, isModelResponding, chatContainerRef }) => {
     return (
         <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column" ref={chatContainerRef}>
             {chatHistory.map((chat, index) => (
@@ -17,7 +36,7 @@ const ChatHistory = ({ chatHistory, isModelResponding, chatContainerRef, getFile
                     <Box alignSelf="flex-end" bgcolor="#d4edda" color="#155724" padding={1} borderRadius={2}>
                         {chat.user}
                         {chat.fileType && getFileTypeIcon(chat.fileType) !== null && (
-                            <span style={{ fontSize: "3rem" }}>{getFileTypeIcon(chat.fileType)} 📷</span>
+                            <span style={{ fontSize: "3rem" }}>{getFileTypeIcon(chat.fileType)}</span>
                         )}
                         {!getFileTypeIcon(chat.fileType) && chat.userImageData && (
                             <img

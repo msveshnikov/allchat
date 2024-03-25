@@ -76,25 +76,6 @@ function App() {
         } catch {}
     }, [chatHistory, model, storedChatHistories]);
 
-    const getFileTypeIcon = (mimeType) => {
-        switch (mimeType) {
-            case "pdf":
-                return "📃";
-            case "msword":
-            case "vnd.openxmlformats-officedocument.wordprocessingml.document":
-                return "📝";
-            case "vnd.ms-excel":
-            case "vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-                return "📊";
-            case "png":
-            case "jpeg":
-            case "jpg":
-                return null;
-            default:
-                return "📁";
-        }
-    };
-
     const handleSubmit = async () => {
         if (input.trim() || selectedFile) {
             let fileType = "";
@@ -298,7 +279,6 @@ function App() {
                     chatHistory={chatHistory}
                     isModelResponding={isModelResponding}
                     chatContainerRef={chatContainerRef}
-                    getFileTypeIcon={getFileTypeIcon}
                 />
                 <ChatInput
                     input={input}
