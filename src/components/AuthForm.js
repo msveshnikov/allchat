@@ -49,7 +49,6 @@ const AuthForm = ({ onAuthentication }) => {
                 setSuccessMessage("");
             }
         } catch (error) {
-            console.error(error);
             setError("An error occurred");
             setSuccessMessage("");
         }

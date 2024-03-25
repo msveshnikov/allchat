@@ -27,7 +27,7 @@ const AppHeader = ({ isAuthenticated, userEmail, onSignOut, onOpenAuthModal, onT
                 <Box sx={{ ml: "auto" }}>
                     {isAuthenticated ? (
                         <div>
-                            <IconButton color="inherit" onClick={handleProfileMenuOpen}>
+                            <IconButton data-testid="profile" color="inherit" onClick={handleProfileMenuOpen}>
                                 {userEmail ? (
                                     <Avatar
                                         src={`https://www.gravatar.com/avatar/${md5(
