@@ -24,6 +24,7 @@
         "mongoose": "^8.2.3",
         "morgan": "^1.10.0",
         "pdf-parse": "1.1.1",
+        "puppeteer": "^22.6.1",
         "xlsx": "^0.18.5"
     }
 }

@@ -13,6 +13,7 @@ import promBundle from "express-prom-bundle";
 import { authenticateUser, registerUser, verifyToken } from "./auth.js";
 import mongoose from "mongoose";
 import { countCharacters, countTokens, storeUsageStats } from "./model/User.js";
+import { fetchSearchResults } from "./search.js";
 
 const MAX_CONTEXT_LENGTH = 8000;
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro and Claude Haiku language models. Your capabilities include:
@@ -110,6 +111,12 @@ app.post("/interact", verifyToken, async (req, res) => {
             }
         }
 
+        let searchResults = [];
+        if (userInput?.toLowerCase()?.includes("search") || userInput?.toLowerCase()?.includes("google")) {
+            const searchQuery = userInput.replace("search", "").trim();
+            searchResults = await fetchSearchResults(searchQuery);
+        }
+
         const contextPrompt = `System: ${systemPrompt} ${chatHistory
             .map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`)
             .join("\n")}\n\nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
@@ -129,6 +136,12 @@ app.post("/interact", verifyToken, async (req, res) => {
             inputTokens = countTokens(contextPrompt);
             textResponse = await getTextClaude(contextPrompt, "claude-3-haiku-20240307", temperature);
             outputTokens = countTokens(textResponse);
+        }
+
+        if (searchResults.length > 0) {
+            textResponse += `\n\nSearch Results:\n${searchResults
+                .map((result, index) => `${index + 1}. ${result.title}\n${result.link}\n${result.snippet}\n`)
+                .join("\n")}`;
         }
 
         userInput = userInput?.toLowerCase();

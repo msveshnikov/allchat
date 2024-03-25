@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, CircularProgress } from "@mui/material";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const getFileTypeIcon = (mimeType) => {
     switch (mimeType) {
@@ -19,6 +20,14 @@ const getFileTypeIcon = (mimeType) => {
         default:
             return "📁";
     }
+};
+
+const renderers = {
+    link: (props) => (
+        <a href={props.href} target="_blank" rel="noopener noreferrer">
+            {props.children}
+        </a>
+    ),
 };
 
 const ChatHistory = ({ chatHistory, isModelResponding, chatContainerRef }) => {
@@ -57,7 +66,11 @@ const ChatHistory = ({ chatHistory, isModelResponding, chatContainerRef }) => {
                         {isModelResponding &&
                             chat.assistant === null &&
                             chatHistory[chatHistory.length - 1] === chat && <CircularProgress size={20} />}
-                        {chat.assistant !== null && <ReactMarkdown>{chat.assistant}</ReactMarkdown>}
+                        {chat.assistant !== null && (
+                            <ReactMarkdown remarkPlugins={[remarkGfm]} renderers={renderers}>
+                                {chat.assistant}
+                            </ReactMarkdown>
+                        )}
                         {chat.error && chat.error}
                         {chat.image && (
                             <img
