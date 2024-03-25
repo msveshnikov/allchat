@@ -13,7 +13,7 @@ import promBundle from "express-prom-bundle";
 import { authenticateUser, registerUser, verifyToken } from "./auth.js";
 import mongoose from "mongoose";
 import { countCharacters, countTokens, storeUsageStats } from "./model/User.js";
-import { fetchSearchResults } from "./search.js";
+import { fetchPageContent, fetchSearchResults } from "./search.js";
 
 const MAX_CONTEXT_LENGTH = 8000;
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro and Claude Haiku language models. Your capabilities include:
@@ -112,15 +112,18 @@ app.post("/interact", verifyToken, async (req, res) => {
         }
 
         let searchResults = [];
+        let topResultContent = "";
         if (userInput?.toLowerCase()?.includes("search") || userInput?.toLowerCase()?.includes("google")) {
             const searchQuery = userInput.replace("search", "").trim();
             searchResults = await fetchSearchResults(searchQuery);
-            console.log(searchResults);
+            if (searchResults.length > 0) {
+                topResultContent = await fetchPageContent(searchResults[0].link);
+            }
         }
 
         const contextPrompt = `System: ${systemPrompt} ${chatHistory
             .map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`)
-            .join("\n")}\n\nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
+            .join("\n")}\n\n${topResultContent}\nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
 
         let textResponse;
         let inputTokens = 0;

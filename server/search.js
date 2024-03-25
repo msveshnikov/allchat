@@ -1,5 +1,5 @@
-import puppeteer from "puppeteer";
-import { JSDOM } from "jsdom";
+import cheerio from "cheerio";
+import fetch from "node-fetch";
 
 const userAgents = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
@@ -11,49 +11,31 @@ const userAgents = [
 ];
 
 export async function fetchSearchResults(query) {
-    console.log(query);
-    const browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox']
-     });
-    const page = await browser.newPage();
-    // const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
-    // await page.setUserAgent(randomUserAgent);
-
-    // Navigate to Google Search
+    const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
     const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-    await page.goto(searchUrl, { waitUntil: "networkidle2" });
+    const response = await fetch(searchUrl, { headers: { "User-Agent": randomUserAgent } });
+    const html = await response.text();
+    const $ = cheerio.load(html);
 
-    // Extract relevant information from the search results
-    const extractedData = await page.evaluate(() => {
-        const results = Array.from(document.querySelectorAll(".g"));
-        return results.map((result) => {
-            const title = result.querySelector("h3")?.innerText;
-            const link = result.querySelector("a")?.href;
-            const snippet = result.querySelector(".VwiC3b")?.innerText;
+    const results = $(".g")
+        .map((_, result) => {
+            const title = $(result).find("h3").text().trim();
+            const link = $(result).find("a").attr("href");
+            const snippet = $(result).find(".VwiC3b").text().trim();
             return { title, link, snippet };
-        });
-    });
+        })
+        .get();
 
-    await browser.close();
-    return extractedData;
+    return results;
 }
 
 export async function fetchPageContent(url) {
-    const browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox']
-     });
-    const page = await browser.newPage();
     const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
-    await page.setUserAgent(randomUserAgent);
+    const response = await fetch(url, { headers: { "User-Agent": randomUserAgent } });
+    const html = await response.text();
+    const $ = cheerio.load(html);
 
-    await page.goto(url, { waitUntil: "networkidle2" });
-    const html = await page.content();
+    const content = $("body").text().trim();
 
-    const dom = new JSDOM(html);
-    const content = dom.window.document.documentElement.textContent;
-
-    await browser.close();
     return content;
 }
