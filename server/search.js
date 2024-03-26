@@ -32,8 +32,7 @@ export async function fetchSearchResults(query) {
         return null;
     }
 }
-console.log(await fetchSearchResults("Java"));
-
+//console.log(await fetchSearchResults("Java"));
 
 export async function fetchPageContent(url) {
     try {
@@ -41,23 +40,18 @@ export async function fetchPageContent(url) {
         const response = await fetch(url, { headers: { "User-Agent": randomUserAgent } });
         const html = await response.text();
         const $ = load(html);
-
-        // Remove script and style elements
-        $('script, style').remove();
-
-        // Extract text from all remaining elements
-        const content = $('body *')
+        $("script, style").remove();
+        const content = $("body *")
             .map((_, el) => $(el).text().trim())
             .get()
-            .join(' ');
-
+            .join(" ");
         return content;
     } catch (error) {
         return null;
     }
 }
 
-// console.log(await fetchPageContent("https://www.slunecnice.cz/sw/java/"));
+// console.log(await fetchPageContent("https://www.java.com/"));
 
 export const google = async (term, lang) => {
     const fetchData = async (term, lang) => {

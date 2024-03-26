@@ -116,9 +116,9 @@ app.post("/interact", verifyToken, async (req, res) => {
         if (userInput?.toLowerCase()?.includes("search") || userInput?.toLowerCase()?.includes("google")) {
             const searchQuery = userInput.replace(/search\s*|google\s*/gi, "").trim();
             searchResults = await fetchSearchResults(searchQuery);
-            // if (searchResults?.length > 0) {
-            //     topResultContent = await fetchPageContent(searchResults[0].link);
-            // }
+            if (searchResults?.length > 0) {
+                topResultContent = await fetchPageContent(searchResults[0].link);
+            }
         }
 
         const contextPrompt = `System: ${systemPrompt} ${chatHistory
