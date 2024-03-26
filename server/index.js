@@ -114,11 +114,11 @@ app.post("/interact", verifyToken, async (req, res) => {
         let searchResults = [];
         let topResultContent = "";
         if (userInput?.toLowerCase()?.includes("search") || userInput?.toLowerCase()?.includes("google")) {
-            const searchQuery = userInput.replace("search", "").trim();
+            const searchQuery = userInput.replace(/search\s*|google\s*/gi, "").trim();
             searchResults = await fetchSearchResults(searchQuery);
-            if (searchResults.length > 0) {
-                topResultContent = await fetchPageContent(searchResults[0].link);
-            }
+            // if (searchResults?.length > 0) {
+            //     topResultContent = await fetchPageContent(searchResults[0].link);
+            // }
         }
 
         const contextPrompt = `System: ${systemPrompt} ${chatHistory
@@ -142,9 +142,12 @@ app.post("/interact", verifyToken, async (req, res) => {
             outputTokens = countTokens(textResponse);
         }
 
-        if (searchResults.length > 0) {
+        if (searchResults?.length > 0) {
             textResponse += `\n\nSearch Results:\n${searchResults
-                .map((result, index) => `${index + 1}. ${result.title}\n${result.link}\n${result.snippet}\n`)
+                .map(
+                    (result, index) =>
+                        `${index + 1}. ${result.title}\n[${result.link}](${result.link})\n${result.snippet}\n`
+                )
                 .join("\n")}`;
         }
 

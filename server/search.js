@@ -11,34 +11,53 @@ const userAgents = [
 ];
 
 export async function fetchSearchResults(query) {
-    const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
-    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-    const response = await fetch(searchUrl, { headers: { "User-Agent": randomUserAgent } });
-    const html = await response.text();
-    const $ = load(html);
+    try {
+        const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
+        const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        const response = await fetch(searchUrl, { headers: { "User-Agent": randomUserAgent } });
+        const html = await response.text();
+        const $ = load(html);
 
-    const results = $(".g")
-        .map((_, result) => {
-            const title = $(result).find("h3").text().trim();
-            const link = $(result).find("a").attr("href");
-            const snippet = $(result).find(".VwiC3b").text().trim();
-            return { title, link, snippet };
-        })
-        .get();
+        const results = $(".g")
+            .map((_, result) => {
+                const title = $(result).find("h3").text().trim();
+                const link = $(result).find("a").attr("href");
+                const snippet = $(result).find(".VwiC3b").text().trim();
+                return { title, link, snippet };
+            })
+            .get();
 
-    return results;
+        return results;
+    } catch (error) {
+        return null;
+    }
 }
+console.log(await fetchSearchResults("Java"));
+
 
 export async function fetchPageContent(url) {
-    const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
-    const response = await fetch(url, { headers: { "User-Agent": randomUserAgent } });
-    const html = await response.text();
-    const $ = load(html);
+    try {
+        const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
+        const response = await fetch(url, { headers: { "User-Agent": randomUserAgent } });
+        const html = await response.text();
+        const $ = load(html);
 
-    const content = $("body").text().trim();
+        // Remove script and style elements
+        $('script, style').remove();
 
-    return content;
+        // Extract text from all remaining elements
+        const content = $('body *')
+            .map((_, el) => $(el).text().trim())
+            .get()
+            .join(' ');
+
+        return content;
+    } catch (error) {
+        return null;
+    }
 }
+
+// console.log(await fetchPageContent("https://www.slunecnice.cz/sw/java/"));
 
 export const google = async (term, lang) => {
     const fetchData = async (term, lang) => {

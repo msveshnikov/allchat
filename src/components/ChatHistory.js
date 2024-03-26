@@ -29,8 +29,6 @@ const CodeBlock = ({ language, value }) => {
                 maxWidth: "100%",
                 overflowX: "auto",
                 padding: "8px",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
             }}
         >
             <SyntaxHighlighter
