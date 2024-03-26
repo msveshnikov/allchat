@@ -115,9 +115,14 @@ app.post("/interact", verifyToken, async (req, res) => {
         let topResultContent = "";
         if (userInput?.toLowerCase()?.includes("search") || userInput?.toLowerCase()?.includes("google")) {
             const searchQuery = userInput.replace(/search\s*|google\s*/gi, "").trim();
-            searchResults = await fetchSearchResults(searchQuery);
-            if (searchResults?.length > 0) {
-                topResultContent = await fetchPageContent(searchResults[0].link);
+            searchResults = (await fetchSearchResults(searchQuery)) || [];
+            topResultContent = searchResults.map((result) => result.title + " " + result.snippet).join("\n\n");
+            for (let i = 0; i < 3 && i < searchResults.length; i++) {
+                const pageContent = await fetchPageContent(searchResults[i].link);
+                topResultContent += pageContent;
+                if (topResultContent.length > 2000) {
+                    break;
+                }
             }
         }
 

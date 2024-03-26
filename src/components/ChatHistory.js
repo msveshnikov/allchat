@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Box, CircularProgress } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter";
@@ -42,7 +42,7 @@ const CodeBlock = ({ language, value }) => {
     );
 };
 
-const ChatHistory = ({ chatHistory, isModelResponding, chatContainerRef }) => {
+const ChatHistory = memo(({ chatHistory, isModelResponding, chatContainerRef }) => {
     return (
         <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column" ref={chatContainerRef}>
             {chatHistory.map((chat, index) => (
@@ -113,6 +113,6 @@ const ChatHistory = ({ chatHistory, isModelResponding, chatContainerRef }) => {
             ))}
         </Box>
     );
-};
+});
 
 export default ChatHistory;
