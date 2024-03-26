@@ -2,7 +2,7 @@ import React from "react";
 import { Box, CircularProgress } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter";
- 
+
 const getFileTypeIcon = (mimeType) => {
     switch (mimeType) {
         case "pdf":
@@ -24,9 +24,23 @@ const getFileTypeIcon = (mimeType) => {
 
 const CodeBlock = ({ language, value }) => {
     return (
-        <SyntaxHighlighter language={language}>
-            {value}
-        </SyntaxHighlighter>
+        <div
+            style={{
+                maxWidth: "100%",
+                overflowX: "auto",
+                padding: "8px",
+                border: "1px solid #ddd",
+                borderRadius: "4px",
+            }}
+        >
+            <SyntaxHighlighter
+                language={language}
+                wrapLines={true}
+                lineProps={{ style: { wordBreak: "break-all", whiteSpace: "pre-wrap" } }}
+            >
+                {value}
+            </SyntaxHighlighter>
+        </div>
     );
 };
 
