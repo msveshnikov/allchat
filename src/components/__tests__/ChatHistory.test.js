@@ -25,7 +25,7 @@ describe("ChatHistory", () => {
         },
         {
             user: "Paint something",
-            assistant: "Here is the response with an image",
+            assistant: "Here is the response with an image https://example.com ",
             fileType: null,
             userImageData: null,
             image: "base64data...",

@@ -1,8 +1,8 @@
 import React from "react";
 import { Box, CircularProgress } from "@mui/material";
 import ReactMarkdown from "react-markdown";
-// import remarkGfm from "remark-gfm";
-
+import SyntaxHighlighter from "react-syntax-highlighter";
+ 
 const getFileTypeIcon = (mimeType) => {
     switch (mimeType) {
         case "pdf":
@@ -22,12 +22,12 @@ const getFileTypeIcon = (mimeType) => {
     }
 };
 
-const renderers = {
-    link: (props) => (
-        <a href={props.href} target="_blank" rel="noopener noreferrer">
-            {props.children}
-        </a>
-    ),
+const CodeBlock = ({ language, value }) => {
+    return (
+        <SyntaxHighlighter language={language}>
+            {value}
+        </SyntaxHighlighter>
+    );
 };
 
 const ChatHistory = ({ chatHistory, isModelResponding, chatContainerRef }) => {
@@ -67,7 +67,26 @@ const ChatHistory = ({ chatHistory, isModelResponding, chatContainerRef }) => {
                             chat.assistant === null &&
                             chatHistory[chatHistory.length - 1] === chat && <CircularProgress size={20} />}
                         {chat.assistant !== null && (
-                            <ReactMarkdown components={renderers}>{chat.assistant}</ReactMarkdown>
+                            <ReactMarkdown
+                                components={{
+                                    code({ node, inline, className, children, ...props }) {
+                                        const match = /language-(\w+)/.exec(className || "");
+                                        const language = match ? match[1] : null;
+                                        return !inline && language ? (
+                                            <CodeBlock
+                                                language={language}
+                                                value={String(children).replace(/\n$/, "")}
+                                            />
+                                        ) : (
+                                            <code className={className} {...props}>
+                                                {children}
+                                            </code>
+                                        );
+                                    },
+                                }}
+                            >
+                                {chat.assistant}
+                            </ReactMarkdown>
                         )}
                         {chat.error && chat.error}
                         {chat.image && (
