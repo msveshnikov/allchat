@@ -1,6 +1,6 @@
 # ALLCHAT
 
-Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro model, with history, image generating/recognition, PDF/Word/Excel upload and markdown support. Written fully by _Claude 3 Sonnet_.
+Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro 1.5 model, with history, image generating/recognition, PDF/Word/Excel upload and markdown support. Written fully by _Claude 3 Sonnet_.
 
 ![image](https://github.com/msveshnikov/allchat/assets/8682996/42b2e4f2-b91b-4712-8ef2-630ebb8919e9)
 
@@ -29,6 +29,7 @@ https://allchat.online/
 You have to get those APIs and set environment variables (or put to .env file):
 
 -   GOOGLE_KEY - key of Google Cloud Project with Vertex AI API enabled (for Gemini Pro)
+-   GEMINI_KEY - key for 1.5 preview access from https://aistudio.google.com/app/apikey?utm_source=newsletter&utm_medium=email&utm_campaign=1.5p-api-launch_march&utm_content=
 -   google.json - https://console.cloud.google.com/apis/credentials/key
 -   AWS_SECRET_KEY
 -   AWS_ACCESS_KEY - (for Titan iamge generation) - https://eu-central-1.console.aws.amazon.com/console/home?region=eu-central-1

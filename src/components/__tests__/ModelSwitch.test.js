@@ -6,7 +6,7 @@ import '@testing-library/jest-dom'
 describe("ModelSwitch Component", () => {
     it("renders with default props", () => {
         const { getByLabelText } = render(<ModelSwitch model="gemini" />);
-        const switchElement = getByLabelText("Gemini Pro");
+        const switchElement = getByLabelText("Gemini Pro 1.5");
 
         expect(switchElement).toBeInTheDocument();
     });
@@ -14,7 +14,7 @@ describe("ModelSwitch Component", () => {
     it("changes model on switch toggle", () => {
         const onModelChangeMock = jest.fn();
         const { getByLabelText } = render(<ModelSwitch model="gemini" onModelChange={onModelChangeMock} />);
-        const switchElement = getByLabelText("Gemini Pro");
+        const switchElement = getByLabelText("Gemini Pro 1.5");
 
         fireEvent.click(switchElement);
 
@@ -23,7 +23,7 @@ describe("ModelSwitch Component", () => {
 
     it("displays correct label based on model prop", () => {
         const { getByLabelText, rerender } = render(<ModelSwitch model="gemini" />);
-        let switchElement = getByLabelText("Gemini Pro");
+        let switchElement = getByLabelText("Gemini Pro 1.5");
 
         expect(switchElement).toBeInTheDocument();
 

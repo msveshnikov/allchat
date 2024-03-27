@@ -11,7 +11,7 @@ const ModelSwitch = ({ onModelChange, model }) => {
         <Box sx={{ display: "flex" }}>
             <FormControlLabel
                 control={<Switch checked={model === "claude"} onChange={handleModelChange} color="primary" />}
-                label={model === "claude" ? "Claude Haiku" : "Gemini Pro"}
+                label={model === "claude" ? "Claude Haiku" : "Gemini Pro 1.5"}
                 labelPlacement="start"
             />
         </Box>

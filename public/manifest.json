@@ -1,6 +1,6 @@
 {
     "short_name": "AllChat",
-    "name": "Chat with Gemini Pro",
+    "name": "Chat with Gemini Pro 1.5",
     "icons": [
         {
             "src": "favicon.ico",
@@ -28,5 +28,5 @@
     "dir": "auto",
     "lang": "en",
     "orientation": "any",
-    "description": "Chat with Gemini Pro"
+    "description": "Chat with Gemini Pro 1.5"
 }

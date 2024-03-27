@@ -78,7 +78,7 @@ describe("SideDrawer Component", () => {
                 onClearAll={mockOnClearAll}
             />
         );
-        fireEvent.click(getByLabelText("Gemini Pro"));
+        fireEvent.click(getByLabelText("Gemini Pro 1.5"));
         expect(mockOnModelChange).toHaveBeenCalledWith("claude");
     });
 
