@@ -15,6 +15,10 @@ const AppHeader = ({ isAuthenticated, userEmail, onSignOut, onOpenAuthModal, onT
         setAnchorEl(null);
     };
 
+    const handleMangaTVClick = () => {
+        window.open("https://mangatv.shop/", "_blank");
+      };
+
     return (
         <AppBar position="static">
             <Toolbar>
@@ -53,6 +57,7 @@ const AppHeader = ({ isAuthenticated, userEmail, onSignOut, onOpenAuthModal, onT
                                 }}
                             >
                                 <MenuItem onClick={onSignOut}>Sign Out</MenuItem>
+                                <MenuItem onClick={handleMangaTVClick}>Manga TV</MenuItem>
                             </Menu>
                         </div>
                     ) : (

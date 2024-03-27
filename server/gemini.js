@@ -71,6 +71,5 @@ export const getTextGemini = async (prompt, temperature) => {
     }
 
     const result = await response.json();
-    console.log(result);
     return  result?.candidates?.[0]?.content?.parts?.[0]?.text;
 };
