@@ -42,19 +42,13 @@
         "@testing-library/jest-dom": "^6.4.2",
         "@testing-library/react": "^14.2.2",
         "@testing-library/user-event": "^14.5.2",
-        "babel-jest": "^29.7.0",
         "react-scripts": "5.0.1"
     },
     "jest": {
-        "transform": {
-            "^.+\\.(js|jsx)$": "babel-jest"
-        },
         "moduleNameMapper": {
-            "next/router": "<rootDir>/__mocks__/next/router.js",
             "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
             "^.+\\.(jpg|jpeg|png|gif|webp|avif|svg)$": "<rootDir>/__mocks__/file-mock.js",
-            "react-markdown": "<rootDir>/node_modules/react-markdown/react-markdown.min.js",
-            "remark-gfm": "<rootDir>/node_modules/remark-gfm/lib/index.js"
+            "react-markdown": "<rootDir>/node_modules/react-markdown/react-markdown.min.js"
         },
         "transformIgnorePatterns": [
             "/node_modules/(?!react-syntax-highlighter)"
