@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import AppHeader from "../AppHeader";
-import '@testing-library/jest-dom'
+import "@testing-library/jest-dom";
 
 describe("AppHeader Component", () => {
     const mockOnToggle = jest.fn();
@@ -79,5 +79,57 @@ describe("AppHeader Component", () => {
         const menuIcon = getByLabelText("open drawer");
         fireEvent.click(menuIcon);
         expect(mockOnToggle).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe("handleMyAccountClick", () => {
+    let onMyAccountMock;
+    let handleProfileMenuCloseMock;
+
+    beforeEach(() => {
+        onMyAccountMock = jest.fn();
+        handleProfileMenuCloseMock = jest.fn();
+        window.open = jest.fn();
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it("calls onMyAccount and handleProfileMenuClose", () => {
+        const handleMyAccountClick = () => {
+            onMyAccountMock();
+            handleProfileMenuCloseMock();
+        };
+
+        handleMyAccountClick();
+
+        expect(onMyAccountMock).toHaveBeenCalledTimes(1);
+        expect(handleProfileMenuCloseMock).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe("handleMangaTVClick", () => {
+    let handleProfileMenuCloseMock;
+
+    beforeEach(() => {
+        handleProfileMenuCloseMock = jest.fn();
+        window.open = jest.fn();
+    });
+ 
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it("opens the MangaTV website and calls handleProfileMenuClose", () => {
+        const handleMangaTVClick = () => {
+            window.open("https://mangatv.shop/", "_blank");
+            handleProfileMenuCloseMock();
+        };
+
+        handleMangaTVClick();
+
+        expect(window.open).toHaveBeenCalledWith("https://mangatv.shop/", "_blank");
+        expect(handleProfileMenuCloseMock).toHaveBeenCalledTimes(1);
     });
 });
