@@ -46,7 +46,7 @@ const StatsPage = () => {
                             <StyledCard>
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom color="primary">
-                                        Gemini Usage
+                                        Gemini Pro 1.5 Usage
                                     </Typography>
                                     <Typography variant="body1" color="text.primary">
                                         Total Input Characters: {stats.gemini.totalInputCharacters}
@@ -67,7 +67,7 @@ const StatsPage = () => {
                             <StyledCard>
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom color="primary">
-                                        Claude Usage
+                                        Claude 3 Haiku Usage
                                     </Typography>
                                     <Typography variant="body1" color="text.primary">
                                         Total Input Tokens: {stats.claude.totalInputTokens}

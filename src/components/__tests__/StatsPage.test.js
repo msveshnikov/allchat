@@ -43,7 +43,7 @@ describe("StatsPage", () => {
 
         await waitFor(() => {
             expect(screen.getByText("Admin Statistics")).toBeInTheDocument();
-            expect(screen.getByText("Gemini Usage")).toBeInTheDocument();
+            expect(screen.getByText("Gemini Pro 1.5 Usage")).toBeInTheDocument();
             expect(
                 screen.getByText(`Total Input Characters: ${mockStats.gemini.totalInputCharacters}`)
             ).toBeInTheDocument();
@@ -56,7 +56,7 @@ describe("StatsPage", () => {
             expect(
                 screen.getByText(`Total Money Consumed: $${mockStats.gemini.totalMoneyConsumed.toFixed(2)}`)
             ).toBeInTheDocument();
-            expect(screen.getByText("Claude Usage")).toBeInTheDocument();
+            expect(screen.getByText("Claude 3 Haiku Usage")).toBeInTheDocument();
             expect(screen.getByText(`Total Input Tokens: ${mockStats.claude.totalInputTokens}`)).toBeInTheDocument();
             expect(screen.getByText(`Total Output Tokens: ${mockStats.claude.totalOutputTokens}`)).toBeInTheDocument();
             expect(
