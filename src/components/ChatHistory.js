@@ -1,7 +1,15 @@
 import React, { memo } from "react";
 import { Box, CircularProgress } from "@mui/material";
 import ReactMarkdown from "react-markdown";
-import SyntaxHighlighter from "react-syntax-highlighter";
+import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
+import style from "react-syntax-highlighter/dist/esm/styles/hljs/monokai";
+import js from "react-syntax-highlighter/dist/esm/languages/hljs/javascript";
+import java from "react-syntax-highlighter/dist/esm/languages/hljs/java";
+import python from "react-syntax-highlighter/dist/esm/languages/hljs/python";
+
+SyntaxHighlighter.registerLanguage("js", js);
+SyntaxHighlighter.registerLanguage("java", java);
+SyntaxHighlighter.registerLanguage("python", python);
 
 const getFileTypeIcon = (mimeType) => {
     switch (mimeType) {
@@ -33,6 +41,7 @@ const CodeBlock = ({ language, value }) => {
         >
             <SyntaxHighlighter
                 language={language}
+                style={style}
                 wrapLines={true}
                 lineProps={{ style: { wordBreak: "break-all", whiteSpace: "pre-wrap" } }}
             >
