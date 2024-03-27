@@ -4,7 +4,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import md5 from "md5";
 
-const AppHeader = ({ isAuthenticated, userEmail, onSignOut, onOpenAuthModal, onToggle }) => {
+const AppHeader = ({ isAuthenticated, userEmail, onSignOut, onMyAccount, onOpenAuthModal, onToggle }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleProfileMenuOpen = (event) => {
@@ -15,9 +15,20 @@ const AppHeader = ({ isAuthenticated, userEmail, onSignOut, onOpenAuthModal, onT
         setAnchorEl(null);
     };
 
+    const handleMyAccountClick = () => {
+        onMyAccount();
+        handleProfileMenuClose();
+    };
+
+    const handleSignOutClick = () => {
+        onSignOut();
+        handleProfileMenuClose();
+    };
+
     const handleMangaTVClick = () => {
         window.open("https://mangatv.shop/", "_blank");
-      };
+        handleProfileMenuClose();
+    };
 
     return (
         <AppBar position="static">
@@ -56,7 +67,8 @@ const AppHeader = ({ isAuthenticated, userEmail, onSignOut, onOpenAuthModal, onT
                                     horizontal: "right",
                                 }}
                             >
-                                <MenuItem onClick={onSignOut}>Sign Out</MenuItem>
+                                <MenuItem onClick={handleMyAccountClick}>My Account</MenuItem>
+                                <MenuItem onClick={handleSignOutClick}>Sign Out</MenuItem>
                                 <MenuItem onClick={handleMangaTVClick}>Manga TV</MenuItem>
                             </Menu>
                         </div>

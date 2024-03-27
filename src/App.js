@@ -5,6 +5,7 @@ import SideDrawer from "./components/SideDrawer";
 import ChatHistory from "./components/ChatHistory";
 import ChatInput from "./components/ChatInput";
 import AuthForm from "./components/AuthForm";
+import MyAccountPage from "./components/MyAccountPage";
 
 const MAX_CHAT_HISTORY_LENGTH = 30;
 const MAX_CHATS = 7;
@@ -26,6 +27,8 @@ function App() {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState("info");
+    const [openMyAccountModal, setOpenMyAccountModal] = useState(false);
+    const [user, setUser] = useState(null);
 
     const handleAuthentication = (token, email) => {
         localStorage.setItem("token", token);
@@ -247,12 +250,46 @@ function App() {
         setSnackbarOpen(false);
     };
 
+    const handleMyAccount = () => {
+        setOpenMyAccountModal(true);
+        fetchUserData(); // Call the function to fetch user data
+    };
+
+    const handleCloseMyAccountModal = () => {
+        setOpenMyAccountModal(false);
+    };
+
+    const fetchUserData = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            };
+
+            const response = await fetch(`${API_URL}/user`, {
+                method: "GET",
+                headers,
+            });
+
+            if (response.ok) {
+                const userData = await response.json();
+                setUser(userData);
+            } else {
+                console.error("Failed to fetch user data");
+            }
+        } catch (error) {
+            console.error("Error fetching user data:", error);
+        }
+    };
+
     return (
         <>
             <AppHeader
                 isAuthenticated={isAuthenticated}
                 userEmail={userEmail}
                 onSignOut={handleSignOut}
+                onMyAccount={handleMyAccount}
                 onOpenAuthModal={handleOpenAuthModal}
                 onToggle={toggleDrawer}
             />
@@ -272,6 +309,12 @@ function App() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseAuthModal}>Cancel</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openMyAccountModal} onClose={handleCloseMyAccountModal} maxWidth="md" fullWidth>
+                <DialogContent>{user && <MyAccountPage user={user} />}</DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseMyAccountModal}>Close</Button>
                 </DialogActions>
             </Dialog>
             <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "91vh" }}>

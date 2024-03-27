@@ -12,10 +12,10 @@ import { getTextClaude } from "./claude.js";
 import promBundle from "express-prom-bundle";
 import { authenticateUser, registerUser, verifyToken } from "./auth.js";
 import mongoose from "mongoose";
-import { countCharacters, countTokens, storeUsageStats } from "./model/User.js";
+import { User, countCharacters, countTokens, storeUsageStats } from "./model/User.js";
 import { fetchPageContent, fetchSearchResults } from "./search.js";
 
-const MAX_CONTEXT_LENGTH = 8000;
+const MAX_CONTEXT_LENGTH = 16000;
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro and Claude Haiku language models. Your capabilities include:
 
 - Engaging in natural language conversations and answering user queries.
@@ -199,6 +199,16 @@ app.post("/login", async (req, res) => {
         res.status(200).json({ token: result.token });
     } else {
         res.status(401).json({ error: result.error });
+    }
+});
+
+app.get("/user", verifyToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select("-password"); // Exclude the password field
+        res.json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Server error" });
     }
 });
 
