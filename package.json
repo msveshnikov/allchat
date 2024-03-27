@@ -35,10 +35,6 @@
         ]
     },
     "devDependencies": {
-        "@babel/core": "^7.24.3",
-        "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-        "@babel/preset-env": "^7.24.3",
-        "@babel/preset-react": "^7.24.1",
         "@testing-library/jest-dom": "^6.4.2",
         "@testing-library/react": "^14.2.2",
         "@testing-library/user-event": "^14.5.2",
