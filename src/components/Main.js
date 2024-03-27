@@ -72,12 +72,17 @@ function Main() {
                 const chatHistoryToStore = chatHistory.slice(-MAX_CHAT_HISTORY_LENGTH);
                 localStorage.setItem("chatHistory", JSON.stringify(chatHistoryToStore));
             }
+        } catch {}
+    }, [chatHistory]);
+
+    useEffect(() => {
+        try {
             if (storedChatHistories.length > 0) {
                 localStorage.setItem("storedChatHistories", JSON.stringify(storedChatHistories));
             }
             localStorage.setItem("selectedModel", model);
         } catch {}
-    }, [chatHistory, model, storedChatHistories]);
+    }, [model, storedChatHistories]);
 
     const handleSubmit = async () => {
         if (input.trim() || selectedFile) {
