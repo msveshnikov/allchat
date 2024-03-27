@@ -212,6 +212,41 @@ app.get("/user", verifyToken, async (req, res) => {
     }
 });
 
+app.get("/admin/stats", verifyToken, async (req, res) => {
+    try {
+        const users = await User.find({});
+        const geminiStats = {
+            totalInputCharacters: 0,
+            totalOutputCharacters: 0,
+            totalImagesGenerated: 0,
+            totalMoneyConsumed: 0,
+        };
+        const claudeStats = {
+            totalInputTokens: 0,
+            totalOutputTokens: 0,
+            totalMoneyConsumed: 0,
+        };
+
+        for (const user of users) {
+            const { gemini, claude } = user.usageStats;
+
+            geminiStats.totalInputCharacters += gemini.inputCharacters;
+            geminiStats.totalOutputCharacters += gemini.outputCharacters;
+            geminiStats.totalImagesGenerated += gemini.imagesGenerated;
+            geminiStats.totalMoneyConsumed += gemini.moneyConsumed;
+
+            claudeStats.totalInputTokens += claude.inputTokens;
+            claudeStats.totalOutputTokens += claude.outputTokens;
+            claudeStats.totalMoneyConsumed += claude.moneyConsumed;
+        }
+
+        res.json({ gemini: geminiStats, claude: claudeStats });
+    } catch (error) {
+        console.error("Error fetching admin stats:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
 app.listen(5000, () => {
     console.log(`🚀 Server started on port 5000`);
 });

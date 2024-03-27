@@ -8,6 +8,7 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-markdown": "^8.0.0",
+        "react-router-dom": "^6.22.3",
         "react-syntax-highlighter": "^15.5.0"
     },
     "scripts": {
@@ -41,8 +42,8 @@
         "@testing-library/jest-dom": "^6.4.2",
         "@testing-library/react": "^14.2.2",
         "@testing-library/user-event": "^14.5.2",
-        "react-scripts": "5.0.1",
-        "babel-jest": "^29.7.0"
+        "babel-jest": "^29.7.0",
+        "react-scripts": "5.0.1"
     },
     "jest": {
         "transform": {

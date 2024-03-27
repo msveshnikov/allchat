@@ -1,0 +1,101 @@
+import React, { useState, useEffect } from "react";
+import { Box, Typography, Grid, Card, CardContent, styled } from "@mui/material";
+import { API_URL } from "../App";
+
+const StyledCard = styled(Card)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+    ...theme.typography.body2,
+    padding: theme.spacing(2),
+    color: theme.palette.text.secondary,
+}));
+
+const AdminStatsPage = () => {
+    const [stats, setStats] = useState(null);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const headers = {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                };
+
+                const response = await fetch(`${API_URL}/admin/stats`, {
+                    method: "GET",
+                    headers,
+                });
+
+                if (response.ok) {
+                    const statsData = await response.json();
+                    setStats(statsData);
+                } else {
+                    console.error("Failed to fetch admin stats");
+                }
+            } catch (error) {
+                console.error("Error fetching admin stats:", error);
+            }
+        };
+
+        fetchStats();
+    }, []);
+
+    return (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+            <Box maxWidth="800px" width="100%">
+                <Typography variant="h4" gutterBottom align="center" color="primary">
+                    Admin Statistics
+                </Typography>
+                {stats ? (
+                    <Grid container spacing={2} justifyContent="center">
+                        <Grid item xs={12} md={6}>
+                            <StyledCard>
+                                <CardContent>
+                                    <Typography variant="h6" gutterBottom color="primary">
+                                        Gemini Usage
+                                    </Typography>
+                                    <Typography variant="body1" color="text.primary">
+                                        Total Input Characters: {stats.gemini.totalInputCharacters}
+                                    </Typography>
+                                    <Typography variant="body1" color="text.primary">
+                                        Total Output Characters: {stats.gemini.totalOutputCharacters}
+                                    </Typography>
+                                    <Typography variant="body1" color="text.primary">
+                                        Total Images Generated: {stats.gemini.totalImagesGenerated}
+                                    </Typography>
+                                    <Typography variant="body1" color="text.primary">
+                                        Total Money Consumed: ${stats.gemini.totalMoneyConsumed.toFixed(2)}
+                                    </Typography>
+                                </CardContent>
+                            </StyledCard>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <StyledCard>
+                                <CardContent>
+                                    <Typography variant="h6" gutterBottom color="primary">
+                                        Claude Usage
+                                    </Typography>
+                                    <Typography variant="body1" color="text.primary">
+                                        Total Input Tokens: {stats.claude.totalInputTokens}
+                                    </Typography>
+                                    <Typography variant="body1" color="text.primary">
+                                        Total Output Tokens: {stats.claude.totalOutputTokens}
+                                    </Typography>
+                                    <Typography variant="body1" color="text.primary">
+                                        Total Money Consumed: ${stats.claude.totalMoneyConsumed.toFixed(2)}
+                                    </Typography>
+                                </CardContent>
+                            </StyledCard>
+                        </Grid>
+                    </Grid>
+                ) : (
+                    <Typography variant="body1" align="center">
+                        Loading...
+                    </Typography>
+                )}
+            </Box>
+        </Box>
+    );
+};
+
+export default AdminStatsPage;
