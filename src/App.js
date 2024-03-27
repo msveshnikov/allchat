@@ -260,26 +260,20 @@ function App() {
     };
 
     const fetchUserData = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            const headers = {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            };
+        const token = localStorage.getItem("token");
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        };
 
-            const response = await fetch(`${API_URL}/user`, {
-                method: "GET",
-                headers,
-            });
+        const response = await fetch(`${API_URL}/user`, {
+            method: "GET",
+            headers,
+        });
 
-            if (response.ok) {
-                const userData = await response.json();
-                setUser(userData);
-            } else {
-                console.error("Failed to fetch user data");
-            }
-        } catch (error) {
-            console.error("Error fetching user data:", error);
+        if (response.ok) {
+            const userData = await response.json();
+            setUser(userData);
         }
     };
 
