@@ -6,7 +6,7 @@ import App from "./App";
 import { ThemeProvider } from "@mui/material";
 import theme from "./theme";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-import AdminStatsPage from "./components/AdminStatspage";
+import AdminStatsPage from "./components/AdminStatsPage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

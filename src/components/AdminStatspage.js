@@ -14,26 +14,20 @@ const AdminStatsPage = () => {
 
     useEffect(() => {
         const fetchStats = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                const headers = {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                };
+            const token = localStorage.getItem("token");
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            };
 
-                const response = await fetch(`${API_URL}/admin/stats`, {
-                    method: "GET",
-                    headers,
-                });
+            const response = await fetch(`${API_URL}/admin/stats`, {
+                method: "GET",
+                headers,
+            });
 
-                if (response.ok) {
-                    const statsData = await response.json();
-                    setStats(statsData);
-                } else {
-                    console.error("Failed to fetch admin stats");
-                }
-            } catch (error) {
-                console.error("Error fetching admin stats:", error);
+            if (response.ok) {
+                const statsData = await response.json();
+                setStats(statsData);
             }
         };
 
