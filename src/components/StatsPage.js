@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Grid, Card, CardContent, styled } from "@mui/material";
-import { API_URL } from "../App";
+import { API_URL } from "./Main";
 
 const StyledCard = styled(Card)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",

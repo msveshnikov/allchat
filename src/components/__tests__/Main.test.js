@@ -1,25 +1,25 @@
 import React from "react";
 import { render, fireEvent, waitFor, screen, act } from "@testing-library/react";
-import App from "../../App";
+import Main from "../Main";
 import "@testing-library/jest-dom";
 
 global.fetch = jest.fn();
 
-describe("App Component", () => {
+describe("Main Component", () => {
     afterEach(() => {
         jest.clearAllMocks();
         localStorage.clear();
     });
 
     it("renders without crashing", () => {
-        render(<App />);
+        render(<Main />);
     });
 
     it("should generate chat summary when selecting a history item", async () => {
         const mockResponse = { ok: true, json: () => Promise.resolve({ textResponse: "Test summary" }) };
         global.fetch.mockResolvedValueOnce(mockResponse);
 
-        render(<App />);
+        render(<Main />);
 
         // Add some chat history
         const inputField = screen.getByRole("textbox");
@@ -48,7 +48,7 @@ describe("App Component", () => {
         const mockResponse = { ok: true, json: () => Promise.resolve({ textResponse: "Test response" }) };
         global.fetch.mockResolvedValueOnce(mockResponse);
 
-        render(<App />);
+        render(<Main />);
 
         const inputField = screen.getByRole("textbox");
         const submitButton = screen.getByRole("button", { name: "Send" });
@@ -75,7 +75,7 @@ describe("App Component", () => {
         const mockResponse = { ok: false, status: 500 };
         global.fetch.mockResolvedValueOnce(mockResponse);
 
-        render(<App />);
+        render(<Main />);
 
         const inputField = screen.getByRole("textbox");
         const submitButton = screen.getByRole("button", { name: "Send" });
@@ -87,7 +87,7 @@ describe("App Component", () => {
     });
 
     it("opens authentication modal when authentication button is clicked", async () => {
-        const { getByText, getByRole } = render(<App />);
+        const { getByText, getByRole } = render(<Main />);
         const authButton = getByText("Sign In");
 
         fireEvent.click(authButton);
@@ -98,7 +98,7 @@ describe("App Component", () => {
     });
 
     it("closes authentication modal when cancel button is clicked", async () => {
-        const { getByText, getByRole } = render(<App />);
+        const { getByText, getByRole } = render(<Main />);
         const authButton = getByText("Sign In");
         fireEvent.click(authButton);
         await waitFor(() => {
@@ -112,7 +112,7 @@ describe("App Component", () => {
     });
 
     it("handles file selection correctly", async () => {
-        const { getByTestId } = render(<App />);
+        const { getByTestId } = render(<Main />);
         const fileInput = getByTestId("file-input");
 
         const file = new File(["(⌐□_□)"], "test.png", { type: "image/png" });
@@ -125,7 +125,7 @@ describe("App Component", () => {
     });
 
     it("submits input correctly", async () => {
-        const { getByText } = render(<App />);
+        const { getByText } = render(<Main />);
         const inputField = screen.getByLabelText("Enter your question");
         const submitButton = getByText("Send");
 
@@ -141,7 +141,7 @@ describe("App Component", () => {
         const mockResponse = { ok: false, status: 403 };
         global.fetch.mockResolvedValueOnce(mockResponse);
 
-        render(<App />);
+        render(<Main />);
 
         const inputField = screen.getByRole("textbox");
         const submitButton = screen.getByRole("button", { name: "Send" });
@@ -160,7 +160,7 @@ describe("App Component", () => {
         const mockResponse = { ok: false, status: 500 };
         global.fetch.mockResolvedValueOnce(mockResponse);
 
-        render(<App />);
+        render(<Main />);
 
         const inputField = screen.getByRole("textbox");
         const submitButton = screen.getByRole("button", { name: "Send" });
@@ -176,7 +176,7 @@ describe("App Component", () => {
     it("should handle network error when sending API request", async () => {
         global.fetch.mockRejectedValueOnce(new Error("Network error"));
 
-        render(<App />);
+        render(<Main />);
 
         const inputField = screen.getByRole("textbox");
         const submitButton = screen.getByRole("button", { name: "Send" });
@@ -190,7 +190,7 @@ describe("App Component", () => {
     });
 
     it("should clear all chat history", async () => {
-        render(<App />);
+        render(<Main />);
 
         const inputField = screen.getByRole("textbox");
         const submitButton = screen.getByRole("button", { name: "Send" });
@@ -224,7 +224,7 @@ describe("App Component", () => {
         const mockResponse = { ok: true, json: () => Promise.resolve({ textResponse: "Test summary" }) };
         global.fetch.mockResolvedValueOnce(mockResponse);
 
-        render(<App />);
+        render(<Main />);
 
         const inputField = screen.getByRole("textbox");
         const submitButton = screen.getByRole("button", { name: "Send" });
@@ -254,7 +254,7 @@ describe("App Component", () => {
         const mockResponse = { ok: false, json: () => Promise.resolve({ textResponse: "Test summary" }) };
         global.fetch.mockResolvedValueOnce(mockResponse);
 
-        render(<App />);
+        render(<Main />);
 
         const inputField = screen.getByRole("textbox");
         const submitButton = screen.getByRole("button", { name: "Send" });
@@ -308,7 +308,7 @@ describe("Authentication and Sign-out", () => {
         const mockResponse = { ok: true, status: 200, json: () => Promise.resolve({ token: "123" }) };
         global.fetch.mockResolvedValueOnce(mockResponse);
 
-        const { getByText, getByLabelText, getByRole } = render(<App />);
+        const { getByText, getByLabelText, getByRole } = render(<Main />);
         const authButton = getByText("Sign In");
         await act(async () => {
             fireEvent.click(authButton);
@@ -334,7 +334,7 @@ describe("Authentication and Sign-out", () => {
         const mockResponse = { ok: true, status: 200, json: () => Promise.resolve({ token: "123" }) };
         global.fetch.mockResolvedValueOnce(mockResponse);
 
-        const { getByText, getByLabelText, getByRole } = render(<App />);
+        const { getByText, getByLabelText, getByRole } = render(<Main />);
 
         // Click on the "Sign In" button to open the authentication modal
         const signInButton = getByText("Sign In");
@@ -383,7 +383,7 @@ describe("Authentication and Sign-out", () => {
         const mockResponse = { ok: false, status: 403 };
         global.fetch.mockResolvedValueOnce(mockResponse);
 
-        render(<App />);
+        render(<Main />);
 
         const inputField = screen.getByRole("textbox");
         const submitButton = screen.getByRole("button", { name: "Send" });
@@ -423,7 +423,7 @@ describe("Authentication and Sign-out", () => {
             json: () => Promise.resolve(mockUserData),
         });
 
-        const { getByAltText, getByText, getByRole } = render(<App />);
+        const { getByAltText, getByText, getByRole } = render(<Main />);
 
         // Click the Avatar icon to open the user menu
         fireEvent.click(getByAltText("User Avatar"));
@@ -450,7 +450,7 @@ describe("Authentication and Sign-out", () => {
     });
 
     it("does not open the My Account modal when not authenticated", () => {
-        const { queryByRole } = render(<App />);
+        const { queryByRole } = render(<Main />);
 
         // Click the "My Account" button (should not be available)
         fireEvent.click(screen.queryByText("My Account") || document.body);

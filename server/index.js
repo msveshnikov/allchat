@@ -15,7 +15,7 @@ import mongoose from "mongoose";
 import { User, countCharacters, countTokens, storeUsageStats } from "./model/User.js";
 import { fetchPageContent, fetchSearchResults } from "./search.js";
 
-const MAX_CONTEXT_LENGTH = 16000;
+const MAX_CONTEXT_LENGTH = 8000;
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro and Claude Haiku language models. Your capabilities include:
 
 - Engaging in natural language conversations and answering user queries.

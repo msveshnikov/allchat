@@ -3,7 +3,7 @@ import { render, waitFor, screen } from "@testing-library/react";
 import StatsPage from "../StatsPage";
 import "@testing-library/jest-dom";
 
-jest.mock("../../App", () => ({
+jest.mock("../Main", () => ({
     API_URL: "https://api.example.com",
 }));
 

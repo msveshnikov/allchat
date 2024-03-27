@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import AuthForm from "../AuthForm";
 import '@testing-library/jest-dom'
 
-jest.mock("../../App", () => ({
+jest.mock("../Main", () => ({
     API_URL: "http://example.com/api",
 }));
 

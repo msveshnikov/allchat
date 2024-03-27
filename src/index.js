@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./index.css";
-import App from "./App";
+import Main from "./components/Main";
 import { ThemeProvider } from "@mui/material";
 import theme from "./theme";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
@@ -15,7 +15,7 @@ root.render(
             <Router>
                 <Routes>
                     <Route path="/admin" element={<StatsPage />} />
-                    <Route path="/" element={<App />} />
+                    <Route path="/" element={<Main />} />
                 </Routes>
             </Router>
         </React.StrictMode>

@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Container, Snackbar, Dialog, DialogContent, DialogActions, Button } from "@mui/material";
-import AppHeader from "./components/AppHeader";
-import SideDrawer from "./components/SideDrawer";
-import ChatHistory from "./components/ChatHistory";
-import ChatInput from "./components/ChatInput";
-import AuthForm from "./components/AuthForm";
-import MyAccountPage from "./components/MyAccountPage";
+import AppHeader from "./AppHeader";
+import SideDrawer from "./SideDrawer";
+import ChatHistory from "./ChatHistory";
+import ChatInput from "./ChatInput";
+import AuthForm from "./AuthForm";
+import MyAccountPage from "./MyAccountPage";
 
 const MAX_CHAT_HISTORY_LENGTH = 30;
 const MAX_CHATS = 7;
 
 export const API_URL = process.env.NODE_ENV === "production" ? "https://allchat.online/api" : "http://localhost:5000";
 
-function App() {
+function Main() {
     const [input, setInput] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
     const [storedChatHistories, setStoredChatHistories] = useState([]);
@@ -336,4 +336,4 @@ function App() {
     );
 }
 
-export default App;
+export default Main;

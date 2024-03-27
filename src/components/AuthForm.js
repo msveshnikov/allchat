@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { API_URL } from "../App";
+import { API_URL } from "./Main";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
