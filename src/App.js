@@ -7,7 +7,7 @@ import ChatInput from "./components/ChatInput";
 import AuthForm from "./components/AuthForm";
 
 const MAX_CHAT_HISTORY_LENGTH = 30;
-const MAX_CHATS = 8;
+const MAX_CHATS = 7;
 
 export const API_URL = process.env.NODE_ENV === "production" ? "https://allchat.online/api" : "http://localhost:5000";
 
