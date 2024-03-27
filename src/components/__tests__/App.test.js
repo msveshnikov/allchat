@@ -395,4 +395,67 @@ describe("Authentication and Sign-out", () => {
 
         await waitFor(() => expect(screen.getByRole("heading", "Login")).toBeInTheDocument());
     });
+
+    it("opens the My Account modal when authenticated", async () => {
+        // Mock the authentication state and user data
+        localStorage.setItem("token", "mock_token");
+        localStorage.setItem("userEmail", "test@example.com");
+
+        // Mock the API response for user data
+        const mockUserData = {
+            email: "test@example.com",
+            usageStats: {
+                gemini: {
+                    inputCharacters: 1000,
+                    outputCharacters: 2000,
+                    imagesGenerated: 10,
+                    moneyConsumed: 5.99,
+                },
+                claude: {
+                    inputTokens: 500,
+                    outputTokens: 1000,
+                    moneyConsumed: 2.99,
+                },
+            },
+        };
+        global.fetch = jest.fn().mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve(mockUserData),
+        });
+
+        const { getByAltText, getByText, getByRole } = render(<App />);
+
+        // Click the Avatar icon to open the user menu
+        fireEvent.click(getByAltText("User Avatar"));
+
+        // Click the "My Account" button
+        fireEvent.click(getByText("My Account"));
+
+        // Wait for the My Account modal to open
+        const myAccountModal = await screen.findByRole("dialog");
+        expect(myAccountModal).toBeInTheDocument();
+
+        // Wait for the user's email to be displayed in the modal
+        const userEmailElement = await screen.findByText("test@example.com");
+        expect(userEmailElement).toBeInTheDocument();
+
+        // Close the My Account modal
+        const closeButton = getByRole("button", { name: "Close" });
+        fireEvent.click(closeButton);
+
+        // Wait for the My Account modal to close
+        await waitFor(() => {
+            expect(screen.queryByRole("dialog")).toBeNull();
+        });
+    });
+
+    it("does not open the My Account modal when not authenticated", () => {
+        const { queryByRole } = render(<App />);
+
+        // Click the "My Account" button (should not be available)
+        fireEvent.click(screen.queryByText("My Account") || document.body);
+
+        // Check that the My Account modal is not open
+        expect(queryByRole("dialog")).toBeNull();
+    });
 });
