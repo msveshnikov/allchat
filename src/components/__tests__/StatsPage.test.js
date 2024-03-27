@@ -1,13 +1,13 @@
 import React from "react";
 import { render, waitFor, screen } from "@testing-library/react";
-import AdminStatsPage from "../AdminStatsPage";
+import StatsPage from "../StatsPage";
 import "@testing-library/jest-dom";
 
 jest.mock("../../App", () => ({
     API_URL: "https://api.example.com",
 }));
 
-describe("AdminStatsPage", () => {
+describe("StatsPage", () => {
     const mockStats = {
         gemini: {
             totalInputCharacters: 1000,
@@ -34,12 +34,12 @@ describe("AdminStatsPage", () => {
     });
 
     test("renders loading state initially", () => {
-        render(<AdminStatsPage />);
+        render(<StatsPage />);
         expect(screen.getByText("Loading...")).toBeInTheDocument();
     });
 
     test("renders stats after data is fetched", async () => {
-        render(<AdminStatsPage />);
+        render(<StatsPage />);
 
         await waitFor(() => {
             expect(screen.getByText("Admin Statistics")).toBeInTheDocument();

@@ -9,7 +9,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-const AdminStatsPage = () => {
+const StatsPage = () => {
     const [stats, setStats] = useState(null);
 
     useEffect(() => {
@@ -92,4 +92,4 @@ const AdminStatsPage = () => {
     );
 };
 
-export default AdminStatsPage;
+export default StatsPage;

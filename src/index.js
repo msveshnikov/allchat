@@ -6,7 +6,7 @@ import App from "./App";
 import { ThemeProvider } from "@mui/material";
 import theme from "./theme";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-import AdminStatsPage from "./components/AdminStatsPage";
+import StatsPage from "./components/StatsPage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -14,7 +14,7 @@ root.render(
         <React.StrictMode>
             <Router>
                 <Routes>
-                    <Route path="/admin" element={<AdminStatsPage />} />
+                    <Route path="/admin" element={<StatsPage />} />
                     <Route path="/" element={<App />} />
                 </Routes>
             </Router>
