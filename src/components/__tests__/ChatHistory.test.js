@@ -14,7 +14,17 @@ describe("ChatHistory", () => {
         },
         {
             user: "Whats on photo?",
-            assistant: "This is apple",
+            assistant: `This is apple # ALLCHAT
+
+            Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro 1.5 model, with history, image generating/recognition, PDF/Word/Excel upload and markdown support. Written fully by _Claude 3 Sonnet_.
+            
+            ![image](https://github.com/msveshnikov/allchat/assets/8682996/42b2e4f2-b91b-4712-8ef2-630ebb8919e9)
+            
+            ## Demo
+            
+            https://allchat.online/
+            
+            **Backend (Node.js)**`,
             fileType: "png",
             userImageData: "base64data...",
             image: null,
@@ -25,15 +35,15 @@ describe("ChatHistory", () => {
         },
         {
             user: "Paint something",
-            assistant: "Here is the response with an image https://example.com ",
-            fileType: null,
+            assistant: "Here is the response with an image https://example.com and ",
+            fileType: "msword",
             userImageData: null,
             image: "base64data...",
         },
         {
             user: "Hello",
             assistant: null,
-            fileType: null,
+            fileType: "vnd.ms-excel",
             userImageData: null,
             image: null,
         },
