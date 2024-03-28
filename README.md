@@ -146,8 +146,6 @@ services:
             - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
             - AWS_SECRET_KEY=${AWS_SECRET_KEY}
         restart: unless-stopped
-        volumes:
-            - ./allchat.json:/app/allchat.json
 
     frontend:
         image: extender777/allchat-frontend

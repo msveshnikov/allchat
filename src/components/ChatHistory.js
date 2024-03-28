@@ -32,6 +32,12 @@ const getFileTypeIcon = (mimeType) => {
     }
 };
 
+const linkStyle = {
+    maxWidth: "100%", // Set the maximum width to 100% for links
+    overflowWrap: "break-word", // Allow long links to wrap to the next line
+    wordBreak: "break-all", // Break words if they are too long to fit on a single line
+};
+
 const CodeBlock = ({ language, value }) => {
     const [copied, setCopied] = React.useState(false);
 
@@ -130,6 +136,8 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, chatContainerRef }) 
                                             </code>
                                         );
                                     },
+                                    // eslint-disable-next-line jsx-a11y/anchor-has-content
+                                    a: ({ node, ...props }) => <a style={linkStyle} {...props} />, // Apply linkStyle to anchor tags
                                 }}
                             >
                                 {chat.assistant}
