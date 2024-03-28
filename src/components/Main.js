@@ -268,7 +268,7 @@ function Main() {
 
     const handleMyAccount = () => {
         setOpenMyAccountModal(true);
-        fetchUserData(); // Call the function to fetch user data
+        fetchUserData(); 
     };
 
     const handleCloseMyAccountModal = () => {
