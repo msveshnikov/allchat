@@ -15,8 +15,7 @@ import mongoose from "mongoose";
 import { User, countCharacters, countTokens, storeUsageStats } from "./model/User.js";
 import { fetchPageContent, fetchSearchResults } from "./search.js";
 
-const MAX_CONTEXT_LENGTH = 8000;
-const MAX_USER_INPUT_LENGTH = 4000;
+const MAX_CONTEXT_LENGTH = 16000;
 const MAX_SEARCH_RESULT_LENGTH = 2000;
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro 1.5 and Claude Haiku language models. Your capabilities include:
 
@@ -130,14 +129,9 @@ app.post("/interact", verifyToken, async (req, res) => {
             }
         }
 
-        const truncatedUserInput = userInput.slice(0, MAX_USER_INPUT_LENGTH);
         const contextPrompt = `System: ${systemPrompt} 
-            ${chatHistory
-                .map((chat) => `Human: ${chat.user.slice(0, MAX_USER_INPUT_LENGTH)}\nAssistant:${chat.assistant}`)
-                .join("\n")}
-            \n\n[Search Results]${topResultContent}\n[/Search Results]\nHuman: ${truncatedUserInput}\nAssistant:`.slice(
-            -MAX_CONTEXT_LENGTH
-        );
+            ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
+            \n\nSearch Results:${topResultContent}\n\nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
 
         let textResponse;
         let inputTokens = 0;
