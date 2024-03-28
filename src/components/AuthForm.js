@@ -77,7 +77,7 @@ const AuthForm = ({ onAuthentication }) => {
                     {successMessage}
                 </Typography>
             )}
-            <form autocomplete="on" onSubmit={handleSubmit}>
+            <form autoComplete="on" onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <TextField
@@ -97,7 +97,7 @@ const AuthForm = ({ onAuthentication }) => {
                             fullWidth
                             label="Password"
                             type="password"
-                            autocomplete={isLogin ? "current-password" : "new-password"}
+                            autoComplete={isLogin ? "current-password" : "new-password"}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             margin="normal"

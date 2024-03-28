@@ -72,7 +72,8 @@ describe("Main Component", () => {
     });
 
     it("should handle 2 failed API responses", async () => {
-        const mockResponse = { ok: false, status: 500 };
+        const mockResponse = { ok: false, status: 500 , json: () => Promise.resolve({ error: "Error in model" })};
+
         global.fetch.mockResolvedValueOnce(mockResponse);
         global.fetch.mockResolvedValueOnce(mockResponse);
 
@@ -83,12 +84,12 @@ describe("Main Component", () => {
         fireEvent.change(inputField, { target: { value: "Test query" } });
         fireEvent.click(submitButton);
 
-        await waitFor(() => expect(screen.getByText("Failed response from the server.")).toBeInTheDocument());
+        await waitFor(() => expect(screen.getByText("Error in model")).toBeInTheDocument());
 
         fireEvent.change(inputField, { target: { value: "Another Test query" } });
         fireEvent.click(submitButton);
-
-        await waitFor(() => expect(screen.getAllByText("Failed response from the server.")).toHaveLength(2));
+ 
+        await waitFor(() => expect(screen.getAllByText("Error in model")).toHaveLength(2));
         await waitFor(() => expect(screen.getAllByText("Test query")).toHaveLength(1));
         await waitFor(() => expect(screen.getAllByText("Another Test query")).toHaveLength(1));
     });
@@ -164,7 +165,7 @@ describe("Main Component", () => {
     });
 
     it("should handle failed API response with 500 error", async () => {
-        const mockResponse = { ok: false, status: 500 };
+        const mockResponse = { ok: false, status: 500 , json: () => Promise.resolve({ error: "Error in model" })};
         global.fetch.mockResolvedValueOnce(mockResponse);
 
         render(<Main />);
@@ -176,8 +177,8 @@ describe("Main Component", () => {
         await act(async () => {
             fireEvent.click(submitButton);
         });
-
-        await waitFor(() => expect(screen.getAllByText("Failed response from the server.")[0]).toBeInTheDocument());
+ 
+        await waitFor(() => expect(screen.getAllByText("Error in model")[0]).toBeInTheDocument());
     });
 
     it("should handle network error when sending API request", async () => {
