@@ -28,7 +28,6 @@ https://allchat.online/
 
 You have to get those APIs and set environment variables (or put to .env file):
 
--   GOOGLE_KEY - key of Google Cloud Project with Vertex AI API enabled (for Gemini Pro)
 -   GEMINI_KEY - key for 1.5 preview access from https://aistudio.google.com/app/apikey?utm_source=newsletter&utm_medium=email&utm_campaign=1.5p-api-launch_march&utm_content=
 -   google.json - https://console.cloud.google.com/apis/credentials/key
 -   AWS_SECRET_KEY
@@ -144,7 +143,6 @@ services:
         ports:
             - "6000:5000"
         environment:
-            - GOOGLE_KEY=${GOOGLE_KEY}
             - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
             - AWS_SECRET_KEY=${AWS_SECRET_KEY}
         restart: unless-stopped
