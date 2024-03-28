@@ -16,7 +16,9 @@ import { User, countCharacters, countTokens, storeUsageStats } from "./model/Use
 import { fetchPageContent, fetchSearchResults } from "./search.js";
 
 const MAX_CONTEXT_LENGTH = 8000;
-const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro and Claude Haiku language models. Your capabilities include:
+const MAX_USER_INPUT_LENGTH = 4000;
+const MAX_SEARCH_RESULT_LENGTH = 2000;
+const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro 1.5 and Claude Haiku language models. Your capabilities include:
 
 - Engaging in natural language conversations and answering user queries.
 - Providing informative, insightful, and relevant responses based on the given context and user input.
@@ -28,6 +30,7 @@ const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro
 - If user request picture generation, you do NOT generate ASCII but provide detail scene description like for MidJourney.
 - Asking for clarification if the user's query is ambiguous or unclear.
 - Your context size is 200.000
+- Performing pre-Google searches to gather relevant information based on the user's query.
 
 Your ultimate goal is to provide an excellent user experience by leveraging the capabilities of AI while adhering to ethical principles.`;
 
@@ -120,15 +123,21 @@ app.post("/interact", verifyToken, async (req, res) => {
             for (let i = 0; i < 3 && i < searchResults.length; i++) {
                 const pageContent = await fetchPageContent(searchResults[i].link);
                 topResultContent += pageContent;
-                if (topResultContent.length > 2000) {
+                if (topResultContent.length > MAX_SEARCH_RESULT_LENGTH) {
                     break;
                 }
+                topResultContent = topResultContent.slice(0, MAX_SEARCH_RESULT_LENGTH);
             }
         }
 
-        const contextPrompt = `System: ${systemPrompt} ${chatHistory
-            .map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`)
-            .join("\n")}\n\n${topResultContent}\nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
+        const truncatedUserInput = userInput.slice(0, MAX_USER_INPUT_LENGTH);
+        const contextPrompt = `System: ${systemPrompt} 
+            ${chatHistory
+                .map((chat) => `Human: ${chat.user.slice(0, MAX_USER_INPUT_LENGTH)}\nAssistant:${chat.assistant}`)
+                .join("\n")}
+            \n\n[Search Results]${topResultContent}\n[/Search Results]\nHuman: ${truncatedUserInput}\nAssistant:`.slice(
+            -MAX_CONTEXT_LENGTH
+        );
 
         let textResponse;
         let inputTokens = 0;

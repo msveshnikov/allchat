@@ -71,12 +71,12 @@ describe("Main Component", () => {
         expect(JSON.parse(fetchOptions.body)).toHaveProperty("input", "Test query");
     });
 
-    it("should handle failed API response", async () => {
+    it("should handle 2 failed API responses", async () => {
         const mockResponse = { ok: false, status: 500 };
+        global.fetch.mockResolvedValueOnce(mockResponse);
         global.fetch.mockResolvedValueOnce(mockResponse);
 
         render(<Main />);
-
         const inputField = screen.getByRole("textbox");
         const submitButton = screen.getByRole("button", { name: "Send" });
 
@@ -84,6 +84,13 @@ describe("Main Component", () => {
         fireEvent.click(submitButton);
 
         await waitFor(() => expect(screen.getByText("Failed response from the server.")).toBeInTheDocument());
+
+        fireEvent.change(inputField, { target: { value: "Another Test query" } });
+        fireEvent.click(submitButton);
+
+        await waitFor(() => expect(screen.getAllByText("Failed response from the server.")).toHaveLength(2));
+        await waitFor(() => expect(screen.getAllByText("Test query")).toHaveLength(1));
+        await waitFor(() => expect(screen.getAllByText("Another Test query")).toHaveLength(1));
     });
 
     it("opens authentication modal when authentication button is clicked", async () => {

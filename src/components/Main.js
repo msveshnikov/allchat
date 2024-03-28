@@ -154,21 +154,21 @@ function Main() {
                 setUserEmail("");
                 setIsAuthenticated(false);
                 const newChatHistory = [
-                    ...chatHistory.slice(0, -1),
+                    ...chatHistory,
                     { user: input, assistant: null, error: "Authentication failed." },
                 ];
                 setChatHistory(newChatHistory);
                 setOpenAuthModal(true);
             } else {
                 const newChatHistory = [
-                    ...chatHistory.slice(0, -1),
+                    ...chatHistory,
                     { user: input, assistant: null, error: "Failed response from the server." },
                 ];
                 setChatHistory(newChatHistory);
             }
         } catch (error) {
             const newChatHistory = [
-                ...chatHistory.slice(0, -1),
+                ...chatHistory,
                 { user: input, assistant: null, error: "Failed to connect to the server." },
             ];
             setChatHistory(newChatHistory);
