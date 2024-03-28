@@ -1,0 +1,4 @@
+/* eslint-disable no-undef */
+
+use("allchat");
+db.getCollection("users").updateOne({ email: "msveshnikov@gmail.com" }, { $set: { admin: true } });

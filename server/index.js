@@ -16,7 +16,7 @@ import { User, countCharacters, countTokens, storeUsageStats } from "./model/Use
 import { fetchPageContent, fetchSearchResults } from "./search.js";
 
 const MAX_CONTEXT_LENGTH = 16000;
-const MAX_SEARCH_RESULT_LENGTH = 2000;
+const MAX_SEARCH_RESULT_LENGTH = 3000;
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro 1.5 and Claude Haiku language models. Your capabilities include:
 
 - Engaging in natural language conversations and answering user queries.
@@ -55,9 +55,6 @@ morgan.token("body", (req, res) => {
         if ("password" in clonedBody) {
             clonedBody.password = "<PASSWORD_REDACTED>";
         }
-        // if ("chatHistory" in clonedBody) {
-        //     clonedBody.chatHistory = "<CHAT_HISTORY_REDACTED>";
-        // }
         return JSON.stringify(clonedBody);
     }
     return JSON.stringify(body);
@@ -145,6 +142,9 @@ app.post("/interact", verifyToken, async (req, res) => {
             textResponse = await getTextGemini(contextPrompt, temperature);
             outputCharacters = countCharacters(textResponse);
         } else if (model === "claude") {
+            if (!req.user.admin) {
+                return res.status(401).json({ error: "Haiku is available only by request" });
+            }
             inputTokens = countTokens(contextPrompt);
             textResponse = await getTextClaude(contextPrompt, "claude-3-haiku-20240307", temperature);
             outputTokens = countTokens(textResponse);
@@ -215,7 +215,10 @@ app.get("/user", verifyToken, async (req, res) => {
     }
 });
 
-app.get("/admin/stats", verifyToken, async (req, res) => {
+app.get("/stats", verifyToken, async (req, res) => {
+    if (!req.user.admin) {
+        return res.status(401).json({ error: "This is admin only route" });
+    }
     try {
         const users = await User.find({});
         const geminiStats = {

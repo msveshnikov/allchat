@@ -77,13 +77,15 @@ const AuthForm = ({ onAuthentication }) => {
                     {successMessage}
                 </Typography>
             )}
-            <form onSubmit={handleSubmit}>
+            <form autocomplete="on" onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <TextField
                             fullWidth
                             label="Email"
                             value={email}
+                            type="email"
+                            autoComplete="email" // Add for better recognition
                             onChange={(e) => setEmail(e.target.value)}
                             margin="normal"
                             error={!!error && error.includes("email")} // Highlight the email field if the error message includes "email"
@@ -95,6 +97,7 @@ const AuthForm = ({ onAuthentication }) => {
                             fullWidth
                             label="Password"
                             type="password"
+                            autocomplete={isLogin ? "current-password" : "new-password"}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             margin="normal"

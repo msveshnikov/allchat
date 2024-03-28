@@ -20,7 +20,7 @@ const StatsPage = () => {
                 Authorization: `Bearer ${token}`,
             };
 
-            const response = await fetch(`${API_URL}/admin/stats`, {
+            const response = await fetch(`${API_URL}/stats`, {
                 method: "GET",
                 headers,
             });

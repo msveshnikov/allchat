@@ -121,7 +121,7 @@ function Main() {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             };
-
+ 
             setChatHistory([
                 ...chatHistory,
                 { user: input, assistant: null, fileType, userImageData: fileBytesBase64 },
@@ -171,9 +171,10 @@ function Main() {
                 setChatHistory(newChatHistory);
                 setOpenAuthModal(true);
             } else {
+                const data = await response.json();
                 const newChatHistory = [
                     ...chatHistory,
-                    { user: input, assistant: null, error: "Failed response from the server." },
+                    { user: input, assistant: null, error: data.error },
                 ];
                 setChatHistory(newChatHistory);
             }
