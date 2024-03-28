@@ -118,7 +118,11 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, chatContainerRef }) 
                     >
                         {isModelResponding &&
                             chat.assistant === null &&
-                            chatHistory[chatHistory.length - 1] === chat && <CircularProgress size={20} />}
+                            chatHistory[chatHistory.length - 1] === chat && (
+                                <div style={{ display: "flex", alignItems: "center", minHeight: "40px" }}>
+                                    <CircularProgress size={20} />
+                                </div>
+                            )}
                         {chat.assistant !== null && (
                             <ReactMarkdown
                                 components={{
