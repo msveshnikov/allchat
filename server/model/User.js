@@ -24,10 +24,16 @@ const userSchema = new mongoose.Schema({
 export const User = mongoose.model("User", userSchema);
 
 export function countCharacters(text) {
+    if (!text) {
+        return 0;
+    }
     return text.length;
 }
 
 export function countTokens(text) {
+    if (!text) {
+        return 0;
+    }
     let tokenCount = 0;
     for (let i = 0; i < text.length; i++) {
         const char = text[i];
