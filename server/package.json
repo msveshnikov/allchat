@@ -22,7 +22,7 @@
         "googleapis": "^134.0.0",
         "jsonwebtoken": "^9.0.2",
         "mammoth": "^1.7.1",
-        "mongoose": "^8.2.3",
+        "mongoose": "^8.2.4",
         "morgan": "^1.10.0",
         "pdf-parse": "1.1.1",
         "xlsx": "^0.18.5"
