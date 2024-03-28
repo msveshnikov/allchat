@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Container, Snackbar, Dialog, DialogContent, DialogActions, Button } from "@mui/material";
+import {
+    Container,
+    Snackbar,
+    Dialog,
+    DialogContent,
+    DialogActions,
+    Button,
+    useMediaQuery,
+    useTheme,
+} from "@mui/material";
 import AppHeader from "./AppHeader";
 import SideDrawer from "./SideDrawer";
 import ChatHistory from "./ChatHistory";
@@ -29,6 +38,8 @@ function Main() {
     const [snackbarSeverity, setSnackbarSeverity] = useState("info");
     const [openMyAccountModal, setOpenMyAccountModal] = useState(false);
     const [user, setUser] = useState(null);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     const handleAuthentication = (token, email) => {
         localStorage.setItem("token", token);
@@ -316,7 +327,11 @@ function Main() {
                     <Button onClick={handleCloseMyAccountModal}>Close</Button>
                 </DialogActions>
             </Dialog>
-            <Container maxWidth="md" style={{ display: "flex", flexDirection: "column", height: "91vh" }}>
+            <Container
+                maxWidth="md"
+                sx={isMobile ? { m: 0, p: 0 } : {}}
+                style={{ display: "flex", flexDirection: "column", height: "91vh" }}
+            >
                 <ChatHistory
                     chatHistory={chatHistory}
                     isModelResponding={isModelResponding}
