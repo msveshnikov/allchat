@@ -6,7 +6,7 @@ dotenv.config({ override: true });
 const model = "gemini-1.5-pro-latest";
 const GENAI_DISCOVERY_URL = `https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=${process.env.GEMINI_KEY}`;
 
-export async function getTextVision(prompt, temperature, imageBase64) {
+export async function getTextGemini(prompt, temperature, imageBase64) {
     const genaiService = await google.discoverAPI({ url: GENAI_DISCOVERY_URL });
     const auth = new google.auth.GoogleAuth().fromAPIKey(process.env.GEMINI_KEY);
 
