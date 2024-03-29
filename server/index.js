@@ -14,6 +14,7 @@ import { authenticateUser, registerUser, verifyToken } from "./auth.js";
 import mongoose from "mongoose";
 import { User, countCharacters, countTokens, storeUsageStats } from "./model/User.js";
 import { fetchPageContent, fetchSearchResults } from "./search.js";
+import { PythonShell } from "python-shell";
 
 const MAX_CONTEXT_LENGTH = 16000;
 const MAX_SEARCH_RESULT_LENGTH = 3000;
@@ -278,6 +279,17 @@ app.get("/stats", verifyToken, async (req, res) => {
         res.json({ users: users.length, gemini: geminiStats, claude: claudeStats });
     } catch (error) {
         console.error("Error fetching stats:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post("/run", verifyToken, async (req, res) => {
+    try {
+        const { program } = req.body;
+        const output = await PythonShell.runString(program, null);
+        res.json({ output: output.join("\n") });
+    } catch (error) {
+        console.error(error);
         res.status(500).json({ error: error.message });
     }
 });

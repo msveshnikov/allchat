@@ -25,6 +25,7 @@
         "mongoose": "^8.2.4",
         "morgan": "^1.10.0",
         "pdf-parse": "1.1.1",
+        "python-shell": "^5.0.0",
         "xlsx": "^0.18.5"
     }
 }

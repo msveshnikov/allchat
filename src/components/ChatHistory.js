@@ -28,7 +28,7 @@ const linkStyle = {
     wordBreak: "break-all", // Break words if they are too long to fit on a single line
 };
 
-const ChatHistory = memo(({ chatHistory, isModelResponding }) => {
+const ChatHistory = memo(({ chatHistory, isModelResponding, onRun }) => {
     return (
         <Box id="chatid" flex={1} overflow="auto" padding={2} display="flex" flexDirection="column">
             {chatHistory.map((chat, index) => (
@@ -78,6 +78,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding }) => {
                                             <CodeBlock
                                                 language={language}
                                                 value={String(children).replace(/\n$/, "")}
+                                                onRun={onRun}
                                             />
                                         ) : (
                                             <code className={className} {...props}>

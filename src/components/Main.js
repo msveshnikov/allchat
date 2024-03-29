@@ -284,6 +284,45 @@ function Main() {
         setOpenMyAccountModal(false);
     };
 
+    const handleRun = async (language, program) => {
+        if (language === "python") {
+            const token = localStorage.getItem("token");
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            };
+
+            setChatHistory([...chatHistory, { user: "🏃", assistant: null }]);
+            setIsModelResponding(true);
+
+            const response = await fetch(API_URL + "/run", {
+                method: "POST",
+                headers,
+                body: JSON.stringify({ program }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setChatHistory([
+                    ...chatHistory,
+                    {
+                        user: "🏃",
+                        assistant: `Output:\n${data.output}`,
+                    },
+                ]);
+            } else {
+                const errorMessage = await response.text();
+                setChatHistory([
+                    ...chatHistory,
+                    {
+                        user: "🏃",
+                        assistant: `Error: ${errorMessage}`,
+                    },
+                ]);
+            }
+        }
+    };
+
     const fetchUserData = async () => {
         const token = localStorage.getItem("token");
         const headers = {
@@ -341,7 +380,7 @@ function Main() {
                 sx={isMobile ? { m: 0, p: 0 } : {}}
                 style={{ display: "flex", flexDirection: "column", height: "91vh" }}
             >
-                <ChatHistory chatHistory={chatHistory} isModelResponding={isModelResponding} />
+                <ChatHistory onRun={handleRun} chatHistory={chatHistory} isModelResponding={isModelResponding} />
                 <ChatInput
                     input={input}
                     setInput={setInput}
