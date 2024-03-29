@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
-import { getTextGemini, getTextVision } from "./gemini.js";
+import { getTextVision } from "./gemini.js";
 import { getImageTitan } from "./aws.js";
 import hasPaintWord from "./paint.js";
 import pdfParser from "pdf-parse/lib/pdf-parse.js";
@@ -96,7 +96,7 @@ app.post("/interact", verifyToken, async (req, res) => {
         if (fileBytesBase64) {
             const fileBytes = Buffer.from(fileBytesBase64, "base64");
             if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
-                const response = await getTextVision(userInput || "what's this", fileBytesBase64, temperature);
+                const response = await getTextVision(userInput || "what's this", temperature, fileBytesBase64);
                 return res.json({ textResponse: response?.trim() });
             } else if (fileType === "pdf") {
                 const data = await pdfParser(fileBytes);
@@ -151,7 +151,7 @@ app.post("/interact", verifyToken, async (req, res) => {
 
         if (model === "gemini") {
             inputCharacters = countCharacters(contextPrompt);
-            textResponse = await getTextGemini(contextPrompt, temperature);
+            textResponse = await getTextVision(contextPrompt, temperature);
             outputCharacters = countCharacters(textResponse);
         } else if (model === "claude") {
             if (!req.user.admin) {
