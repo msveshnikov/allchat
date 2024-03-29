@@ -29,9 +29,8 @@ https://allchat.online/
 You have to get those APIs and set environment variables (or put to .env file):
 
 -   GEMINI_KEY - key for 1.5 preview access from https://aistudio.google.com/app/apikey?utm_source=newsletter&utm_medium=email&utm_campaign=1.5p-api-launch_march&utm_content=
--   google.json - https://console.cloud.google.com/apis/credentials/key
 -   AWS_SECRET_KEY
--   AWS_ACCESS_KEY - (for Titan iamge generation) - https://eu-central-1.console.aws.amazon.com/console/home?region=eu-central-1
+-   AWS_ACCESS_KEY - (for Titan image generation) - https://eu-central-1.console.aws.amazon.com/console/home?region=eu-central-1
 -   CLAUDE_KEY - Anthropic Key (for Haiku)
 
 # DOCKER
@@ -42,28 +41,7 @@ To containerize the Node.js backend and React MUI frontend for easy deployment, 
 
 1. Create a new file called `Dockerfile` in your backend directory with the following contents:
 
-```Dockerfile
-# Use the official Node.js image as the base image
-FROM node:18
-
-# Set the working directory in the container
-WORKDIR /app
-
-# Copy the package.json and package-lock.json files
-COPY package*.json ./
-
-# Install the dependencies
-RUN npm install
-
-# Copy the rest of the application code
-COPY . .
-
-# Expose the port that your backend runs on
-EXPOSE 3000
-
-# Start the backend application
-CMD ["npm", "start"]
-```
+```Dockerfile # Use the official Node.js image as the base image FROM node:18 # Set the working directory in the container WORKDIR /app # Copy the package.json and package-lock.json files COPY package*.json ./ # Install the dependencies RUN npm install # Copy the rest of the application code COPY . . # Expose the port that your backend runs on EXPOSE 3000 # Start the backend application CMD ["npm", "start"] ```
 
 2. In the same directory, create a `.dockerignore` file with the following contents:
 

@@ -1,17 +1,7 @@
 import React, { memo } from "react";
 import { Box, CircularProgress } from "@mui/material";
 import ReactMarkdown from "react-markdown";
-import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-import style from "react-syntax-highlighter/dist/esm/styles/hljs/monokai";
-import js from "react-syntax-highlighter/dist/esm/languages/hljs/javascript";
-import java from "react-syntax-highlighter/dist/esm/languages/hljs/java";
-import python from "react-syntax-highlighter/dist/esm/languages/hljs/python";
-import { IconButton, Tooltip } from "@mui/material";
-import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
-
-SyntaxHighlighter.registerLanguage("js", js);
-SyntaxHighlighter.registerLanguage("java", java);
-SyntaxHighlighter.registerLanguage("python", python);
+import { CodeBlock } from "./CodeBlock";
 
 const getFileTypeIcon = (mimeType) => {
     switch (mimeType) {
@@ -36,51 +26,6 @@ const linkStyle = {
     maxWidth: "100%", // Set the maximum width to 100% for links
     overflowWrap: "break-word", // Allow long links to wrap to the next line
     wordBreak: "break-all", // Break words if they are too long to fit on a single line
-};
-
-const CodeBlock = ({ language, value }) => {
-    const [copied, setCopied] = React.useState(false);
-
-    const handleCopy = async () => {
-        await navigator.clipboard.writeText(value);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
-
-    return (
-        <div
-            style={{
-                maxWidth: "100%",
-                overflowX: "auto",
-                padding: "8px",
-                position: "relative",
-            }}
-        >
-            <Tooltip title={copied ? "Copied!" : "Copy"} placement="top">
-                <IconButton
-                    aria-label="Copy code"
-                    onClick={handleCopy}
-                    style={{
-                        position: "absolute",
-                        top: -5,
-                        right: 8,
-                        zIndex: 1,
-                    }}
-                    size="small"
-                >
-                    <FileCopyOutlinedIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
-            <SyntaxHighlighter
-                language={language}
-                style={style}
-                wrapLines={true}
-                lineProps={{ style: { wordBreak: "break-all", whiteSpace: "pre-wrap" } }}
-            >
-                {value}
-            </SyntaxHighlighter>
-        </div>
-    );
 };
 
 const ChatHistory = memo(({ chatHistory, isModelResponding, chatContainerRef }) => {
@@ -141,7 +86,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, chatContainerRef }) 
                                         );
                                     },
                                     // eslint-disable-next-line jsx-a11y/anchor-has-content
-                                    a: ({ node, ...props }) => <a style={linkStyle} {...props} />, // Apply linkStyle to anchor tags
+                                    a: ({ node, ...props }) => <a style={linkStyle} {...props} />, 
                                 }}
                             >
                                 {chat.assistant}

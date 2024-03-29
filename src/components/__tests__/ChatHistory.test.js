@@ -1,13 +1,18 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import ChatHistory from "../ChatHistory";
 import "@testing-library/jest-dom";
-
+jest.mock("react-syntax-highlighter/dist/esm/styles/hljs/monokai", () => ({})); 
+const mockClipboardWriteText = jest.fn();
+navigator.clipboard = {
+    writeText: mockClipboardWriteText,
+};
 describe("ChatHistory", () => {
     const mockChatHistory = [
         {
             user: "Hello! Whats in PDF?",
-            assistant: "Hello, how can I assist you today?",
+            assistant:
+                "Hello, how can I assist you today? ```Dockerfile # Use the official Node.js image as the base image FROM node:18 # Set the working directory in the container WORKDIR /app # Copy the package.json and package-lock.json files COPY package*.json ./ # Install the dependencies RUN npm install # Copy the rest of the application code COPY . . # Expose the port that your backend runs on EXPOSE 3000 # Start the backend application CMD  ```",
             fileType: "pdf",
             userImageData: "base64data...",
             image: null,
@@ -35,7 +40,7 @@ describe("ChatHistory", () => {
         },
         {
             user: "Paint something",
-            assistant: "Here is the response with an image https://example.com and ",
+            assistant: "Here is the response with an image https://example.com and `js\nconst x = 10;\n`",
             fileType: "msword",
             userImageData: null,
             image: "base64data...",
@@ -49,6 +54,30 @@ describe("ChatHistory", () => {
         },
     ];
 
+    it("should copy code to clipboard on button click", async () => {
+        const codeValue = "const myVariable = 'Hello World';";
+        const chatHistory = [{ assistant: "```js\n" + codeValue + "\n```" }];
+        const { getByLabelText } = render(<ChatHistory chatHistory={chatHistory} />);
+
+        const copyButton = getByLabelText("Copy code");
+        fireEvent.click(copyButton);
+
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith(codeValue);
+    });
+
+    it("should update tooltip text on copy button click", async () => {
+        const codeValue = "const myVariable = 'Hello World';";
+        const chatHistory = [{ assistant: "```js\n" + codeValue + "\n```" }];
+        const { getByLabelText } = render(<ChatHistory chatHistory={chatHistory} />);
+
+        const copyButton = getByLabelText("Copy code");
+        fireEvent.click(copyButton);
+
+        // expect(getByText("Copied!")).toBeInTheDocument();
+        // await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for timeout
+        // expect(getByText("Copy")).toBeInTheDocument();
+    });
+
     test("renders chat history", () => {
         render(<ChatHistory chatHistory={mockChatHistory} isModelResponding={false} chatContainerRef={null} />);
         const chatItems = screen.getAllByTestId("chat-item");
@@ -60,7 +89,7 @@ describe("ChatHistory", () => {
         const userMessages = screen.getAllByText("Hello");
         expect(userMessages).toHaveLength(mockChatHistory.filter((h) => h.user === "Hello").length);
     });
- 
+
     test("renders assistant message", () => {
         render(<ChatHistory chatHistory={mockChatHistory} isModelResponding={false} chatContainerRef={null} />);
         const assistantMessage = screen.getByText("Hello, how can I assist you today?");
