@@ -41,7 +41,7 @@ const StatsPage = () => {
                     Admin Statistics
                 </Typography>
                 {stats ? (
-                    <Grid container spacing={2} justifyContent="center">
+                    <Grid container spacing={2} justifyContent="left">
                         <Grid item xs={12} md={6}>
                             <StyledCard>
                                 <CardContent>
@@ -77,6 +77,18 @@ const StatsPage = () => {
                                     </Typography>
                                     <Typography variant="body1" color="text.primary">
                                         Total Money Consumed: ${stats.claude.totalMoneyConsumed.toFixed(2)}
+                                    </Typography>
+                                </CardContent>
+                            </StyledCard>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <StyledCard>
+                                <CardContent>
+                                    <Typography variant="h6" gutterBottom color="primary">
+                                        Users
+                                    </Typography>
+                                    <Typography variant="body1" color="text.primary">
+                                        Total User Count: {stats.users}
                                     </Typography>
                                 </CardContent>
                             </StyledCard>

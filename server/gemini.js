@@ -71,7 +71,6 @@ export async function getTextVision(prompt, imageBase64) {
     });
     const file = createFileResponse.data.file;
     const fileUri = file.uri;
-    console.log("Uploaded file: " + fileUri);
 
     const contents = {
         contents: [
@@ -87,5 +86,5 @@ export async function getTextVision(prompt, imageBase64) {
         auth: auth,
     });
 
-    return generateContentResponse.data.candidates[0].content.parts[0].text;
+    return generateContentResponse?.data?.candidates?.[0]?.content?.parts?.[0]?.text;
 }
