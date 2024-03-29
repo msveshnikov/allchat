@@ -7,6 +7,7 @@ const FileSelector = ({ onFileSelect, selectedFile }) => {
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         onFileSelect(file);
+        event.target.value = null;
     };
 
     return (
