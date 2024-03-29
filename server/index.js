@@ -96,7 +96,10 @@ app.post("/interact", verifyToken, async (req, res) => {
         if (fileBytesBase64) {
             const fileBytes = Buffer.from(fileBytesBase64, "base64");
             if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
-                const response = await getTextGemini(userInput || "what's this", temperature, fileBytesBase64);
+                const response =
+                    model === "gemini"
+                        ? await getTextGemini(userInput || "what's this", temperature, fileBytesBase64)
+                        : await getTextClaude(userInput || "what's this", temperature, fileBytesBase64, fileType);
                 return res.json({ textResponse: response?.trim() });
             } else if (fileType === "pdf") {
                 const data = await pdfParser(fileBytes);
@@ -158,7 +161,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 return res.status(401).json({ error: "Haiku is available only by request" });
             }
             inputTokens = countTokens(contextPrompt);
-            textResponse = await getTextClaude(contextPrompt, "claude-3-haiku-20240307", temperature);
+            textResponse = await getTextClaude(contextPrompt, temperature);
             outputTokens = countTokens(textResponse);
         }
 
