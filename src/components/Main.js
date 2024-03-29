@@ -121,7 +121,7 @@ function Main() {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             };
- 
+
             setChatHistory([
                 ...chatHistory,
                 { user: input, assistant: null, fileType, userImageData: fileBytesBase64 },
@@ -172,10 +172,7 @@ function Main() {
                 setOpenAuthModal(true);
             } else {
                 const data = await response.json();
-                const newChatHistory = [
-                    ...chatHistory,
-                    { user: input, assistant: null, error: data.error },
-                ];
+                const newChatHistory = [...chatHistory, { user: input, assistant: null, error: data.error }];
                 setChatHistory(newChatHistory);
             }
         } catch (error) {
@@ -190,6 +187,14 @@ function Main() {
         setSelectedFile(null);
     };
 
+    function removeBrackets(text) {
+        if (text?.startsWith("[") && text?.endsWith("]")) {
+            return text.slice(1, -1);
+        } else {
+            return text;
+        }
+    }
+
     const generateChatSummary = async (chatHistory) => {
         const token = localStorage.getItem("token");
         const headers = {
@@ -201,14 +206,15 @@ function Main() {
             method: "POST",
             headers,
             body: JSON.stringify({
-                input: "!!! Extract main topic of this chat in one simple short statement and return it without anything else: ",
+                model,
+                input: "Extract main topic of this chat in one simple short statement (30 chars max) and return it without anything else in [] ",
                 chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
             }),
         });
 
         if (response?.ok) {
             const data = await response.json();
-            return data?.textResponse?.slice(0, 50) + "...";
+            return removeBrackets(data?.textResponse)?.slice(0, 50) + "...";
         } else {
             const messages = chatHistory.map((chat) => chat.user + (chat.assistant || ""));
             const summary = messages.join(" ").slice(0, 50) + "...";
@@ -269,7 +275,7 @@ function Main() {
 
     const handleMyAccount = () => {
         setOpenMyAccountModal(true);
-        fetchUserData(); 
+        fetchUserData();
     };
 
     const handleCloseMyAccountModal = () => {

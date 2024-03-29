@@ -82,6 +82,6 @@ export function storeUsageStats(
         },
         { new: true }
     )
-        .then((updatedUser) => console.log(`Usage stats updated for user ${updatedUser._id}`))
+        .then(() => {})
         .catch((err) => console.error("Error updating usage stats:", err));
 }
