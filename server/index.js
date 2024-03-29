@@ -78,7 +78,6 @@ app.listen(5000, () => {
 export const MONGODB_URI =
     process.env.NODE_ENV === "production" ? "mongodb://mongodb:27017/allchat" : "mongodb://localhost:27017/allchat";
 
-// MongoDB connection
 mongoose
     .connect(MONGODB_URI)
     .then(() => console.log("🚀 MongoDB connected"))
@@ -91,6 +90,10 @@ app.post("/interact", verifyToken, async (req, res) => {
     const fileBytesBase64 = req.body.fileBytesBase64;
     const fileType = req.body.fileType;
     const model = req.body.model || "gemini";
+
+    if (model === "claude" && !req.user.admin) {
+        return res.status(401).json({ error: "Haiku is available only by request" });
+    }
 
     try {
         if (fileBytesBase64) {
@@ -127,17 +130,31 @@ app.post("/interact", verifyToken, async (req, res) => {
 
         let searchResults = [];
         let topResultContent = "";
-        if (userInput?.toLowerCase()?.includes("search") || userInput?.toLowerCase()?.includes("google")) {
-            const searchQuery = userInput.replace(/search\s*|google\s*/gi, "").trim();
-            searchResults = (await fetchSearchResults(searchQuery)) || [];
-            topResultContent = searchResults.map((result) => result.title + " " + result.snippet).join("\n\n");
-            for (let i = 0; i < 3 && i < searchResults.length; i++) {
-                const pageContent = await fetchPageContent(searchResults[i].link);
-                topResultContent += pageContent;
-                if (topResultContent.length > MAX_SEARCH_RESULT_LENGTH) {
-                    break;
+
+        // Check if the userInput contains a URL
+        const urlRegex = /https?:\/\/[^\s]+/;
+        const match = userInput?.match(urlRegex);
+        if (match) {
+            const url = match[0];
+            const urlContent = await fetchPageContent(url);
+            if (urlContent) {
+                // Replace the URL in the userInput with the fetched content
+                userInput = userInput.replace(url, `\n${urlContent.slice(0, MAX_SEARCH_RESULT_LENGTH)}\n`);
+            }
+        } else {
+            // Check if the userInput contains search order
+            if (userInput?.toLowerCase()?.includes("search") || userInput?.toLowerCase()?.includes("google")) {
+                const searchQuery = userInput.replace(/search\s*|google\s*/gi, "").trim();
+                searchResults = (await fetchSearchResults(searchQuery)) || [];
+                topResultContent = searchResults.map((result) => result.title + " " + result.snippet).join("\n\n");
+                for (let i = 0; i < 3 && i < searchResults.length; i++) {
+                    const pageContent = await fetchPageContent(searchResults[i].link);
+                    topResultContent += pageContent;
+                    if (topResultContent.length > MAX_SEARCH_RESULT_LENGTH) {
+                        break;
+                    }
+                    topResultContent = topResultContent.slice(0, MAX_SEARCH_RESULT_LENGTH);
                 }
-                topResultContent = topResultContent.slice(0, MAX_SEARCH_RESULT_LENGTH);
             }
         }
 
@@ -157,9 +174,6 @@ app.post("/interact", verifyToken, async (req, res) => {
             textResponse = await getTextGemini(contextPrompt, temperature);
             outputCharacters = countCharacters(textResponse);
         } else if (model === "claude") {
-            if (!req.user.admin) {
-                return res.status(401).json({ error: "Haiku is available only by request" });
-            }
             inputTokens = countTokens(contextPrompt);
             textResponse = await getTextClaude(contextPrompt, temperature);
             outputTokens = countTokens(textResponse);
