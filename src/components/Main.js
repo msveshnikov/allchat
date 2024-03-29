@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Container,
     Snackbar,
@@ -15,6 +15,7 @@ import ChatHistory from "./ChatHistory";
 import ChatInput from "./ChatInput";
 import AuthForm from "./AuthForm";
 import MyAccountPage from "./MyAccountPage";
+import { animateScroll as scroll } from "react-scroll";
 
 const MAX_CHAT_HISTORY_LENGTH = 30;
 const MAX_CHATS = 7;
@@ -26,7 +27,6 @@ function Main() {
     const [chatHistory, setChatHistory] = useState([]);
     const [storedChatHistories, setStoredChatHistories] = useState([]);
     const [isModelResponding, setIsModelResponding] = useState(false);
-    const chatContainerRef = useRef(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [model, setModel] = useState(localStorage.getItem("selectedModel") || "gemini");
@@ -76,9 +76,11 @@ function Main() {
 
     useEffect(() => {
         try {
-            if (chatContainerRef.current) {
-                chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-            }
+            scroll.scrollToBottom({
+                containerId: "chatid",
+                duration: 500,
+                smooth: true,
+            });
             if (chatHistory.length > 0) {
                 const chatHistoryToStore = chatHistory.slice(-MAX_CHAT_HISTORY_LENGTH);
                 localStorage.setItem("chatHistory", JSON.stringify(chatHistoryToStore));
@@ -339,11 +341,7 @@ function Main() {
                 sx={isMobile ? { m: 0, p: 0 } : {}}
                 style={{ display: "flex", flexDirection: "column", height: "91vh" }}
             >
-                <ChatHistory
-                    chatHistory={chatHistory}
-                    isModelResponding={isModelResponding}
-                    chatContainerRef={chatContainerRef}
-                />
+                <ChatHistory chatHistory={chatHistory} isModelResponding={isModelResponding} />
                 <ChatInput
                     input={input}
                     setInput={setInput}

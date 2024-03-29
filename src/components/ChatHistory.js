@@ -28,9 +28,9 @@ const linkStyle = {
     wordBreak: "break-all", // Break words if they are too long to fit on a single line
 };
 
-const ChatHistory = memo(({ chatHistory, isModelResponding, chatContainerRef }) => {
+const ChatHistory = memo(({ chatHistory, isModelResponding }) => {
     return (
-        <Box flex={1} overflow="auto" padding={2} display="flex" flexDirection="column" ref={chatContainerRef}>
+        <Box id="chatid" flex={1} overflow="auto" padding={2} display="flex" flexDirection="column">
             {chatHistory.map((chat, index) => (
                 <Box
                     data-testid="chat-item"
@@ -86,7 +86,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, chatContainerRef }) 
                                         );
                                     },
                                     // eslint-disable-next-line jsx-a11y/anchor-has-content
-                                    a: ({ node, ...props }) => <a style={linkStyle} {...props} />, 
+                                    a: ({ node, ...props }) => <a style={linkStyle} {...props} />,
                                 }}
                             >
                                 {chat.assistant}
