@@ -284,6 +284,9 @@ app.get("/stats", verifyToken, async (req, res) => {
 });
 
 app.post("/run", verifyToken, async (req, res) => {
+    if (!req.user.admin) {
+        return res.status(401).json({ error: "This is admin only route" });
+    }
     try {
         const { program } = req.body;
         const output = await PythonShell.runString(program, null);
