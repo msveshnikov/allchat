@@ -8,6 +8,8 @@ Node.js backend and a React MUI frontend for an application that interacts with 
 
 https://allchat.online/
 
+Experimental code execution was just switched off for guests because of attack
+
 **Backend (Node.js)**
 
 1. Set up a new Node.js project and install the necessary dependencies, such as `express`, `cors`, and any libraries required for interacting with the Gemini Pro model.
