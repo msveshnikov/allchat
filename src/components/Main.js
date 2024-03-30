@@ -301,25 +301,26 @@ function Main() {
                 body: JSON.stringify({ program }),
             });
 
+            const data = await response.json();
             if (response.ok) {
-                const data = await response.json();
                 setChatHistory([
                     ...chatHistory,
                     {
                         user: "🏃",
-                        assistant: `Output:\n${data.output}`,
+                        assistant: data.output,
                     },
                 ]);
             } else {
-                const errorMessage = await response.text();
                 setChatHistory([
                     ...chatHistory,
                     {
                         user: "🏃",
-                        assistant: `Error: ${errorMessage}`,
+                        assistant: null,
+                        error: data.error,
                     },
                 ]);
             }
+            setIsModelResponding(false);
         }
     };
 
