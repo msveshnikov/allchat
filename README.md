@@ -8,7 +8,17 @@ Node.js backend and a React MUI frontend for an application that interacts with 
 
 https://allchat.online/
 
-Experimental code execution was just switched off for guests because of attack
+## Features
+
+- Gemini Pro 1.5 and Claude 3 Haiku
+- Multiple chats
+- File upload PDFs, Word, Excel into the conversation.
+- Computer Vision (png/jpeg)
+- Markdown formatting.
+- Image Generation by Amazon Titan.
+- Python Code Run
+- ... please create a Request in Issues for more ...
+
 
 **Backend (Node.js)**
 
