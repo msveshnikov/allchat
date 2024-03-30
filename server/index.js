@@ -284,21 +284,14 @@ app.get("/stats", verifyToken, async (req, res) => {
     }
 });
 
-
 app.post("/run", verifyToken, async (req, res) => {
     if (!req.user.admin) {
         return res.status(401).json({ error: "This is admin only route" });
     }
 
     try {
-        const { language, program } = req.body;
-
-        if (language !== "python") {
-            return res.status(400).json({ error: "Only Python code is supported for execution." });
-        }
-
+        const { program } = req.body;
         const pythonServerUrl = "http://python-shell:8000"; // Assuming the service name is 'python-shell'
-
         const response = await fetch(pythonServerUrl, {
             method: "POST",
             headers: {
@@ -308,14 +301,13 @@ app.post("/run", verifyToken, async (req, res) => {
         });
 
         const data = await response.text();
-
         if (response.ok) {
-            res.status(200).send(data);
+            res.status(200).send({ output: data });
         } else {
             res.status(response.status).json({ error: data });
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Failed to execute Python code" });
+        res.status(500).json({ error: "Failed to execute Python code: " + error.message });
     }
 });
