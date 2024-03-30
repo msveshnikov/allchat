@@ -38,7 +38,7 @@ services:
         image: python:3.12
         volumes:
             - ./python-scripts:/app
-            - ./requirements.txt:/requirements.txt
+            - ./python-scripts/requirements.txt:/requirements.txt
         restart: unless-stopped
         working_dir: /app
         command: ["sh", "-c", "pip install --no-cache-dir -r /requirements.txt && python -u shell.py"]

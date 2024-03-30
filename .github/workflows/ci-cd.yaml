@@ -43,6 +43,23 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
+            - name: copy file via ssh
+              uses: garygrossgarten/github-action-scp@master
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  privateKey: ${{ secrets.SSH_KEY }}
+                  local: "./docker-compose.yml"
+                  remote: "allchat/docker-compose.yml"
+            - name: copy
+              uses: garygrossgarten/github-action-scp@master
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  privateKey: ${{ secrets.SSH_KEY }}
+                  local: "python-scripts"
+                  remote: "allchat"
+
             - name: Deploy to SSH Host
               env:
                   SSH_KEY: ${{ env.SSH_KEY }}
