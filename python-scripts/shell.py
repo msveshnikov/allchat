@@ -2,6 +2,7 @@ import http.server
 import os
 import contextlib
 import io
+import signal
 
 class PythonExecutionServer(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
@@ -12,9 +13,15 @@ class PythonExecutionServer(http.server.BaseHTTPRequestHandler):
         output_stream = io.StringIO()
         with contextlib.redirect_stdout(output_stream), contextlib.redirect_stderr(output_stream):
             try:
-                # Execute the code and capture the output
-                compiled_code = compile(code_input, "<input>", "exec")
-                exec(compiled_code, globals())
+                # Define a function to execute the code with a timeout
+                def execute_with_timeout():
+                    compiled_code = compile(code_input, "<input>", "exec")
+                    exec(compiled_code, globals())
+                # Set a timeout of 3 minutes (180 seconds)
+                signal.alarm(180)
+                execute_with_timeout()
+                signal.alarm(0)  # Cancel the alarm if execution is successful
+
                 output = output_stream.getvalue()
 
                 self.send_response(200)
