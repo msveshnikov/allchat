@@ -14,11 +14,13 @@ import { authenticateUser, registerUser, verifyToken } from "./auth.js";
 import mongoose from "mongoose";
 import { User, countCharacters, countTokens, storeUsageStats } from "./model/User.js";
 import { fetchPageContent, fetchSearchResults } from "./search.js";
-import Docker from 'dockerode';
+import Docker from "dockerode";
 
 const docker = new Docker();
 const MAX_CONTEXT_LENGTH = 16000;
 const MAX_SEARCH_RESULT_LENGTH = 3000;
+export const ALLOWED_ORIGIN = ["https://allchat.online", "http://localhost:3000"];
+
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro 1.5 and Claude Haiku language models. Your capabilities include:
 
 - Engaging in natural language conversations and answering user queries.
@@ -43,7 +45,7 @@ const metricsMiddleware = promBundle({
 
 const app = express();
 app.set("trust proxy", 1);
-app.use(cors());
+app.use(cors({ origin: ALLOWED_ORIGIN }));
 app.use(express.json({ limit: "20mb" }));
 app.use(metricsMiddleware);
 

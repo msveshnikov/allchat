@@ -35,7 +35,7 @@ services:
             driver: none
 
     python-shell:
-        image: python:3.8
+        image: python:3.12
         volumes:
             - ./python-scripts:/app
         working_dir: /app
