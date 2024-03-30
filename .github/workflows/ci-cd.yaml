@@ -43,6 +43,9 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
+            - name: Check out the repo
+              uses: actions/checkout@master
+
             - name: copy file via ssh
               uses: garygrossgarten/github-action-scp@master
               with:
@@ -51,7 +54,7 @@ jobs:
                   privateKey: ${{ secrets.SSH_KEY }}
                   local: "./docker-compose.yml"
                   remote: "allchat/docker-compose.yml"
-            - name: copy
+            - name: copy more
               uses: garygrossgarten/github-action-scp@master
               with:
                   host: ${{ secrets.SSH_HOST }}
