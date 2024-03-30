@@ -1,10 +1,5 @@
-FROM node:20.9.0-bullseye
-
-ENV NODE_ENV production
-
-RUN sed -i'.bak' 's/$/ contrib/' /etc/apt/sources.list
-RUN apt-get update && apt-get install python python-dev build-essential -y
-
+# Use the official Node.js image as the base image
+FROM node:20-slim
 
 # Set the working directory in the container
 WORKDIR /app

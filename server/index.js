@@ -14,8 +14,9 @@ import { authenticateUser, registerUser, verifyToken } from "./auth.js";
 import mongoose from "mongoose";
 import { User, countCharacters, countTokens, storeUsageStats } from "./model/User.js";
 import { fetchPageContent, fetchSearchResults } from "./search.js";
-import { PythonShell } from "python-shell";
+import Docker from 'dockerode';
 
+const docker = new Docker();
 const MAX_CONTEXT_LENGTH = 16000;
 const MAX_SEARCH_RESULT_LENGTH = 3000;
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro 1.5 and Claude Haiku language models. Your capabilities include:
@@ -287,10 +288,35 @@ app.post("/run", verifyToken, async (req, res) => {
     if (!req.user.admin) {
         return res.status(401).json({ error: "This is admin only route" });
     }
+
     try {
         const { program } = req.body;
-        const output = await PythonShell.runString(program, null);
-        res.json({ output: output.join("\n") });
+
+        // Find the Python shell container
+        const containers = await docker.listContainers({ all: true });
+        const pythonShellContainer = containers.find((container) => container.Names[0] === "/allchat_python-shell_1");
+
+        if (!pythonShellContainer) {
+            return res.status(404).json({ error: "Python shell container not found" });
+        }
+
+        // Create a container instance
+        const container = docker.getContainer(pythonShellContainer.Id);
+
+        // Execute the code in the Python shell container
+        const execOptions = {
+            AttachStdout: true,
+            AttachStderr: true,
+            Cmd: ["-c", program],
+        };
+
+        const stream = await container.exec.create(execOptions);
+        const output = await stream.start();
+
+        // Convert the output to a string
+        const outputString = output.toString();
+
+        res.json({ output: outputString });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });

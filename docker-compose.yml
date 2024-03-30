@@ -34,5 +34,21 @@ services:
         logging:
             driver: none
 
+    python-shell:
+        image: python:3.8
+        volumes:
+            - ./python-scripts:/app
+        working_dir: /app
+        command: ["python", "-u", "shell.py"]
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.5"
+                    memory: 512M
+        environment:
+            - PYTHONUNBUFFERED=1
+        tmpfs:
+            - /tmp
+
 volumes:
     mongo-data:

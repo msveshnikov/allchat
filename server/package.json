@@ -15,6 +15,7 @@
         "bcrypt": "^5.1.1",
         "cheerio": "^1.0.0-rc.12",
         "cors": "^2.8.5",
+        "dockerode": "^4.0.2",
         "dotenv": "^16.4.5",
         "express": "^4.19.2",
         "express-prom-bundle": "^7.0.0",
@@ -25,7 +26,6 @@
         "mongoose": "^8.2.4",
         "morgan": "^1.10.0",
         "pdf-parse": "1.1.1",
-        "python-shell": "^5.0.0",
         "xlsx": "^0.18.5"
     }
 }
