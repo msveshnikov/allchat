@@ -285,13 +285,12 @@ app.get("/stats", verifyToken, async (req, res) => {
 });
 
 app.post("/run", verifyToken, async (req, res) => {
-    if (!req.user.admin) {
-        return res.status(401).json({ error: "This is admin only route" });
-    }
-
+    // if (!req.user.admin) {
+    //     return res.status(401).json({ error: "This is admin only route" });
+    // }
     try {
         const { program } = req.body;
-        const pythonServerUrl = "http://python-shell:8000"; // Assuming the service name is 'python-shell'
+        const pythonServerUrl = "http://python-shell:8000";
         const response = await fetch(pythonServerUrl, {
             method: "POST",
             headers: {
