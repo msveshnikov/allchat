@@ -22,10 +22,10 @@ const getFileTypeIcon = (mimeType) => {
     }
 };
 
-const wrapStyle = {
-    maxWidth: "100%", 
-    overflowWrap: "break-word", 
-    wordBreak: "break-all", 
+const linkStyle = {
+    maxWidth: "100%", // Set the maximum width to 100% for links
+    overflowWrap: "break-word", // Allow long links to wrap to the next line
+    wordBreak: "break-all", // Break words if they are too long to fit on a single line
 };
 
 const ChatHistory = memo(({ chatHistory, isModelResponding, onRun }) => {
@@ -40,7 +40,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun }) => {
                     flexDirection="column"
                     marginBottom={2}
                 >
-                    <Box style={wrapStyle}  alignSelf="flex-end" bgcolor="#d4edda" color="#155724" padding={1} borderRadius={2}>
+                    <Box alignSelf="flex-end" bgcolor="#d4edda" color="#155724" padding={1} borderRadius={2}>
                         {chat.user}
                         {chat.fileType && getFileTypeIcon(chat.fileType) !== null && (
                             <span style={{ fontSize: "3rem" }}>{getFileTypeIcon(chat.fileType)}</span>
@@ -69,7 +69,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun }) => {
                                 </div>
                             )}
                         {chat.assistant !== null && (
-                            <ReactMarkdown style={wrapStyle} 
+                            <ReactMarkdown
                                 components={{
                                     code({ node, inline, className, children, ...props }) {
                                         const match = /language-(\w+)/.exec(className || "");
@@ -87,7 +87,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun }) => {
                                         );
                                     },
                                     // eslint-disable-next-line jsx-a11y/anchor-has-content
-                                    a: ({ node, ...props }) => <a {...props} />,
+                                    a: ({ node, ...props }) => <a style={linkStyle} {...props} />,
                                 }}
                             >
                                 {chat.assistant}
