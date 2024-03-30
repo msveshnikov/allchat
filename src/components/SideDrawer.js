@@ -1,6 +1,7 @@
 import React from "react";
 import { List, ListItem, ListItemText, SwipeableDrawer } from "@mui/material";
 import ModelSwitch from "./ModelSwitch";
+import SoundSwitch from "./SoundSwitch";
 
 const SideDrawer = ({
     isOpen,
@@ -10,6 +11,8 @@ const SideDrawer = ({
     onHistorySelection,
     model,
     onModelChange,
+    sound,
+    onSoundChange,
     onClearAll,
 }) => {
     return (
@@ -26,6 +29,9 @@ const SideDrawer = ({
                     ))}
                 </List>
                 <div style={{ marginBottom: "auto" }}>
+                    <ListItem>
+                        <SoundSwitch sound={sound} onSoundChange={onSoundChange} />
+                    </ListItem>
                     <ListItem>
                         <ModelSwitch model={model} onModelChange={onModelChange} />
                     </ListItem>

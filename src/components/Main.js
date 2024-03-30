@@ -30,6 +30,7 @@ function Main() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [model, setModel] = useState(localStorage.getItem("selectedModel") || "gemini");
+    const [sound, setSound] = useState(localStorage.getItem("sound") === "true");
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
     const [openAuthModal, setOpenAuthModal] = useState(false);
@@ -94,8 +95,9 @@ function Main() {
                 localStorage.setItem("storedChatHistories", JSON.stringify(storedChatHistories));
             }
             localStorage.setItem("selectedModel", model);
+            localStorage.setItem("sound", sound);
         } catch {}
-    }, [model, storedChatHistories]);
+    }, [model, storedChatHistories, sound]);
 
     const handleSubmit = async () => {
         if (input.trim() || selectedFile) {
@@ -156,6 +158,11 @@ function Main() {
                     },
                 ];
                 setChatHistory(newChatHistory);
+                if (sound) {
+                    const utterance = new SpeechSynthesisUtterance(data.textResponse);
+                    // utterance.lang = "en_US";
+                    window.speechSynthesis.speak(utterance);
+                }
             } else if (response.status === 403) {
                 // Handle 403 Forbidden error (force sign-out)
                 setIsAuthenticated(false);
@@ -360,6 +367,8 @@ function Main() {
                 onHistorySelection={handleHistorySelection}
                 model={model}
                 onModelChange={setModel}
+                sound={sound}
+                onSoundChange={setSound}
                 onClearAll={clearAllChatHistory}
             />
             <Dialog open={openAuthModal} onClose={handleCloseAuthModal}>
