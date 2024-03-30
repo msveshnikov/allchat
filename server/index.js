@@ -14,9 +14,7 @@ import { authenticateUser, registerUser, verifyToken } from "./auth.js";
 import mongoose from "mongoose";
 import { User, countCharacters, countTokens, storeUsageStats } from "./model/User.js";
 import { fetchPageContent, fetchSearchResults } from "./search.js";
-import Docker from "dockerode";
 
-const docker = new Docker();
 const MAX_CONTEXT_LENGTH = 16000;
 const MAX_SEARCH_RESULT_LENGTH = 3000;
 export const ALLOWED_ORIGIN = ["https://allchat.online", "http://localhost:3000"];
@@ -286,41 +284,38 @@ app.get("/stats", verifyToken, async (req, res) => {
     }
 });
 
+
 app.post("/run", verifyToken, async (req, res) => {
     if (!req.user.admin) {
         return res.status(401).json({ error: "This is admin only route" });
     }
 
     try {
-        const { program } = req.body;
+        const { language, program } = req.body;
 
-        // Find the Python shell container
-        const containers = await docker.listContainers({ all: true });
-        const pythonShellContainer = containers.find((container) => container.Names[0] === "/allchat_python-shell_1");
-
-        if (!pythonShellContainer) {
-            return res.status(404).json({ error: "Python shell container not found" });
+        if (language !== "python") {
+            return res.status(400).json({ error: "Only Python code is supported for execution." });
         }
 
-        // Create a container instance
-        const container = docker.getContainer(pythonShellContainer.Id);
+        const pythonServerUrl = "http://python-shell:8000"; // Assuming the service name is 'python-shell'
 
-        // Execute the code in the Python shell container
-        const execOptions = {
-            AttachStdout: true,
-            AttachStderr: true,
-            Cmd: ["-c", program],
-        };
+        const response = await fetch(pythonServerUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain",
+            },
+            body: program,
+        });
 
-        const stream = await container.exec.create(execOptions);
-        const output = await stream.start();
+        const data = await response.text();
 
-        // Convert the output to a string
-        const outputString = output.toString();
-
-        res.json({ output: outputString });
+        if (response.ok) {
+            res.status(200).send(data);
+        } else {
+            res.status(response.status).json({ error: data });
+        }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "Failed to execute Python code" });
     }
 });

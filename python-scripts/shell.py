@@ -1,44 +1,32 @@
-import sys
-import io
-import time
+import http.server
+import os
 
-# Set up the input and output streams
-input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
-output_stream = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+class PythonExecutionServer(http.server.BaseHTTPRequestHandler):
+    def do_POST(self):
+        content_length = int(self.headers.get('Content-Length', 0))
+        code = self.rfile.read(content_length).decode('utf-8')
 
-def run_shell():
-    while True:
         try:
-            # Read the Python code from the input stream
-            code = input_stream.readline().strip()
+            output = exec(code)
+            if output is not None:
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(str(output).encode('utf-8'))
+            else:
+                self.send_response(200)
+                self.end_headers()
+        except Exception as e:
+            error_message = str(e)
+            self.send_response(500)
+            self.end_headers()
+            self.wfile.write(error_message.encode('utf-8'))
 
-            if not code:
-                continue  # Skip empty input
-
-            # Execute the Python code
-            try:
-                output = exec(code)
-                if output is not None:
-                    output_stream.write(str(output) + '\n')
-                output_stream.flush()
-            except Exception as e:
-                error_message = str(e)
-                output_stream.write(f"Error: {error_message}\n")
-                output_stream.flush()
-
-        except KeyboardInterrupt:
-            break
-
-    # Close the input and output streams
-    input_stream.close()
-    output_stream.close()
+def run_server(server_class=http.server.HTTPServer, handler_class=PythonExecutionServer, port=8000):
+    server_address = ('', port)
+    httpd = server_class(server_address, handler_class)
+    print(f'Starting Python execution server on port {port}')
+    httpd.serve_forever()
 
 if __name__ == "__main__":
-    try:
-        run_shell()
-    except Exception as e:
-        print(f"Error: {e}")
-        sys.exit(1)
-
-    while True:
-        time.sleep(10)  # Keep the container running
+    server_port = int(os.environ.get('PYTHON_SERVER_PORT', 8000))
+    run_server(port=server_port)
