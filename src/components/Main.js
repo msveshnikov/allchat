@@ -29,9 +29,9 @@ function Main() {
     const [isModelResponding, setIsModelResponding] = useState(false);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
-    const [model, setModel] = useState(localStorage.getItem("selectedModel") || "gemini");
+    const [model, setModel] = useState(localStorage.getItem("model") || "gemini");
     const [sound, setSound] = useState(localStorage.getItem("sound") === "true");
-    const [imagesCount, setImagesCount] = useState(1);
+    const [imagesCount, setImagesCount] = useState(Number(localStorage.getItem("imagesCount") || "1"));
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
     const [openAuthModal, setOpenAuthModal] = useState(false);
@@ -95,10 +95,11 @@ function Main() {
             if (storedChatHistories.length > 0) {
                 localStorage.setItem("storedChatHistories", JSON.stringify(storedChatHistories));
             }
-            localStorage.setItem("selectedModel", model);
+            localStorage.setItem("model", model);
             localStorage.setItem("sound", sound);
+            localStorage.setItem("imagesCount", imagesCount);
         } catch {}
-    }, [model, storedChatHistories, sound]);
+    }, [model, storedChatHistories, sound, imagesCount]);
 
     const handleSubmit = async () => {
         if (input.trim() || selectedFile) {
