@@ -17,8 +17,8 @@ import AuthForm from "./AuthForm";
 import MyAccountPage from "./MyAccountPage";
 import { animateScroll as scroll } from "react-scroll";
 
-const MAX_CHAT_HISTORY_LENGTH = 30;
-const MAX_CHATS = 7;
+const MAX_CHAT_HISTORY_LENGTH = 20;
+const MAX_CHATS = 6;
 
 export const API_URL = process.env.NODE_ENV === "production" ? "https://allchat.online/api" : "http://localhost:5000";
 
@@ -31,6 +31,7 @@ function Main() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [model, setModel] = useState(localStorage.getItem("selectedModel") || "gemini");
     const [sound, setSound] = useState(localStorage.getItem("sound") === "true");
+    const [imagesCount, setImagesCount] = useState(1);
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
     const [openAuthModal, setOpenAuthModal] = useState(false);
@@ -141,7 +142,7 @@ function Main() {
                     fileType,
                     fileBytesBase64,
                     model,
-                    numberOfImages: 4,
+                    numberOfImages: imagesCount, // Use the imagesCount state for the number of images
                     chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
                 }),
             });
@@ -371,6 +372,8 @@ function Main() {
                 sound={sound}
                 onSoundChange={setSound}
                 onClearAll={clearAllChatHistory}
+                imagesCount={imagesCount}
+                onImagesChange={setImagesCount}
             />
             <Dialog open={openAuthModal} onClose={handleCloseAuthModal}>
                 <DialogContent>

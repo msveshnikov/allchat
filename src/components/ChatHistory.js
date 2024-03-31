@@ -109,7 +109,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun }) => {
 
                         {chat.image && (
                             <>
-                                {Array.isArray(chat.image) && chat.image.length === 4 ? (
+                                {Array.isArray(chat.image) && chat.image.length > 1 ? (
                                     <Box display="flex" flexWrap="wrap" justifyContent="center" marginTop={2}>
                                         {chat.image.map((img, imgIndex) => (
                                             <Box key={imgIndex} margin={1} width={{ xs: "45%", sm: "20%" }}>

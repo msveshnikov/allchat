@@ -2,6 +2,7 @@ import React from "react";
 import { List, ListItem, ListItemText, SwipeableDrawer } from "@mui/material";
 import ModelSwitch from "./ModelSwitch";
 import SoundSwitch from "./SoundSwitch";
+import ImagesSwitch from "./ImagesSwitch";
 
 const SideDrawer = ({
     isOpen,
@@ -14,6 +15,8 @@ const SideDrawer = ({
     sound,
     onSoundChange,
     onClearAll,
+    imagesCount,
+    onImagesChange,
 }) => {
     return (
         <SwipeableDrawer PaperProps={{ sx: { width: 200 } }} open={isOpen} onClose={onToggle} onOpen={onToggle}>
@@ -29,6 +32,9 @@ const SideDrawer = ({
                     ))}
                 </List>
                 <div style={{ marginBottom: "auto" }}>
+                    <ListItem>
+                        <ImagesSwitch imagesCount={imagesCount} onImagesChange={onImagesChange} />
+                    </ListItem>
                     <ListItem>
                         <SoundSwitch sound={sound} onSoundChange={onSoundChange} />
                     </ListItem>

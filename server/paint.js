@@ -7,10 +7,8 @@ const paintingWords = [
     "drawing",
     "generate",
     "canvas",
-    "color",
     "palette",
     "sketch",
-    "art",
 
     // Mandarin Chinese
     "画",
@@ -41,10 +39,8 @@ const paintingWords = [
     "dibujo",
     "pincel",
     "lienzo",
-    "color",
     "paleta",
     "boceto",
-    "arte",
 
     // Arabic
     "رسم",
@@ -85,21 +81,8 @@ const paintingWords = [
     "desenho",
     "pincel",
     "tela",
-    "cor",
     "paleta",
     "esboço",
-    "arte",
-
-    // Indonesian
-    "melukis",
-    "lukisan",
-    "gambar",
-    "kanvas",
-    "kuas",
-    "warna",
-    "palet",
-    "sketsa",
-    "seni",
 
     // French
     "peindre",
@@ -107,11 +90,10 @@ const paintingWords = [
     "dessin",
     "dessiner",
     "pinceau",
-    "toile",
     "couleur",
     "palette",
     "esquisse",
-    "art",
+    
 ];
 
 function hasPaintWord(text) {
