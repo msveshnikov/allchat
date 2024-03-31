@@ -2,8 +2,7 @@ import React, { memo, useState } from "react";
 import { Box, CircularProgress } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "./CodeBlock";
-import Lightbox from "react-image-lightbox";
-import "react-image-lightbox/style.css";
+import { Lightbox } from "react-modal-image";
 
 const getFileTypeIcon = (mimeType) => {
     switch (mimeType) {
@@ -111,13 +110,17 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun }) => {
                         {chat.image && (
                             <>
                                 {Array.isArray(chat.image) && chat.image.length === 4 ? (
-                                    <Box display="flex" justifyContent="center" marginTop={2}>
+                                    <Box display="flex" flexWrap="wrap" justifyContent="center" marginTop={2}>
                                         {chat.image.map((img, imgIndex) => (
-                                            <Box key={imgIndex} margin={1}>
+                                            <Box key={imgIndex} margin={1} width={{ xs: "45%", sm: "20%" }}>
                                                 <img
                                                     src={`data:image/png;base64,${img.toString("base64")}`}
                                                     alt="AI Generated"
-                                                    style={{ width: 150, height: 120, cursor: "pointer" }}
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "auto",
+                                                        cursor: "pointer",
+                                                    }}
                                                     onClick={() => handleImageClick(imgIndex, index)}
                                                 />
                                             </Box>
@@ -127,7 +130,10 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun }) => {
                                     <img
                                         src={`data:image/png;base64,${chat.image.toString("base64")}`}
                                         alt="Model output"
-                                        style={{ maxWidth: "100%", cursor: "pointer" }}
+                                        style={{
+                                            maxWidth: "100%",
+                                            cursor: "pointer",
+                                        }}
                                         onClick={() => handleImageClick(0, index)}
                                     />
                                 )}
@@ -139,14 +145,14 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun }) => {
 
             {isLightboxOpen && (
                 <Lightbox
-                    mainSrc={
+                    large={
                         Array.isArray(chatHistory[lightboxMessageIndex].image)
                             ? `data:image/png;base64,${chatHistory[lightboxMessageIndex].image[
                                   lightboxImageIndex
                               ].toString("base64")}`
                             : `data:image/png;base64,${chatHistory[lightboxMessageIndex].image.toString("base64")}`
                     }
-                    onCloseRequest={() => setIsLightboxOpen(false)}
+                    onClose={() => setIsLightboxOpen(false)}
                 />
             )}
         </Box>
