@@ -6,6 +6,8 @@ import base64
 import json
 import signal
 
+MAX_FILE_SIZE = 20 * 1024 * 1024  # 20MB
+
 class PythonExecutionServer(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers.get('Content-Length', 0))
@@ -34,6 +36,11 @@ class PythonExecutionServer(http.server.BaseHTTPRequestHandler):
 
                 # Read the content of each new file and encode it in base64
                 for file_path in new_files:
+                    file_size = os.path.getsize(file_path)
+                    if file_size > MAX_FILE_SIZE:
+                        os.remove(file_path)
+                        continue
+
                     with open(file_path, "rb") as f:
                         file_content = f.read()
                         base64_content = base64.b64encode(file_content).decode('utf-8')
