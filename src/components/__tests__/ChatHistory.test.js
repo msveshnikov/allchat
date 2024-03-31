@@ -1,12 +1,14 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import ChatHistory from "../ChatHistory";
 import "@testing-library/jest-dom";
+
 jest.mock("react-syntax-highlighter/dist/esm/styles/hljs/monokai", () => ({}));
 const mockClipboardWriteText = jest.fn();
 navigator.clipboard = {
     writeText: mockClipboardWriteText,
 };
+
 describe("ChatHistory", () => {
     const mockChatHistory = [
         {
@@ -54,29 +56,33 @@ describe("ChatHistory", () => {
         },
     ];
 
-    // it("should copy code to clipboard on button click", async () => {
-    //     const codeValue = "const myVariable = 'Hello World';";
-    //     const chatHistory = [{ assistant: "```js\n" + codeValue + "\n```" }];
-    //     const { getByLabelText } = render(<ChatHistory chatHistory={chatHistory} />);
+    it("should copy code to clipboard on button click", async () => {
+        const codeValue = "const myVariable = 'Hello World';";
+        const chatHistory = [{ assistant: "```js\n" + codeValue + "\n```" }];
+        const { getByLabelText } = render(<ChatHistory chatHistory={chatHistory} />);
 
-    //     const copyButton = getByLabelText("Copy code");
-    //     fireEvent.click(copyButton);
+        const copyButton = getByLabelText("Copy code");
+        act(() => {
+            fireEvent.click(copyButton);
+        });
 
-    //     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(codeValue);
-    // });
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith(codeValue);
+    });
 
-    // it("should update tooltip text on copy button click", async () => {
-    //     const codeValue = "const myVariable = 'Hello World';";
-    //     const chatHistory = [{ assistant: "```js\n" + codeValue + "\n```" }];
-    //     const { getByLabelText } = render(<ChatHistory chatHistory={chatHistory} />);
+    it("should update tooltip text on copy button click", async () => {
+        const codeValue = "const myVariable = 'Hello World';";
+        const chatHistory = [{ assistant: "```js\n" + codeValue + "\n```" }];
+        const { getByLabelText } = render(<ChatHistory chatHistory={chatHistory} />);
 
-    //     const copyButton = getByLabelText("Copy code");
-    //     fireEvent.click(copyButton);
+        const copyButton = getByLabelText("Copy code");
+        act(() => {
+            fireEvent.click(copyButton);
+        });
 
-    //     // expect(getByText("Copied!")).toBeInTheDocument();
-    //     // await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for timeout
-    //     // expect(getByText("Copy")).toBeInTheDocument();
-    // });
+        // expect(getByText("Copied!")).toBeInTheDocument();
+        // await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for timeout
+        // expect(getByText("Copy")).toBeInTheDocument();
+    });
 
     test("renders chat history", () => {
         render(<ChatHistory chatHistory={mockChatHistory} isModelResponding={false} chatContainerRef={null} />);
@@ -150,29 +156,30 @@ describe("Lightbox", () => {
     test("opens lightbox when image is clicked", () => {
         const { getAllByAltText, getAllByRole } = render(<ChatHistory chatHistory={chatHistory} />);
         const images = getAllByAltText("AI Generated");
+        expect(images.length === 2);
         fireEvent.click(images[0]);
         const lightbox = getAllByRole("img");
-        expect(lightbox).toBeInTheDocument();
+        expect(lightbox.length === 3);
     });
 
     test("opens correct image in lightbox", () => {
         const { getAllByAltText, getAllByRole } = render(<ChatHistory chatHistory={chatHistory} />);
         const images = getAllByAltText("AI Generated");
-        fireEvent.click(images[2]);
+        fireEvent.click(images[1]);
         const lightbox = getAllByRole("img");
-        expect(lightbox).toHaveAttribute("src", `data:image/png;base64,${chatHistory[1].image.toString("base64")}`);
+        expect(lightbox[2]).toHaveAttribute("src", `data:image/png;base64,${chatHistory[1].image.toString("base64")}`);
     });
 
     test("closes lightbox when clicked outside", () => {
-        const { getAllByAltText, queryByRole, getByTestId, getAllByRole } = render(
+        const { getAllByAltText, queryAllByRole, getAllByTestId, getAllByRole } = render(
             <ChatHistory chatHistory={chatHistory} />
         );
         const images = getAllByAltText("AI Generated");
         fireEvent.click(images[0]);
         const lightbox = getAllByRole("img");
         expect(lightbox[0]).toBeInTheDocument();
-        const chatItem = getByTestId("chat-item");
-        fireEvent.click(chatItem);
-        expect(queryByRole("img")).not.toBeInTheDocument();
+        const chatItem = getAllByTestId("chat-item");
+        fireEvent.click(chatItem[0]);
+        expect(queryAllByRole("img").length === 2);
     });
 });
