@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import ChatHistory from "../ChatHistory";
 import "@testing-library/jest-dom";
 
@@ -62,26 +62,9 @@ describe("ChatHistory", () => {
         const { getByLabelText } = render(<ChatHistory chatHistory={chatHistory} />);
 
         const copyButton = getByLabelText("Copy code");
-        act(() => {
-            fireEvent.click(copyButton);
-        });
+        fireEvent.click(copyButton);
 
         expect(navigator.clipboard.writeText).toHaveBeenCalledWith(codeValue);
-    });
-
-    it("should update tooltip text on copy button click", async () => {
-        const codeValue = "const myVariable = 'Hello World';";
-        const chatHistory = [{ assistant: "```js\n" + codeValue + "\n```" }];
-        const { getByLabelText } = render(<ChatHistory chatHistory={chatHistory} />);
-
-        const copyButton = getByLabelText("Copy code");
-        act(() => {
-            fireEvent.click(copyButton);
-        });
-
-        // expect(getByText("Copied!")).toBeInTheDocument();
-        // await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait for timeout
-        // expect(getByText("Copy")).toBeInTheDocument();
     });
 
     test("renders chat history", () => {

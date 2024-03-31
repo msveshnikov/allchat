@@ -13,12 +13,8 @@ SyntaxHighlighter.registerLanguage("java", java);
 SyntaxHighlighter.registerLanguage("python", python);
 
 export const CodeBlock = ({ language, value, onRun }) => {
-    const [copied, setCopied] = React.useState(false);
-
     const handleCopy = async () => {
-        await navigator.clipboard.writeText(value);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        navigator.clipboard.writeText(value);
     };
 
     return (
@@ -30,14 +26,14 @@ export const CodeBlock = ({ language, value, onRun }) => {
                 position: "relative",
             }}
         >
-            <Tooltip title={copied ? "Copied!" : "Copy"} placement="top">
+            <Tooltip title="Copy" placement="top">
                 <IconButton
                     aria-label="Copy code"
                     onClick={handleCopy}
                     style={{
                         position: "absolute",
                         top: -5,
-                        right: 32, // Adjust the right position to make space for the new button
+                        right: 32,
                         zIndex: 1,
                     }}
                     size="small"
@@ -45,7 +41,6 @@ export const CodeBlock = ({ language, value, onRun }) => {
                     <FileCopyOutlinedIcon fontSize="small" />
                 </IconButton>
             </Tooltip>
-            {/* Add a new Tooltip and IconButton for the small green triangle button */}
             <Tooltip title="Run" placement="top">
                 <IconButton
                     aria-label="Run code"
