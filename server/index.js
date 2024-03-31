@@ -14,6 +14,8 @@ import { authenticateUser, registerUser, verifyToken } from "./auth.js";
 import mongoose from "mongoose";
 import { User, countCharacters, countTokens, storeUsageStats } from "./model/User.js";
 import { fetchPageContent, fetchSearchResults } from "./search.js";
+import fs from "fs";
+import path from "path";
 
 const MAX_CONTEXT_LENGTH = 16000;
 const MAX_SEARCH_RESULT_LENGTH = 3000;
@@ -285,10 +287,16 @@ app.get("/stats", verifyToken, async (req, res) => {
     }
 });
 
+const contentFolder = path.join(process.cwd(), "content");
+if (!fs.existsSync(contentFolder)) {
+    fs.mkdirSync(contentFolder, { recursive: true });
+}
+
 app.post("/run", verifyToken, async (req, res) => {
     try {
         const { program } = req.body;
-        const pythonServerUrl = "http://python-shell:8000";
+        const pythonServerUrl =
+            process.env.NODE_ENV === "production" ? "http://python-shell:8000" : "http://localhost:8000";
         const response = await fetch(pythonServerUrl, {
             method: "POST",
             headers: {
@@ -296,15 +304,42 @@ app.post("/run", verifyToken, async (req, res) => {
             },
             body: program,
         });
-
         const data = await response.text();
+
         if (response.ok) {
-            res.status(200).send({ output: data });
+            const jsonData = JSON.parse(data);
+            const output = jsonData.output;
+            const newFiles = jsonData.new_files;
+
+            let outputWithLinks = output;
+            for (const [filePath, base64Content] of Object.entries(newFiles)) {
+                const fileName = path.basename(filePath);
+                const fileContent = Buffer.from(base64Content, "base64");
+                const fileSavePath = path.join(contentFolder, fileName);
+                fs.writeFileSync(fileSavePath, fileContent);
+
+                const hyperlink = `[${fileName}](/api/get?file=${encodeURIComponent(fileName)})`;
+                outputWithLinks += `\n${hyperlink}`;
+            }
+
+            res.status(200).send({ output: outputWithLinks });
         } else {
             res.status(response.status).json({ error: data });
         }
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Failed to execute Python code: " + error.message });
+    }
+});
+
+app.get("/get", (req, res) => {
+    const fileName = req.query.file;
+    const filePath = path.join(contentFolder, fileName);
+
+    if (fs.existsSync(filePath)) {
+        const fileContent = fs.readFileSync(filePath);
+        res.status(200).send(fileContent);
+    } else {
+        res.status(404).json({ error: "File not found" });
     }
 });
