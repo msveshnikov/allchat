@@ -338,6 +338,8 @@ app.get("/get", (req, res) => {
 
     if (fs.existsSync(filePath)) {
         const fileContent = fs.readFileSync(filePath);
+        res.setHeader("Content-Type", "application/octet-stream");
+        res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
         res.status(200).send(fileContent);
     } else {
         res.status(404).json({ error: "File not found" });
