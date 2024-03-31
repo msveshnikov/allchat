@@ -1,7 +1,9 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { Box, CircularProgress } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "./CodeBlock";
+import Lightbox from "react-image-lightbox";
+import "react-image-lightbox/style.css";
 
 const getFileTypeIcon = (mimeType) => {
     switch (mimeType) {
@@ -29,6 +31,16 @@ const linkStyle = {
 };
 
 const ChatHistory = memo(({ chatHistory, isModelResponding, onRun }) => {
+    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+    const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
+    const [lightboxMessageIndex, setLightboxMessageIndex] = useState(0);
+
+    const handleImageClick = (index, message) => {
+        setLightboxImageIndex(index);
+        setLightboxMessageIndex(message);
+        setIsLightboxOpen(true);
+    };
+
     return (
         <Box id="chatid" flex={1} overflow="auto" padding={2} display="flex" flexDirection="column">
             {chatHistory.map((chat, index) => (
@@ -93,17 +105,50 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun }) => {
                                 {chat.assistant}
                             </ReactMarkdown>
                         )}
+
                         {chat.error && chat.error}
+
                         {chat.image && (
-                            <img
-                                src={`data:image/png;base64,${chat.image.toString("base64")}`}
-                                alt="Model output"
-                                style={{ maxWidth: "100%" }}
-                            />
+                            <>
+                                {Array.isArray(chat.image) && chat.image.length === 4 ? (
+                                    <Box display="flex" justifyContent="center" marginTop={2}>
+                                        {chat.image.map((img, imgIndex) => (
+                                            <Box key={imgIndex} margin={1}>
+                                                <img
+                                                    src={`data:image/png;base64,${img.toString("base64")}`}
+                                                    alt="AI Generated"
+                                                    style={{ width: 150, height: 120, cursor: "pointer" }}
+                                                    onClick={() => handleImageClick(imgIndex, index)}
+                                                />
+                                            </Box>
+                                        ))}
+                                    </Box>
+                                ) : (
+                                    <img
+                                        src={`data:image/png;base64,${chat.image.toString("base64")}`}
+                                        alt="Model output"
+                                        style={{ maxWidth: "100%", cursor: "pointer" }}
+                                        onClick={() => handleImageClick(0, index)}
+                                    />
+                                )}
+                            </>
                         )}
                     </Box>
                 </Box>
             ))}
+
+            {isLightboxOpen && (
+                <Lightbox
+                    mainSrc={
+                        Array.isArray(chatHistory[lightboxMessageIndex].image)
+                            ? `data:image/png;base64,${chatHistory[lightboxMessageIndex].image[
+                                  lightboxImageIndex
+                              ].toString("base64")}`
+                            : `data:image/png;base64,${chatHistory[lightboxMessageIndex].image.toString("base64")}`
+                    }
+                    onCloseRequest={() => setIsLightboxOpen(false)}
+                />
+            )}
         </Box>
     );
 });

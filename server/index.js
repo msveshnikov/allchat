@@ -91,6 +91,7 @@ app.post("/interact", verifyToken, async (req, res) => {
     const temperature = req.body.temperature || 0.8;
     const fileBytesBase64 = req.body.fileBytesBase64;
     const fileType = req.body.fileType;
+    const numberOfImages = req.body.numberOfImages || 1;
     const model = req.body.model || "gemini";
 
     if (model === "claude" && !req.user.admin) {
@@ -193,7 +194,10 @@ app.post("/interact", verifyToken, async (req, res) => {
         userInput = userInput?.toLowerCase();
         let imageResponse;
         if (hasPaintWord(userInput)) {
-            imageResponse = await getImageTitan(userInput?.substr(0, 200) + textResponse?.trim()?.substr(0, 200));
+            imageResponse = await getImageTitan(
+                userInput?.substr(0, 200) + textResponse?.trim()?.substr(0, 200),
+                numberOfImages
+            );
             imagesGenerated = 1;
         }
 

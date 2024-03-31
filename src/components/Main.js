@@ -141,6 +141,7 @@ function Main() {
                     fileType,
                     fileBytesBase64,
                     model,
+                    numberOfImages: 4,
                     chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
                 }),
             });
