@@ -1,6 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import ImagesSwitch from "../ImagesSwitch";
+import '@testing-library/jest-dom'
 
 describe("ImagesSwitch", () => {
     it("renders correctly with default props", () => {
@@ -22,7 +23,7 @@ describe("ImagesSwitch", () => {
         fireEvent.click(switchElement);
         expect(onImagesChange).toHaveBeenCalledWith(1);
     });
-
+ 
     it("calls onImagesChange with 4 when switch is toggled from 1 to 4", () => {
         const onImagesChange = jest.fn();
         const { getByRole } = render(<ImagesSwitch imagesCount={1} onImagesChange={onImagesChange} />);
