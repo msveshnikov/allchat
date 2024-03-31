@@ -134,18 +134,15 @@ app.post("/interact", verifyToken, async (req, res) => {
         let searchResults = [];
         let topResultContent = "";
 
-        // Check if the userInput contains a URL
         const urlRegex = /https?:\/\/[^\s]+/;
         const match = userInput?.match(urlRegex);
         if (match) {
             const url = match[0];
             const urlContent = await fetchPageContent(url);
             if (urlContent) {
-                // Replace the URL in the userInput with the fetched content
                 userInput = userInput.replace(url, `\n${urlContent.slice(0, MAX_SEARCH_RESULT_LENGTH)}\n`);
             }
         } else {
-            // Check if the userInput contains search order
             if (userInput?.toLowerCase()?.includes("search") || userInput?.toLowerCase()?.includes("google")) {
                 const searchQuery = userInput.replace(/search\s*|google\s*/gi, "").trim();
                 searchResults = (await fetchSearchResults(searchQuery)) || [];
@@ -198,7 +195,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 userInput?.substr(0, 200) + textResponse?.trim()?.substr(0, 200),
                 numberOfImages
             );
-            imagesGenerated = 1;
+            imagesGenerated = numberOfImages;
         }
 
         storeUsageStats(
@@ -289,9 +286,6 @@ app.get("/stats", verifyToken, async (req, res) => {
 });
 
 app.post("/run", verifyToken, async (req, res) => {
-    // if (!req.user.admin) {
-    //     return res.status(401).json({ error: "This is admin only route" });
-    // }
     try {
         const { program } = req.body;
         const pythonServerUrl = "http://python-shell:8000";
