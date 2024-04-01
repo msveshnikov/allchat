@@ -312,17 +312,24 @@ app.post("/run", verifyToken, async (req, res) => {
             const newFiles = jsonData.new_files;
 
             let outputWithLinks = output;
+            const imageResponse = [];
+
             for (const [filePath, base64Content] of Object.entries(newFiles)) {
                 const fileName = path.basename(filePath);
-                const fileContent = Buffer.from(base64Content, "base64");
-                const fileSavePath = path.join(contentFolder, fileName);
-                fs.writeFileSync(fileSavePath, fileContent);
+                const fileExtension = path.extname(fileName).toLowerCase();
 
-                const hyperlink = `[${fileName}](/api/get?file=${encodeURIComponent(fileName)})`;
-                outputWithLinks += `\n${hyperlink}`;
+                if ([".png", ".jpg", ".jpeg"].includes(fileExtension)) {
+                    imageResponse.push(base64Content);
+                } else {
+                    const fileContent = Buffer.from(base64Content, "base64");
+                    const fileSavePath = path.join(contentFolder, fileName);
+                    fs.writeFileSync(fileSavePath, fileContent);
+                    const hyperlink = `[${fileName}](/api/get?file=${encodeURIComponent(fileName)})`;
+                    outputWithLinks += `\n${hyperlink}`;
+                }
             }
 
-            res.status(200).send({ output: outputWithLinks });
+            res.status(200).send({ output: outputWithLinks, imageResponse });
         } else {
             res.status(response.status).json({ error: data });
         }

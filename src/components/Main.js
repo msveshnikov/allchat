@@ -318,6 +318,7 @@ function Main() {
                     {
                         user: "🏃",
                         assistant: data.output,
+                        image: data.imageResponse,
                     },
                 ]);
             } else {
