@@ -142,6 +142,7 @@ function Main() {
                 headers,
                 body: JSON.stringify({
                     input,
+                    lang: (navigator.languages && navigator.languages[0]) || navigator.language,
                     fileType,
                     fileBytesBase64,
                     model,

@@ -46,7 +46,7 @@ services:
             resources:
                 limits:
                     cpus: "0.5"
-                    memory: 1512M
+                    memory: 512M
         environment:
             - PYTHONUNBUFFERED=1
             - PYTHON_SERVER_PORT=8000
