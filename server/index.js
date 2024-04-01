@@ -324,7 +324,7 @@ app.post("/run", verifyToken, async (req, res) => {
                     const fileContent = Buffer.from(base64Content, "base64");
                     const fileSavePath = path.join(contentFolder, fileName);
                     fs.writeFileSync(fileSavePath, fileContent);
-                    const hyperlink = `[${fileName}](https://allchat.online/api/get?file=${encodeURIComponent(
+                    const hyperlink = `[${fileName}](/api/get?file=${encodeURIComponent(
                         fileName
                     )})`;
                     outputWithLinks += `\n${hyperlink}`;
