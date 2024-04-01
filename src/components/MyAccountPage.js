@@ -1,20 +1,12 @@
 import React from "react";
-import { Box, Typography, Card, CardContent, Grid, Avatar } from "@mui/material";
+import { Typography, Card, CardContent, Grid, Avatar } from "@mui/material";
 import md5 from "md5";
 
 const MyAccountPage = ({ user }) => {
     const gravatarUrl = `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                padding: "1rem 1rem",
-                backgroundColor: "#f5f5f5",
-            }}
-        >
+        <>
             <Avatar
                 src={gravatarUrl}
                 alt={user.name}
@@ -119,7 +111,7 @@ const MyAccountPage = ({ user }) => {
                     </Grid>
                 </CardContent>
             </Card>
-        </Box>
+        </>
     );
 };
 

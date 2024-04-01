@@ -167,7 +167,6 @@ function Main() {
                 setChatHistory(newChatHistory);
                 if (sound) {
                     const utterance = new SpeechSynthesisUtterance(data.textResponse);
-                    // utterance.lang = "en_US";
                     window.speechSynthesis.speak(utterance);
                 }
             } else if (response.status === 403) {
