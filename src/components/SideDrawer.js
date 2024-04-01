@@ -1,5 +1,5 @@
 import React from "react";
-import { List, ListItem, ListItemText, SwipeableDrawer } from "@mui/material";
+import { List, ListItem, ListItemText, SwipeableDrawer, Slider, Typography } from "@mui/material";
 import ModelSwitch from "./ModelSwitch";
 import SoundSwitch from "./SoundSwitch";
 import ImagesSwitch from "./ImagesSwitch";
@@ -17,7 +17,13 @@ const SideDrawer = ({
     onClearAll,
     imagesCount,
     onImagesChange,
+    temperature,
+    onTemperatureChange,
 }) => {
+    const handleTemperatureChange = (event, newValue) => {
+        onTemperatureChange(newValue);
+    };
+
     return (
         <SwipeableDrawer PaperProps={{ sx: { width: 200 } }} open={isOpen} onClose={onToggle} onOpen={onToggle}>
             <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -32,6 +38,18 @@ const SideDrawer = ({
                     ))}
                 </List>
                 <div style={{ marginBottom: "auto" }}>
+                    <ListItem>
+                        <Typography gutterBottom>Temp</Typography>
+                        <Slider
+                            sx={{ mr: 1, ml: 1 }}
+                            value={temperature}
+                            onChange={handleTemperatureChange}
+                            min={0}
+                            max={1}
+                            step={0.1}
+                            valueLabelDisplay="auto"
+                        />
+                    </ListItem>
                     <ListItem>
                         <ImagesSwitch imagesCount={imagesCount} onImagesChange={onImagesChange} />
                     </ListItem>

@@ -32,6 +32,7 @@ function Main() {
     const [model, setModel] = useState(localStorage.getItem("model") || "gemini");
     const [sound, setSound] = useState(localStorage.getItem("sound") === "true");
     const [imagesCount, setImagesCount] = useState(Number(localStorage.getItem("imagesCount") || "1"));
+    const [temperature, setTemperature] = useState(localStorage.getItem("temperature") || 0.5);
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
     const [openAuthModal, setOpenAuthModal] = useState(false);
@@ -98,8 +99,9 @@ function Main() {
             localStorage.setItem("model", model);
             localStorage.setItem("sound", sound);
             localStorage.setItem("imagesCount", imagesCount);
+            localStorage.setItem("temperature", temperature);
         } catch {}
-    }, [model, storedChatHistories, sound, imagesCount]);
+    }, [model, storedChatHistories, sound, imagesCount, temperature]);
 
     const handleSubmit = async () => {
         if (input.trim() || selectedFile) {
@@ -143,6 +145,7 @@ function Main() {
                     fileType,
                     fileBytesBase64,
                     model,
+                    temperature,
                     numberOfImages: imagesCount, // Use the imagesCount state for the number of images
                     chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
                 }),
@@ -219,6 +222,7 @@ function Main() {
             headers,
             body: JSON.stringify({
                 model,
+                temperature: 0.1,
                 input: "Extract main topic of this chat in one simple short statement (30 chars max) and return it without anything else in [] ",
                 chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
             }),
@@ -376,6 +380,8 @@ function Main() {
                 onClearAll={clearAllChatHistory}
                 imagesCount={imagesCount}
                 onImagesChange={setImagesCount}
+                temperature={temperature}
+                onTemperatureChange={setTemperature}
             />
             <Dialog open={openAuthModal} onClose={handleCloseAuthModal}>
                 <DialogContent>
