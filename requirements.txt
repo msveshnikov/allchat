@@ -4,3 +4,5 @@ numpy
 pandas
 matplotlib
 fastapi
+pillow
+yfinance

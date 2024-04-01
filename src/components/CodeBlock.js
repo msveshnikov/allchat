@@ -58,6 +58,7 @@ export const CodeBlock = ({ language, value, onRun }) => {
                 </IconButton>
             </Tooltip>
             <SyntaxHighlighter
+                data-testid="code"
                 language={language}
                 style={style}
                 wrapLines={true}

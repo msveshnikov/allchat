@@ -20,10 +20,6 @@ const SideDrawer = ({
     temperature,
     onTemperatureChange,
 }) => {
-    const handleTemperatureChange = (event, newValue) => {
-        onTemperatureChange(newValue);
-    };
-
     return (
         <SwipeableDrawer PaperProps={{ sx: { width: 200 } }} open={isOpen} onClose={onToggle} onOpen={onToggle}>
             <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -41,9 +37,9 @@ const SideDrawer = ({
                     <ListItem>
                         <Typography gutterBottom>Temp</Typography>
                         <Slider
-                            sx={{ mr: 1, ml: 1 }}
+                            sx={{ mr: 1, ml: 2 }}
                             value={temperature}
-                            onChange={handleTemperatureChange}
+                            onChange={(event, newValue) => onTemperatureChange(newValue)}
                             min={0}
                             max={1}
                             step={0.1}
