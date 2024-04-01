@@ -25,3 +25,4 @@ yarn-error.log*
 google.json
 allchat.json
 .env
+server/content/

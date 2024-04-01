@@ -324,7 +324,9 @@ app.post("/run", verifyToken, async (req, res) => {
                     const fileContent = Buffer.from(base64Content, "base64");
                     const fileSavePath = path.join(contentFolder, fileName);
                     fs.writeFileSync(fileSavePath, fileContent);
-                    const hyperlink = `[${fileName}](/api/get?file=${encodeURIComponent(fileName)})`;
+                    const hyperlink = `[${fileName}](https://allchat.online/api/get?file=${encodeURIComponent(
+                        fileName
+                    )})`;
                     outputWithLinks += `\n${hyperlink}`;
                 }
             }
@@ -345,10 +347,8 @@ app.get("/get", (req, res) => {
 
     if (fs.existsSync(filePath)) {
         const fileContent = fs.readFileSync(filePath);
-        const base64Data = fileContent.toString("base64");
-        const dataURI = `data:application/octet-stream;base64,${base64Data}`;
         res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
-        res.status(200).send(`<a href="${dataURI}" download="${fileName}">Download ${fileName}</a>`);
+        res.status(200).send(fileContent);
     } else {
         res.status(404).json({ error: "File not found" });
     }
