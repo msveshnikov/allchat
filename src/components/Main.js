@@ -32,7 +32,7 @@ function Main() {
     const [model, setModel] = useState(localStorage.getItem("model") || "gemini");
     const [sound, setSound] = useState(localStorage.getItem("sound") === "true");
     const [imagesCount, setImagesCount] = useState(Number(localStorage.getItem("imagesCount") || "1"));
-    const [temperature, setTemperature] = useState(localStorage.getItem("temperature") || 0.5);
+    const [temperature, setTemperature] = useState(Number(localStorage.getItem("temperature") || "0.5"));
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
     const [openAuthModal, setOpenAuthModal] = useState(false);
