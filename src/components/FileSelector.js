@@ -15,7 +15,7 @@ const FileSelector = ({ onFileSelect, selectedFile }) => {
             <div style={{ position: "relative", display: "inline-block" }}>
                 <IconButton component="label" color="primary" style={{ position: "relative" }}>
                     <input data-testid="file-input"
-                        accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpeg,.jpg"
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpeg,.jpg,.mp4"
                         type="file"
                         onChange={handleFileChange}
                         style={{ display: "none" }}

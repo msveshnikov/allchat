@@ -46,7 +46,7 @@ const metricsMiddleware = promBundle({
 const app = express();
 app.set("trust proxy", 1);
 app.use(cors({ origin: ALLOWED_ORIGIN }));
-app.use(express.json({ limit: "20mb" }));
+app.use(express.json({ limit: "50mb" }));
 app.use(metricsMiddleware);
 
 morgan.token("body", (req, res) => {
@@ -103,10 +103,10 @@ app.post("/interact", verifyToken, async (req, res) => {
     try {
         if (fileBytesBase64) {
             const fileBytes = Buffer.from(fileBytesBase64, "base64");
-            if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+            if (fileType === "png" || fileType === "jpg" || fileType === "jpeg" || fileType === "mp4") {
                 const response =
                     model === "gemini"
-                        ? await getTextGemini(userInput || "what's this", temperature, fileBytesBase64)
+                        ? await getTextGemini(userInput || "what's this", temperature, fileBytesBase64, fileType)
                         : await getTextClaude(userInput || "what's this", temperature, fileBytesBase64, fileType);
                 return res.json({ textResponse: response?.trim() });
             } else if (fileType === "pdf") {
@@ -324,9 +324,7 @@ app.post("/run", verifyToken, async (req, res) => {
                     const fileContent = Buffer.from(base64Content, "base64");
                     const fileSavePath = path.join(contentFolder, fileName);
                     fs.writeFileSync(fileSavePath, fileContent);
-                    const hyperlink = `[${fileName}](/api/get?file=${encodeURIComponent(
-                        fileName
-                    )})`;
+                    const hyperlink = `[${fileName}](/api/get?file=${encodeURIComponent(fileName)})`;
                     outputWithLinks += `\n${hyperlink}`;
                 }
             }

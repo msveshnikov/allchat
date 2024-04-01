@@ -6,7 +6,7 @@ dotenv.config({ override: true });
 const model = "gemini-1.5-pro-latest";
 const GENAI_DISCOVERY_URL = `https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=${process.env.GEMINI_KEY}`;
 
-export async function getTextGemini(prompt, temperature, imageBase64) {
+export async function getTextGemini(prompt, temperature, imageBase64, fileType) {
     const genaiService = await google.discoverAPI({ url: GENAI_DISCOVERY_URL });
     const auth = new google.auth.GoogleAuth().fromAPIKey(process.env.GEMINI_KEY);
 
@@ -15,7 +15,7 @@ export async function getTextGemini(prompt, temperature, imageBase64) {
         const bufferStream = new stream.PassThrough();
         bufferStream.end(Buffer.from(imageBase64, "base64"));
         const media = {
-            mimeType: "image/png",
+            mimeType: fileType === "mp4" ? "video/mp4" : "image/png",
             body: bufferStream,
         };
         let body = { file: { displayName: "Uploaded Image" } };
@@ -34,12 +34,6 @@ export async function getTextGemini(prompt, temperature, imageBase64) {
                 role: "user",
                 parts: [{ text: prompt }, file_data && { file_data }],
             },
-        ],
-        safetySettings: [
-            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
-            { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
-            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
-            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" },
         ],
         generation_config: {
             maxOutputTokens: 4096,

@@ -14,6 +14,8 @@ const getFileTypeIcon = (mimeType) => {
         case "vnd.ms-excel":
         case "vnd.openxmlformats-officedocument.spreadsheetml.sheet":
             return "📊";
+        case "mp4":
+            return "🎥";
         case "png":
         case "jpeg":
         case "jpg":
