@@ -345,9 +345,10 @@ app.get("/get", (req, res) => {
 
     if (fs.existsSync(filePath)) {
         const fileContent = fs.readFileSync(filePath);
-        res.setHeader("Content-Type", "application/octet-stream");
+        const base64Data = fileContent.toString("base64");
+        const dataURI = `data:application/octet-stream;base64,${base64Data}`;
         res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
-        res.status(200).send(fileContent);
+        res.status(200).send(`<a href="${dataURI}" download="${fileName}">Download ${fileName}</a>`);
     } else {
         res.status(404).json({ error: "File not found" });
     }

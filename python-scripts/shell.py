@@ -45,6 +45,7 @@ class PythonExecutionServer(http.server.BaseHTTPRequestHandler):
                         file_content = f.read()
                         base64_content = base64.b64encode(file_content).decode('utf-8')
                         response_data["new_files"][file_path] = base64_content
+                        os.remove(file_path)
 
                 json_response = json.dumps(response_data)
 
