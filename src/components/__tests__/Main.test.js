@@ -2,6 +2,7 @@ import React from "react";
 import { render, fireEvent, waitFor, screen, act } from "@testing-library/react";
 import Main from "../Main";
 import "@testing-library/jest-dom";
+import { API_URL } from "../Main";
 
 global.fetch = jest.fn();
 
@@ -72,7 +73,7 @@ describe("Main Component", () => {
     });
 
     it("should handle 2 failed API responses", async () => {
-        const mockResponse = { ok: false, status: 500 , json: () => Promise.resolve({ error: "Error in model" })};
+        const mockResponse = { ok: false, status: 500, json: () => Promise.resolve({ error: "Error in model" }) };
 
         global.fetch.mockResolvedValueOnce(mockResponse);
         global.fetch.mockResolvedValueOnce(mockResponse);
@@ -88,7 +89,7 @@ describe("Main Component", () => {
 
         fireEvent.change(inputField, { target: { value: "Another Test query" } });
         fireEvent.click(submitButton);
- 
+
         await waitFor(() => expect(screen.getAllByText("Error in model")).toHaveLength(2));
         await waitFor(() => expect(screen.getAllByText("Test query")).toHaveLength(1));
         await waitFor(() => expect(screen.getAllByText("Another Test query")).toHaveLength(1));
@@ -165,7 +166,7 @@ describe("Main Component", () => {
     });
 
     it("should handle failed API response with 500 error", async () => {
-        const mockResponse = { ok: false, status: 500 , json: () => Promise.resolve({ error: "Error in model" })};
+        const mockResponse = { ok: false, status: 500, json: () => Promise.resolve({ error: "Error in model" }) };
         global.fetch.mockResolvedValueOnce(mockResponse);
 
         render(<Main />);
@@ -177,7 +178,7 @@ describe("Main Component", () => {
         await act(async () => {
             fireEvent.click(submitButton);
         });
- 
+
         await waitFor(() => expect(screen.getAllByText("Error in model")[0]).toBeInTheDocument());
     });
 
@@ -465,5 +466,52 @@ describe("Authentication and Sign-out", () => {
 
         // Check that the My Account modal is not open
         expect(queryByRole("dialog")).toBeNull();
+    });
+
+    test('should add a "🏃" message to the chat history and update the chat history with the response', async () => {
+        const mockResponse = {
+            ok: true,
+            json: () => Promise.resolve({ textResponse: '```python\nprint("Hello, world!")\n```' }),
+        };
+        global.fetch.mockResolvedValueOnce(mockResponse);
+
+        const { getByText } = render(<Main />);
+        const inputField = screen.getByLabelText("Enter your question");
+        const submitButton = getByText("Send");
+
+        fireEvent.change(inputField, { target: { value: "Test message" } });
+        fireEvent.click(submitButton);
+
+        await waitFor(() => {
+            expect(inputField.value).toBe("");
+        });
+
+        await screen.findByTestId("code");
+
+        const mockResponse2 = {
+            output: "Output from the code",
+        };
+
+        global.fetch = jest.fn().mockResolvedValue({
+            ok: true,
+            json: () => Promise.resolve(mockResponse2),
+        });
+
+        const runButton = screen.getByRole("button", { name: "Run code" });
+        fireEvent.click(runButton);
+
+        expect(global.fetch).toHaveBeenCalledWith(`${API_URL}/run`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer null",
+            },
+            body: JSON.stringify({ program: 'print("Hello, world!")' }),
+        });
+
+        await waitFor(() => {
+            expect(screen.getByText("🏃")).toBeInTheDocument();
+            expect(screen.getByText("Output from the code")).toBeInTheDocument();
+        });
     });
 });
