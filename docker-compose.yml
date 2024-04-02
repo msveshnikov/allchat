@@ -13,6 +13,7 @@ services:
             - CLAUDE_KEY=${CLAUDE_KEY}
             - STRIPE_KEY=${STRIPE_KEY}
             - STRIPE_WH_SECRET=${STRIPE_WH_SECRET}
+            - STRIPE_MONTH=${STRIPE_MONTH}
             - JWT_TOKEN=${JWT_TOKEN}
         restart: unless-stopped
         depends_on:
