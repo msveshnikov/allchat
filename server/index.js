@@ -96,9 +96,9 @@ app.post("/interact", verifyToken, async (req, res) => {
     const numberOfImages = req.body.numberOfImages || 1;
     const model = req.body.model || "gemini";
 
-    if (model === "claude" && !req.user.admin) {
-        return res.status(401).json({ error: "Haiku is available only by request" });
-    }
+    // if (model === "claude" && !req.user.admin) {
+    //     return res.status(401).json({ error: "Haiku is available only by request" });
+    // }
 
     try {
         if (fileBytesBase64) {

@@ -13,52 +13,55 @@ class PythonExecutionServer(http.server.BaseHTTPRequestHandler):
         content_length = int(self.headers.get('Content-Length', 0))
         code_input = self.rfile.read(content_length).decode('utf-8')
         output_stream = io.StringIO()
-        initial_files = set(os.listdir(os.getcwd()))  # Get the initial set of files
+        initial_files = set(os.listdir(os.getcwd()))
 
-        with contextlib.redirect_stdout(output_stream), contextlib.redirect_stderr(output_stream):
-            try:
-                def execute_with_timeout():
-                    compiled_code = compile(code_input, "<input>", "exec")
-                    exec(compiled_code, globals())
-                signal.alarm(180)
-                execute_with_timeout()
-                signal.alarm(0)
+        def timeout_handler(signum, frame):
+            raise TimeoutError("Execution timed out after 180 seconds")
 
-                output = output_stream.getvalue()
-                final_files = set(os.listdir(os.getcwd()))  # Get the final set of files
-                new_files = [str(file) for file in final_files - initial_files]  # Get the new files
+        signal.signal(signal.SIGALRM, timeout_handler)
+        signal.alarm(180)  # Set the alarm for 180 seconds
 
-                # Prepare the JSON response
-                response_data = {
-                    "output": output,
-                    "new_files": {}
-                }
+        try:
+            with contextlib.redirect_stdout(output_stream), contextlib.redirect_stderr(output_stream):
+                compiled_code = compile(code_input, "<input>", "exec")
+                exec(compiled_code, globals())
+        except TimeoutError:
+            output = output_stream.getvalue()
+            output += "\nExecution timed out after 180 seconds"
+        except Exception as e:
+            output = output_stream.getvalue()
+            output += f"\nError: {str(e)}"
+        else:
+            output = output_stream.getvalue()
+        finally:
+            signal.alarm(0)  # Cancel the alarm
 
-                # Read the content of each new file and encode it in base64
-                for file_path in new_files:
-                    file_size = os.path.getsize(file_path)
-                    if file_size > MAX_FILE_SIZE:
-                        os.remove(file_path)
-                        continue
+        final_files = set(os.listdir(os.getcwd()))
+        new_files = [str(file) for file in final_files - initial_files]
 
-                    with open(file_path, "rb") as f:
-                        file_content = f.read()
-                        base64_content = base64.b64encode(file_content).decode('utf-8')
-                        response_data["new_files"][file_path] = base64_content
-                        os.remove(file_path)
+        # Prepare the JSON response
+        response_data = {
+            "output": output,
+            "new_files": {}
+        }
 
-                json_response = json.dumps(response_data)
+        # Read the content of each new file and encode it in base64
+        for file_path in new_files:
+            file_size = os.path.getsize(file_path)
+            if file_size > MAX_FILE_SIZE:
+                os.remove(file_path)
+                continue
+            with open(file_path, "rb") as f:
+                file_content = f.read()
+                base64_content = base64.b64encode(file_content).decode('utf-8')
+                response_data["new_files"][file_path] = base64_content
+            os.remove(file_path)
 
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(json_response.encode('utf-8'))
-
-            except Exception as e:
-                error_message = str(e)
-                self.send_response(500)
-                self.end_headers()
-                self.wfile.write(error_message.encode('utf-8'))
+        json_response = json.dumps(response_data)
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(json_response.encode('utf-8'))
 
 def run_server(server_class=http.server.HTTPServer, handler_class=PythonExecutionServer, port=8000):
     server_address = ('', port)

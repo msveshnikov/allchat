@@ -299,7 +299,10 @@ function Main() {
     };
 
     const handleRun = async (language, program) => {
-        if (language === "python") {
+        if (language !== "python") {
+            return;
+        }
+        try {
             const token = localStorage.getItem("token");
             const headers = {
                 "Content-Type": "application/json",
@@ -335,8 +338,14 @@ function Main() {
                     },
                 ]);
             }
-            setIsModelResponding(false);
+        } catch (error) {
+            const newChatHistory = [
+                ...chatHistory,
+                { user: "🏃", assistant: null, error: "Failed to connect to the server." },
+            ];
+            setChatHistory(newChatHistory);
         }
+        setIsModelResponding(false);
     };
 
     const fetchUserData = async () => {
