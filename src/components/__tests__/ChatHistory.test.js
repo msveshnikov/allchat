@@ -29,7 +29,7 @@ describe("ChatHistory", () => {
             
             ## Demo
             
-            https://allchat.online/
+            https://microsoft.com/
             
             **Backend (Node.js)**`,
             fileType: "png",

@@ -12,8 +12,4 @@ with open("random_number.txt", "w") as file:
 
 print(f"The random number {random_number} has been saved to the file 'random_number.txt'.")
 
-###
-GET https://allchat.online/api/get?file=random_number.txt
 
-###
-GET https://allchat.online/api/get?file=tangent_plot.png

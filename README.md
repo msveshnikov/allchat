@@ -20,22 +20,6 @@ https://allchat.online/
 - ... please create a Request in Issues for more ...
 
 
-**Backend (Node.js)**
-
-1. Set up a new Node.js project and install the necessary dependencies, such as `express`, `cors`, and any libraries required for interacting with the Gemini Pro model.
-2. Create an Express server and define the necessary routes for handling HTTP requests from the frontend.
-3. Implement the logic for interacting with the Gemini Pro model, which may involve making API calls or using a client library provided by the model's creators.
-4. Define the response structure and send the appropriate data back to the frontend.
-
-**Frontend (React MUI)**
-
-1. Set up a new React project using `create-react-app` or your preferred React boilerplate.
-2. Install the required dependencies, including `@mui/material` for the Material-UI (MUI) component library.
-3. Create the necessary components for the user interface, such as input fields, buttons, and display areas for the model's output.
-4. Use React hooks or state management libraries (e.g., Redux) to manage the application state and handle user interactions.
-5. Implement the logic for sending HTTP requests to the Node.js backend and handling the responses.
-6. Integrate the MUI components with the application logic to create a visually appealing and user-friendly interface.
-
 ## Environment variables
 
 You have to get those APIs and set environment variables (or put to .env file):
@@ -45,131 +29,35 @@ You have to get those APIs and set environment variables (or put to .env file):
 -   AWS_ACCESS_KEY - (for Titan image generation) - https://eu-central-1.console.aws.amazon.com/console/home?region=eu-central-1
 -   CLAUDE_KEY - Anthropic Key (for Haiku)
 
-# DOCKER
+# DOCKER DEPLOY
 
 To containerize the Node.js backend and React MUI frontend for easy deployment, we can use Docker. Here's how you can create Docker containers for your application:
 
 **Backend (Node.js)**
-
-1. Create a new file called `Dockerfile` in your backend directory with the following contents:
-
-```Dockerfile
-# Use the official Node.js image as the base image
-FROM node:18
-
-# Set the working directory in the container
-WORKDIR /app
-
-# Copy the package.json and package-lock.json files
-COPY package*.json ./
-
-# Install the dependencies
-RUN npm install
-
-# Copy the rest of the application code
-COPY . .
-
-# Expose the port that your backend runs on
-EXPOSE 3000
-
-# Start the backend application
-CMD ["npm", "start"]
-```
-
-2. In the same directory, create a `.dockerignore` file with the following contents:
-
-```
-node_modules
-.git
-```
-
-This will prevent copying the `node_modules` and `.git` directories into the Docker image, keeping the image size smaller.
-
-3. Build the Docker image by running the following command in the backend directory:
+1. Replace `export const ALLOWED_ORIGIN = ["https://allchat.online", "http://localhost:3000"];` in server/index.js with your domain
+2. Build the Docker image by running the following command in the backend directory:
 
 ```
 docker build -t allchat-backend .
 ```
 
-Replace `allchat-backend` with your desired image name.
+Replace `allchat-backend` with your desired image name. Push to Hub if needed.
 
 **Frontend (React MUI)**
 
-1. Create a new file called `Dockerfile` in your frontend directory with the following contents:
-
-```Dockerfile
-# Use the official Node.js image as the base image
-FROM node:18
-
-# Set the working directory in the container
-WORKDIR /app
-
-# Copy the package.json and package-lock.json files
-COPY package*.json ./
-
-# Install the dependencies
-RUN npm install
-
-# Copy the rest of the application code
-COPY . .
-
-# Build the React app for production
-RUN npm run build
-
-# Use a lightweight server to serve the built React app
-FROM nginx:stable-alpine
-COPY --from=0 /app/build /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
-```
-
-2. In the same directory, create a `.dockerignore` file with the following contents:
-
-```
-node_modules
-.git
-build
-```
-
-This will prevent copying the `node_modules`, `.git`, and `build` directories into the Docker image.
-
-3. Build the Docker image by running the following command in the frontend directory:
+1. Replace `export const API_URL = process.env.NODE_ENV === "production" ? "https://allchat.online/api" : "http://localhost:5000";` in src/components/Main.js with your domain
+2. Build the Docker image by running the following command in the frontend directory:
 
 ```
 docker build -t allchat-frontend .
 ```
 
-Replace `allchat-frontend` with your desired image name.
+Replace `allchat-frontend` with your desired image name. Push to Hub if needed.
 
 **Running the Containers**
 
-After building the Docker images, you can run the containers using Docker Compose. Create a `docker-compose.yml` file in the root directory of your project with the following contents:
-
-```yaml
-version: "3.8"
-
-services:
-    backend:
-        image: extender777/allchat-backend
-        ports:
-            - "6000:5000"
-        environment:
-            - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
-            - AWS_SECRET_KEY=${AWS_SECRET_KEY}
-        restart: unless-stopped
-
-    frontend:
-        image: extender777/allchat-frontend
-        environment:
-            - NODE_ENV=production
-        ports:
-            - "8585:80"
-        restart: unless-stopped
-        depends_on:
-            - backend
-```
-
-Make sure to replace `allchat-backend` and `allchat-frontend` with the names you used when building the Docker images, and replace `your_google_cloud_project_id` with your actual Google Cloud project ID.
+After building the Docker images, you can run the containers using Docker Compose.
+Make sure to replace `allchat-backend` and `allchat-frontend` with the names you used when building the Docker images.
 
 Now, you can start the containers by running the following command in the root directory of your project:
 
