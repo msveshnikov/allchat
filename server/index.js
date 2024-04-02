@@ -16,11 +16,14 @@ import { User, countCharacters, countTokens, storeUsageStats } from "./model/Use
 import { fetchPageContent, fetchSearchResults } from "./search.js";
 import fs from "fs";
 import path from "path";
+import Stripe from "stripe";
+import dotenv from "dotenv";
+dotenv.config({ override: true });
 
 const MAX_CONTEXT_LENGTH = 16000;
 const MAX_SEARCH_RESULT_LENGTH = 3000;
 export const ALLOWED_ORIGIN = ["https://allchat.online", "http://localhost:3000"];
-
+const stripe = new Stripe(process.env.STRIPE_KEY);
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro 1.5 and Claude Haiku language models. Your capabilities include:
 
 - Engaging in natural language conversations and answering user queries.
@@ -45,8 +48,14 @@ const metricsMiddleware = promBundle({
 
 const app = express();
 app.set("trust proxy", 1);
+app.use((req, res, next) => {
+    if (req.originalUrl === "/stripe-webhook") {
+        next();
+    } else {
+        express.json({ limit: "50mb" })(req, res, next);
+    }
+});
 app.use(cors({ origin: ALLOWED_ORIGIN }));
-app.use(express.json({ limit: "50mb" }));
 app.use(metricsMiddleware);
 
 morgan.token("body", (req, res) => {
@@ -88,6 +97,11 @@ mongoose
     .catch((err) => console.error("MongoDB connection error:", err));
 
 app.post("/interact", verifyToken, async (req, res) => {
+    // const user = await User.findById(req.user.id);
+    // if (user.subscriptionStatus !== 'active') {
+    //     return res.status(402).json({ error: 'Subscription is not active' });
+    // }
+
     let userInput = req.body.input;
     const chatHistory = req.body.chatHistory || [];
     const temperature = req.body.temperature || 0.8;
@@ -95,10 +109,6 @@ app.post("/interact", verifyToken, async (req, res) => {
     const fileType = req.body.fileType;
     const numberOfImages = req.body.numberOfImages || 1;
     const model = req.body.model || "gemini";
-
-    // if (model === "claude" && !req.user.admin) {
-    //     return res.status(401).json({ error: "Haiku is available only by request" });
-    // }
 
     try {
         if (fileBytesBase64) {
@@ -349,5 +359,68 @@ app.get("/get", (req, res) => {
         res.status(200).send(fileContent);
     } else {
         res.status(404).json({ error: "File not found" });
+    }
+});
+
+app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (req, res) => {
+    const signature = req.headers["stripe-signature"];
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WH_SECRET);
+    } catch (err) {
+        console.error(err);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+    console.log("✅ Success:", event.id);
+    // Handle the event
+    switch (event.type) {
+        case "customer.subscription.updated":
+            const subscription = event.data.object;
+            await handleSubscriptionUpdate(subscription);
+            break;
+        // ... handle other event types
+        default:
+            console.log(`Unhandled event type ${event.type}`);
+    }
+
+    res.send();
+});
+
+async function handleSubscriptionUpdate(subscription) {
+    const user = await User.findOne({ email: subscription.customer.email });
+
+    if (subscription.status === "active") {
+        // Subscription is active
+        user.subscriptionStatus = "active";
+    } else if (subscription.status === "past_due") {
+        // Subscription is past due
+        user.subscriptionStatus = "past_due";
+    } else if (subscription.status === "canceled") {
+        // Subscription is canceled
+        user.subscriptionStatus = "canceled";
+    }
+    user.subscriptionId = subscription.id;
+
+    await user.save();
+}
+
+app.post("/cancel", verifyToken, async (req, res) => {
+    const { subscriptionId } = req.body;
+
+    try {
+        // Cancel the subscription using Stripe API
+        await stripe.subscriptions.del(subscriptionId);
+
+        // Update the user's subscription status in the database
+        const userId = req.user.id;
+        const user = await User.findById(userId);
+        user.subscriptionStatus = "canceled";
+        await user.save();
+
+        res.status(200).json({ message: "Subscription canceled successfully" });
+    } catch (error) {
+        console.error("Error canceling subscription:", error);
+        res.status(500).json({ error: "Failed to cancel subscription" });
     }
 });

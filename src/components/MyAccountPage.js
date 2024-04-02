@@ -1,8 +1,8 @@
 import React from "react";
-import { Typography, Card, CardContent, Grid, Avatar } from "@mui/material";
+import { Typography, Card, CardContent, Grid, Avatar, Button, Link } from "@mui/material";
 import md5 from "md5";
 
-const MyAccountPage = ({ user }) => {
+const MyAccountPage = ({ user, handleCancelSubscription }) => {
     const gravatarUrl = `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
 
     return (
@@ -37,6 +37,31 @@ const MyAccountPage = ({ user }) => {
                             <Typography variant="body1" color="#fff">
                                 {user.email}
                             </Typography>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Typography variant="h6" gutterBottom color="secondary">
+                                Subscription Status
+                            </Typography>
+                            <Typography variant="body1" color="#fff">
+                                {user.subscriptionStatus}
+                            </Typography>
+                            {user.subscriptionStatus === "active" && (
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    sx={{ mt: 1 }}
+                                    onClick={handleCancelSubscription}
+                                >
+                                    Cancel Subscription
+                                </Button>
+                            )}
+                            {user.subscriptionStatus !== "active" && (
+                                <Link href="https://buy.stripe.com/test_00gbLN8z0b8ocUwaEE" target="_blank" rel="noopener">
+                                    <Button variant="contained" color="primary" sx={{ mt: 1 }}>
+                                        Start Subscription
+                                    </Button>
+                                </Link>
+                            )}
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h6" gutterBottom color="secondary">
