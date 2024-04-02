@@ -341,7 +341,7 @@ function Main() {
         } catch (error) {
             const newChatHistory = [
                 ...chatHistory,
-                { user: "🏃", assistant: null, error: "Failed to connect to the server." },
+                { user: "🏃", assistant: null, error: "Failed to connect to the server or server timeout" },
             ];
             setChatHistory(newChatHistory);
         }

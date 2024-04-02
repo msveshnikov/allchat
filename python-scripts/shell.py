@@ -15,37 +15,32 @@ class PythonExecutionServer(http.server.BaseHTTPRequestHandler):
         output_stream = io.StringIO()
         initial_files = set(os.listdir(os.getcwd()))
 
-        def timeout_handler(signum, frame):
-            raise TimeoutError("Execution timed out after 180 seconds")
-
-        signal.signal(signal.SIGALRM, timeout_handler)
-        signal.alarm(180)  # Set the alarm for 180 seconds
+        def execute_with_timeout():
+            compiled_code = compile(code_input, "<input>", "exec")
+            exec(compiled_code, globals())
 
         try:
             with contextlib.redirect_stdout(output_stream), contextlib.redirect_stderr(output_stream):
-                compiled_code = compile(code_input, "<input>", "exec")
-                exec(compiled_code, globals())
-        except TimeoutError:
+                signal.signal(signal.SIGALRM, self.handle_timeout)
+                signal.alarm(180)  # Set a 3-minute timeout
+                execute_with_timeout()
+                signal.alarm(0)  # Cancel the timeout
             output = output_stream.getvalue()
-            output += "\nExecution timed out after 180 seconds"
         except Exception as e:
-            output = output_stream.getvalue()
-            output += f"\nError: {str(e)}"
-        else:
-            output = output_stream.getvalue()
-        finally:
-            signal.alarm(0)  # Cancel the alarm
+            error_message = str(e)
+            self.send_response(500)
+            self.end_headers()
+            self.wfile.write(error_message.encode('utf-8'))
+            return
 
         final_files = set(os.listdir(os.getcwd()))
         new_files = [str(file) for file in final_files - initial_files]
 
-        # Prepare the JSON response
         response_data = {
             "output": output,
             "new_files": {}
         }
 
-        # Read the content of each new file and encode it in base64
         for file_path in new_files:
             file_size = os.path.getsize(file_path)
             if file_size > MAX_FILE_SIZE:
@@ -62,6 +57,9 @@ class PythonExecutionServer(http.server.BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json")
         self.end_headers()
         self.wfile.write(json_response.encode('utf-8'))
+
+    def handle_timeout(self, signum, frame):
+        raise Exception("Execution timed out after 3 minutes")
 
 def run_server(server_class=http.server.HTTPServer, handler_class=PythonExecutionServer, port=8000):
     server_address = ('', port)
