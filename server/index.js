@@ -376,6 +376,7 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
     // Handle the event
     switch (event.type) {
         case "customer.subscription.updated":
+        case "customer.subscription.created":
             const subscription = event.data.object;
             await handleSubscriptionUpdate(subscription);
             break;
@@ -388,6 +389,7 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
 });
 
 async function handleSubscriptionUpdate(subscription) {
+    console.log(subscription);
     const user = await User.findOne({ email: subscription.customer.email });
 
     if (subscription.status === "active") {
