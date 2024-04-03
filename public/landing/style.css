@@ -1,0 +1,240 @@
+/* Reset styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+/* Header styles */
+header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 20px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+nav ul {
+    display: flex;
+    list-style-type: none;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    color: #fff;
+}
+
+/* Hero section styles */
+.hero {
+    display: flex;
+    align-items: center;
+    padding: 80px 20px;
+}
+
+.hero-content {
+    flex: 1;
+    padding-right: 40px;
+}
+
+.hero-content h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    margin-bottom: 30px;
+}
+
+.cta {
+    display: inline-block;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.hero-image {
+    flex: 1;
+}
+
+.hero-image img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Features section styles */
+.features {
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.features h2 {
+    font-size: 32px;
+    margin-bottom: 40px;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 40px;
+}
+
+/* ... (previous CSS styles) ... */
+
+/* Features section styles */
+.feature img {
+    max-width: 150px;
+    margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+    .feature img {
+        max-width: 150px;
+    }
+}
+
+/* ... (rest of the CSS styles) ... */
+.feature h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+/* Demo section styles */
+.demo {
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.demo h2 {
+    font-size: 32px;
+    margin-bottom: 40px;
+}
+
+.demo-video {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* CTA section styles */
+.cta-section {
+    background-color: #007bff;
+    color: #fff;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.cta-content h2 {
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+/* Footer styles */
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+.integrations {
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.integrations h2 {
+    font-size: 32px;
+    margin-bottom: 40px;
+}
+
+.integration-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 40px;
+}
+
+.integration img {
+    max-width: 250px;
+    margin-bottom: 20px;
+}
+
+.integration h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+/* ... (previous CSS styles) ... */
+
+/* Contact section styles */
+.contact {
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.contact h2 {
+    font-size: 32px;
+    margin-bottom: 40px;
+}
+
+.contact-form {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+button.cta {
+    display: block;
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* ... (rest of the CSS styles) ... */
