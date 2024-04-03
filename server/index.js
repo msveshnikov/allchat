@@ -377,6 +377,10 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
                 await handleSubscriptionUpdate(subscription);
                 break;
             // ... handle other event types
+            case "checkout.session.completed":
+                const checkoutSessionCompleted = event.data.object;
+                await handleSessionCompleted(checkoutSessionCompleted);
+                break;
             default:
                 console.log(`Unhandled event type ${event.type}`);
         }
@@ -388,9 +392,45 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
     }
 });
 
+export const handleSessionCompleted = async (session) => {
+    console.log("handleSessionCompleted started", session);
+    try {
+        const user = await User.findOne({ email: session.customer_details.email });
+        if (!user.stripeCustomerId || !user.stripeSubscriptionId) {
+            // Create a new Stripe customer
+            const customer = await stripe.customers.create({
+                email: user.email,
+            });
+
+            // Create a new subscription
+            const subscription = await stripe.subscriptions.create({
+                customer: customer.id,
+                items: [
+                    {
+                        price: process.env.STRIPE_MONTH,
+                    },
+                ],
+                trial_period_days: 14,
+                payment_behavior: "default_incomplete",
+                expand: ["latest_invoice.payment_intent"],
+            });
+
+            // Update the user's stripeCustomerId and stripeSubscriptionId
+            user.stripeCustomerId = customer.id;
+            user.subscriptionId = subscription.id;
+            await user.save();
+        }
+        await user.save();
+        console.log("handleSessionCompleted succesfull", user);
+    } catch (e) {
+        console.error(e);
+    }
+};
+
 async function handleSubscriptionUpdate(subscription) {
     console.log(subscription);
-    const user = await User.findOne({ email: subscription.customer_details.email });
+    const userId = await getUserIdFromCustomerId(subscription.customer);
+    const user = await User.findById(userId);
 
     if (subscription.status === "active") {
         // Subscription is active
@@ -405,6 +445,11 @@ async function handleSubscriptionUpdate(subscription) {
     user.subscriptionId = subscription.id;
 
     await user.save();
+}
+
+async function getUserIdFromCustomerId(customerId) {
+    const user = await User.findOne({ stripeCustomerId: customerId });
+    return user._id;
 }
 
 app.post("/checkout/:email", async (req, res) => {

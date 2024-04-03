@@ -18,17 +18,13 @@ const userSchema = new mongoose.Schema({
             moneyConsumed: { type: Number, default: 0 },
         },
     },
+    stripeCustomerId: { type: String, required: false },
     subscriptionId: { type: String, required: false },
     subscriptionStatus: {
         type: String,
         enum: ["active", "past_due", "canceled", "none"],
         default: "none",
     },
-    // subscriptionPlan: {
-    //     type: String,
-    //     enum: ["free", "standard", "premium"],
-    //     default: "free",
-    // },
 });
 
 // User model
