@@ -5,14 +5,14 @@ dotenv.config({ override: true });
 
 const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_KEY });
 
-const getWeather = async (location, unit = "celsius") => {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}&units=${unit}`;
+const getWeather = async (location) => {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}`;
     const response = await fetch(url);
     const data = await response.json();
     const { name, weather, main } = data;
-    return `In ${name}, the weather is ${weather[0].description} with a temperature of ${main.temp - 273}°${
-        unit === "celsius" ? "C" : "F"
-    }.`;
+    return `In ${name}, the weather is ${weather[0].description} with a temperature of ${Math.round(
+        main.temp - 273
+    )}°C`;
 };
 
 export const getTextClaude = async (prompt, temperature, imageBase64, fileType) => {
@@ -28,59 +28,58 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType) 
                         type: "string",
                         description: "The city and state/country, e.g. San Francisco, CA",
                     },
-                    unit: {
-                        type: "string",
-                        enum: ["celsius", "fahrenheit"],
-                        description: "The unit of temperature, either 'celsius' or 'fahrenheit'",
-                    },
                 },
                 required: ["location"],
             },
         },
     ];
 
+    const message = {
+        role: "user",
+        content: [
+            { type: "text", text: prompt },
+            ...(imageBase64
+                ? [
+                      {
+                          type: "image",
+                          source: {
+                              type: "base64",
+                              media_type: fileType === "png" ? "image/png" : "image/jpeg",
+                              data: imageBase64,
+                          },
+                      },
+                  ]
+                : []),
+        ],
+    };
+
     const data = await anthropic.beta.tools.messages.create({
         model: "claude-3-haiku-20240307",
         max_tokens: 4096,
         temperature: temperature || 0.5,
         tools,
-        messages: [
-            {
-                role: "user",
-                content: [
-                    { type: "text", text: prompt },
-                    ...(imageBase64
-                        ? [
-                              {
-                                  type: "image",
-                                  source: {
-                                      type: "base64",
-                                      media_type: fileType === "png" ? "image/png" : "image/jpeg",
-                                      data: imageBase64,
-                                  },
-                              },
-                          ]
-                        : []),
-                ],
-            },
-        ],
+        messages: [message],
     });
 
     if (!data) {
         throw new Error("Anthropic Claude Error");
     } else {
         if (data.stop_reason === "tool_use") {
-            const toolUse = data.content[0];
+            const toolUse = data.content.find((block) => block.type === "tool_use");
             if (toolUse.name === "get_weather") {
-                const { location, unit } = toolUse.input;
-                const weatherResult = await getWeather(location, unit);
-                console.log(weatherResult);
+                const { location } = toolUse.input;
+                const weatherResult = await getWeather(location);
                 const newData = await anthropic.beta.tools.messages.create({
                     model: "claude-3-haiku-20240307",
                     max_tokens: 4096,
                     temperature: temperature || 0.5,
                     tools,
                     messages: [
+                        message,
+                        {
+                            role: "assistant",
+                            content: data.content,
+                        },
                         {
                             role: "user",
                             content: [
