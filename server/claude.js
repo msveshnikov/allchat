@@ -72,6 +72,48 @@ const tools = [
     },
 ];
 
+async function processToolResult(data, temperature, message, tools) {
+    const toolUse = data.content.find((block) => block.type === "tool_use");
+    if (!toolUse) {
+        return data?.content?.[0]?.text;
+    }
+
+    let toolResult;
+    if (toolUse.name === "get_weather") {
+        const { location } = toolUse.input;
+        toolResult = await getWeather(location);
+    } else if (toolUse.name === "get_stock_price") {
+        const { ticker } = toolUse.input;
+        const stockPrices = await getStockPrice(ticker);
+        toolResult = `Last week's stock prices: ${stockPrices.join(", ")}`;
+    }
+
+    const newData = await anthropic.beta.tools.messages.create({
+        model: "claude-3-haiku-20240307",
+        max_tokens: 4096,
+        temperature: temperature || 0.5,
+        tools,
+        messages: [
+            message,
+            {
+                role: "assistant",
+                content: data.content,
+            },
+            {
+                role: "user",
+                content: [
+                    {
+                        type: "tool_result",
+                        tool_use_id: toolUse.id,
+                        content: toolResult,
+                    },
+                ],
+            },
+        ],
+    });
+    return newData?.content?.[0]?.text;
+}
+
 export const getTextClaude = async (prompt, temperature, imageBase64, fileType) => {
     const message = {
         role: "user",
@@ -104,62 +146,7 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType) 
         throw new Error("Anthropic Claude Error");
     } else {
         if (data.stop_reason === "tool_use") {
-            const toolUse = data.content.find((block) => block.type === "tool_use");
-            if (toolUse.name === "get_weather") {
-                const { location } = toolUse.input;
-                const weatherResult = await getWeather(location);
-                const newData = await anthropic.beta.tools.messages.create({
-                    model: "claude-3-haiku-20240307",
-                    max_tokens: 4096,
-                    temperature: temperature || 0.5,
-                    tools,
-                    messages: [
-                        message,
-                        {
-                            role: "assistant",
-                            content: data.content,
-                        },
-                        {
-                            role: "user",
-                            content: [
-                                {
-                                    type: "tool_result",
-                                    tool_use_id: toolUse.id,
-                                    content: weatherResult,
-                                },
-                            ],
-                        },
-                    ],
-                });
-                return newData?.content?.[0]?.text;
-            } else if (toolUse.name === "get_stock_price") {
-                const { ticker } = toolUse.input;
-                const stockPrices = await getStockPrice(ticker);
-                const newData = await anthropic.beta.tools.messages.create({
-                    model: "claude-3-haiku-20240307",
-                    max_tokens: 4096,
-                    temperature: temperature || 0.5,
-                    tools,
-                    messages: [
-                        message,
-                        {
-                            role: "assistant",
-                            content: data.content,
-                        },
-                        {
-                            role: "user",
-                            content: [
-                                {
-                                    type: "tool_result",
-                                    tool_use_id: toolUse.id,
-                                    content: `Last week's stock prices: ${stockPrices.join(", ")}`,
-                                },
-                            ],
-                        },
-                    ],
-                });
-                return newData?.content?.[0]?.text;
-            }
+            return processToolResult(data, temperature, message, tools);
         } else {
             return data?.content?.[0]?.text;
         }
