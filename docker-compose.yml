@@ -13,6 +13,7 @@ services:
             - CLAUDE_KEY=${CLAUDE_KEY}
             - JWT_TOKEN=${JWT_TOKEN}
             - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+            - YAHOO_FINANCE_API_KEY=${YAHOO_FINANCE_API_KEY}
         restart: unless-stopped
         depends_on:
             - mongodb

@@ -17,7 +17,7 @@ https://allchat.online/
 - Markdown formatting.
 - Image Generation by Amazon Titan.
 - Python Code Run
-- Haiku functions (tools)
+- Haiku functions (tools) - weather, stocks, ...
 - ... please create a Request in Issues for more ...
 
 
