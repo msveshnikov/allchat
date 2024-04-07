@@ -10,8 +10,8 @@ const getWeather = async (location) => {
     const response = await fetch(url);
     const data = await response.json();
     const { name, weather, main } = data;
-    return `In ${name}, the weather is ${weather[0].description} with a temperature of ${Math.round(
-        main.temp - 273
+    return `In ${name}, the weather is ${weather?.[0]?.description} with a temperature of ${Math.round(
+        main?.temp - 273
     )}°C`;
 };
 
