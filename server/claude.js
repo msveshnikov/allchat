@@ -20,7 +20,7 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType) 
         {
             name: "get_weather",
             description:
-                "Get the current weather in a given location. The tool expects an object with a 'location' property (a string with the city and state/country) and an optional 'unit' property ('celsius' or 'fahrenheit'). It returns a string with the location, weather description, and temperature.",
+                "Get the current weather in a given location. The tool expects an object with a 'location' property (a string with the city and state/country). It returns a string with the location, weather description, and temperature (awlays in C).",
             input_schema: {
                 type: "object",
                 properties: {
