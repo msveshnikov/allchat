@@ -10,7 +10,7 @@ const getWeather = async (location, unit = "celsius") => {
     const response = await fetch(url);
     const data = await response.json();
     const { name, weather, main } = data;
-    return `In ${name}, the weather is ${weather[0].description} with a temperature of ${main.temp}°${
+    return `In ${name}, the weather is ${weather[0].description} with a temperature of ${main.temp - 273}°${
         unit === "celsius" ? "C" : "F"
     }.`;
 };
@@ -44,9 +44,6 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType) 
         max_tokens: 4096,
         temperature: temperature || 0.5,
         tools,
-        // headers: {
-        //     "anthropic-beta": "tools-2024-04-04",
-        // },
         messages: [
             {
                 role: "user",
@@ -73,20 +70,17 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType) 
         throw new Error("Anthropic Claude Error");
     } else {
         if (data.stop_reason === "tool_use") {
-            const toolUse = data.content[0].content.find((block) => block.type === "tool_use");
+            const toolUse = data.content[0];
             if (toolUse.name === "get_weather") {
                 const { location, unit } = toolUse.input;
                 const weatherResult = await getWeather(location, unit);
+                console.log(weatherResult);
                 const newData = await anthropic.beta.tools.messages.create({
                     model: "claude-3-haiku-20240307",
                     max_tokens: 4096,
                     temperature: temperature || 0.5,
                     tools,
-                    headers: {
-                        "anthropic-beta": "tools-2024-04-04",
-                    },
                     messages: [
-                        ...data.messages,
                         {
                             role: "user",
                             content: [

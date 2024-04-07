@@ -12,6 +12,7 @@ services:
             - AWS_SECRET_KEY=${AWS_SECRET_KEY}
             - CLAUDE_KEY=${CLAUDE_KEY}
             - JWT_TOKEN=${JWT_TOKEN}
+            - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
         restart: unless-stopped
         depends_on:
             - mongodb
