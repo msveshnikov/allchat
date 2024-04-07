@@ -15,6 +15,7 @@ services:
             - STRIPE_WH_SECRET=${STRIPE_WH_SECRET}
             - STRIPE_MONTH=${STRIPE_MONTH}
             - JWT_TOKEN=${JWT_TOKEN}
+            - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
         restart: unless-stopped
         depends_on:
             - mongodb
