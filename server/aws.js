@@ -20,8 +20,8 @@ export const getImageTitan = async (prompt, numImages) => {
             imageGenerationConfig: {
                 numberOfImages: numImages,
                 quality: "premium",
-                height: 384,
-                width: 704,
+                height: 384*2,
+                width: 704*2,
                 cfgScale: 7.0,
                 seed: Math.round(Math.random() * 100000),
             },
