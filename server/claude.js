@@ -16,6 +16,7 @@ async function getWeather(location) {
 }
 
 async function getStockPrice(ticker) {
+    console.log("getStockPrice", ticker);
     const apiKey = process.env.YAHOO_FINANCE_API_KEY;
     const apiUrl = `https://yfapi.net/v8/finance/chart/${ticker}?range=1wk&interval=1d&lang=en-US&region=US&includePrePost=false&corsDomain=finance.yahoo.com`;
 
@@ -31,7 +32,7 @@ async function getStockPrice(ticker) {
         }
 
         const data = await response.json();
-        const lastWeekPrices = data.chart.result[0].indicators.quote[0].close;
+        const lastWeekPrices = data?.chart?.result?.[0]?.indicators?.quote?.[0]?.close;
         return lastWeekPrices;
     } catch (error) {
         console.error("Error fetching stock price:", error);
