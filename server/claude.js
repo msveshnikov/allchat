@@ -99,6 +99,15 @@ const tools = [
             required: ["to", "subject", "content"],
         },
     },
+    {
+        name: "get_current_time_utc",
+        description: "Returns the current date and time in UTC format.",
+        input_schema: {
+            type: "object",
+            properties: {},
+            required: [],
+        },
+    },
 ];
 
 async function getWeather(location) {
@@ -170,7 +179,6 @@ const transporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASSWORD,
     },
 });
-
 async function processToolResult(data, temperature, messages) {
     console.log("processToolResult", data, temperature, messages);
     const toolUses = data.content.filter((block) => block.type === "tool_use");
@@ -181,45 +189,60 @@ async function processToolResult(data, temperature, messages) {
     const toolResults = await Promise.all(
         toolUses.map(async (toolUse) => {
             let toolResult;
-            if (toolUse.name === "get_weather") {
-                const { location } = toolUse.input;
-                toolResult = await getWeather(location);
-            } else if (toolUse.name === "get_stock_price") {
-                const { ticker } = toolUse.input;
-                const stockPrices = await getStockPrice(ticker);
-                toolResult = `Last week's stock prices: ${stockPrices?.join(", ")}`;
-            } else if (toolUse.name === "send_telegram_message") {
-                const { chatId, message, photo } = toolUse.input;
-                toolResult = await sendTelegramMessage(chatId, message, photo);
-            } else if (toolUse.name === "search_web_content") {
-                const { query } = toolUse.input;
-                const searchResults = await fetchSearchResults(query);
-                const pageContents = await Promise.all(
-                    searchResults.slice(0, 3).map(async (result) => {
-                        return await fetchPageContent(result.link);
-                    })
-                );
-                toolResult = pageContents?.join("\n");
-            } else if (toolUse.name === "send_email") {
-                const { to, subject, content } = toolUse.input;
-                const mailOptions = { to, from: "MangaTVShop@gmail.com", subject, text: content };
-                const info = await transporter.sendMail(mailOptions);
-                toolResult = `Email sent: ${info.response}`;
+
+            switch (toolUse.name) {
+                case "get_weather":
+                    const { location } = toolUse.input;
+                    toolResult = await getWeather(location);
+                    break;
+                case "get_stock_price":
+                    const { ticker } = toolUse.input;
+                    const stockPrices = await getStockPrice(ticker);
+                    toolResult = `Last week's stock prices: ${stockPrices?.join(", ")}`;
+                    break;
+                case "send_telegram_message":
+                    const { chatId, message, photo } = toolUse.input;
+                    toolResult = await sendTelegramMessage(chatId, message, photo);
+                    break;
+                case "search_web_content":
+                    const { query } = toolUse.input;
+                    const searchResults = await fetchSearchResults(query);
+                    const pageContents = await Promise.all(
+                        searchResults.slice(0, 3).map(async (result) => {
+                            return await fetchPageContent(result.link);
+                        })
+                    );
+                    toolResult = pageContents?.join("\n");
+                    break;
+                case "send_email":
+                    const { to, subject, content } = toolUse.input;
+                    const mailOptions = {
+                        to,
+                        from: "MangaTVShop@gmail.com",
+                        subject,
+                        text: content,
+                    };
+                    const info = await transporter.sendMail(mailOptions);
+                    toolResult = `Email sent: ${info.response}`;
+                    break;
+                case "get_current_time_utc":
+                    const currentTime = new Date().toUTCString();
+                    toolResult = `The current time in UTC is: ${currentTime}`;
+                    break;
+                default:
+                    // Handle unknown tool names
+                    break;
             }
-            return {
-                tool_use_id: toolUse.id,
-                content: toolResult,
-            };
+
+            return { tool_use_id: toolUse.id, content: toolResult };
         })
     );
+
     console.log(toolResults);
 
     const newMessages = [
         ...messages,
-        {
-            role: "assistant",
-            content: data.content,
-        },
+        { role: "assistant", content: data.content },
         {
             role: "user",
             content: toolResults.map((toolResult) => ({
