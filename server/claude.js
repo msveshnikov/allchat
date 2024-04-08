@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import dotenv from "dotenv";
 import TelegramBot from "node-telegram-bot-api";
+import { fetchPageContent, fetchSearchResults } from "./search.js";
 dotenv.config({ override: true });
 
 const bot = new TelegramBot(process.env.TELEGRAM_KEY);
@@ -40,20 +41,38 @@ const tools = [
     {
         name: "send_telegram_message",
         description:
-            "Send a message to a Telegram group or user. The tool expects an object with 'chatId' and 'message' properties. It returns a success message.",
+            "Send a message and/or photo to a Telegram group, user, or username. User already gave consent to recieve a message from bot. The tool expects an object with 'chatId' and 'message' properties, and an optional 'photo' property (base64 encoded image data). It returns a success message.",
         input_schema: {
             type: "object",
             properties: {
                 chatId: {
                     type: "string",
-                    description: "The chat ID of the Telegram group or user",
+                    description: "The chat ID of the Telegram group or user, or the @username",
                 },
                 message: {
                     type: "string",
                     description: "The message to send",
                 },
+                photo: {
+                    type: "string",
+                    description: "Base64 encoded image data (optional)",
+                },
             },
             required: ["chatId", "message"],
+        },
+    },
+    {
+        name: "search_web_content",
+        description: "Searches the web for the given query and returns the content of the first 3 search result pages.",
+        input_schema: {
+            type: "object",
+            properties: {
+                query: {
+                    type: "string",
+                    description: "The search query",
+                },
+            },
+            required: ["query"],
         },
     },
 ];
@@ -93,10 +112,26 @@ async function getStockPrice(ticker) {
         throw error;
     }
 }
-
-async function sendTelegramMessage(chatId, message) {
+async function resolveUsername(username) {
     try {
-        await bot.sendMessage(chatId, message);
+        const chat = await bot.getChat(`@${username}`);
+        return chat.id;
+    } catch (error) {
+        console.error(`Error resolving username ${username}:`, error);
+        throw error;
+    }
+}
+
+async function sendTelegramMessage(chatId, message, photo) {
+    try {
+        const isUsername = chatId.startsWith("@");
+        const resolvedChatId = isUsername ? await resolveUsername(chatId.slice(1)) : chatId;
+
+        if (photo) {
+            await bot.sendPhoto(resolvedChatId, photo, { caption: message });
+        } else {
+            await bot.sendMessage(resolvedChatId, message);
+        }
         return "Telegram message sent successfully.";
     } catch (error) {
         console.error("Error sending Telegram message:", error);
@@ -122,8 +157,17 @@ async function processToolResult(data, temperature, messages) {
                 const stockPrices = await getStockPrice(ticker);
                 toolResult = `Last week's stock prices: ${stockPrices?.join(", ")}`;
             } else if (toolUse.name === "send_telegram_message") {
-                const { chatId, message } = toolUse.input;
-                toolResult = await sendTelegramMessage(chatId, message);
+                const { chatId, message, photo } = toolUse.input;
+                toolResult = await sendTelegramMessage(chatId, message, photo);
+            } else if (toolUse.name === "search_web_content") {
+                const { query } = toolUse.input;
+                const searchResults = await fetchSearchResults(query);
+                const pageContents = await Promise.all(
+                    searchResults.slice(0, 3).map(async (result) => {
+                        return await fetchPageContent(result.link);
+                    })
+                );
+                toolResult = pageContents?.join("\n");
             }
             return {
                 tool_use_id: toolUse.id,
