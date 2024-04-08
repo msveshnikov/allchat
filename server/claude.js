@@ -1,7 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
 import dotenv from "dotenv";
+import TelegramBot from "node-telegram-bot-api";
 dotenv.config({ override: true });
 
+const bot = new TelegramBot(process.env.TELEGRAM_KEY);
 const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_KEY });
 
 const tools = [
@@ -33,6 +35,25 @@ const tools = [
                 },
             },
             required: ["ticker"],
+        },
+    },
+    {
+        name: "send_telegram_message",
+        description:
+            "Send a message to a Telegram group or user. The tool expects an object with 'chatId' and 'message' properties. It returns a success message.",
+        input_schema: {
+            type: "object",
+            properties: {
+                chatId: {
+                    type: "string",
+                    description: "The chat ID of the Telegram group or user",
+                },
+                message: {
+                    type: "string",
+                    description: "The message to send",
+                },
+            },
+            required: ["chatId", "message"],
         },
     },
 ];
@@ -73,6 +94,16 @@ async function getStockPrice(ticker) {
     }
 }
 
+async function sendTelegramMessage(chatId, message) {
+    try {
+        await bot.sendMessage(chatId, message);
+        return "Telegram message sent successfully.";
+    } catch (error) {
+        console.error("Error sending Telegram message:", error);
+        throw error;
+    }
+}
+
 async function processToolResult(data, temperature, messages) {
     console.log("processToolResult", data, temperature, messages);
     const toolUses = data.content.filter((block) => block.type === "tool_use");
@@ -90,6 +121,9 @@ async function processToolResult(data, temperature, messages) {
                 const { ticker } = toolUse.input;
                 const stockPrices = await getStockPrice(ticker);
                 toolResult = `Last week's stock prices: ${stockPrices?.join(", ")}`;
+            } else if (toolUse.name === "send_telegram_message") {
+                const { chatId, message } = toolUse.input;
+                toolResult = await sendTelegramMessage(chatId, message);
             }
             return {
                 tool_use_id: toolUse.id,
