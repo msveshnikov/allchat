@@ -1,9 +1,41 @@
-import dotenv from "dotenv";
 import Anthropic from "@anthropic-ai/sdk";
-
+import dotenv from "dotenv";
 dotenv.config({ override: true });
 
 const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_KEY });
+
+const tools = [
+    {
+        name: "get_weather",
+        description:
+            "Get the current weather in a given location. The tool expects an object with a 'location' property (a string with the city and state/country). It returns a string with the location, weather description, and temperature (always in C).",
+        input_schema: {
+            type: "object",
+            properties: {
+                location: {
+                    type: "string",
+                    description: "The city and state/country, e.g. San Francisco, CA",
+                },
+            },
+            required: ["location"],
+        },
+    },
+    {
+        name: "get_stock_price",
+        description:
+            "Retrieves the last week's stock price for a given ticker symbol. The tool expects a string with the ticker symbol (e.g. 'AAPL'). It returns an array of stock prices for the last week.",
+        input_schema: {
+            type: "object",
+            properties: {
+                ticker: {
+                    type: "string",
+                    description: "The ticker symbol of the stock (e.g. 'AAPL')",
+                },
+            },
+            required: ["ticker"],
+        },
+    },
+];
 
 async function getWeather(location) {
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}`;
@@ -41,39 +73,6 @@ async function getStockPrice(ticker) {
     }
 }
 
-const tools = [
-    {
-        name: "get_weather",
-        description:
-            "Get the current weather in a given location. The tool expects an object with a 'location' property (a string with the city and state/country). It returns a string with the location, weather description, and temperature (always in C).",
-        input_schema: {
-            type: "object",
-            properties: {
-                location: {
-                    type: "string",
-                    description: "The city and state/country, e.g. San Francisco, CA",
-                },
-            },
-            required: ["location"],
-        },
-    },
-    {
-        name: "get_stock_price",
-        description:
-            "Retrieves the last week's stock price for a given ticker symbol. The tool expects a string with the ticker symbol (e.g. 'AAPL'). It returns an array of stock prices for the last week.",
-        input_schema: {
-            type: "object",
-            properties: {
-                ticker: {
-                    type: "string",
-                    description: "The ticker symbol of the stock (e.g. 'AAPL')",
-                },
-            },
-            required: ["ticker"],
-        },
-    },
-];
-
 async function processToolResult(data, temperature, messages) {
     console.log("processToolResult", data, temperature, messages);
     const toolUses = data.content.filter((block) => block.type === "tool_use");
@@ -90,7 +89,7 @@ async function processToolResult(data, temperature, messages) {
             } else if (toolUse.name === "get_stock_price") {
                 const { ticker } = toolUse.input;
                 const stockPrices = await getStockPrice(ticker);
-                toolResult = `Last week's stock prices: ${stockPrices.join(", ")}`;
+                toolResult = `Last week's stock prices: ${stockPrices?.join(", ")}`;
             }
             return {
                 tool_use_id: toolUse.id,
