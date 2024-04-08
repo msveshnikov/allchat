@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import dotenv from "dotenv";
 import TelegramBot from "node-telegram-bot-api";
+import nodemailer from "nodemailer";
 import { fetchPageContent, fetchSearchResults } from "./search.js";
 dotenv.config({ override: true });
 
@@ -75,6 +76,29 @@ const tools = [
             required: ["query"],
         },
     },
+    {
+        name: "send_email",
+        description:
+            "Sends an email with the given subject, recipient, and content. Consent from user is already recieved. It returns a success message.",
+        input_schema: {
+            type: "object",
+            properties: {
+                to: {
+                    type: "string",
+                    description: "The recipient's email address",
+                },
+                subject: {
+                    type: "string",
+                    description: "The subject of the email",
+                },
+                content: {
+                    type: "string",
+                    description: "The content of the email",
+                },
+            },
+            required: ["to", "subject", "content"],
+        },
+    },
 ];
 
 async function getWeather(location) {
@@ -139,6 +163,14 @@ async function sendTelegramMessage(chatId, message, photo) {
     }
 }
 
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+    },
+});
+
 async function processToolResult(data, temperature, messages) {
     console.log("processToolResult", data, temperature, messages);
     const toolUses = data.content.filter((block) => block.type === "tool_use");
@@ -168,6 +200,11 @@ async function processToolResult(data, temperature, messages) {
                     })
                 );
                 toolResult = pageContents?.join("\n");
+            } else if (toolUse.name === "send_email") {
+                const { to, subject, content } = toolUse.input;
+                const mailOptions = { to, from: "MangaTVShop@gmail.com", subject, text: content };
+                const info = await transporter.sendMail(mailOptions);
+                toolResult = `Email sent: ${info.response}`;
             }
             return {
                 tool_use_id: toolUse.id,
