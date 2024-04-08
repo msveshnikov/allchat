@@ -108,6 +108,20 @@ const tools = [
             required: [],
         },
     },
+    {
+        name: "execute_python",
+        description: "Executes the provided Python code and returns the output. Could be used for any compute.",
+        input_schema: {
+            type: "object",
+            properties: {
+                code: {
+                    type: "string",
+                    description: "The Python code to execute",
+                },
+            },
+            required: ["code"],
+        },
+    },
 ];
 
 async function getWeather(location) {
@@ -180,7 +194,6 @@ const transporter = nodemailer.createTransport({
     },
 });
 async function processToolResult(data, temperature, messages) {
-    console.log("processToolResult", data, temperature, messages);
     const toolUses = data.content.filter((block) => block.type === "tool_use");
     if (!toolUses.length) {
         return data?.content?.[0]?.text;
@@ -229,6 +242,25 @@ async function processToolResult(data, temperature, messages) {
                     const currentTime = new Date().toUTCString();
                     toolResult = `The current time in UTC is: ${currentTime}`;
                     break;
+                case "execute_python":
+                    const { code } = toolUse.input;
+                    const pythonServerUrl =
+                        process.env.NODE_ENV === "production" ? "http://python-shell:8000" : "http://localhost:8000";
+                    const response = await fetch(pythonServerUrl, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "text/plain",
+                        },
+                        body: code,
+                    });
+                    const data = await response.text();
+                    if (response.ok) {
+                        const jsonData = JSON.parse(data);
+                        toolResult = jsonData.output;
+                    } else {
+                        toolResult = { error: data };
+                    }
+                    break;
                 default:
                     // Handle unknown tool names
                     break;
@@ -237,8 +269,6 @@ async function processToolResult(data, temperature, messages) {
             return { tool_use_id: toolUse.id, content: toolResult };
         })
     );
-
-    console.log(toolResults);
 
     const newMessages = [
         ...messages,
@@ -259,7 +289,6 @@ async function processToolResult(data, temperature, messages) {
         tools,
         messages: newMessages,
     });
-    console.log("Stop reason ", newData.stop_reason);
     if (newData.stop_reason === "tool_use") {
         return await processToolResult(newData, temperature, newMessages);
     } else {
