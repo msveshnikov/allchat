@@ -32,6 +32,7 @@ async function getStockPrice(ticker) {
         }
 
         const data = await response.json();
+        console.log(data);
         const lastWeekPrices = data?.chart?.result?.[0]?.indicators?.quote?.[0]?.close;
         return lastWeekPrices;
     } catch (error) {
