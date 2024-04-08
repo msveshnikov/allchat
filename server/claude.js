@@ -72,81 +72,97 @@ const tools = [
     },
 ];
 
-async function processToolResult(data, temperature, message, tools) {
-    const toolUse = data.content.find((block) => block.type === "tool_use");
-    if (!toolUse) {
+async function processToolResult(data, temperature, messages) {
+    console.log("processToolResult", data, temperature, messages);
+    const toolUses = data.content.filter((block) => block.type === "tool_use");
+    if (!toolUses.length) {
         return data?.content?.[0]?.text;
     }
 
-    let toolResult;
-    if (toolUse.name === "get_weather") {
-        const { location } = toolUse.input;
-        toolResult = await getWeather(location);
-    } else if (toolUse.name === "get_stock_price") {
-        const { ticker } = toolUse.input;
-        const stockPrices = await getStockPrice(ticker);
-        toolResult = `Last week's stock prices: ${stockPrices.join(", ")}`;
-    }
+    const toolResults = await Promise.all(
+        toolUses.map(async (toolUse) => {
+            let toolResult;
+            if (toolUse.name === "get_weather") {
+                const { location } = toolUse.input;
+                toolResult = await getWeather(location);
+            } else if (toolUse.name === "get_stock_price") {
+                const { ticker } = toolUse.input;
+                const stockPrices = await getStockPrice(ticker);
+                toolResult = `Last week's stock prices: ${stockPrices.join(", ")}`;
+            }
+            return {
+                tool_use_id: toolUse.id,
+                content: toolResult,
+            };
+        })
+    );
+    console.log(toolResults);
+
+    const newMessages = [
+        ...messages,
+        {
+            role: "assistant",
+            content: data.content,
+        },
+        {
+            role: "user",
+            content: toolResults.map((toolResult) => ({
+                type: "tool_result",
+                ...toolResult,
+            })),
+        },
+    ];
 
     const newData = await anthropic.beta.tools.messages.create({
         model: "claude-3-haiku-20240307",
         max_tokens: 4096,
         temperature: temperature || 0.5,
         tools,
-        messages: [
-            message,
-            {
-                role: "assistant",
-                content: data.content,
-            },
-            {
-                role: "user",
-                content: [
-                    {
-                        type: "tool_result",
-                        tool_use_id: toolUse.id,
-                        content: toolResult,
-                    },
-                ],
-            },
-        ],
+        messages: newMessages,
     });
-    return newData?.content?.[0]?.text;
+    console.log("Stop reason ", newData.stop_reason);
+    if (newData.stop_reason === "tool_use") {
+        return await processToolResult(newData, temperature, newMessages);
+    } else {
+        return newData?.content?.[0]?.text;
+    }
 }
 
 export const getTextClaude = async (prompt, temperature, imageBase64, fileType) => {
-    const message = {
-        role: "user",
-        content: [
-            { type: "text", text: prompt },
-            ...(imageBase64
-                ? [
-                      {
-                          type: "image",
-                          source: {
-                              type: "base64",
-                              media_type: fileType === "png" ? "image/png" : "image/jpeg",
-                              data: imageBase64,
+    const messages = [
+        {
+            role: "user",
+            content: [
+                { type: "text", text: prompt },
+                ...(imageBase64
+                    ? [
+                          {
+                              type: "image",
+                              source: {
+                                  type: "base64",
+                                  media_type: fileType === "png" ? "image/png" : "image/jpeg",
+                                  data: imageBase64,
+                              },
                           },
-                      },
-                  ]
-                : []),
-        ],
-    };
+                      ]
+                    : []),
+            ],
+        },
+    ];
 
     const data = await anthropic.beta.tools.messages.create({
         model: "claude-3-haiku-20240307",
         max_tokens: 4096,
         temperature: temperature || 0.5,
         tools,
-        messages: [message],
+        messages,
     });
 
     if (!data) {
         throw new Error("Anthropic Claude Error");
     } else {
         if (data.stop_reason === "tool_use") {
-            return processToolResult(data, temperature, message, tools);
+            return processToolResult(data, temperature, messages);
         } else {
             return data?.content?.[0]?.text;
         }
