@@ -95,6 +95,7 @@ app.post("/interact", verifyToken, async (req, res) => {
     const fileType = req.body.fileType;
     const numberOfImages = req.body.numberOfImages || 1;
     const model = req.body.model || "gemini";
+    const country = req.headers["geoip_country_code"];
 
     // if (model === "claude" && !req.user.admin) {
     //     return res.status(401).json({ error: "Haiku is available only by request" });
@@ -166,7 +167,7 @@ app.post("/interact", verifyToken, async (req, res) => {
             }
         }
 
-        const contextPrompt = `System: ${systemPrompt} 
+        const contextPrompt = `System: ${systemPrompt} User country code: ${country}
             ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
             \n\nSearch Results:${topResultContent}\n\nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
 
