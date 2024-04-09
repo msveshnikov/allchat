@@ -393,7 +393,7 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
 
 async function handleSubscriptionUpdate(subscription) {
     console.log(subscription);
-    const customer = stripe.customers.retrieve(subscription.customer);
+    const customer = await stripe.customers.retrieve(subscription.customer);
     console.log("Customer email:", customer.email);
     const user = await User.findOne({ email: customer.email });
     if (!user) {
