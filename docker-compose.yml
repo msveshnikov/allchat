@@ -16,6 +16,10 @@ services:
             - STRIPE_MONTH=${STRIPE_MONTH}
             - JWT_TOKEN=${JWT_TOKEN}
             - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+            - YAHOO_FINANCE_API_KEY=${YAHOO_FINANCE_API_KEY}
+            - TELEGRAM_KEY=${TELEGRAM_KEY}
+            - EMAIL=${EMAIL}
+            - EMAIL_PASSWORD=${EMAIL_PASSWORD}
         restart: unless-stopped
         depends_on:
             - mongodb

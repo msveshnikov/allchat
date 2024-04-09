@@ -109,6 +109,7 @@ app.post("/interact", verifyToken, async (req, res) => {
     const fileType = req.body.fileType;
     const numberOfImages = req.body.numberOfImages || 1;
     const model = req.body.model || "gemini";
+    const country = req.headers["geoip_country_code"];
 
     try {
         if (fileBytesBase64) {
@@ -117,7 +118,13 @@ app.post("/interact", verifyToken, async (req, res) => {
                 const response =
                     model === "gemini"
                         ? await getTextGemini(userInput || "what's this", temperature, fileBytesBase64, fileType)
-                        : await getTextClaude(userInput || "what's this", temperature, fileBytesBase64, fileType);
+                        : await getTextClaude(
+                              userInput || "what's this",
+                              temperature,
+                              fileBytesBase64,
+                              fileType,
+                              req.user.id
+                          );
                 return res.json({ textResponse: response?.trim() });
             } else if (fileType === "pdf") {
                 const data = await pdfParser(fileBytes);
@@ -170,7 +177,7 @@ app.post("/interact", verifyToken, async (req, res) => {
             }
         }
 
-        const contextPrompt = `System: ${systemPrompt} 
+        const contextPrompt = `System: ${systemPrompt} User country code: ${country}
             ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
             \n\nSearch Results:${topResultContent}\n\nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
 
@@ -187,7 +194,7 @@ app.post("/interact", verifyToken, async (req, res) => {
             outputCharacters = countCharacters(textResponse);
         } else if (model === "claude") {
             inputTokens = countTokens(contextPrompt);
-            textResponse = await getTextClaude(contextPrompt, temperature);
+            textResponse = await getTextClaude(contextPrompt, temperature, null, null, req.user.id);
             outputTokens = countTokens(textResponse);
         }
 

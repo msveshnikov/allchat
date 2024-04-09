@@ -26,3 +26,5 @@ google.json
 allchat.json
 .env
 server/content/
+copy.cmd
+*.csv
