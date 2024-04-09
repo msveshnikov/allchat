@@ -397,7 +397,7 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
 
 async function handleSubscriptionUpdate(subscription) {
     console.log(subscription);
-    const customer = stripe.Customer.retrieve(subscription.customer)
+    const customer = stripe.customers.retrieve(subscription.customer)
     const user = await User.findOne({ email: customer.email });
 
     if (subscription.status === "active") {
