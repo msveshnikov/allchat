@@ -57,7 +57,7 @@ const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountMod
                             ) : (
                                 <Link
                                     href={
-                                        "https://buy.stripe.com/test_00gbLN8z0b8ocUwaEE?prefilled_email=" + user.email
+                                        "https://buy.stripe.com/28oaGDclzeEfgUgcMM?prefilled_email=" + user.email
                                     }
                                     target="_blank"
                                     rel="noopener"
