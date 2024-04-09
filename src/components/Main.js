@@ -429,7 +429,13 @@ function Main() {
             </Dialog>
             <Dialog open={openMyAccountModal} onClose={handleCloseMyAccountModal} maxWidth="md" fullWidth>
                 <DialogContent>
-                    {user && <MyAccountPage handleCancelSubscription={handleCancelSubscription} user={user} />}
+                    {user && (
+                        <MyAccountPage
+                            handleCloseMyAccountModal={handleCloseMyAccountModal}
+                            handleCancelSubscription={handleCancelSubscription}
+                            user={user}
+                        />
+                    )}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseMyAccountModal}>Close</Button>

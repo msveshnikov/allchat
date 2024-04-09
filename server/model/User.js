@@ -21,14 +21,9 @@ const userSchema = new mongoose.Schema({
     subscriptionId: { type: String, required: false },
     subscriptionStatus: {
         type: String,
-        enum: ["active", "past_due", "canceled", "none"],
+        enum: ["active", "past_due", "canceled", "none", "trialing"],
         default: "none",
     },
-    // subscriptionPlan: {
-    //     type: String,
-    //     enum: ["free", "standard", "premium"],
-    //     default: "free",
-    // },
 });
 
 // User model

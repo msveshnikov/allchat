@@ -375,33 +375,37 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
 
     try {
         event = stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WH_SECRET);
+        console.log("✅ Success:", event.id);
+        // Handle the event
+        switch (event.type) {
+            case "customer.subscription.updated":
+            case "customer.subscription.created":
+                const subscription = event.data.object;
+                await handleSubscriptionUpdate(subscription);
+                break;
+            // ... handle other event types
+            default:
+                console.log(`Unhandled event type ${event.type}`);
+        }
+
+        res.send();
     } catch (err) {
         console.error(err);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
-    console.log("✅ Success:", event.id);
-    // Handle the event
-    switch (event.type) {
-        case "customer.subscription.updated":
-        case "customer.subscription.created":
-            const subscription = event.data.object;
-            await handleSubscriptionUpdate(subscription);
-            break;
-        // ... handle other event types
-        default:
-            console.log(`Unhandled event type ${event.type}`);
-    }
-
-    res.send();
 });
 
 async function handleSubscriptionUpdate(subscription) {
     console.log(subscription);
-    const user = await User.findOne({ email: subscription.customer.email });
+    const customer = stripe.Customer.retrieve(subscription.customer)
+    const user = await User.findOne({ email: customer.email });
 
     if (subscription.status === "active") {
         // Subscription is active
         user.subscriptionStatus = "active";
+    } else if (subscription.status === "trialing") {
+        // Subscription is past due
+        user.subscriptionStatus = "trialing";
     } else if (subscription.status === "past_due") {
         // Subscription is past due
         user.subscriptionStatus = "past_due";

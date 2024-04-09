@@ -2,7 +2,7 @@ import React from "react";
 import { Typography, Card, CardContent, Grid, Avatar, Button, Link } from "@mui/material";
 import md5 from "md5";
 
-const MyAccountPage = ({ user, handleCancelSubscription }) => {
+const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountModal }) => {
     const gravatarUrl = `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
 
     return (
@@ -56,8 +56,19 @@ const MyAccountPage = ({ user, handleCancelSubscription }) => {
                                 </Button>
                             )}
                             {user.subscriptionStatus !== "active" && (
-                                <Link href="https://buy.stripe.com/test_00gbLN8z0b8ocUwaEE" target="_blank" rel="noopener">
-                                    <Button variant="contained" color="primary" sx={{ mt: 1 }}>
+                                <Link
+                                    href={
+                                        "https://buy.stripe.com/test_00gbLN8z0b8ocUwaEE?prefilled_email=" + user.email
+                                    }
+                                    target="_blank"
+                                    rel="noopener"
+                                >
+                                    <Button
+                                        onClick={handleCloseMyAccountModal}
+                                        variant="contained"
+                                        color="primary"
+                                        sx={{ mt: 1 }}
+                                    >
                                         Start Subscription
                                     </Button>
                                 </Link>
