@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import TelegramBot from "node-telegram-bot-api";
 import nodemailer from "nodemailer";
 import { fetchPageContent, fetchSearchResults, googleNews } from "./search.js";
+import { User } from "./model/User.js";
 dotenv.config({ override: true });
 
 const bot = new TelegramBot(process.env.TELEGRAM_KEY);
@@ -79,13 +80,14 @@ const tools = [
     {
         name: "send_email",
         description:
-            "Sends an email with the given subject, recipient, and content. Consent from user is already recieved. It returns a success message.",
+            "Sends an email with the given subject, recipient, and content. If recipient is not provided, it uses user email from profile. Consent from user is already recieved. It returns a success message.",
         input_schema: {
             type: "object",
             properties: {
                 to: {
                     type: "string",
-                    description: "The recipient's email address",
+                    description:
+                        "The recipient's email address (optional, if it is not provided email will be sent to the user email)",
                 },
                 subject: {
                     type: "string",
@@ -96,7 +98,7 @@ const tools = [
                     description: "The content of the email",
                 },
             },
-            required: ["to", "subject", "content"],
+            required: ["subject", "content"],
         },
     },
     {
@@ -208,7 +210,8 @@ const transporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASSWORD,
     },
 });
-async function processToolResult(data, temperature, messages) {
+
+async function processToolResult(data, temperature, messages, userId) {
     const toolUses = data.content.filter((block) => block.type === "tool_use");
     if (!toolUses.length) {
         return data?.content?.[0]?.text;
@@ -244,8 +247,19 @@ async function processToolResult(data, temperature, messages) {
                     break;
                 case "send_email":
                     const { to, subject, content } = toolUse.input;
+                    let recipient;
+
+                    if (to && to !== "user@example.com") {
+                        recipient = to;
+                    } else {
+                        const user = await User.findById(userId);
+                        if (!user || !user.email) {
+                            throw new Error("No recipient email address provided or found in user profile.");
+                        }
+                        recipient = user.email;
+                    }
                     const mailOptions = {
-                        to,
+                        to: recipient,
                         from: "MangaTVShop@gmail.com",
                         subject,
                         text: content,
@@ -310,13 +324,13 @@ async function processToolResult(data, temperature, messages) {
         messages: newMessages,
     });
     if (newData.stop_reason === "tool_use") {
-        return await processToolResult(newData, temperature, newMessages);
+        return await processToolResult(newData, temperature, newMessages, userId);
     } else {
         return newData?.content?.[0]?.text;
     }
 }
 
-export const getTextClaude = async (prompt, temperature, imageBase64, fileType) => {
+export const getTextClaude = async (prompt, temperature, imageBase64, fileType, userId) => {
     const messages = [
         {
             role: "user",
@@ -350,7 +364,7 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType) 
         throw new Error("Anthropic Claude Error");
     } else {
         if (data.stop_reason === "tool_use") {
-            return processToolResult(data, temperature, messages);
+            return processToolResult(data, temperature, messages, userId);
         } else {
             return data?.content?.[0]?.text;
         }
