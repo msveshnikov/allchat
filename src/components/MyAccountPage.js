@@ -1,7 +1,6 @@
 import React from "react";
-import { Typography, Card, CardContent, Grid, Avatar, Button } from "@mui/material";
+import { Typography, Card, CardContent, Grid, Avatar, Button, Link } from "@mui/material";
 import md5 from "md5";
-import { API_URL } from "./Main";
 
 const MyAccountPage = ({ user, handleCancelSubscription }) => {
     const gravatarUrl = `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
@@ -57,11 +56,11 @@ const MyAccountPage = ({ user, handleCancelSubscription }) => {
                                 </Button>
                             )}
                             {user.subscriptionStatus !== "active" && (
-                                <form action={`${API_URL}/checkout/${user?.email}`} method="POST">
-                                    <Button variant="contained" color="primary" sx={{ mt: 1 }} type="submit">
+                                <Link href="https://buy.stripe.com/test_00gbLN8z0b8ocUwaEE" target="_blank" rel="noopener">
+                                    <Button variant="contained" color="primary" sx={{ mt: 1 }}>
                                         Start Subscription
                                     </Button>
-                                </form>
+                                </Link>
                             )}
                         </Grid>
                         <Grid item xs={12} md={6}>

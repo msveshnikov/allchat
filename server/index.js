@@ -375,29 +375,29 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
 
     try {
         event = stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WH_SECRET);
-        console.log("✅ Success:", event.id);
-        // Handle the event
-        switch (event.type) {
-            case "customer.subscription.updated":
-            case "customer.subscription.created":
-                const subscription = event.data.object;
-                await handleSubscriptionUpdate(subscription);
-                break;
-            // ... handle other event types
-            default:
-                console.log(`Unhandled event type ${event.type}`);
-        }
-
-        res.send();
     } catch (err) {
         console.error(err);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
+    console.log("✅ Success:", event.id);
+    // Handle the event
+    switch (event.type) {
+        case "customer.subscription.updated":
+        case "customer.subscription.created":
+            const subscription = event.data.object;
+            await handleSubscriptionUpdate(subscription);
+            break;
+        // ... handle other event types
+        default:
+            console.log(`Unhandled event type ${event.type}`);
+    }
+
+    res.send();
 });
 
 async function handleSubscriptionUpdate(subscription) {
     console.log(subscription);
-    const user = await User.findOne({ email: subscription.customer_details.email });
+    const user = await User.findOne({ email: subscription.customer.email });
 
     if (subscription.status === "active") {
         // Subscription is active
@@ -413,28 +413,6 @@ async function handleSubscriptionUpdate(subscription) {
 
     await user.save();
 }
-
-app.post("/checkout/:email", async (req, res) => {
-    try {
-        let price;
-        price = process.env.STRIPE_MONTH;
-        const session = await stripe.checkout.sessions.create({
-            line_items: [
-                {
-                    price,
-                    quantity: 1,
-                },
-            ],
-            mode: "subscription",
-            customer_email: req.params.email,
-            success_url: `https://allchat.online/checkout/success`,
-        });
-        res.redirect(303, session.url);
-    } catch (e) {
-        console.error(e);
-        res.status(500).send({ message: e.message });
-    }
-});
 
 app.post("/cancel", verifyToken, async (req, res) => {
     const { subscriptionId } = req.body;
