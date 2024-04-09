@@ -372,22 +372,18 @@ app.get("/get", (req, res) => {
 app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (req, res) => {
     const signature = req.headers["stripe-signature"];
     let event;
-
     try {
         event = stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WH_SECRET);
         console.log("✅ Success:", event.id);
-        // Handle the event
         switch (event.type) {
             case "customer.subscription.updated":
             case "customer.subscription.created":
                 const subscription = event.data.object;
                 await handleSubscriptionUpdate(subscription);
                 break;
-            // ... handle other event types
             default:
                 console.log(`Unhandled event type ${event.type}`);
         }
-
         res.send();
     } catch (err) {
         console.error(err);
@@ -397,40 +393,34 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
 
 async function handleSubscriptionUpdate(subscription) {
     console.log(subscription);
-    const customer = stripe.customers.retrieve(subscription.customer)
+    const customer = stripe.customers.retrieve(subscription.customer);
+    console.log("Customer email:", customer.email);
     const user = await User.findOne({ email: customer.email });
-
+    if (!user) {
+        console.error("User not found");
+        return;
+    }
     if (subscription.status === "active") {
-        // Subscription is active
         user.subscriptionStatus = "active";
     } else if (subscription.status === "trialing") {
-        // Subscription is past due
         user.subscriptionStatus = "trialing";
     } else if (subscription.status === "past_due") {
-        // Subscription is past due
         user.subscriptionStatus = "past_due";
     } else if (subscription.status === "canceled") {
-        // Subscription is canceled
         user.subscriptionStatus = "canceled";
     }
     user.subscriptionId = subscription.id;
-
     await user.save();
 }
 
 app.post("/cancel", verifyToken, async (req, res) => {
     const { subscriptionId } = req.body;
-
     try {
-        // Cancel the subscription using Stripe API
         await stripe.subscriptions.del(subscriptionId);
-
-        // Update the user's subscription status in the database
         const userId = req.user.id;
         const user = await User.findById(userId);
         user.subscriptionStatus = "canceled";
         await user.save();
-
         res.status(200).json({ message: "Subscription canceled successfully" });
     } catch (error) {
         console.error("Error canceling subscription:", error);
