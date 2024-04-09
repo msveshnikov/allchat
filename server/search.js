@@ -105,24 +105,25 @@ export const googleImages = async (term, lang) => {
 
 export const googleNews = async (lang) => {
     const fetchData = async (lang) => {
-        const result = await fetch("https://news.google.com/topstories?hl=" + lang, {
+        const result = await fetch("https://news.google.com/rss?hl=" + lang, {
             headers: { "User-Agent": userAgents[Math.floor(Math.random() * userAgents.length)] },
         });
-        return load(await result.text());
+        return load(await result.text(), { xmlMode: true });
     };
     const $ = await fetchData(lang);
 
-    let news_results = [];
-    $(".k7Corb").each((i, el) => {
-        news_results.push({
-            link: $(el).find("a").attr("href"),
-            title: $(el).find("h4").text(),
-            snippet: $(el).find(".wEwyrc", ".wsLqz").text(),
-            thumbnail: $(el).find(".K0q4G img", ".P22Vib img").attr("src"),
-        });
+    const articles = [];
+    $("item").each((index, item) => {
+        const title = $(item).find("title").text();
+        const link = $(item).find("link").text();
+        const pubDate = $(item).find("pubDate").text();
+        const description = $(item).find("description").text().replace(/(<([^>]+)>)/gi, "");
+      const source = $(item).find("source").text();
+
+        articles.push({ title, link, pubDate, description, source });
     });
 
-    return news_results.filter((r) => r.thumbnail);
+    return articles;
 };
 
 // console.log(await googleNews("en"));

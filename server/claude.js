@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import dotenv from "dotenv";
 import TelegramBot from "node-telegram-bot-api";
 import nodemailer from "nodemailer";
-import { fetchPageContent, fetchSearchResults } from "./search.js";
+import { fetchPageContent, fetchSearchResults, googleNews } from "./search.js";
 dotenv.config({ override: true });
 
 const bot = new TelegramBot(process.env.TELEGRAM_KEY);
@@ -120,6 +120,21 @@ const tools = [
                 },
             },
             required: ["code"],
+        },
+    },
+    {
+        name: "get_latest_news",
+        description: "Retrieves the latest news stories from Google News for a given language.",
+        input_schema: {
+            type: "object",
+            properties: {
+                lang: {
+                    type: "string",
+                    description:
+                        "The language code for the news articles (e.g., 'en' for English, 'fr' for French, etc.)",
+                },
+            },
+            required: ["lang"],
         },
     },
 ];
@@ -260,6 +275,11 @@ async function processToolResult(data, temperature, messages) {
                     } else {
                         toolResult = { error: data };
                     }
+                    break;
+                case "get_latest_news":
+                    const { lang } = toolUse.input;
+                    const newsResults = await googleNews(lang);
+                    toolResult = newsResults.map((n) => n.title + " " + n.description).join("\n");
                     break;
                 default:
                     // Handle unknown tool names
