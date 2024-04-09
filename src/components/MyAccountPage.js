@@ -45,7 +45,7 @@ const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountMod
                             <Typography variant="body1" color="#fff">
                                 {user?.subscriptionStatus?.toUpperCase()}
                             </Typography>
-                            {(user.subscriptionStatus === "active" || user.subscriptionStatus === "trialing" )&& (
+                            {user.subscriptionStatus === "active" || user.subscriptionStatus === "trialing" ? (
                                 <Button
                                     variant="contained"
                                     color="secondary"
@@ -54,8 +54,7 @@ const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountMod
                                 >
                                     Cancel Subscription
                                 </Button>
-                            )}
-                            {user.subscriptionStatus !== "active" && (
+                            ) : (
                                 <Link
                                     href={
                                         "https://buy.stripe.com/test_00gbLN8z0b8ocUwaEE?prefilled_email=" + user.email

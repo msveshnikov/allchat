@@ -415,7 +415,7 @@ async function handleSubscriptionUpdate(subscription) {
 app.post("/cancel", verifyToken, async (req, res) => {
     const { subscriptionId } = req.body;
     try {
-        await stripe.subscriptions.del(subscriptionId);
+        await stripe.subscriptions.cancel(subscriptionId);
         const userId = req.user.id;
         const user = await User.findById(userId);
         user.subscriptionStatus = "canceled";
