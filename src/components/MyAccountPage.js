@@ -43,9 +43,9 @@ const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountMod
                                 Subscription Status
                             </Typography>
                             <Typography variant="body1" color="#fff">
-                                {user.subscriptionStatus}
+                                {user?.subscriptionStatus?.toUpperCase()}
                             </Typography>
-                            {user.subscriptionStatus === "active" && (
+                            {(user.subscriptionStatus === "active" || user.subscriptionStatus === "trialing" )&& (
                                 <Button
                                     variant="contained"
                                     color="secondary"
