@@ -1,8 +1,8 @@
 import React from "react";
-import { Typography, Card, CardContent, Grid, Avatar } from "@mui/material";
+import { Typography, Card, CardContent, Grid, Avatar, Button, Link } from "@mui/material";
 import md5 from "md5";
 
-const MyAccountPage = ({ user }) => {
+const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountModal }) => {
     const gravatarUrl = `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
 
     return (
@@ -37,6 +37,41 @@ const MyAccountPage = ({ user }) => {
                             <Typography variant="body1" color="#fff">
                                 {user.email}
                             </Typography>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Typography variant="h6" gutterBottom color="secondary">
+                                Subscription Status
+                            </Typography>
+                            <Typography variant="body1" color="#fff">
+                                {user?.subscriptionStatus?.toUpperCase()}
+                            </Typography>
+                            {user.subscriptionStatus === "active" || user.subscriptionStatus === "trialing" ? (
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    sx={{ mt: 1 }}
+                                    onClick={handleCancelSubscription}
+                                >
+                                    Cancel Subscription
+                                </Button>
+                            ) : (
+                                <Link
+                                    href={
+                                        "https://buy.stripe.com/28oaGDclzeEfgUgcMM?prefilled_email=" + user.email
+                                    }
+                                    target="_blank"
+                                    rel="noopener"
+                                >
+                                    <Button
+                                        onClick={handleCloseMyAccountModal}
+                                        variant="contained"
+                                        color="primary"
+                                        sx={{ mt: 1 }}
+                                    >
+                                        Start Subscription
+                                    </Button>
+                                </Link>
+                            )}
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h6" gutterBottom color="secondary">

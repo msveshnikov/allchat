@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-// User schema
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -18,9 +17,14 @@ const userSchema = new mongoose.Schema({
             moneyConsumed: { type: Number, default: 0 },
         },
     },
+    subscriptionId: { type: String, required: false },
+    subscriptionStatus: {
+        type: String,
+        enum: ["active", "past_due", "canceled", "none", "trialing"],
+        default: "none",
+    },
 });
 
-// User model
 export const User = mongoose.model("User", userSchema);
 
 export function countCharacters(text) {

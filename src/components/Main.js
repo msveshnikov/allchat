@@ -366,6 +366,33 @@ function Main() {
         }
     };
 
+    const handleCancelSubscription = async () => {
+        const token = localStorage.getItem("token");
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+
+        const response = await fetch(`${API_URL}/cancel`, {
+            method: "POST",
+            headers,
+            body: JSON.stringify({ subscriptionId: user.subscriptionId }),
+        });
+
+        if (response.ok) {
+            // Subscription canceled successfully
+            setSnackbarMessage("Subscription canceled successfully");
+            setSnackbarSeverity("success");
+            setSnackbarOpen(true);
+            fetchUserData(); // Refetch user data
+        } else {
+            const error = await response.json();
+            setSnackbarMessage(`Error canceling subscription: ${error.error}`);
+            setSnackbarSeverity("error");
+            setSnackbarOpen(true);
+        }
+    };
+
     return (
         <>
             <AppHeader
@@ -401,7 +428,15 @@ function Main() {
                 </DialogActions>
             </Dialog>
             <Dialog open={openMyAccountModal} onClose={handleCloseMyAccountModal} maxWidth="md" fullWidth>
-                <DialogContent>{user && <MyAccountPage user={user} />}</DialogContent>
+                <DialogContent>
+                    {user && (
+                        <MyAccountPage
+                            handleCloseMyAccountModal={handleCloseMyAccountModal}
+                            handleCancelSubscription={handleCancelSubscription}
+                            user={user}
+                        />
+                    )}
+                </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseMyAccountModal}>Close</Button>
                 </DialogActions>

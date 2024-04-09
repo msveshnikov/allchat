@@ -11,6 +11,8 @@ services:
             - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
             - AWS_SECRET_KEY=${AWS_SECRET_KEY}
             - CLAUDE_KEY=${CLAUDE_KEY}
+            - STRIPE_KEY=${STRIPE_KEY}
+            - STRIPE_WH_SECRET=${STRIPE_WH_SECRET}
             - JWT_TOKEN=${JWT_TOKEN}
             - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
             - YAHOO_FINANCE_API_KEY=${YAHOO_FINANCE_API_KEY}
