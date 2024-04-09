@@ -98,7 +98,7 @@ mongoose
 
 app.post("/interact", verifyToken, async (req, res) => {
     // const user = await User.findById(req.user.id);
-    // if (user.subscriptionStatus !== 'active') {
+    // if (user.subscriptionStatus !== 'active' && user.subscriptionStatus !== 'trialing') {
     //     return res.status(402).json({ error: 'Subscription is not active' });
     // }
 
