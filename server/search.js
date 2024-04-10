@@ -45,7 +45,7 @@ export async function fetchPageContent(url) {
             .map((_, el) => $(el).text().trim())
             .get()
             .join(" ");
-        return content;
+        return content.slice(0, 20000);
     } catch (error) {
         return null;
     }
@@ -117,8 +117,11 @@ export const googleNews = async (lang) => {
         const title = $(item).find("title").text();
         const link = $(item).find("link").text();
         const pubDate = $(item).find("pubDate").text();
-        const description = $(item).find("description").text().replace(/(<([^>]+)>)/gi, "");
-      const source = $(item).find("source").text();
+        const description = $(item)
+            .find("description")
+            .text()
+            .replace(/(<([^>]+)>)/gi, "");
+        const source = $(item).find("source").text();
 
         articles.push({ title, link, pubDate, description, source });
     });
