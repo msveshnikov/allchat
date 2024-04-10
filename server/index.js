@@ -68,6 +68,9 @@ morgan.token("body", (req, res) => {
         if ("password" in clonedBody) {
             clonedBody.password = "<PASSWORD_REDACTED>";
         }
+        if ("apiKey" in clonedBody) {
+            clonedBody.apiKey = "<APIKEY_REDACTED>";
+        }
         return JSON.stringify(clonedBody);
     }
     return JSON.stringify(body);
@@ -109,6 +112,7 @@ app.post("/interact", verifyToken, async (req, res) => {
     const fileType = req.body.fileType;
     const numberOfImages = req.body.numberOfImages || 1;
     const model = req.body.model || "gemini";
+    const apiKey = req.body.apiKey;
     const country = req.headers["geoip_country_code"];
 
     try {

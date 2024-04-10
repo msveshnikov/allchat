@@ -20,6 +20,10 @@ const getFileTypeIcon = (mimeType) => {
         case "jpeg":
         case "jpg":
             return null;
+        case "mp3":
+        case "mpeg":
+        case "x-m4a":
+            return "🎵";
         default:
             return "📁";
     }

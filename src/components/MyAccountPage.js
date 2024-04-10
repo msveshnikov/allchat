@@ -1,9 +1,32 @@
-import React from "react";
-import { Typography, Card, CardContent, Grid, Avatar, Button, Link } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Typography, Card, CardContent, Grid, Avatar, Button, Link, TextField, MenuItem } from "@mui/material";
 import md5 from "md5";
 
 const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountModal }) => {
     const gravatarUrl = `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
+    const [apiKey, setApiKey] = useState("");
+    const [selectedModel, setSelectedModel] = useState("claude-3-haiku-20240307");
+    const models = ["claude-3-sonnet-20240229", "claude-3-opus-20240229", "claude-3-haiku-20240307"];
+
+    const handleApiKeyChange = (event) => {
+        setApiKey(event.target.value);
+    };
+
+    const handleModelChange = (event) => {
+        setSelectedModel(event.target.value);
+    };
+
+    useEffect(() => {
+        const storedApiKey = localStorage.getItem("apiKey");
+        const storedModel = localStorage.getItem("selectedModel");
+        if (storedApiKey) setApiKey(storedApiKey);
+        if (storedModel) setSelectedModel(storedModel);
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem("apiKey", apiKey);
+        localStorage.setItem("selectedModel", selectedModel);
+    }, [apiKey, selectedModel]);
 
     return (
         <>
@@ -56,9 +79,7 @@ const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountMod
                                 </Button>
                             ) : (
                                 <Link
-                                    href={
-                                        "https://buy.stripe.com/28oaGDclzeEfgUgcMM?prefilled_email=" + user.email
-                                    }
+                                    href={"https://buy.stripe.com/28oaGDclzeEfgUgcMM?prefilled_email=" + user.email}
                                     target="_blank"
                                     rel="noopener"
                                 >
@@ -142,6 +163,37 @@ const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountMod
                                     </Typography>
                                 </Grid>
                             </Grid>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Typography variant="h6" gutterBottom color="secondary">
+                                Your API Key
+                            </Typography>
+                            <TextField
+                                value={apiKey}
+                                onChange={handleApiKeyChange}
+                                fullWidth
+                                variant="outlined"
+                                color="secondary"
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Typography variant="h6" gutterBottom color="secondary">
+                                Select Model
+                            </Typography>
+                            <TextField
+                                value={selectedModel}
+                                onChange={handleModelChange}
+                                fullWidth
+                                select
+                                variant="outlined"
+                                color="secondary"
+                            >
+                                {models.map((model) => (
+                                    <MenuItem key={model} value={model}>
+                                        {model}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
                         </Grid>
                     </Grid>
                 </CardContent>
