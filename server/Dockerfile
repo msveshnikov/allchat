@@ -1,5 +1,7 @@
-# Use the official Node.js image as the base image
-FROM node:20-slim
+FROM node:20.9.0-bullseye
+
+RUN sed -i'.bak' 's/$/ contrib/' /etc/apt/sources.list
+RUN apt-get update && apt-get install ffmpeg -y
 
 # Set the working directory in the container
 WORKDIR /app

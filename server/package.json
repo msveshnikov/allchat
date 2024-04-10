@@ -19,6 +19,7 @@
         "express": "^4.19.2",
         "express-prom-bundle": "^7.0.0",
         "express-rate-limit": "^7.2.0",
+        "fluent-ffmpeg": "^2.1.2",
         "googleapis": "^134.0.0",
         "jsonwebtoken": "^9.0.2",
         "mammoth": "^1.7.1",
