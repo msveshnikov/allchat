@@ -148,14 +148,12 @@ async function getWeather(location) {
 }
 
 async function getStockPrice(ticker) {
-    console.log("getStockPrice", ticker);
-    const apiKey = process.env.YAHOO_FINANCE_API_KEY;
     const apiUrl = `https://yfapi.net/v8/finance/chart/${ticker}?range=1wk&interval=1d&lang=en-US&region=US&includePrePost=false&corsDomain=finance.yahoo.com`;
 
     try {
         const response = await fetch(apiUrl, {
             headers: {
-                "X-API-KEY": apiKey,
+                "X-API-KEY": process.env.YAHOO_FINANCE_API_KEY,
             },
         });
 
@@ -164,7 +162,6 @@ async function getStockPrice(ticker) {
         }
 
         const data = await response.json();
-        console.log(data);
         const lastWeekPrices = data?.chart?.result?.[0]?.indicators?.quote?.[0]?.close;
         return lastWeekPrices;
     } catch (error) {
@@ -229,7 +226,7 @@ async function processToolResult(data, temperature, messages, userId, model) {
                     const { to, subject, content } = toolUse.input;
                     let recipient;
 
-                    if (to && to !== "user@example.com") {
+                    if (to && !to?.endsWith("@example.com")) {
                         recipient = to;
                     } else {
                         const user = await User.findById(userId);

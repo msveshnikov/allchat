@@ -15,7 +15,7 @@ const SideDrawer = ({
     sound,
     onSoundChange,
     onClearAll,
-    imagesCount,
+    numberOfImages,
     onImagesChange,
     temperature,
     onTemperatureChange,
@@ -47,7 +47,7 @@ const SideDrawer = ({
                         />
                     </ListItem>
                     <ListItem>
-                        <ImagesSwitch imagesCount={imagesCount} onImagesChange={onImagesChange} />
+                        <ImagesSwitch numberOfImages={numberOfImages} onImagesChange={onImagesChange} />
                     </ListItem>
                     <ListItem>
                         <SoundSwitch sound={sound} onSoundChange={onSoundChange} />

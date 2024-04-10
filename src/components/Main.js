@@ -31,7 +31,7 @@ function Main() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [model, setModel] = useState(localStorage.getItem("model") || "gemini");
     const [sound, setSound] = useState(localStorage.getItem("sound") === "true");
-    const [imagesCount, setImagesCount] = useState(Number(localStorage.getItem("imagesCount") || "1"));
+    const [numberOfImages, setNumberOfImages] = useState(Number(localStorage.getItem("numberOfImages") || "1"));
     const [temperature, setTemperature] = useState(Number(localStorage.getItem("temperature") || "0.5"));
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
@@ -98,10 +98,10 @@ function Main() {
             }
             localStorage.setItem("model", model);
             localStorage.setItem("sound", sound);
-            localStorage.setItem("imagesCount", imagesCount);
+            localStorage.setItem("numberOfImages", numberOfImages);
             localStorage.setItem("temperature", temperature);
         } catch {}
-    }, [model, storedChatHistories, sound, imagesCount, temperature]);
+    }, [model, storedChatHistories, sound, numberOfImages, temperature]);
 
     const handleSubmit = async () => {
         if (input.trim() || selectedFile) {
@@ -148,7 +148,7 @@ function Main() {
                     model: model === "gemini" ? "gemini" : localStorage.getItem("selectedModel") || "claude",
                     apiKey: localStorage.getItem("apiKey"),
                     temperature,
-                    numberOfImages: imagesCount, 
+                    numberOfImages, 
                     chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
                 }),
             });
@@ -415,8 +415,8 @@ function Main() {
                 sound={sound}
                 onSoundChange={setSound}
                 onClearAll={clearAllChatHistory}
-                imagesCount={imagesCount}
-                onImagesChange={setImagesCount}
+                numberOfImages={numberOfImages}
+                onImagesChange={setNumberOfImages}
                 temperature={temperature}
                 onTemperatureChange={setTemperature}
             />
