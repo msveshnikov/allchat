@@ -145,9 +145,10 @@ function Main() {
                     lang: (navigator.languages && navigator.languages[0]) || navigator.language,
                     fileType,
                     fileBytesBase64,
-                    model,
+                    model: model === "gemini" ? "gemini" : localStorage.getItem("selectedModel") || "claude",
+                    apiKey: localStorage.getItem("apiKey"),
                     temperature,
-                    numberOfImages: imagesCount, // Use the imagesCount state for the number of images
+                    numberOfImages: imagesCount, 
                     chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
                 }),
             });
@@ -221,7 +222,7 @@ function Main() {
             method: "POST",
             headers,
             body: JSON.stringify({
-                model,
+                model: "gemini",
                 temperature: 0.1,
                 input: "Extract main topic of this chat in one simple short statement (30 chars max) and return it without anything else in [] ",
                 chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),

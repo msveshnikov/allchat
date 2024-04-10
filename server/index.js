@@ -134,7 +134,9 @@ app.post("/interact", verifyToken, async (req, res) => {
                               temperature,
                               fileBytesBase64,
                               fileType,
-                              req.user.id
+                              req.user.id,
+                              model,
+                              apiKey
                           );
                 return res.json({ textResponse: response?.trim() });
             } else if (fileType === "pdf") {
@@ -203,9 +205,9 @@ app.post("/interact", verifyToken, async (req, res) => {
             inputCharacters = countCharacters(contextPrompt);
             textResponse = await getTextGemini(contextPrompt, temperature);
             outputCharacters = countCharacters(textResponse);
-        } else if (model === "claude") {
+        } else {
             inputTokens = countTokens(contextPrompt);
-            textResponse = await getTextClaude(contextPrompt, temperature, null, null, req.user.id);
+            textResponse = await getTextClaude(contextPrompt, temperature, null, null, req.user.id, model, apiKey);
             outputTokens = countTokens(textResponse);
         }
 

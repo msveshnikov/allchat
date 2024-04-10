@@ -7,7 +7,7 @@ import { User } from "./model/User.js";
 dotenv.config({ override: true });
 
 const bot = new TelegramBot(process.env.TELEGRAM_KEY);
-const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_KEY });
+let anthropic;
 
 const tools = [
     {
@@ -43,21 +43,17 @@ const tools = [
     {
         name: "send_telegram_message",
         description:
-            "Send a message and/or photo to a Telegram group, user, or username. User already gave consent to recieve a message from bot. The tool expects an object with 'chatId' and 'message' properties, and an optional 'photo' property (base64 encoded image data). It returns a success message.",
+            "Send a message to a Telegram group or user. User already gave consent to recieve a message from bot. The tool expects an object with 'chatId' and 'message' properties. It returns a success message.",
         input_schema: {
             type: "object",
             properties: {
                 chatId: {
                     type: "string",
-                    description: "The chat ID of the Telegram group or user, or the @username",
+                    description: "The chat ID of the Telegram group or user",
                 },
                 message: {
                     type: "string",
                     description: "The message to send",
-                },
-                photo: {
-                    type: "string",
-                    description: "Base64 encoded image data (optional)",
                 },
             },
             required: ["chatId", "message"],
@@ -176,26 +172,10 @@ async function getStockPrice(ticker) {
         throw error;
     }
 }
-async function resolveUsername(username) {
-    try {
-        const chat = await bot.getChat(`@${username}`);
-        return chat.id;
-    } catch (error) {
-        console.error(`Error resolving username ${username}:`, error);
-        throw error;
-    }
-}
 
-async function sendTelegramMessage(chatId, message, photo) {
+async function sendTelegramMessage(chatId, message) {
     try {
-        const isUsername = chatId.startsWith("@");
-        const resolvedChatId = isUsername ? await resolveUsername(chatId.slice(1)) : chatId;
-
-        if (photo) {
-            await bot.sendPhoto(resolvedChatId, photo, { caption: message });
-        } else {
-            await bot.sendMessage(resolvedChatId, message);
-        }
+        await bot.sendMessage(chatId, message);
         return "Telegram message sent successfully.";
     } catch (error) {
         console.error("Error sending Telegram message:", error);
@@ -211,7 +191,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-async function processToolResult(data, temperature, messages, userId) {
+async function processToolResult(data, temperature, messages, userId, model) {
     const toolUses = data.content.filter((block) => block.type === "tool_use");
     if (!toolUses.length) {
         return data?.content?.[0]?.text;
@@ -232,8 +212,8 @@ async function processToolResult(data, temperature, messages, userId) {
                     toolResult = `Last week's stock prices: ${stockPrices?.join(", ")}`;
                     break;
                 case "send_telegram_message":
-                    const { chatId, message, photo } = toolUse.input;
-                    toolResult = await sendTelegramMessage(chatId, message, photo);
+                    const { chatId, message } = toolUse.input;
+                    toolResult = await sendTelegramMessage(chatId, message);
                     break;
                 case "search_web_content":
                     const { query } = toolUse.input;
@@ -317,20 +297,27 @@ async function processToolResult(data, temperature, messages, userId) {
     ];
 
     const newData = await anthropic.beta.tools.messages.create({
-        model: "claude-3-haiku-20240307",
+        model,
         max_tokens: 4096,
         temperature: temperature || 0.5,
         tools,
         messages: newMessages,
     });
     if (newData.stop_reason === "tool_use") {
-        return await processToolResult(newData, temperature, newMessages, userId);
+        return await processToolResult(newData, temperature, newMessages, userId, model);
     } else {
         return newData?.content?.[0]?.text;
     }
 }
 
-export const getTextClaude = async (prompt, temperature, imageBase64, fileType, userId) => {
+export const getTextClaude = async (prompt, temperature, imageBase64, fileType, userId, model, apiKey) => {
+    if (apiKey) {
+        anthropic = new Anthropic({ apiKey });
+    } else {
+        anthropic = new Anthropic({ apiKey: process.env.CLAUDE_KEY });
+        model = "claude-3-haiku-20240307";
+    }
+
     const messages = [
         {
             role: "user",
@@ -353,7 +340,7 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
     ];
 
     const data = await anthropic.beta.tools.messages.create({
-        model: "claude-3-haiku-20240307",
+        model,
         max_tokens: 4096,
         temperature: temperature || 0.5,
         tools,
@@ -364,7 +351,7 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
         throw new Error("Anthropic Claude Error");
     } else {
         if (data.stop_reason === "tool_use") {
-            return processToolResult(data, temperature, messages, userId);
+            return processToolResult(data, temperature, messages, userId, model);
         } else {
             return data?.content?.[0]?.text;
         }
