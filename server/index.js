@@ -98,7 +98,7 @@ mongoose
 
 app.post("/interact", verifyToken, async (req, res) => {
     // const user = await User.findById(req.user.id);
-    // if (user.subscriptionStatus !== 'active' && user.subscriptionStatus !== 'trialing') {
+    // if (user.subscriptionStatus !== 'active' && user.subscriptionStatus !== 'trialing' && !user.admin) {
     //     return res.status(402).json({ error: 'Subscription is not active' });
     // }
 
@@ -114,7 +114,13 @@ app.post("/interact", verifyToken, async (req, res) => {
     try {
         if (fileBytesBase64) {
             const fileBytes = Buffer.from(fileBytesBase64, "base64");
-            if (fileType === "png" || fileType === "jpg" || fileType === "jpeg" || fileType === "mp4") {
+            if (
+                fileType === "png" ||
+                fileType === "jpg" ||
+                fileType === "jpeg" ||
+                fileType === "mp4" ||
+                fileType === "mpeg" || fileType==="x-m4a"
+            ) {
                 const response =
                     model === "gemini"
                         ? await getTextGemini(userInput || "what's this", temperature, fileBytesBase64, fileType)

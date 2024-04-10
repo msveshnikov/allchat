@@ -15,7 +15,7 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType) 
         const bufferStream = new stream.PassThrough();
         bufferStream.end(Buffer.from(imageBase64, "base64"));
         const media = {
-            mimeType: fileType === "mp4" ? "video/mp4" : "image/png",
+            mimeType: fileType === "mpeg" ? "audio/mp3" : "image/png",
             body: bufferStream,
         };
         let body = { file: { displayName: "Uploaded Image" } };
