@@ -189,6 +189,8 @@ const transporter = nodemailer.createTransport({
 });
 
 async function processToolResult(data, temperature, messages, userId, model) {
+    console.log("processToolResult", data, temperature, messages);
+
     const toolUses = data.content.filter((block) => block.type === "tool_use");
     if (!toolUses.length) {
         return data?.content?.[0]?.text;
@@ -280,7 +282,8 @@ async function processToolResult(data, temperature, messages, userId, model) {
             return { tool_use_id: toolUse.id, content: toolResult };
         })
     );
-
+    console.log(toolResults);
+    
     const newMessages = [
         ...messages,
         { role: "assistant", content: data.content },
