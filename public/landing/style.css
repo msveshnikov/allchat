@@ -101,13 +101,14 @@ nav ul li a {
 
 .feature-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-gap: 40px;
 }
 
-/* ... (previous CSS styles) ... */
+.feature {
+    text-align: center;
+}
 
-/* Features section styles */
 .feature img {
     max-width: 150px;
     margin-bottom: 20px;
@@ -119,7 +120,6 @@ nav ul li a {
     }
 }
 
-/* ... (rest of the CSS styles) ... */
 .feature h3 {
     font-size: 20px;
     margin-bottom: 10px;
@@ -162,6 +162,7 @@ footer {
     text-align: center;
 }
 
+/* Integrations section styles */
 .integrations {
     padding: 80px 20px;
     text-align: center;
@@ -174,8 +175,12 @@ footer {
 
 .integration-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-gap: 40px;
+}
+
+.integration {
+    text-align: center;
 }
 
 .integration img {
@@ -187,8 +192,6 @@ footer {
     font-size: 20px;
     margin-bottom: 10px;
 }
-
-/* ... (previous CSS styles) ... */
 
 /* Contact section styles */
 .contact {
@@ -236,5 +239,3 @@ button.cta {
     margin-top: 20px;
     width: 100%;
 }
-
-/* ... (rest of the CSS styles) ... */

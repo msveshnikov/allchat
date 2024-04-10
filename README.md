@@ -11,6 +11,7 @@ https://allchat.online/
 ## Features
 
 - Gemini Pro 1.5 and Claude 3 Haiku
+- Audio Input in Gemini
 - Multiple chats
 - File upload PDFs, Word, Excel into the conversation.
 - Computer Vision (png/jpeg)

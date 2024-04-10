@@ -119,7 +119,8 @@ app.post("/interact", verifyToken, async (req, res) => {
                 fileType === "jpg" ||
                 fileType === "jpeg" ||
                 fileType === "mp4" ||
-                fileType === "mpeg" || fileType==="x-m4a"
+                fileType === "mpeg" ||
+                fileType === "x-m4a"
             ) {
                 const response =
                     model === "gemini"
