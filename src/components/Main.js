@@ -149,7 +149,7 @@ function Main() {
                     apiKey: localStorage.getItem("apiKey"),
                     tools,
                     temperature,
-                    numberOfImages, 
+                    numberOfImages,
                     chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
                 }),
             });
@@ -223,7 +223,7 @@ function Main() {
             method: "POST",
             headers,
             body: JSON.stringify({
-                model: "gemini-1.5-pro-latest",
+                model: "gemini-1.0-pro-latest",
                 temperature: 0.1,
                 input: "Extract main topic of this chat in one simple short statement (30 chars max) and return it without anything else in [] ",
                 chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
@@ -382,11 +382,10 @@ function Main() {
         });
 
         if (response.ok) {
-            // Subscription canceled successfully
             setSnackbarMessage("Subscription canceled successfully");
             setSnackbarSeverity("success");
             setSnackbarOpen(true);
-            fetchUserData(); // Refetch user data
+            fetchUserData();
         } else {
             const error = await response.json();
             setSnackbarMessage(`Error canceling subscription: ${error.error}`);

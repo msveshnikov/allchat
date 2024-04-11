@@ -10,18 +10,28 @@ https://allchat.online/
 
 ## Features
 
-- Gemini Pro 1.5 and Claude 3 Haiku
-- Audio Input in Gemini
-- Video Input in Gemini
-- Multiple chats
-- File upload PDFs, Word, Excel into the conversation.
-- Computer Vision (png/jpeg)
-- Markdown formatting.
-- Image Generation by Amazon Titan.
-- Python Code Run
-- Haiku functions (tools) - weather, stocks, email send, Telegram, web search, etc
-- ... please create a Request in Issues for more ...
+-   Gemini Pro 1.5 and Claude 3 Haiku
+-   Together AI models
+-   Audio Input in Gemini
+-   Video Input in Gemini
+-   Multiple chats
+-   File upload PDFs, Word, Excel into the conversation
+-   Computer Vision (png/jpeg)
+-   Markdown formatting.
+-   Image Generation by Amazon Titan
+-   Python Code Run
+-   Abiility to provide own API key
+-   Web Tools - weather, stocks, email send, Telegram, web search, etc
 
+## Connect model to world with Web Tools
+
+Are you tired of switching between various tools and services to complete your tasks? Meet AllChat - the all-in-one solution for seamless code execution, data retrieval, and communication. Use Haiku model for below:
+
+-   Instantly run Python code: Just ask AI to write your code and let Python Code Run take care of execution. You can even create pictures or graphs - simply instruct AI to save them to a file. Just say _Create a python program which will draw house and clouds and save to disk_
+-   Effortlessly fetch real-time data: Easily access important information such as weather updates, stock prices, and the latest news - _just ask Whats weather in my country?_
+-   Automate your email and Telegram correspondences: Send emails effortlessly to yourself or others. Just say _Send information to me_
+-   If your task require some compute, Python program will be created and executed in the background. Just say _Calculate first 100 Fibonacci numbers_
+-   Get the latest news from Google News in your preferred language and receive them directly in your inbox. Keep up with industry trends and advancements. Just say _Send me your comment about latest news_
 
 ## Environment variables
 
@@ -37,6 +47,7 @@ You have to get those APIs and set environment variables (or put to .env file):
 To containerize the Node.js backend and React MUI frontend for easy deployment, we can use Docker. Here's how you can create Docker containers for your application:
 
 **Backend (Node.js)**
+
 1. Replace `export const ALLOWED_ORIGIN = ["https://allchat.online", "http://localhost:3000"];` in server/index.js with your domain
 2. Build the Docker image by running the following command in the backend directory:
 
@@ -138,7 +149,6 @@ sudo systemctl restart nginx
 After completing these steps, your Nginx server should now be correctly configured to act as a reverse proxy for your containerized Node.js backend and React MUI frontend applications, serving them at `allchat.online` and `www.allchat.online`.
 
 Note: Make sure that your backend and frontend containers are running and accessible from your Nginx server. You may need to adjust the firewall rules or security groups on your VM instance to allow incoming traffic on the necessary ports.
-
 
 [![Stargazers repo roster for @msveshnikov/allchat](https://reporoster.com/stars/msveshnikov/allchat)](https://github.com/msveshnikov/allchat/stargazers)
 
