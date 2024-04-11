@@ -6,7 +6,13 @@ const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountMod
     const gravatarUrl = `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
     const [apiKey, setApiKey] = useState("");
     const [selectedModel, setSelectedModel] = useState("claude-3-haiku-20240307");
-    const models = ["claude-3-haiku-20240307", "claude-3-sonnet-20240229", "claude-3-opus-20240229"];
+    const models = [
+        "claude-3-haiku-20240307",
+        "claude-3-sonnet-20240229",
+        "claude-3-opus-20240229",
+        "gemini-1.5-pro-latest",
+        "gemini-1.0-pro-latest",
+    ];
 
     const handleApiKeyChange = (event) => {
         setApiKey(event.target.value);
