@@ -137,7 +137,7 @@ const tools = [
     },
 ];
 
-async function getWeather(location) {
+export async function getWeather(location) {
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}`;
     const response = await fetch(url);
     const data = await response.json();
@@ -147,7 +147,7 @@ async function getWeather(location) {
     )}°C`;
 }
 
-async function getStockPrice(ticker) {
+export async function getStockPrice(ticker) {
     const apiUrl = `https://yfapi.net/v8/finance/chart/${ticker}?range=1wk&interval=1d&lang=en-US&region=US&includePrePost=false&corsDomain=finance.yahoo.com`;
 
     try {
@@ -170,7 +170,7 @@ async function getStockPrice(ticker) {
     }
 }
 
-async function sendTelegramMessage(chatId, message) {
+export async function sendTelegramMessage(chatId, message) {
     try {
         await bot.sendMessage(chatId, message);
         return "Telegram message sent successfully.";

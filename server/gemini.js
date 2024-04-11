@@ -4,6 +4,7 @@ import { google } from "googleapis";
 import dotenv from "dotenv";
 import stream from "stream";
 import ffmpeg from "fluent-ffmpeg";
+import { getWeather } from "./claude";
 dotenv.config({ override: true });
 
 const model = "gemini-1.5-pro-latest";
@@ -22,17 +23,41 @@ const tools = [
             required: ["location"],
         },
     },
+    {
+        name: "get_stock_price",
+        description:
+            "Retrieves the last week's stock price for a given ticker symbol. The tool expects a string with the ticker symbol (e.g. 'AAPL'). It returns an array of stock prices for the last week.",
+        parameters: {
+            type: "object",
+            properties: {
+                ticker: {
+                    type: "string",
+                    description: "The ticker symbol of the stock (e.g. 'AAPL')",
+                },
+            },
+            required: ["ticker"],
+        },
+    },
+    {
+        name: "send_telegram_message",
+        description:
+            "Send a message to a Telegram group or user. User already gave consent to recieve a message from bot. The tool expects an object with 'chatId' and 'message' properties. It returns a success message.",
+        parameters: {
+            type: "object",
+            properties: {
+                chatId: {
+                    type: "string",
+                    description: "The chat ID of the Telegram group or user",
+                },
+                message: {
+                    type: "string",
+                    description: "The message to send",
+                },
+            },
+            required: ["chatId", "message"],
+        },
+    },
 ];
-
-async function getWeather(location) {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    const { name, weather, main } = data;
-    return `In ${name}, the weather is ${weather?.[0]?.description} with a temperature of ${Math.round(
-        main?.temp - 273
-    )}°C`;
-}
 
 export async function getTextGemini(prompt, temperature, imageBase64, fileType) {
     async function uploadFile(fileBase64, mimeType, displayName) {
@@ -142,31 +167,28 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType) 
         },
     };
 
-    const generateContentResponse = await genaiService.models.generateContent({
-        model: `models/${model}`,
-        requestBody: contents,
-        auth: auth,
-    });
+    let finalResponse = null;
 
-    const modelResponse = generateContentResponse?.data?.candidates?.[0]?.content;
-    console.log(modelResponse);
+    while (!finalResponse) {
+        const generateContentResponse = await genaiService.models.generateContent({
+            model: `models/${model}`,
+            requestBody: contents,
+            auth: auth,
+        });
 
-    if (modelResponse) {
-        const functionCallPart = modelResponse.parts.find((part) => part.functionCall);
+        const modelResponse = generateContentResponse?.data?.candidates?.[0]?.content;
 
-        if (functionCallPart) {
-            const functionCall = functionCallPart.functionCall;
-            const functionName = functionCall.name;
-            const functionArgs = functionCall.args;
+        if (modelResponse) {
+            const functionCallPart = modelResponse.parts.find((part) => part.functionCall);
 
-            if (functionName === "get_weather") {
-                const weatherResponse = await getWeather(functionArgs.location);
-                const newContents = {
-                    contents: [
-                        {
-                            role: "user",
-                            parts: [{ text: prompt }],
-                        },
+            if (functionCallPart) {
+                const functionCall = functionCallPart.functionCall;
+                const functionName = functionCall.name;
+                const functionArgs = functionCall.args;
+
+                if (functionName === "get_weather") {
+                    const weatherResponse = await getWeather(functionArgs.location);
+                    contents.contents.push(
                         {
                             role: "model",
                             parts: [{ functionCall: functionCall }],
@@ -183,30 +205,21 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType) 
                                     },
                                 },
                             ],
-                        },
-                    ],
-                    tools: [
-                        {
-                            function_declarations: tools,
-                        },
-                    ],
-                    generation_config: {
-                        maxOutputTokens: 8192,
-                        temperature: temperature || 0.5,
-                        topP: 0.8,
-                    },
-                };
-
-                const secondaryResponse = await genaiService.models.generateContent({
-                    model: `models/${model}`,
-                    requestBody: newContents,
-                    auth: auth,
-                });
-
-                return secondaryResponse?.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                        }
+                    );
+                } else {
+                    // Add support for other function calls here
+                    console.log(`Unsupported function call: ${functionName}`);
+                    break;
+                }
+            } else {
+                finalResponse = modelResponse.parts[0].text;
             }
+        } else {
+            console.log("No valid response from the model");
+            break;
         }
     }
 
-    return modelResponse?.parts?.[0]?.text;
+    return finalResponse;
 }
