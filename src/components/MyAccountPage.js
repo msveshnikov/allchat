@@ -96,6 +96,37 @@ const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountMod
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h6" gutterBottom color="secondary">
+                                Select Model
+                            </Typography>
+                            <TextField
+                                value={selectedModel}
+                                onChange={handleModelChange}
+                                fullWidth
+                                select
+                                variant="outlined"
+                                color="secondary"
+                            >
+                                {models.map((model) => (
+                                    <MenuItem key={model} value={model}>
+                                        {model}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Typography variant="h6" gutterBottom color="secondary">
+                                Your API Key
+                            </Typography>
+                            <TextField
+                                value={apiKey}
+                                onChange={handleApiKeyChange}
+                                fullWidth
+                                variant="outlined"
+                                color="secondary"
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <Typography variant="h6" gutterBottom color="secondary">
                                 Gemini Pro 1.5 Usage
                             </Typography>
                             <Grid container spacing={2}>
@@ -163,37 +194,6 @@ const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountMod
                                     </Typography>
                                 </Grid>
                             </Grid>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <Typography variant="h6" gutterBottom color="secondary">
-                                Your API Key
-                            </Typography>
-                            <TextField
-                                value={apiKey}
-                                onChange={handleApiKeyChange}
-                                fullWidth
-                                variant="outlined"
-                                color="secondary"
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <Typography variant="h6" gutterBottom color="secondary">
-                                Select Model
-                            </Typography>
-                            <TextField
-                                value={selectedModel}
-                                onChange={handleModelChange}
-                                fullWidth
-                                select
-                                variant="outlined"
-                                color="secondary"
-                            >
-                                {models.map((model) => (
-                                    <MenuItem key={model} value={model}>
-                                        {model}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
                         </Grid>
                     </Grid>
                 </CardContent>
