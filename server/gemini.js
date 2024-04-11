@@ -4,11 +4,35 @@ import { google } from "googleapis";
 import dotenv from "dotenv";
 import stream from "stream";
 import ffmpeg from "fluent-ffmpeg";
-
 dotenv.config({ override: true });
 
 const model = "gemini-1.5-pro-latest";
 const GENAI_DISCOVERY_URL = `https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=${process.env.GEMINI_KEY}`;
+
+const tools = [
+    {
+        name: "get_weather",
+        description:
+            "Get the current weather in a given location. The tool expects an object with a 'location' property (a string with the city and state/country). It returns a string with the location, weather description, and temperature (always in C).",
+        parameters: {
+            type: "object",
+            properties: {
+                location: { type: "string", description: "The city and state/country, e.g. San Francisco, CA" },
+            },
+            required: ["location"],
+        },
+    },
+];
+
+async function getWeather(location) {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    const { name, weather, main } = data;
+    return `In ${name}, the weather is ${weather?.[0]?.description} with a temperature of ${Math.round(
+        main?.temp - 273
+    )}°C`;
+}
 
 export async function getTextGemini(prompt, temperature, imageBase64, fileType) {
     async function uploadFile(fileBase64, mimeType, displayName) {
@@ -106,6 +130,11 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType) 
                 parts: [{ text: prompt }, ...parts],
             },
         ],
+        tools: [
+            {
+                function_declarations: tools,
+            },
+        ],
         generation_config: {
             maxOutputTokens: 8192,
             temperature: temperature || 0.5,
@@ -118,6 +147,8 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType) 
         requestBody: contents,
         auth: auth,
     });
+    console.log(generateContentResponse?.data?.candidates?.[0]?.content?.parts);
+    console.log(generateContentResponse?.data?.candidates?.[0]?.finishReason);
 
     return generateContentResponse?.data?.candidates?.[0]?.content?.parts?.[0]?.text;
 }

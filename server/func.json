@@ -1,0 +1,76 @@
+{
+    "contents": [
+        {
+            "role": "user",
+            "parts": [
+                {
+                    "text": "Which theaters in Mountain View show Barbie movie?"
+                }
+            ]
+        },
+        {
+            "role": "model",
+            "parts": [
+                {
+                    "functionCall": {
+                        "name": "find_theaters",
+                        "args": {
+                            "location": "Mountain View, CA",
+                            "movie": "Barbie"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "role": "function",
+            "parts": [
+                {
+                    "functionResponse": {
+                        "name": "find_theaters",
+                        "response": {
+                            "name": "find_theaters",
+                            "content": {
+                                "movie": "Barbie",
+                                "theaters": [
+                                    {
+                                        "name": "AMC Mountain View 16",
+                                        "address": "2000 W El Camino Real, Mountain View, CA 94040"
+                                    },
+                                    {
+                                        "name": "Regal Edwards 14",
+                                        "address": "245 Castro St, Mountain View, CA 94040"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "tools": [
+        {
+            "functionDeclarations": [
+                {
+                    "name": "find_theaters",
+                    "description": "find theaters based on location and optionally movie title which is currently playing in theaters",
+                    "parameters": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "location": {
+                                "type": "STRING",
+                                "description": "The city and state, e.g. San Francisco, CA or a zip code e.g. 95616"
+                            },
+                            "movie": {
+                                "type": "STRING",
+                                "description": "Any movie title"
+                            }
+                        },
+                        "required": ["location"]
+                    }
+                }
+            ]
+        }
+    ]
+}
