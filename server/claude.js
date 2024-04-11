@@ -226,8 +226,8 @@ export async function executePython(code) {
         body: code,
     });
     const data = await response.text();
+    const jsonData = JSON.parse(data);
     if (response.ok) {
-        const jsonData = JSON.parse(data);
         return jsonData.output;
     } else {
         return { error: data };

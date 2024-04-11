@@ -1,6 +1,5 @@
 import React from "react";
 import { List, ListItem, ListItemText, SwipeableDrawer, Slider, Typography } from "@mui/material";
-import ModelSwitch from "./ModelSwitch";
 import SoundSwitch from "./SoundSwitch";
 import ImagesSwitch from "./ImagesSwitch";
 
@@ -10,8 +9,6 @@ const SideDrawer = ({
     onNewChat,
     storedChatHistories,
     onHistorySelection,
-    model,
-    onModelChange,
     sound,
     onSoundChange,
     onClearAll,
@@ -51,9 +48,6 @@ const SideDrawer = ({
                     </ListItem>
                     <ListItem>
                         <SoundSwitch sound={sound} onSoundChange={onSoundChange} />
-                    </ListItem>
-                    <ListItem>
-                        <ModelSwitch model={model} onModelChange={onModelChange} />
                     </ListItem>
                 </div>
                 <ListItem button onClick={onClearAll} style={{ color: "white", backgroundColor: "#F50057" }}>

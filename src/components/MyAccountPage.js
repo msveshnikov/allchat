@@ -5,13 +5,15 @@ import md5 from "md5";
 const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountModal }) => {
     const gravatarUrl = `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
     const [apiKey, setApiKey] = useState("");
-    const [selectedModel, setSelectedModel] = useState("claude-3-haiku-20240307");
+    const [selectedModel, setSelectedModel] = useState("gemini-1.5-pro-latest");
     const models = [
+        "gemini-1.5-pro-latest",
+        "gemini-1.0-pro-latest",
         "claude-3-haiku-20240307",
         "claude-3-sonnet-20240229",
         "claude-3-opus-20240229",
-        "gemini-1.5-pro-latest",
-        "gemini-1.0-pro-latest",
+        "databricks/dbrx-instruct",
+        "mistralai/Mixtral-8x7B-Instruct-v0.1",
     ];
 
     const handleApiKeyChange = (event) => {

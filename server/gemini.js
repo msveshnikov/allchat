@@ -16,8 +16,6 @@ import {
 } from "./claude.js";
 dotenv.config({ override: true });
 
-const GENAI_DISCOVERY_URL = `https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=${process.env.GEMINI_KEY}`;
-
 const tools = [
     {
         name: "get_weather",
@@ -135,8 +133,12 @@ const tools = [
 ];
 
 export async function getTextGemini(prompt, temperature, imageBase64, fileType, userId, model, apiKey) {
-    model = "gemini-1.5-pro-latest";
-
+    const GENAI_DISCOVERY_URL = `https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=${
+        apiKey || process.env.GEMINI_KEY
+    }`;
+    if (model === "gemini") {
+        model = "gemini-1.5-pro-latest";
+    }
     async function uploadFile(fileBase64, mimeType, displayName) {
         const bufferStream = new stream.PassThrough();
         bufferStream.end(Buffer.from(fileBase64, "base64"));

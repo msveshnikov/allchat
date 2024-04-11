@@ -29,7 +29,6 @@ function Main() {
     const [isModelResponding, setIsModelResponding] = useState(false);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
-    const [model, setModel] = useState(localStorage.getItem("model") || "gemini");
     const [sound, setSound] = useState(localStorage.getItem("sound") === "true");
     const [numberOfImages, setNumberOfImages] = useState(Number(localStorage.getItem("numberOfImages") || "1"));
     const [temperature, setTemperature] = useState(Number(localStorage.getItem("temperature") || "0.5"));
@@ -96,12 +95,11 @@ function Main() {
             if (storedChatHistories.length > 0) {
                 localStorage.setItem("storedChatHistories", JSON.stringify(storedChatHistories));
             }
-            localStorage.setItem("model", model);
             localStorage.setItem("sound", sound);
             localStorage.setItem("numberOfImages", numberOfImages);
             localStorage.setItem("temperature", temperature);
         } catch {}
-    }, [model, storedChatHistories, sound, numberOfImages, temperature]);
+    }, [storedChatHistories, sound, numberOfImages, temperature]);
 
     const handleSubmit = async () => {
         if (input.trim() || selectedFile) {
@@ -145,7 +143,7 @@ function Main() {
                     lang: (navigator.languages && navigator.languages[0]) || navigator.language,
                     fileType,
                     fileBytesBase64,
-                    model: model === "gemini" ? "gemini" : localStorage.getItem("selectedModel") || "claude",
+                    model: localStorage.getItem("selectedModel") || "gemini-1.5-pro-latest",
                     apiKey: localStorage.getItem("apiKey"),
                     temperature,
                     numberOfImages, 
@@ -222,7 +220,7 @@ function Main() {
             method: "POST",
             headers,
             body: JSON.stringify({
-                model: "gemini",
+                model: "gemini-1.5-pro-latest",
                 temperature: 0.1,
                 input: "Extract main topic of this chat in one simple short statement (30 chars max) and return it without anything else in [] ",
                 chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
@@ -410,8 +408,6 @@ function Main() {
                 onNewChat={handleNewChat}
                 storedChatHistories={storedChatHistories}
                 onHistorySelection={handleHistorySelection}
-                model={model}
-                onModelChange={setModel}
                 sound={sound}
                 onSoundChange={setSound}
                 onClearAll={clearAllChatHistory}
