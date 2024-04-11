@@ -4,7 +4,7 @@ import { google } from "googleapis";
 import dotenv from "dotenv";
 import stream from "stream";
 import ffmpeg from "fluent-ffmpeg";
-import { getWeather } from "./claude";
+import { getStockPrice, getWeather, sendTelegramMessage } from "./claude.js";
 dotenv.config({ override: true });
 
 const model = "gemini-1.5-pro-latest";
@@ -30,10 +30,7 @@ const tools = [
         parameters: {
             type: "object",
             properties: {
-                ticker: {
-                    type: "string",
-                    description: "The ticker symbol of the stock (e.g. 'AAPL')",
-                },
+                ticker: { type: "string", description: "The ticker symbol of the stock (e.g. 'AAPL')" },
             },
             required: ["ticker"],
         },
@@ -41,18 +38,12 @@ const tools = [
     {
         name: "send_telegram_message",
         description:
-            "Send a message to a Telegram group or user. User already gave consent to recieve a message from bot. The tool expects an object with 'chatId' and 'message' properties. It returns a success message.",
+            "Send a message to a Telegram group or user. User already gave consent to receive a message from bot. The tool expects an object with 'chatId' and 'message' properties. It returns a success message.",
         parameters: {
             type: "object",
             properties: {
-                chatId: {
-                    type: "string",
-                    description: "The chat ID of the Telegram group or user",
-                },
-                message: {
-                    type: "string",
-                    description: "The message to send",
-                },
+                chatId: { type: "string", description: "The chat ID of the Telegram group or user" },
+                message: { type: "string", description: "The message to send" },
             },
             required: ["chatId", "message"],
         },
@@ -186,8 +177,23 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType) 
                 const functionName = functionCall.name;
                 const functionArgs = functionCall.args;
 
-                if (functionName === "get_weather") {
-                    const weatherResponse = await getWeather(functionArgs.location);
+                const handleFunctionCall = async (name, args) => {
+                    let functionResponse;
+                    switch (name) {
+                        case "get_weather":
+                            functionResponse = await getWeather(args.location);
+                            break;
+                        case "get_stock_price":
+                            functionResponse = await getStockPrice(args.ticker);
+                            break;
+                        case "send_telegram_message":
+                            functionResponse = await sendTelegramMessage(args.chatId, args.message);
+                            break;
+                        default:
+                            console.log(`Unsupported function call: ${name}`);
+                            return;
+                    }
+
                     contents.contents.push(
                         {
                             role: "model",
@@ -198,20 +204,18 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType) 
                             parts: [
                                 {
                                     functionResponse: {
-                                        name: "get_weather",
+                                        name: name,
                                         response: {
-                                            content: weatherResponse,
+                                            content: functionResponse,
                                         },
                                     },
                                 },
                             ],
                         }
                     );
-                } else {
-                    // Add support for other function calls here
-                    console.log(`Unsupported function call: ${functionName}`);
-                    break;
-                }
+                };
+
+                await handleFunctionCall(functionName, functionArgs);
             } else {
                 finalResponse = modelResponse.parts[0].text;
             }
