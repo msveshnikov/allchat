@@ -147,8 +147,57 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType) 
         requestBody: contents,
         auth: auth,
     });
-    console.log(generateContentResponse?.data?.candidates?.[0]?.content?.parts);
-    console.log(generateContentResponse?.data?.candidates?.[0]?.finishReason);
 
-    return generateContentResponse?.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    const modelResponse = generateContentResponse?.data?.candidates?.[0]?.content;
+    console.log(modelResponse);
+
+    if (modelResponse) {
+        const functionCallPart = modelResponse.parts.find((part) => part.functionCall);
+
+        if (functionCallPart) {
+            const functionCall = functionCallPart.functionCall;
+            const functionName = functionCall.name;
+            const functionArgs = functionCall.args;
+
+            if (functionName === "get_weather") {
+                const weatherResponse = await getWeather(functionArgs.location);
+                const newContents = {
+                    contents: [
+                        {
+                            role: "user",
+                            parts: [{ text: prompt }],
+                        },
+                        {
+                            role: "model",
+                            parts: [{ functionCall: functionCall }],
+                        },
+                        {
+                            role: "function",
+                            parts: [{ functionResponse: { name: "get_weather", response: weatherResponse } }],
+                        },
+                    ],
+                    tools: [
+                        {
+                            function_declarations: tools,
+                        },
+                    ],
+                    generation_config: {
+                        maxOutputTokens: 8192,
+                        temperature: temperature || 0.5,
+                        topP: 0.8,
+                    },
+                };
+
+                const secondaryResponse = await genaiService.models.generateContent({
+                    model: `models/${model}`,
+                    requestBody: newContents,
+                    auth: auth,
+                });
+
+                return secondaryResponse?.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            }
+        }
+    }
+
+    return modelResponse?.parts?.[0]?.text;
 }
