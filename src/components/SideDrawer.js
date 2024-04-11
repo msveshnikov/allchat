@@ -2,6 +2,7 @@ import React from "react";
 import { List, ListItem, ListItemText, SwipeableDrawer, Slider, Typography } from "@mui/material";
 import SoundSwitch from "./SoundSwitch";
 import ImagesSwitch from "./ImagesSwitch";
+import ToolsSwitch from "./ToolsSwitch";
 
 const SideDrawer = ({
     isOpen,
@@ -11,6 +12,8 @@ const SideDrawer = ({
     onHistorySelection,
     sound,
     onSoundChange,
+    tools,
+    onToolsChange,
     onClearAll,
     numberOfImages,
     onImagesChange,
@@ -48,6 +51,9 @@ const SideDrawer = ({
                     </ListItem>
                     <ListItem>
                         <SoundSwitch sound={sound} onSoundChange={onSoundChange} />
+                    </ListItem>
+                    <ListItem>
+                        <ToolsSwitch tools={tools} onToolsChange={onToolsChange} />
                     </ListItem>
                 </div>
                 <ListItem button onClick={onClearAll} style={{ color: "white", backgroundColor: "#F50057" }}>

@@ -112,6 +112,7 @@ app.post("/interact", verifyToken, async (req, res) => {
     const fileBytesBase64 = req.body.fileBytesBase64;
     const fileType = req.body.fileType;
     const numberOfImages = req.body.numberOfImages || 1;
+    const tools = req.body.tools;
     const model = req.body.model || "gemini-1.5-pro-latest";
     const apiKey = req.body.apiKey;
     const country = req.headers["geoip_country_code"];
@@ -136,7 +137,8 @@ app.post("/interact", verifyToken, async (req, res) => {
                         fileType,
                         req.user.id,
                         model,
-                        apiKey
+                        apiKey,
+                        tools
                     );
                 }
                 if (model?.startsWith("claude")) {
@@ -147,7 +149,8 @@ app.post("/interact", verifyToken, async (req, res) => {
                         fileType,
                         req.user.id,
                         model,
-                        apiKey
+                        apiKey,
+                        tools
                     );
                 }
                 return res.json({ textResponse: response?.trim() });
@@ -215,11 +218,29 @@ app.post("/interact", verifyToken, async (req, res) => {
 
         if (model?.startsWith("gemini")) {
             inputCharacters = countCharacters(contextPrompt);
-            textResponse = await getTextGemini(contextPrompt, temperature, null, null, req.user.id, model, apiKey);
+            textResponse = await getTextGemini(
+                contextPrompt,
+                temperature,
+                null,
+                null,
+                req.user.id,
+                model,
+                apiKey,
+                tools
+            );
             outputCharacters = countCharacters(textResponse);
         } else if (model?.startsWith("claude")) {
             inputTokens = countTokens(contextPrompt);
-            textResponse = await getTextClaude(contextPrompt, temperature, null, null, req.user.id, model, apiKey);
+            textResponse = await getTextClaude(
+                contextPrompt,
+                temperature,
+                null,
+                null,
+                req.user.id,
+                model,
+                apiKey,
+                tools
+            );
             outputTokens = countTokens(textResponse);
         } else {
             textResponse = await getTextTogether(contextPrompt, temperature, model, apiKey);

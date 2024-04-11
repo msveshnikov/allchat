@@ -30,6 +30,7 @@ function Main() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [sound, setSound] = useState(localStorage.getItem("sound") === "true");
+    const [tools, setTools] = useState(localStorage.getItem("tools") === "true");
     const [numberOfImages, setNumberOfImages] = useState(Number(localStorage.getItem("numberOfImages") || "1"));
     const [temperature, setTemperature] = useState(Number(localStorage.getItem("temperature") || "0.5"));
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
@@ -96,10 +97,11 @@ function Main() {
                 localStorage.setItem("storedChatHistories", JSON.stringify(storedChatHistories));
             }
             localStorage.setItem("sound", sound);
+            localStorage.setItem("tools", tools);
             localStorage.setItem("numberOfImages", numberOfImages);
             localStorage.setItem("temperature", temperature);
         } catch {}
-    }, [storedChatHistories, sound, numberOfImages, temperature]);
+    }, [storedChatHistories, sound, numberOfImages, temperature, tools]);
 
     const handleSubmit = async () => {
         if (input.trim() || selectedFile) {
@@ -145,6 +147,7 @@ function Main() {
                     fileBytesBase64,
                     model: localStorage.getItem("selectedModel") || "gemini-1.5-pro-latest",
                     apiKey: localStorage.getItem("apiKey"),
+                    tools,
                     temperature,
                     numberOfImages, 
                     chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
@@ -409,7 +412,9 @@ function Main() {
                 storedChatHistories={storedChatHistories}
                 onHistorySelection={handleHistorySelection}
                 sound={sound}
+                tools={tools}
                 onSoundChange={setSound}
+                onToolsChange={setTools}
                 onClearAll={clearAllChatHistory}
                 numberOfImages={numberOfImages}
                 onImagesChange={setNumberOfImages}

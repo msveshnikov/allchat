@@ -132,7 +132,7 @@ const tools = [
     },
 ];
 
-export async function getTextGemini(prompt, temperature, imageBase64, fileType, userId, model, apiKey) {
+export async function getTextGemini(prompt, temperature, imageBase64, fileType, userId, model, apiKey, webTools) {
     const GENAI_DISCOVERY_URL = `https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=${
         apiKey || process.env.GEMINI_KEY
     }`;
@@ -234,11 +234,13 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                 parts: [{ text: prompt }, ...parts],
             },
         ],
-        tools: [
-            {
-                function_declarations: tools,
-            },
-        ],
+        tools: webTools
+            ? [
+                  {
+                      function_declarations: tools,
+                  },
+              ]
+            : [],
         generation_config: {
             maxOutputTokens: 8192,
             temperature: temperature || 0.5,

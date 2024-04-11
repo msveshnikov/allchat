@@ -249,7 +249,7 @@ export async function searchWebContent(query) {
     return pageContents?.join("\n");
 }
 
-async function processToolResult(data, temperature, messages, userId, model) {
+async function processToolResult(data, temperature, messages, userId, model, webTools) {
     console.log("processToolResult", data, temperature, messages);
 
     const toolUses = data.content.filter((block) => block.type === "tool_use");
@@ -319,7 +319,7 @@ async function processToolResult(data, temperature, messages, userId, model) {
         model,
         max_tokens: 4096,
         temperature: temperature || 0.5,
-        tools,
+        tools: webTools ? tools : [],
         messages: newMessages,
     });
     if (newData.stop_reason === "tool_use") {
@@ -329,7 +329,7 @@ async function processToolResult(data, temperature, messages, userId, model) {
     }
 }
 
-export const getTextClaude = async (prompt, temperature, imageBase64, fileType, userId, model, apiKey) => {
+export const getTextClaude = async (prompt, temperature, imageBase64, fileType, userId, model, apiKey, webTools) => {
     if (apiKey) {
         anthropic = new Anthropic({ apiKey });
     } else {
@@ -362,7 +362,7 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
         model,
         max_tokens: 4096,
         temperature: temperature || 0.5,
-        tools,
+        tools: webTools ? tools : [],
         messages,
     });
 
@@ -370,7 +370,7 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
         throw new Error("Anthropic Claude Error");
     } else {
         if (data.stop_reason === "tool_use") {
-            return processToolResult(data, temperature, messages, userId, model);
+            return processToolResult(data, temperature, messages, userId, model, webTools);
         } else {
             return data?.content?.[0]?.text;
         }
