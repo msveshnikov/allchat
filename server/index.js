@@ -33,7 +33,7 @@ const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro
 - Supporting file uploads and integrating content from PDFs, Word documents, and Excel spreadsheets into the conversation.
 - Rendering Markdown formatting in your responses for better readability.
 - Generating images based on text descriptions using the Amazon Titan image generation model.
-- If user request picture generation, you do NOT generate ASCII but provide detail scene description like for MidJourney.
+- If user request picture generation, you DO NOT generate ASCII but provide detail scene description like for MidJourney.
 - Asking for clarification if the user's query is ambiguous or unclear.
 - Your context size is 200.000
 - Performing pre-Google searches to gather relevant information based on the user's query.
@@ -52,7 +52,7 @@ app.use((req, res, next) => {
     if (req.originalUrl === "/stripe-webhook") {
         next();
     } else {
-        express.json({ limit: "50mb" })(req, res, next);
+        express.json({ limit: "100mb" })(req, res, next);
     }
 });
 app.use(cors({ origin: ALLOWED_ORIGIN }));
@@ -128,7 +128,15 @@ app.post("/interact", verifyToken, async (req, res) => {
             ) {
                 const response =
                     model === "gemini"
-                        ? await getTextGemini(userInput || "what's this", temperature, fileBytesBase64, fileType)
+                        ? await getTextGemini(
+                              userInput || "what's this",
+                              temperature,
+                              fileBytesBase64,
+                              fileType,
+                              req.user.id,
+                              model,
+                              apiKey
+                          )
                         : await getTextClaude(
                               userInput || "what's this",
                               temperature,
@@ -203,7 +211,7 @@ app.post("/interact", verifyToken, async (req, res) => {
 
         if (model === "gemini") {
             inputCharacters = countCharacters(contextPrompt);
-            textResponse = await getTextGemini(contextPrompt, temperature);
+            textResponse = await getTextGemini(contextPrompt, temperature, null, null, req.user.id, model, apiKey);
             outputCharacters = countCharacters(textResponse);
         } else {
             inputTokens = countTokens(contextPrompt);
