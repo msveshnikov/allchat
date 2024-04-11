@@ -2,16 +2,17 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
-import { getTextGemini } from "./gemini.js";
-import { getImageTitan } from "./aws.js";
 import hasPaintWord from "./paint.js";
 import pdfParser from "pdf-parse/lib/pdf-parse.js";
 import mammoth from "mammoth";
-import * as xlsx from "xlsx";
-import { getTextClaude } from "./claude.js";
 import promBundle from "express-prom-bundle";
-import { authenticateUser, registerUser, verifyToken } from "./auth.js";
 import mongoose from "mongoose";
+import * as xlsx from "xlsx";
+import { getTextGemini } from "./gemini.js";
+import { getTextClaude } from "./claude.js";
+import { getImageTitan } from "./aws.js";
+import { getTextTogether } from "./together.js";
+import { authenticateUser, registerUser, verifyToken } from "./auth.js";
 import { User, countCharacters, countTokens, storeUsageStats } from "./model/User.js";
 import { fetchPageContent, fetchSearchResults } from "./search.js";
 import fs from "fs";
@@ -33,7 +34,7 @@ const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro
 - Supporting file uploads and integrating content from PDFs, Word documents, and Excel spreadsheets into the conversation.
 - Rendering Markdown formatting in your responses for better readability.
 - Generating images based on text descriptions using the Amazon Titan image generation model.
-- If user request picture generation, you do NOT generate ASCII but provide detail scene description like for MidJourney.
+- If user request picture generation, you DO NOT generate ASCII but provide detail scene description like for MidJourney.
 - Asking for clarification if the user's query is ambiguous or unclear.
 - Your context size is 200.000
 - Performing pre-Google searches to gather relevant information based on the user's query.
@@ -52,7 +53,7 @@ app.use((req, res, next) => {
     if (req.originalUrl === "/stripe-webhook") {
         next();
     } else {
-        express.json({ limit: "50mb" })(req, res, next);
+        express.json({ limit: "100mb" })(req, res, next);
     }
 });
 app.use(cors({ origin: ALLOWED_ORIGIN }));
@@ -111,7 +112,7 @@ app.post("/interact", verifyToken, async (req, res) => {
     const fileBytesBase64 = req.body.fileBytesBase64;
     const fileType = req.body.fileType;
     const numberOfImages = req.body.numberOfImages || 1;
-    const model = req.body.model || "gemini";
+    const model = req.body.model || "gemini-1.5-pro-latest";
     const apiKey = req.body.apiKey;
     const country = req.headers["geoip_country_code"];
 
@@ -126,18 +127,29 @@ app.post("/interact", verifyToken, async (req, res) => {
                 fileType === "mpeg" ||
                 fileType === "x-m4a"
             ) {
-                const response =
-                    model === "gemini"
-                        ? await getTextGemini(userInput || "what's this", temperature, fileBytesBase64, fileType)
-                        : await getTextClaude(
-                              userInput || "what's this",
-                              temperature,
-                              fileBytesBase64,
-                              fileType,
-                              req.user.id,
-                              model,
-                              apiKey
-                          );
+                let response;
+                if (model?.startsWith("gemini")) {
+                    response = await getTextGemini(
+                        userInput || "what's this",
+                        temperature,
+                        fileBytesBase64,
+                        fileType,
+                        req.user.id,
+                        model,
+                        apiKey
+                    );
+                }
+                if (model?.startsWith("claude")) {
+                    response = getTextClaude(
+                        userInput || "what's this",
+                        temperature,
+                        fileBytesBase64,
+                        fileType,
+                        req.user.id,
+                        model,
+                        apiKey
+                    );
+                }
                 return res.json({ textResponse: response?.trim() });
             } else if (fileType === "pdf") {
                 const data = await pdfParser(fileBytes);
@@ -201,14 +213,16 @@ app.post("/interact", verifyToken, async (req, res) => {
         let outputCharacters = 0;
         let imagesGenerated = 0;
 
-        if (model === "gemini") {
+        if (model?.startsWith("gemini")) {
             inputCharacters = countCharacters(contextPrompt);
-            textResponse = await getTextGemini(contextPrompt, temperature);
+            textResponse = await getTextGemini(contextPrompt, temperature, null, null, req.user.id, model, apiKey);
             outputCharacters = countCharacters(textResponse);
-        } else {
+        } else if (model?.startsWith("claude")) {
             inputTokens = countTokens(contextPrompt);
             textResponse = await getTextClaude(contextPrompt, temperature, null, null, req.user.id, model, apiKey);
             outputTokens = countTokens(textResponse);
+        } else {
+            textResponse = await getTextTogether(contextPrompt, temperature, model, apiKey);
         }
 
         if (searchResults?.length > 0) {
@@ -271,7 +285,7 @@ app.post("/login", async (req, res) => {
 
 app.get("/user", verifyToken, async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select("-password"); // Exclude the password field
+        const user = await User.findById(req.user.id).select("-password");
         res.json(user);
     } catch (error) {
         console.error(error);

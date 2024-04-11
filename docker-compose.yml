@@ -19,6 +19,7 @@ services:
             - TELEGRAM_KEY=${TELEGRAM_KEY}
             - EMAIL=${EMAIL}
             - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+            - TOGETHER_KEY=${TOGETHER_KEY}
         restart: unless-stopped
         depends_on:
             - mongodb

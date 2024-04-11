@@ -137,7 +137,7 @@ const tools = [
     },
 ];
 
-async function getWeather(location) {
+export async function getWeather(location) {
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}`;
     const response = await fetch(url);
     const data = await response.json();
@@ -147,7 +147,7 @@ async function getWeather(location) {
     )}°C`;
 }
 
-async function getStockPrice(ticker) {
+export async function getStockPrice(ticker) {
     const apiUrl = `https://yfapi.net/v8/finance/chart/${ticker}?range=1wk&interval=1d&lang=en-US&region=US&includePrePost=false&corsDomain=finance.yahoo.com`;
 
     try {
@@ -162,15 +162,15 @@ async function getStockPrice(ticker) {
         }
 
         const data = await response.json();
-        const lastWeekPrices = data?.chart?.result?.[0]?.indicators?.quote?.[0]?.close;
-        return lastWeekPrices;
+        const stockPrices = data?.chart?.result?.[0]?.indicators?.quote?.[0]?.close;
+        return `Last week's stock prices: ${stockPrices?.join(", ")}`;
     } catch (error) {
         console.error("Error fetching stock price:", error);
         throw error;
     }
 }
 
-async function sendTelegramMessage(chatId, message) {
+export async function sendTelegramMessage(chatId, message) {
     try {
         await bot.sendMessage(chatId, message);
         return "Telegram message sent successfully.";
@@ -187,6 +187,67 @@ const transporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASSWORD,
     },
 });
+
+export async function sendEmail(to, subject, content, userId) {
+    let recipient;
+
+    if (to && !to?.endsWith("@example.com")) {
+        recipient = to;
+    } else {
+        const user = await User.findById(userId);
+        if (!user || !user.email) {
+            throw new Error("No recipient email address provided or found in user profile.");
+        }
+        recipient = user.email;
+    }
+    const mailOptions = {
+        to: recipient,
+        from: "MangaTVShop@gmail.com",
+        subject,
+        text: content,
+    };
+    const info = await transporter.sendMail(mailOptions);
+    return `Email sent: ${info.response}`;
+}
+
+export async function getCurrentTimeUTC() {
+    const currentTime = new Date().toUTCString();
+    return `The current time in UTC is: ${currentTime}`;
+}
+
+export async function executePython(code) {
+    const pythonServerUrl =
+        process.env.NODE_ENV === "production" ? "http://python-shell:8000" : "http://localhost:8000";
+    const response = await fetch(pythonServerUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "text/plain",
+        },
+        body: code,
+    });
+    const data = await response.text();
+    const jsonData = JSON.parse(data);
+    if (response.ok) {
+        return jsonData.output;
+    } else {
+        return { error: data };
+    }
+}
+
+export async function getLatestNews(lang) {
+    const newsResults = await googleNews(lang);
+    return newsResults.map((n) => n.title + " " + n.description).join("\n");
+}
+
+export async function searchWebContent(query) {
+    const searchResults = await fetchSearchResults(query);
+    const pageContents = await Promise.all(
+        searchResults.slice(0, 3).map(async (result) => {
+            return await fetchPageContent(result.link);
+        })
+    );
+    return pageContents?.join("\n");
+}
 
 async function processToolResult(data, temperature, messages, userId, model) {
     console.log("processToolResult", data, temperature, messages);
@@ -207,8 +268,7 @@ async function processToolResult(data, temperature, messages, userId, model) {
                     break;
                 case "get_stock_price":
                     const { ticker } = toolUse.input;
-                    const stockPrices = await getStockPrice(ticker);
-                    toolResult = `Last week's stock prices: ${stockPrices?.join(", ")}`;
+                    toolResult = await getStockPrice(ticker);
                     break;
                 case "send_telegram_message":
                     const { chatId, message } = toolUse.input;
@@ -216,63 +276,22 @@ async function processToolResult(data, temperature, messages, userId, model) {
                     break;
                 case "search_web_content":
                     const { query } = toolUse.input;
-                    const searchResults = await fetchSearchResults(query);
-                    const pageContents = await Promise.all(
-                        searchResults.slice(0, 3).map(async (result) => {
-                            return await fetchPageContent(result.link);
-                        })
-                    );
-                    toolResult = pageContents?.join("\n");
+                    toolResult = await searchWebContent(query);
                     break;
                 case "send_email":
                     const { to, subject, content } = toolUse.input;
-                    let recipient;
-
-                    if (to && !to?.endsWith("@example.com")) {
-                        recipient = to;
-                    } else {
-                        const user = await User.findById(userId);
-                        if (!user || !user.email) {
-                            throw new Error("No recipient email address provided or found in user profile.");
-                        }
-                        recipient = user.email;
-                    }
-                    const mailOptions = {
-                        to: recipient,
-                        from: "MangaTVShop@gmail.com",
-                        subject,
-                        text: content,
-                    };
-                    const info = await transporter.sendMail(mailOptions);
-                    toolResult = `Email sent: ${info.response}`;
+                    toolResult = await sendEmail(to, subject, content, userId);
                     break;
                 case "get_current_time_utc":
-                    const currentTime = new Date().toUTCString();
-                    toolResult = `The current time in UTC is: ${currentTime}`;
+                    toolResult = await getCurrentTimeUTC();
                     break;
                 case "execute_python":
                     const { code } = toolUse.input;
-                    const pythonServerUrl =
-                        process.env.NODE_ENV === "production" ? "http://python-shell:8000" : "http://localhost:8000";
-                    const response = await fetch(pythonServerUrl, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "text/plain",
-                        },
-                        body: code,
-                    });
-                    const data = await response.text();
-                    if (response.ok) {
-                        const jsonData = JSON.parse(data);
-                        toolResult = jsonData.output;
-                    } else {
-                        toolResult = { error: data };
-                    }
+                    toolResult = await executePython(code);
                     break;
                 case "get_latest_news":
                     const { lang } = toolUse.input;
-                    const newsResults = await googleNews(lang);
-                    toolResult = newsResults.map((n) => n.title + " " + n.description).join("\n");
+                    toolResult = await getLatestNews(lang);
                     break;
                 default:
                     // Handle unknown tool names
@@ -283,7 +302,7 @@ async function processToolResult(data, temperature, messages, userId, model) {
         })
     );
     console.log(toolResults);
-    
+
     const newMessages = [
         ...messages,
         { role: "assistant", content: data.content },

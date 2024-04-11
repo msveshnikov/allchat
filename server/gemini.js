@@ -4,13 +4,141 @@ import { google } from "googleapis";
 import dotenv from "dotenv";
 import stream from "stream";
 import ffmpeg from "fluent-ffmpeg";
-
+import {
+    executePython,
+    getCurrentTimeUTC,
+    getLatestNews,
+    getStockPrice,
+    getWeather,
+    searchWebContent,
+    sendEmail,
+    sendTelegramMessage,
+} from "./claude.js";
 dotenv.config({ override: true });
 
-const model = "gemini-1.5-pro-latest";
-const GENAI_DISCOVERY_URL = `https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=${process.env.GEMINI_KEY}`;
+const tools = [
+    {
+        name: "get_weather",
+        description:
+            "Get the current weather in a given location. The tool expects an object with a 'location' property (a string with the city and state/country). It returns a string with the location, weather description, and temperature (always in C).",
+        parameters: {
+            type: "object",
+            properties: {
+                location: { type: "string", description: "The city and state/country, e.g. San Francisco, CA" },
+            },
+            required: ["location"],
+        },
+    },
+    {
+        name: "get_stock_price",
+        description:
+            "Retrieves the last week's stock price for a given ticker symbol. The tool expects a string with the ticker symbol (e.g. 'AAPL'). It returns an array of stock prices for the last week.",
+        parameters: {
+            type: "object",
+            properties: {
+                ticker: { type: "string", description: "The ticker symbol of the stock (e.g. 'AAPL')" },
+            },
+            required: ["ticker"],
+        },
+    },
+    {
+        name: "send_telegram_message",
+        description:
+            "Send a message to a Telegram group or user. User already gave consent to receive a message from bot. The tool expects an object with 'chatId' and 'message' properties. It returns a success message.",
+        parameters: {
+            type: "object",
+            properties: {
+                chatId: { type: "string", description: "The chat ID of the Telegram group or user" },
+                message: { type: "string", description: "The message to send" },
+            },
+            required: ["chatId", "message"],
+        },
+    },
+    {
+        name: "search_web_content",
+        description: "Searches the web for the given query and returns the content of the first 3 search result pages.",
+        parameters: {
+            type: "object",
+            properties: {
+                query: {
+                    type: "string",
+                    description: "The search query",
+                },
+            },
+            required: ["query"],
+        },
+    },
+    {
+        name: "send_email",
+        description:
+            "Sends an email with the given subject, recipient, and content. If recipient is not provided, it uses user email from profile. Consent from user is already recieved. It returns a success message.",
+        parameters: {
+            type: "object",
+            properties: {
+                to: {
+                    type: "string",
+                    description:
+                        "The recipient's email address (optional, if it is not provided email will be sent to the user email)",
+                },
+                subject: {
+                    type: "string",
+                    description: "The subject of the email",
+                },
+                content: {
+                    type: "string",
+                    description: "The content of the email",
+                },
+            },
+            required: ["subject", "content"],
+        },
+    },
+    {
+        name: "get_current_time_utc",
+        description: "Returns the current date and time in UTC format.",
+        parameters: {
+            type: "object",
+            properties: {},
+            required: [],
+        },
+    },
+    {
+        name: "execute_python",
+        description: "Executes the provided Python code and returns the output. Could be used for any compute.",
+        parameters: {
+            type: "object",
+            properties: {
+                code: {
+                    type: "string",
+                    description: "The Python code to execute",
+                },
+            },
+            required: ["code"],
+        },
+    },
+    {
+        name: "get_latest_news",
+        description: "Retrieves the latest news stories from Google News for a given language.",
+        parameters: {
+            type: "object",
+            properties: {
+                lang: {
+                    type: "string",
+                    description:
+                        "The language code for the news articles (e.g., 'en' for English, 'fr' for French, etc.)",
+                },
+            },
+            required: ["lang"],
+        },
+    },
+];
 
-export async function getTextGemini(prompt, temperature, imageBase64, fileType) {
+export async function getTextGemini(prompt, temperature, imageBase64, fileType, userId, model, apiKey) {
+    const GENAI_DISCOVERY_URL = `https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=${
+        apiKey || process.env.GEMINI_KEY
+    }`;
+    if (model === "gemini") {
+        model = "gemini-1.5-pro-latest";
+    }
     async function uploadFile(fileBase64, mimeType, displayName) {
         const bufferStream = new stream.PassThrough();
         bufferStream.end(Buffer.from(fileBase64, "base64"));
@@ -106,6 +234,11 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType) 
                 parts: [{ text: prompt }, ...parts],
             },
         ],
+        tools: [
+            {
+                function_declarations: tools,
+            },
+        ],
         generation_config: {
             maxOutputTokens: 8192,
             temperature: temperature || 0.5,
@@ -113,11 +246,86 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType) 
         },
     };
 
-    const generateContentResponse = await genaiService.models.generateContent({
-        model: `models/${model}`,
-        requestBody: contents,
-        auth: auth,
-    });
+    let finalResponse = null;
 
-    return generateContentResponse?.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    while (!finalResponse) {
+        const generateContentResponse = await genaiService.models.generateContent({
+            model: `models/${model}`,
+            requestBody: contents,
+            auth: auth,
+        });
+
+        const modelResponse = generateContentResponse?.data?.candidates?.[0]?.content;
+
+        if (modelResponse) {
+            const functionCallPart = modelResponse.parts.find((part) => part.functionCall);
+
+            if (functionCallPart) {
+                const functionCall = functionCallPart.functionCall;
+                const functionName = functionCall.name;
+                const functionArgs = functionCall.args;
+
+                const handleFunctionCall = async (name, args) => {
+                    let functionResponse;
+                    switch (name) {
+                        case "get_weather":
+                            functionResponse = await getWeather(args.location);
+                            break;
+                        case "get_stock_price":
+                            functionResponse = await getStockPrice(args.ticker);
+                            break;
+                        case "send_telegram_message":
+                            functionResponse = await sendTelegramMessage(args.chatId, args.message);
+                            break;
+                        case "search_web_content":
+                            functionResponse = await searchWebContent(args.query);
+                            break;
+                        case "send_email":
+                            functionResponse = await sendEmail(args.to, args.subject, args.content, userId);
+                            break;
+                        case "get_current_time_utc":
+                            functionResponse = await getCurrentTimeUTC();
+                            break;
+                        case "execute_python":
+                            functionResponse = await executePython(args.code);
+                            break;
+                        case "get_latest_news":
+                            functionResponse = await getLatestNews(args.lang);
+                            break;
+                        default:
+                            console.log(`Unsupported function call: ${name}`);
+                            return;
+                    }
+                    contents.contents.push(
+                        {
+                            role: "model",
+                            parts: [{ functionCall: functionCall }],
+                        },
+                        {
+                            role: "function",
+                            parts: [
+                                {
+                                    functionResponse: {
+                                        name: name,
+                                        response: {
+                                            content: functionResponse,
+                                        },
+                                    },
+                                },
+                            ],
+                        }
+                    );
+                };
+
+                await handleFunctionCall(functionName, functionArgs);
+            } else {
+                finalResponse = modelResponse.parts[0].text;
+            }
+        } else {
+            console.log("No valid response from the model");
+            break;
+        }
+    }
+
+    return finalResponse;
 }

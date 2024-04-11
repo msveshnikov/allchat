@@ -1,13 +1,12 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import SideDrawer from "../SideDrawer";
-import '@testing-library/jest-dom'
+import "@testing-library/jest-dom";
 
 describe("SideDrawer Component", () => {
     const mockOnToggle = jest.fn();
     const mockOnNewChat = jest.fn();
     const mockOnHistorySelection = jest.fn();
-    const mockOnModelChange = jest.fn();
     const mockOnClearAll = jest.fn();
 
     const storedChatHistories = [
@@ -24,8 +23,6 @@ describe("SideDrawer Component", () => {
                 onNewChat={mockOnNewChat}
                 storedChatHistories={storedChatHistories}
                 onHistorySelection={mockOnHistorySelection}
-                model="gemini"
-                onModelChange={mockOnModelChange}
                 onClearAll={mockOnClearAll}
             />
         );
@@ -39,8 +36,6 @@ describe("SideDrawer Component", () => {
                 onNewChat={mockOnNewChat}
                 storedChatHistories={storedChatHistories}
                 onHistorySelection={mockOnHistorySelection}
-                model="gemini"
-                onModelChange={mockOnModelChange}
                 onClearAll={mockOnClearAll}
             />
         );
@@ -56,30 +51,11 @@ describe("SideDrawer Component", () => {
                 onNewChat={mockOnNewChat}
                 storedChatHistories={storedChatHistories}
                 onHistorySelection={mockOnHistorySelection}
-                model="gemini"
-                onModelChange={mockOnModelChange}
                 onClearAll={mockOnClearAll}
             />
         );
         fireEvent.click(getByText("Chat History 2"));
         expect(mockOnHistorySelection).toHaveBeenCalledWith(1);
-    });
-
-    it("calls onModelChange when ModelSwitch is toggled", () => {
-        const { getByLabelText } = render(
-            <SideDrawer
-                isOpen={true}
-                onToggle={mockOnToggle}
-                onNewChat={mockOnNewChat}
-                storedChatHistories={storedChatHistories}
-                onHistorySelection={mockOnHistorySelection}
-                model="gemini"
-                onModelChange={mockOnModelChange}
-                onClearAll={mockOnClearAll}
-            />
-        );
-        fireEvent.click(getByLabelText("Gemini Pro 1.5"));
-        expect(mockOnModelChange).toHaveBeenCalledWith("claude");
     });
 
     it("calls onClearAll when 'Clear All' item is clicked", () => {
@@ -90,8 +66,6 @@ describe("SideDrawer Component", () => {
                 onNewChat={mockOnNewChat}
                 storedChatHistories={storedChatHistories}
                 onHistorySelection={mockOnHistorySelection}
-                model="gemini"
-                onModelChange={mockOnModelChange}
                 onClearAll={mockOnClearAll}
             />
         );

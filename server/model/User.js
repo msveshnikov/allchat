@@ -61,12 +61,12 @@ export function storeUsageStats(
 ) {
     let moneyConsumed = 0;
 
-    if (model === "gemini") {
+    if (model?.startsWith("gemini")) {
         const inputCharactersCost = (inputCharacters / 1000) * 0.000125;
         const outputCharactersCost = (outputCharacters / 1000) * 0.000375;
         const imagesGeneratedCost = imagesGenerated * 0.01;
         moneyConsumed = inputCharactersCost + outputCharactersCost + imagesGeneratedCost;
-    } else if (model === "claude") {
+    } else if (model?.startsWith("claude")) {
         const inputTokensCost = (inputTokens * 0.25) / 1000000;
         const outputTokensCost = (outputTokens * 1.25) / 1000000;
         moneyConsumed = inputTokensCost + outputTokensCost;
