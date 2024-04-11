@@ -127,7 +127,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 fileType === "x-m4a"
             ) {
                 const response =
-                    model === "gemini"
+                    model?.startsWith("gemini")
                         ? await getTextGemini(
                               userInput || "what's this",
                               temperature,
@@ -209,7 +209,7 @@ app.post("/interact", verifyToken, async (req, res) => {
         let outputCharacters = 0;
         let imagesGenerated = 0;
 
-        if (model === "gemini") {
+        if ( model?.startsWith("gemini")) {
             inputCharacters = countCharacters(contextPrompt);
             textResponse = await getTextGemini(contextPrompt, temperature, null, null, req.user.id, model, apiKey);
             outputCharacters = countCharacters(textResponse);
