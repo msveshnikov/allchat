@@ -173,7 +173,16 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType) 
                         },
                         {
                             role: "function",
-                            parts: [{ functionResponse: { name: "get_weather", response: weatherResponse } }],
+                            parts: [
+                                {
+                                    functionResponse: {
+                                        name: "get_weather",
+                                        response: {
+                                            content: weatherResponse,
+                                        },
+                                    },
+                                },
+                            ],
                         },
                     ],
                     tools: [
