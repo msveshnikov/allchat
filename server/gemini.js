@@ -222,7 +222,7 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
     } else if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
         const uploadedImageFile = await uploadFile(imageBase64, `image/png`, "image");
         parts.push(uploadedImageFile);
-    } else if (fileType === "mp3" || fileType === "x-m4a") {
+    } else if (fileType === "mp3" || fileType === "x-m4a" || fileType === "mpeg") {
         const uploadedAudioFile = await uploadFile(imageBase64, `audio/mp3`, "audio");
         parts.push(uploadedAudioFile);
     }
