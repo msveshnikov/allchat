@@ -295,8 +295,8 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                             functionResponse = await getLatestNews(args.lang);
                             break;
                         default:
-                            console.log(`Unsupported function call: ${name}`);
-                            return;
+                            console.error(`Unsupported function call: ${name}`);
+                            break;
                     }
                     contents.contents.push(
                         {

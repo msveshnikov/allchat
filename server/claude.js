@@ -294,7 +294,7 @@ async function processToolResult(data, temperature, messages, userId, model, web
                     toolResult = await getLatestNews(lang);
                     break;
                 default:
-                    // Handle unknown tool names
+                    console.error(`Unsupported function call: ${toolUse.name}`);
                     break;
             }
 

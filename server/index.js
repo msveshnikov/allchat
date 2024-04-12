@@ -128,9 +128,9 @@ app.post("/interact", verifyToken, async (req, res) => {
                 fileType === "mpeg" ||
                 fileType === "x-m4a"
             ) {
-                let response;
+                let textResponse;
                 if (model?.startsWith("gemini")) {
-                    response = await getTextGemini(
+                    textResponse = await getTextGemini(
                         userInput || "what's this",
                         temperature,
                         fileBytesBase64,
@@ -142,7 +142,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                     );
                 }
                 if (model?.startsWith("claude")) {
-                    response = getTextClaude(
+                    textResponse = getTextClaude(
                         userInput || "what's this",
                         temperature,
                         fileBytesBase64,
@@ -153,7 +153,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                         tools
                     );
                 }
-                return res.json({ textResponse: response?.trim() });
+                return res.json({ textResponse });
             } else if (fileType === "pdf") {
                 const data = await pdfParser(fileBytes);
                 userInput = `${data.text}\n\n${userInput}`;
@@ -259,7 +259,7 @@ app.post("/interact", verifyToken, async (req, res) => {
         let imageResponse;
         if (hasPaintWord(userInput)) {
             imageResponse = await getImageTitan(
-                userInput?.substr(0, 200) + textResponse?.trim()?.substr(0, 200),
+                userInput?.substr(0, 200) + textResponse?.substr(0, 300),
                 numberOfImages
             );
             imagesGenerated = numberOfImages;
@@ -275,7 +275,7 @@ app.post("/interact", verifyToken, async (req, res) => {
             imagesGenerated
         );
 
-        res.json({ textResponse: textResponse?.trim(), imageResponse });
+        res.json({ textResponse, imageResponse });
     } catch (error) {
         console.error(error);
         res.status(500).json({

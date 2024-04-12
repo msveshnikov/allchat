@@ -45,7 +45,7 @@ export async function fetchPageContent(url) {
             .map((_, el) => $(el).text().trim())
             .get()
             .join(" ");
-        return content.slice(0, 20000);
+        return content?.slice(0, 20000);
     } catch (error) {
         return null;
     }

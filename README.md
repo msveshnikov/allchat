@@ -1,6 +1,6 @@
 # ALLCHAT
 
-Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro 1.5 model, with history, image generating/recognition, PDF/Word/Excel upload and markdown support. Written fully by _Claude 3 Sonnet_.
+Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro 1.5 (and others), with history, image generating/recognition, PDF/Word/Excel upload, code run, model function calls and markdown support. Written fully by _Claude 3 Sonnet_.
 
 ![image](https://github.com/msveshnikov/allchat/assets/8682996/42b2e4f2-b91b-4712-8ef2-630ebb8919e9)
 
@@ -24,8 +24,6 @@ https://allchat.online/
 -   Web Tools - weather, stocks, email send, Telegram, web search, etc
 
 ## Connect model to world with Web Tools
-
-Are you tired of switching between various tools and services to complete your tasks? Meet AllChat - the all-in-one solution for seamless code execution, data retrieval, and communication. Use Haiku model for below:
 
 -   Instantly run Python code: Just ask AI to write your code and let Python Code Run take care of execution. You can even create pictures or graphs - simply instruct AI to save them to a file. Just say _Create a python program which will draw house and clouds and save to disk_
 -   Effortlessly fetch real-time data: Easily access important information such as weather updates, stock prices, and the latest news - _just ask Whats weather in my country?_
