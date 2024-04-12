@@ -1,11 +1,9 @@
-/* Reset styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Global styles */
 body {
     font-family: Arial, sans-serif;
     font-size: 16px;
@@ -18,7 +16,6 @@ a {
     color: #007bff;
 }
 
-/* Header styles */
 header {
     background-color: #007bff;
     color: #fff;
@@ -49,7 +46,6 @@ nav ul li a {
     color: #fff;
 }
 
-/* Hero section styles */
 .hero {
     display: flex;
     align-items: center;
@@ -101,8 +97,8 @@ nav ul li a {
 
 .feature-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    grid-gap: 40px;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-gap: 100px;
 }
 
 .feature {
@@ -154,7 +150,6 @@ nav ul li a {
     margin-bottom: 30px;
 }
 
-/* Footer styles */
 footer {
     background-color: #333;
     color: #fff;
@@ -162,7 +157,6 @@ footer {
     text-align: center;
 }
 
-/* Integrations section styles */
 .integrations {
     padding: 80px 20px;
     text-align: center;
