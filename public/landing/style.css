@@ -1,3 +1,4 @@
+/* Global Styles */
 * {
     margin: 0;
     padding: 0;
@@ -5,20 +6,21 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Montserrat", sans-serif;
     font-size: 16px;
     line-height: 1.5;
-    color: #333;
+    color: #f0f0f0;
+    background-color: #1e1e1e;
 }
 
 a {
     text-decoration: none;
-    color: #007bff;
+    color: #9b59b6;
 }
 
+/* Header Styles */
 header {
-    background-color: #007bff;
-    color: #fff;
+    background-color: #2c3e50;
     padding: 20px;
 }
 
@@ -31,6 +33,7 @@ nav {
 .logo {
     font-size: 24px;
     font-weight: bold;
+    color: #f0f0f0;
 }
 
 nav ul {
@@ -43,13 +46,15 @@ nav ul li {
 }
 
 nav ul li a {
-    color: #fff;
+    color: #f0f0f0;
 }
 
+/* Hero Section Styles */
 .hero {
     display: flex;
     align-items: center;
     padding: 80px 20px;
+    background-color: #34495e;
 }
 
 .hero-content {
@@ -60,16 +65,18 @@ nav ul li a {
 .hero-content h1 {
     font-size: 36px;
     margin-bottom: 20px;
+    color: #f0f0f0;
 }
 
 .hero-content p {
     margin-bottom: 30px;
+    color: #f0f0f0;
 }
 
 .cta {
     display: inline-block;
-    background-color: #007bff;
-    color: #fff;
+    background-color: #9b59b6;
+    color: #f0f0f0;
     padding: 10px 20px;
     border-radius: 5px;
     font-weight: bold;
@@ -84,15 +91,17 @@ nav ul li a {
     height: auto;
 }
 
-/* Features section styles */
+/* Features Section Styles */
 .features {
     padding: 80px 20px;
     text-align: center;
+    background-color: #2c3e50;
 }
 
 .features h2 {
     font-size: 32px;
     margin-bottom: 40px;
+    color: #f0f0f0;
 }
 
 .feature-grid {
@@ -110,26 +119,23 @@ nav ul li a {
     margin-bottom: 20px;
 }
 
-@media (min-width: 768px) {
-    .feature img {
-        max-width: 150px;
-    }
-}
-
 .feature h3 {
     font-size: 20px;
     margin-bottom: 10px;
+    color: #f0f0f0;
 }
 
-/* Demo section styles */
+/* Demo Section Styles */
 .demo {
     padding: 80px 20px;
     text-align: center;
+    background-color: #34495e;
 }
 
 .demo h2 {
     font-size: 32px;
     margin-bottom: 40px;
+    color: #f0f0f0;
 }
 
 .demo-video {
@@ -137,10 +143,10 @@ nav ul li a {
     margin: 0 auto;
 }
 
-/* CTA section styles */
+/* CTA Section Styles */
 .cta-section {
-    background-color: #007bff;
-    color: #fff;
+    background-color: #291631;
+    color: #f0f0f0;
     padding: 80px 20px;
     text-align: center;
 }
@@ -150,21 +156,25 @@ nav ul li a {
     margin-bottom: 30px;
 }
 
+/* Footer Styles */
 footer {
-    background-color: #333;
-    color: #fff;
+    background-color: #2c3e50;
+    color: #f0f0f0;
     padding: 20px;
     text-align: center;
 }
 
+/* Integrations Section Styles */
 .integrations {
     padding: 80px 20px;
     text-align: center;
+    background-color: #34495e;
 }
 
 .integrations h2 {
     font-size: 32px;
     margin-bottom: 40px;
+    color: #f0f0f0;
 }
 
 .integration-grid {
@@ -185,17 +195,20 @@ footer {
 .integration h3 {
     font-size: 20px;
     margin-bottom: 10px;
+    color: #f0f0f0;
 }
 
-/* Contact section styles */
+/* Contact Section Styles */
 .contact {
     padding: 80px 20px;
     text-align: center;
+    background-color: #2c3e50;
 }
 
 .contact h2 {
     font-size: 32px;
     margin-bottom: 40px;
+    color: #f0f0f0;
 }
 
 .contact-form {
@@ -213,6 +226,7 @@ footer {
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 5px;
+    color: #f0f0f0;
 }
 
 .form-group input,
@@ -221,15 +235,6 @@ footer {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 16px;
-}
-
-.form-group textarea {
-    resize: vertical;
-}
-
-button.cta {
-    display: block;
-    margin-top: 20px;
-    width: 100%;
+    background-color: #1e1e1e;
+    color: #f0f0f0;
 }
