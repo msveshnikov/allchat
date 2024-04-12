@@ -13,7 +13,7 @@ const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountMod
         "claude-3-sonnet-20240229",
         "claude-3-opus-20240229",
         "databricks/dbrx-instruct",
-        "mistralai/Mixtral-8x7B-Instruct-v0.1",
+        "mistralai/Mixtral-8x22B",
     ];
 
     const handleApiKeyChange = (event) => {
