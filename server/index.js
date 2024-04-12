@@ -101,11 +101,6 @@ mongoose
     .catch((err) => console.error("MongoDB connection error:", err));
 
 app.post("/interact", verifyToken, async (req, res) => {
-    // const user = await User.findById(req.user.id);
-    // if (user.subscriptionStatus !== 'active' && user.subscriptionStatus !== 'trialing' && !user.admin) {
-    //     return res.status(402).json({ error: 'Subscription is not active' });
-    // }
-
     let userInput = req.body.input;
     const chatHistory = req.body.chatHistory || [];
     const temperature = req.body.temperature || 0.8;
@@ -117,6 +112,11 @@ app.post("/interact", verifyToken, async (req, res) => {
     const apiKey = req.body.apiKey;
     const country = req.headers["geoip_country_code"];
 
+    // const user = await User.findById(req.user.id);
+    // if (user.subscriptionStatus !== 'active' && user.subscriptionStatus !== 'trialing' && !user.admin && !apiKey) {
+    //     return res.status(402).json({ error: 'Subscription is not active. Please provide your API key' });
+    // }
+
     try {
         if (fileBytesBase64) {
             const fileBytes = Buffer.from(fileBytesBase64, "base64");
@@ -125,6 +125,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 fileType === "jpg" ||
                 fileType === "jpeg" ||
                 fileType === "mp4" ||
+                fileType === "mp3" ||
                 fileType === "mpeg" ||
                 fileType === "x-m4a"
             ) {

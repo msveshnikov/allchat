@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "./model/User.js";
 
-// Register a new user
 export const registerUser = async (email, password) => {
     try {
         const salt = await bcrypt.genSalt(10);
@@ -16,7 +15,6 @@ export const registerUser = async (email, password) => {
     }
 };
 
-// Authenticate a user
 export const authenticateUser = async (email, password) => {
     try {
         const user = await User.findOne({ email });
@@ -34,7 +32,7 @@ export const authenticateUser = async (email, password) => {
         return { success: false, error: "Authentication failed" };
     }
 };
-// JWT verification middleware
+
 export const verifyToken = (req, res, next) => {
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
