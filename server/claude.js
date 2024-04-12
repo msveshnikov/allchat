@@ -323,7 +323,7 @@ async function processToolResult(data, temperature, messages, userId, model, web
         messages: newMessages,
     });
     if (newData.stop_reason === "tool_use") {
-        return await processToolResult(newData, temperature, newMessages, userId, model);
+        return await processToolResult(newData, temperature, newMessages, userId, model, webTools);
     } else {
         return newData?.content?.[0]?.text;
     }
