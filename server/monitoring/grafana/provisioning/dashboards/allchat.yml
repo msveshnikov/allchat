@@ -1,0 +1,17 @@
+﻿apiVersion: 1
+providers:
+    - name: "default"
+      orgId: 1
+      folder: ""
+      type: file
+      disableDeletion: false
+      updateIntervalSeconds: 10
+      options:
+          path: /etc/grafana/provisioning/dashboards
+
+dashboards:
+    - name: "AllChat"
+      options:
+          path: /etc/grafana/provisioning/dashboards/Allchat-1712993641259.json
+      folder: ""
+      type: file

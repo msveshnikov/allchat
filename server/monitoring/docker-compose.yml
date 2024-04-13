@@ -1,0 +1,54 @@
+version: "3.9"
+
+volumes:
+    prometheus:
+    grafana:
+    loki:
+
+services:
+    prometheus:
+        image: prom/prometheus
+        volumes:
+            - ./prometheus:/etc/prometheus
+            - prometheus:/prometheus
+        command:
+            - "--storage.tsdb.retention.time=30d"
+            - "--config.file=/etc/prometheus/prometheus.yml"
+        restart: unless-stopped
+
+    node_exporter:
+        image: prom/node-exporter
+        volumes:
+            - /proc:/host/proc:ro
+            - /sys:/host/sys:ro
+            - /home/ubuntu/tales/media:/mnt:ro
+            - /home/ubuntu/google-drive:/google:ro 
+        restart: unless-stopped
+
+    grafana:
+        image: grafana/grafana
+        ports:
+            - "7000:3000"
+        depends_on:
+            - prometheus
+            - loki
+        restart: unless-stopped
+        volumes:
+            - ./grafana/provisioning:/etc/grafana/provisioning
+            - grafana:/var/lib/grafana
+        environment:
+            - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+            - GF_SERVER_ROOT_URL=${GF_SERVER_ROOT_URL}
+        logging:
+            driver: none
+
+    loki:
+        image: grafana/loki
+        ports:
+            - "3100:3100"
+        restart: unless-stopped
+        volumes:
+            - loki:/loki
+            - ./loki/config.yml:/etc/loki/config.yml
+        logging:
+            driver: none
