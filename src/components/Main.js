@@ -122,7 +122,7 @@ function Main() {
         }
     };
 
-    const sendFileAndQuery = async (fileType, fileBytesBase64, input) => {
+    const sendFileAndQuery = async (fileType, fileBytesBase64, input, newHistory) => {
         try {
             const token = localStorage.getItem("token");
             const headers = {
@@ -131,7 +131,7 @@ function Main() {
             };
 
             setChatHistory([
-                ...chatHistory,
+                ...(newHistory || chatHistory),
                 { user: input, assistant: null, fileType, userImageData: fileBytesBase64 },
             ]);
             setInput("");
@@ -150,14 +150,14 @@ function Main() {
                     tools,
                     temperature,
                     numberOfImages,
-                    chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
+                    chatHistory: (newHistory || chatHistory).map((h) => ({ user: h.user, assistant: h.assistant })),
                 }),
             });
 
             if (response.ok) {
                 const data = await response.json();
                 const newChatHistory = [
-                    ...chatHistory,
+                    ...(newHistory || chatHistory),
                     {
                         user: input,
                         assistant: data.textResponse,
@@ -172,7 +172,6 @@ function Main() {
                     window.speechSynthesis.speak(utterance);
                 }
             } else if (response.status === 403) {
-                // Handle 403 Forbidden error (force sign-out)
                 setIsAuthenticated(false);
                 setSnackbarMessage("Authentication failed. Please sign in.");
                 setSnackbarSeverity("error");
@@ -182,7 +181,7 @@ function Main() {
                 setUserEmail("");
                 setIsAuthenticated(false);
                 const newChatHistory = [
-                    ...chatHistory,
+                    ...(newHistory || chatHistory),
                     { user: input, assistant: null, error: "Authentication failed." },
                 ];
                 setChatHistory(newChatHistory);
@@ -194,7 +193,7 @@ function Main() {
             }
         } catch (error) {
             const newChatHistory = [
-                ...chatHistory,
+                ...(newHistory || chatHistory),
                 { user: input, assistant: null, error: "Failed to connect to the server." },
             ];
             setChatHistory(newChatHistory);
@@ -351,47 +350,7 @@ function Main() {
     };
 
     const handleChange = async (newHistory, index) => {
-        try {
-            //     const token = localStorage.getItem("token");
-            //     const headers = {
-            //         "Content-Type": "application/json",
-            //         Authorization: `Bearer ${token}`,
-            //     };
-            //     setChatHistory([...chatHistory, { user: "🏃", assistant: null }]);
-            //     setIsModelResponding(true);
-            //     const response = await fetch(API_URL + "/run", {
-            //         method: "POST",
-            //         headers,
-            //         body: JSON.stringify({ program }),
-            //     });
-            //     const data = await response.json();
-            //     if (response.ok) {
-            //         setChatHistory([
-            //             ...chatHistory,
-            //             {
-            //                 user: "🏃",
-            //                 assistant: data.output,
-            //                 image: data.imageResponse,
-            //             },
-            //         ]);
-            //     } else {
-            //         setChatHistory([
-            //             ...chatHistory,
-            //             {
-            //                 user: "🏃",
-            //                 assistant: null,
-            //                 error: data.error,
-            //             },
-            //         ]);
-            //     }
-        } catch (error) {
-            const newChatHistory = [
-                ...chatHistory,
-                { user: "🏃", assistant: null, error: "Failed to connect to the server or server timeout" },
-            ];
-            setChatHistory(newChatHistory);
-        }
-        setIsModelResponding(false);
+        sendFileAndQuery(null, null, newHistory[index].user, newHistory.slice(0, index));
     };
 
     const fetchUserData = async () => {
