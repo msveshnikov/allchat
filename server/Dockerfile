@@ -1,7 +1,6 @@
-FROM node:20.9.0-bullseye
+FROM node:20-slim
 
-RUN sed -i'.bak' 's/$/ contrib/' /etc/apt/sources.list
-RUN apt-get update && apt-get install ffmpeg -y
+RUN apt-get update && apt-get install -y ffmpeg
 
 # Set the working directory in the container
 WORKDIR /app
