@@ -19,9 +19,8 @@ export const getImageTitan = async (prompt, numImages) => {
             },
             imageGenerationConfig: {
                 numberOfImages: numImages,
-                quality: "premium",
-                height: 384*2,
-                width: 704*2,
+                height: 384,
+                width: 704,
                 cfgScale: 7.0,
                 seed: Math.round(Math.random() * 100000),
             },
@@ -55,7 +54,7 @@ export const getTextClaude = async (prompt, model, temperature) => {
         accept: "application/json",
         body: JSON.stringify({
             prompt: `\n\nHuman:\n  ${prompt}\n\nAssistant:\n`,
-            max_tokens_to_sample: 2048,
+            max_tokens_to_sample: 4096,
             temperature: temperature || 0.5,
             top_k: 250,
             top_p: 1,
