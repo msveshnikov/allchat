@@ -101,7 +101,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
                                 value={editingMessage}
                                 onChange={(e) => handleMessageEdit(index, e.target.value)}
                                 onKeyDown={(e) => handleKeyDown(e)}
-                                onBlur={() => setEditingMessageIndex(-1)}
+                                onBlur={() => handleKeyDown({ keyCode: 13 })}
                                 fullWidth
                             />
                         ) : (
