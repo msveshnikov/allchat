@@ -114,7 +114,7 @@ app.post("/interact", verifyToken, async (req, res) => {
 
     // const user = await User.findById(req.user.id);
     // if (user.subscriptionStatus !== 'active' && user.subscriptionStatus !== 'trialing' && !user.admin && !apiKey) {
-    //     return res.status(402).json({ error: 'Subscription is not active. Please provide your API key' });
+    //     return res.status(402).json({ error: 'Subscription is not active. Please provide your API key.' });
     // }
 
     try {
@@ -474,4 +474,8 @@ app.post("/cancel", verifyToken, async (req, res) => {
         console.error("Error canceling subscription:", error);
         res.status(500).json({ error: "Failed to cancel subscription" });
     }
+});
+
+process.on("uncaughtException", (err, origin) => {
+    console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
 });

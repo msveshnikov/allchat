@@ -22,6 +22,7 @@ https://allchat.online/
 -   Python Code Run
 -   Abiility to provide own API key
 -   Web Tools - weather, stocks, email send, Telegram, web search, etc
+-   Please ask for more features in Issues
 
 ## Connect model to world with Web Tools
 
@@ -33,12 +34,19 @@ https://allchat.online/
 
 ## Environment variables
 
-You have to get those APIs and set environment variables (or put to .env file):
+You have to get some of those APIs and set environment variables (or put to .env file):
 
--   GEMINI_KEY - key for 1.5 preview access from https://aistudio.google.com/app/apikey?utm_source=newsletter&utm_medium=email&utm_campaign=1.5p-api-launch_march&utm_content=
--   AWS_SECRET_KEY
--   AWS_ACCESS_KEY - (for Titan image generation) - https://eu-central-1.console.aws.amazon.com/console/home?region=eu-central-1
+-   GEMINI_KEY - Gemini 1.5 key
 -   CLAUDE_KEY - Anthropic Key (for Haiku)
+-   AWS_SECRET_KEY
+-   AWS_ACCESS_KEY - (for Titan image generation)
+-   TOGETHER_KEY - for Together models
+-   JWT_TOKEN - any random string
+-   OPENWEATHER_API_KEY - for weather tools
+-   YAHOO_FINANCE_API_KEY - for stocks tools
+-   TELEGRAM_KEY - for Telegram tools to work
+-   EMAIL - for email tools
+-   EMAIL_PASSWORD - for email tools
 
 # DOCKER DEPLOY
 
