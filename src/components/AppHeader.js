@@ -12,6 +12,9 @@ const AppHeader = ({ isAuthenticated, userEmail, onSignOut, onMyAccount, onOpenA
                 </IconButton>
                 <Typography sx={{ ml: 2 }} variant="h6" noWrap>
                     AllChat
+                    <span style={{ fontSize: "0.9rem", color: "#c5c5c5", marginLeft: "0.5rem" }}>
+                        {localStorage.getItem("selectedModel") || "gemini-1.5-pro-latest"}
+                    </span>
                 </Typography>
                 <Box sx={{ ml: "auto" }}>
                     {isAuthenticated ? (
