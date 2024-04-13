@@ -20,7 +20,7 @@ const tools = [
     {
         name: "get_weather",
         description:
-            "Get the current weather in a given location. The tool expects an object with a 'location' property (a string with the city and state/country). It returns a string with the location, weather description, and temperature (always in C).",
+            "Get the current weather and forecast in a given location. The tool expects an object with a 'location' property (a string with the city and state/country). It returns a string with the location, weather description, and temperature (always in C). Also, forecast for 5 days is provided.",
         parameters: {
             type: "object",
             properties: {

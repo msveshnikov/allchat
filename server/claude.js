@@ -13,7 +13,7 @@ const tools = [
     {
         name: "get_weather",
         description:
-            "Get the current weather in a given location. The tool expects an object with a 'location' property (a string with the city and state/country). It returns a string with the location, weather description, and temperature (always in C).",
+            "Get the current weather and forecast in a given location. The tool expects an object with a 'location' property (a string with the city and state/country). It returns a string with the location, weather description, and temperature (always in C). Also, forecast for 5 days is provided.",
         input_schema: {
             type: "object",
             properties: {
@@ -138,13 +138,31 @@ const tools = [
 ];
 
 export async function getWeather(location) {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    const { name, weather, main } = data;
-    return `In ${name}, the weather is ${weather?.[0]?.description} with a temperature of ${Math.round(
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}`;
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}`;
+
+    const [weatherResponse, forecastResponse] = await Promise.all([fetch(weatherUrl), fetch(forecastUrl)]);
+
+    const [weatherData, forecastData] = await Promise.all([weatherResponse.json(), forecastResponse.json()]);
+
+    const { name, weather, main } = weatherData;
+    const { list } = forecastData;
+
+    const currentWeather = `In ${name}, the weather is ${weather?.[0]?.description} with a temperature of ${Math.round(
         main?.temp - 273
     )}°C`;
+
+    const fiveDayForecast = list
+        ?.filter((_, index) => index % 8 === 0) // Get one forecast per day
+        ?.map((item) => {
+            const date = new Date(item.dt * 1000).toLocaleDateString();
+            const temperature = Math.round(item.main.temp - 273);
+            const description = item.weather[0].description;
+            return `On ${date}, the weather will be ${description} with a temperature of ${temperature}°C`;
+        })
+        ?.join("\n");
+
+    return `${currentWeather}\n\nFive-day forecast:\n${fiveDayForecast}`;
 }
 
 export async function getStockPrice(ticker) {
