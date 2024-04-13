@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import yahooFinance from "yahoo-finance2";
 import dotenv from "dotenv";
 import TelegramBot from "node-telegram-bot-api";
 import nodemailer from "nodemailer";
@@ -38,6 +39,24 @@ const tools = [
                 },
             },
             required: ["ticker"],
+        },
+    },
+    {
+        name: "get_fx_rate",
+        description: "Get the current foreign exchange rate for a given currency pair",
+        input_schema: {
+            type: "object",
+            properties: {
+                baseCurrency: {
+                    type: "string",
+                    description: "Base currency, like EUR",
+                },
+                quoteCurrency: {
+                    type: "string",
+                    description: "Quote currency, like USD",
+                },
+            },
+            required: ["baseCurrency", "quoteCurrency"],
         },
     },
     {
@@ -184,7 +203,17 @@ export async function getStockPrice(ticker) {
         return `Last week's stock prices: ${stockPrices?.join(", ")}`;
     } catch (error) {
         console.error("Error fetching stock price:", error);
-        throw error;
+        return "Error fetching stock price:" + error.message;
+    }
+}
+
+export async function getFxRate(baseCurrency, quoteCurrency) {
+    try {
+        const quote = await yahooFinance.quote(baseCurrency + quoteCurrency + "=X");
+        return `Current exchange rates for ${baseCurrency + quoteCurrency + "=X"}: ${quote?.regularMarketPrice}`;
+    } catch (error) {
+        console.error("Error fetching FX rates:", error);
+        return "Error fetching FX rates:" + error.message;
     }
 }
 
@@ -194,7 +223,7 @@ export async function sendTelegramMessage(chatId, message) {
         return "Telegram message sent successfully.";
     } catch (error) {
         console.error("Error sending Telegram message:", error);
-        throw error;
+        return "Error sending Telegram message:" + error.message;
     }
 }
 
@@ -214,7 +243,7 @@ export async function sendEmail(to, subject, content, userId) {
     } else {
         const user = await User.findById(userId);
         if (!user || !user.email) {
-            throw new Error("No recipient email address provided or found in user profile.");
+            return "No recipient email address provided or found in user profile";
         }
         recipient = user.email;
     }
@@ -287,6 +316,10 @@ async function processToolResult(data, temperature, messages, userId, model, web
                 case "get_stock_price":
                     const { ticker } = toolUse.input;
                     toolResult = await getStockPrice(ticker);
+                    break;
+                case "get_fx_rate":
+                    const { baseCurrency, quoteCurrency } = toolUse.input;
+                    toolResult = await getFxRate(baseCurrency, quoteCurrency);
                     break;
                 case "send_telegram_message":
                     const { chatId, message } = toolUse.input;

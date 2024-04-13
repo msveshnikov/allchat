@@ -7,6 +7,7 @@ import ffmpeg from "fluent-ffmpeg";
 import {
     executePython,
     getCurrentTimeUTC,
+    getFxRate,
     getLatestNews,
     getStockPrice,
     getWeather,
@@ -39,6 +40,24 @@ const tools = [
                 ticker: { type: "string", description: "The ticker symbol of the stock (e.g. 'AAPL')" },
             },
             required: ["ticker"],
+        },
+    },
+    {
+        name: "get_fx_rate",
+        description: "Get the current foreign exchange rate for a given currency pair",
+        parameters: {
+            type: "object",
+            properties: {
+                baseCurrency: {
+                    type: "string",
+                    description: "Base currency, like EUR",
+                },
+                quoteCurrency: {
+                    type: "string",
+                    description: "Quote currency, like USD",
+                },
+            },
+            required: ["baseCurrency", "quoteCurrency"],
         },
     },
     {
@@ -275,6 +294,9 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                             break;
                         case "get_stock_price":
                             functionResponse = await getStockPrice(args.ticker);
+                            break;
+                        case "get_fx_rate":
+                            functionResponse = await getFxRate(args.baseCurrency, args.quoteCurrency);
                             break;
                         case "send_telegram_message":
                             functionResponse = await sendTelegramMessage(args.chatId, args.message);
