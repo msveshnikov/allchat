@@ -23,7 +23,7 @@ https://allchat.online/
 -   Mobile friendly, PWA, Android app, etc
 -   Abiility to provide own API key
 -   Web Tools - weather, stocks, email send, Telegram, web search, etc
--   Please ask for more features in Issues
+-   Please ask for more features in Issuesor here https://discord.com/invite/JTk2fHtv
 
 ## Connect model to world with Web Tools
 

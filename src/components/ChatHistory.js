@@ -3,6 +3,7 @@ import { Box, CircularProgress, TextField } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "./CodeBlock";
 import { Lightbox } from "react-modal-image";
+import { useLongPress } from "use-long-press";
 
 const getFileTypeIcon = (mimeType) => {
     switch (mimeType) {
@@ -40,6 +41,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
     const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
     const [lightboxMessageIndex, setLightboxMessageIndex] = useState(0);
     const [editingMessageIndex, setEditingMessageIndex] = useState(-1);
+    const [editingMessage, setEditingMessage] = useState("");
 
     const handleImageClick = (index, message) => {
         setLightboxImageIndex(index);
@@ -47,15 +49,22 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
         setIsLightboxOpen(true);
     };
 
-    const handleLongPress = (index) => {
-        setEditingMessageIndex(index);
-    };
+    const handleLongPress = useLongPress((_, context) => {
+        setEditingMessageIndex(context.context);
+        setEditingMessage(chatHistory[context.context].user);
+    });
 
     const handleMessageEdit = (index, newMessage) => {
-        const updatedChatHistory = [...chatHistory];
-        updatedChatHistory[index].user = newMessage;
-        setEditingMessageIndex(-1);
-        onChange(updatedChatHistory, index);
+        setEditingMessage(newMessage);
+    };
+
+    const handleKeyUp = (e) => {
+        if (e.key === "Enter" || e.keyCode === 13) {
+            setEditingMessageIndex(-1);
+            const updatedChatHistory = [...chatHistory];
+            updatedChatHistory[editingMessageIndex].user = editingMessage;
+            onChange(updatedChatHistory, editingMessageIndex);
+        }
     };
 
     return (
@@ -67,17 +76,23 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
                     display="flex"
                     flexDirection="column"
                     marginBottom={2}
-                    onLongPress={() => handleLongPress(index)}
                     style={{
                         fontFamily: "PT Sans",
-                        backgroundColor: index === editingMessageIndex ? "#f5f5f5" : "inherit",
                     }}
                 >
-                    <Box alignSelf="flex-end" bgcolor="#d4edda" color="#155724" padding={1} borderRadius={2}>
+                    <Box
+                        {...handleLongPress(index)}
+                        alignSelf="flex-end"
+                        bgcolor={index !== editingMessageIndex ? "#d4edda" : "#f5f5a5"}
+                        color="#155724"
+                        padding={1}
+                        borderRadius={2}
+                    >
                         {index === editingMessageIndex ? (
                             <TextField
-                                value={chat.user}
+                                value={editingMessage}
                                 onChange={(e) => handleMessageEdit(index, e.target.value)}
+                                onKeyUp={(e) => handleKeyUp(e)}
                                 onBlur={() => setEditingMessageIndex(-1)}
                                 fullWidth
                             />
