@@ -188,7 +188,10 @@ function Main() {
                 setOpenAuthModal(true);
             } else {
                 const data = await response.json();
-                const newChatHistory = [...chatHistory, { user: input, assistant: null, error: data.error }];
+                const newChatHistory = [
+                    ...(newHistory || chatHistory),
+                    { user: input, assistant: null, error: data.error },
+                ];
                 setChatHistory(newChatHistory);
             }
         } catch (error) {

@@ -49,21 +49,28 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
         setIsLightboxOpen(true);
     };
 
-    const handleLongPress = useLongPress((_, context) => {
-        setEditingMessageIndex(context.context);
-        setEditingMessage(chatHistory[context.context].user);
-    });
+    const handleLongPress = useLongPress(
+        (_, context) => {
+            setEditingMessageIndex(context.context);
+            setEditingMessage(chatHistory[context.context].user);
+        },
+        {
+            threshold: 200,
+        }
+    );
 
     const handleMessageEdit = (index, newMessage) => {
         setEditingMessage(newMessage);
     };
 
-    const handleKeyUp = (e) => {
+    const handleKeyDown = (e) => {
         if (e.key === "Enter" || e.keyCode === 13) {
             setEditingMessageIndex(-1);
-            const updatedChatHistory = [...chatHistory];
-            updatedChatHistory[editingMessageIndex].user = editingMessage;
-            onChange(updatedChatHistory, editingMessageIndex);
+            if (chatHistory[editingMessageIndex].user !== editingMessage) {
+                const updatedChatHistory = [...chatHistory];
+                updatedChatHistory[editingMessageIndex].user = editingMessage;
+                onChange(updatedChatHistory, editingMessageIndex);
+            }
         }
     };
 
@@ -93,7 +100,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
                                 autoFocus
                                 value={editingMessage}
                                 onChange={(e) => handleMessageEdit(index, e.target.value)}
-                                onKeyUp={(e) => handleKeyUp(e)}
+                                onKeyDown={(e) => handleKeyDown(e)}
                                 onBlur={() => setEditingMessageIndex(-1)}
                                 fullWidth
                             />
