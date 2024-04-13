@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react";
-import { Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress, TextField } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "./CodeBlock";
 import { Lightbox } from "react-modal-image";
@@ -30,15 +30,16 @@ const getFileTypeIcon = (mimeType) => {
 };
 
 const linkStyle = {
-    maxWidth: "100%", // Set the maximum width to 100% for links
-    overflowWrap: "break-word", // Allow long links to wrap to the next line
-    wordBreak: "break-all", // Break words if they are too long to fit on a single line
+    maxWidth: "100%",
+    overflowWrap: "break-word",
+    wordBreak: "break-all",
 };
 
-const ChatHistory = memo(({ chatHistory, isModelResponding, onRun }) => {
+const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) => {
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
     const [lightboxMessageIndex, setLightboxMessageIndex] = useState(0);
+    const [editingMessageIndex, setEditingMessageIndex] = useState(-1);
 
     const handleImageClick = (index, message) => {
         setLightboxImageIndex(index);
@@ -46,19 +47,43 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun }) => {
         setIsLightboxOpen(true);
     };
 
+    const handleLongPress = (index) => {
+        setEditingMessageIndex(index);
+    };
+
+    const handleMessageEdit = (index, newMessage) => {
+        const updatedChatHistory = [...chatHistory];
+        updatedChatHistory[index].user = newMessage;
+        setEditingMessageIndex(-1);
+        onChange(updatedChatHistory, index);
+    };
+
     return (
         <Box id="chatid" flex={1} overflow="auto" padding={2} display="flex" flexDirection="column">
             {chatHistory.map((chat, index) => (
                 <Box
                     data-testid="chat-item"
-                    style={{ fontFamily: "PT Sans" }}
                     key={index}
                     display="flex"
                     flexDirection="column"
                     marginBottom={2}
+                    onLongPress={() => handleLongPress(index)}
+                    style={{
+                        fontFamily: "PT Sans",
+                        backgroundColor: index === editingMessageIndex ? "#f5f5f5" : "inherit",
+                    }}
                 >
                     <Box alignSelf="flex-end" bgcolor="#d4edda" color="#155724" padding={1} borderRadius={2}>
-                        {chat.user}
+                        {index === editingMessageIndex ? (
+                            <TextField
+                                value={chat.user}
+                                onChange={(e) => handleMessageEdit(index, e.target.value)}
+                                onBlur={() => setEditingMessageIndex(-1)}
+                                fullWidth
+                            />
+                        ) : (
+                            chat.user
+                        )}
                         {chat.fileType && getFileTypeIcon(chat.fileType) !== null && (
                             <span style={{ fontSize: "3rem" }}>{getFileTypeIcon(chat.fileType)}</span>
                         )}

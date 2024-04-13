@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "online.allchat.twa",
+        "sha256_cert_fingerprints": ["5F:AF:F5:3E:ED:3C:38:54:C8:CF:57:59:A3:E1:8D:B8:E2:45:02:FD:25:07:14:75:20:3F:C8:06:9D:AE:C3:29"]
+      }
+    }]

@@ -350,6 +350,50 @@ function Main() {
         setIsModelResponding(false);
     };
 
+    const handleChange = async (newHistory, index) => {
+        try {
+            //     const token = localStorage.getItem("token");
+            //     const headers = {
+            //         "Content-Type": "application/json",
+            //         Authorization: `Bearer ${token}`,
+            //     };
+            //     setChatHistory([...chatHistory, { user: "🏃", assistant: null }]);
+            //     setIsModelResponding(true);
+            //     const response = await fetch(API_URL + "/run", {
+            //         method: "POST",
+            //         headers,
+            //         body: JSON.stringify({ program }),
+            //     });
+            //     const data = await response.json();
+            //     if (response.ok) {
+            //         setChatHistory([
+            //             ...chatHistory,
+            //             {
+            //                 user: "🏃",
+            //                 assistant: data.output,
+            //                 image: data.imageResponse,
+            //             },
+            //         ]);
+            //     } else {
+            //         setChatHistory([
+            //             ...chatHistory,
+            //             {
+            //                 user: "🏃",
+            //                 assistant: null,
+            //                 error: data.error,
+            //             },
+            //         ]);
+            //     }
+        } catch (error) {
+            const newChatHistory = [
+                ...chatHistory,
+                { user: "🏃", assistant: null, error: "Failed to connect to the server or server timeout" },
+            ];
+            setChatHistory(newChatHistory);
+        }
+        setIsModelResponding(false);
+    };
+
     const fetchUserData = async () => {
         const token = localStorage.getItem("token");
         const headers = {
@@ -447,7 +491,12 @@ function Main() {
                 sx={isMobile ? { m: 0, p: 0 } : {}}
                 style={{ display: "flex", flexDirection: "column", height: "91vh" }}
             >
-                <ChatHistory onRun={handleRun} chatHistory={chatHistory} isModelResponding={isModelResponding} />
+                <ChatHistory
+                    onChange={handleChange}
+                    onRun={handleRun}
+                    chatHistory={chatHistory}
+                    isModelResponding={isModelResponding}
+                />
                 <ChatInput
                     input={input}
                     setInput={setInput}

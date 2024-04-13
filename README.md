@@ -20,6 +20,7 @@ https://allchat.online/
 -   Markdown formatting.
 -   Image Generation by Amazon Titan
 -   Python Code Run
+-   Mobile friendly, PWA, Android app, etc
 -   Abiility to provide own API key
 -   Web Tools - weather, stocks, email send, Telegram, web search, etc
 -   Please ask for more features in Issues
