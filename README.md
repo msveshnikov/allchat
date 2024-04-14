@@ -11,19 +11,20 @@ https://allchat.online/
 ## Features
 
 -   Gemini Pro 1.5 and Claude 3 Haiku
--   Together AI models
 -   Audio Input in Gemini
 -   Video Input in Gemini
+-   Image Input (png/jpeg) in Gemini and Haiku
+-   Together AI models
 -   Multiple chats
 -   File upload PDFs, Word, Excel into the conversation
--   Computer Vision (png/jpeg)
--   Markdown formatting.
+-   Markdown formatting
+-   Edit your messages with Long Tap
 -   Image Generation by Amazon Titan
 -   Python Code Run
 -   Mobile friendly, PWA, Android app, etc
 -   Abiility to provide own API key
 -   Web Tools - weather, stocks, email send, Telegram, web search, etc
--   Please ask for more features in Issuesor here https://discord.com/invite/JTk2fHtv
+-   Please ask for more features in Issues or here https://discord.com/invite/JTk2fHtv
 
 ## Connect model to world with Web Tools
 

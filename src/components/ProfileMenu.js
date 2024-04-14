@@ -2,6 +2,7 @@ import React from "react";
 import { IconButton, Menu, MenuItem, Avatar } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import md5 from "md5";
+import LaunchIcon from "@mui/icons-material/Launch";
 
 export function ProfileMenu({ userEmail, onMyAccount, onSignOut }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -33,6 +34,12 @@ export function ProfileMenu({ userEmail, onMyAccount, onSignOut }) {
         window.open("https://github.com/msveshnikov/allchat", "_blank");
         handleProfileMenuClose();
     };
+
+    const handleDiscordClick = () => {
+        window.open("https://discord.gg/YOUR_DISCORD_INVITE_LINK", "_blank");
+        handleProfileMenuClose();
+    };
+
     return (
         <div>
             <IconButton data-testid="profile" color="inherit" onClick={handleProfileMenuOpen}>
@@ -60,8 +67,15 @@ export function ProfileMenu({ userEmail, onMyAccount, onSignOut }) {
             >
                 <MenuItem onClick={handleMyAccountClick}>My Account</MenuItem>
                 <MenuItem onClick={handleSignOutClick}>Sign Out</MenuItem>
-                <MenuItem onClick={handleMangaTVClick}>Manga TV</MenuItem>
-                <MenuItem onClick={handleGitHubClick}>GitHub</MenuItem>
+                <MenuItem onClick={handleMangaTVClick}>
+                    Manga TV &nbsp; <LaunchIcon fontSize="small" />
+                </MenuItem>
+                <MenuItem onClick={handleGitHubClick}>
+                    GitHub &nbsp; <LaunchIcon fontSize="small" />
+                </MenuItem>
+                <MenuItem onClick={handleDiscordClick}>
+                    Discord &nbsp; <LaunchIcon fontSize="small" />
+                </MenuItem>
             </Menu>
         </div>
     );
