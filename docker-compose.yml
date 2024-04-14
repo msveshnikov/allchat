@@ -20,6 +20,7 @@ services:
             - EMAIL=${EMAIL}
             - EMAIL_PASSWORD=${EMAIL_PASSWORD}
             - TOGETHER_KEY=${TOGETHER_KEY}
+            - INFRA_KEY=${INFRA_KEY}
         restart: unless-stopped
         depends_on:
             - mongodb
