@@ -1,9 +1,9 @@
 import React, { memo, useState } from "react";
-import { Box, CircularProgress, TextField } from "@mui/material";
+import { Box, CircularProgress, TextField, IconButton } from "@mui/material";
 import ReactMarkdown from "react-markdown";
+import EditIcon from "@mui/icons-material/Edit";
 import { CodeBlock } from "./CodeBlock";
 import { Lightbox } from "react-modal-image";
-import { useLongPress } from "use-long-press";
 
 const getFileTypeIcon = (mimeType) => {
     switch (mimeType) {
@@ -49,15 +49,10 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
         setIsLightboxOpen(true);
     };
 
-    const handleLongPress = useLongPress(
-        (_, context) => {
-            setEditingMessageIndex(context.context);
-            setEditingMessage(chatHistory[context.context].user);
-        },
-        {
-            threshold: 200,
-        }
-    );
+    const handleEditClick = (index, message) => {
+        setEditingMessageIndex(index);
+        setEditingMessage(message);
+    };
 
     const handleMessageEdit = (index, newMessage) => {
         setEditingMessage(newMessage);
@@ -88,12 +83,13 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
                     }}
                 >
                     <Box
-                        {...handleLongPress(index)}
                         alignSelf="flex-end"
                         bgcolor={index !== editingMessageIndex ? "#d4edda" : "#f5f5a5"}
                         color="#155724"
                         padding={1}
                         borderRadius={2}
+                        display="flex"
+                        alignItems="center"
                     >
                         {index === editingMessageIndex ? (
                             <TextField
@@ -106,7 +102,12 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
                                 fullWidth
                             />
                         ) : (
-                            chat.user
+                            <>
+                                {chat.user}
+                                <IconButton size="small" onClick={() => handleEditClick(index, chat.user)}>
+                                    <EditIcon fontSize="inherit" />
+                                </IconButton>
+                            </>
                         )}
                         {chat.fileType && getFileTypeIcon(chat.fileType) !== null && (
                             <span style={{ fontSize: "3rem" }}>{getFileTypeIcon(chat.fileType)}</span>
