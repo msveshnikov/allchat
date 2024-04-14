@@ -98,6 +98,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
                         {index === editingMessageIndex ? (
                             <TextField
                                 autoFocus
+                                multiline
                                 value={editingMessage}
                                 onChange={(e) => handleMessageEdit(index, e.target.value)}
                                 onKeyDown={(e) => handleKeyDown(e)}
