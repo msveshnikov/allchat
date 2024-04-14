@@ -7,5 +7,18 @@
     "Email": "E-mail",
     "Password": "Senha",
     "Don't have an account? Register": "Não tem uma conta? Registre-se",
-    "Already have an account? Login": "Já tem uma conta? Faça o login"
+    "Already have an account? Login": "Já tem uma conta? Faça o login",
+    "Subscription Status": "Status da Assinatura",
+    "Cancel Subscription": "Cancelar Assinatura",
+    "Start Subscription": "Iniciar Assinatura",
+    "Select Model": "Selecionar Modelo",
+    "Your API Key": "Sua Chave API",
+    "Gemini Pro 1.5 Usage": "Uso do Gemini Pro 1.5",
+    "Input Characters:": "Caracteres de Entrada:",
+    "Output Characters:": "Caracteres de Saída:",
+    "Images Generated:": "Imagens Geradas:",
+    "Money Consumed:": "Dinheiro Consumido:",
+    "Claude 3 Haiku Usage": "Uso do Claude 3 Haiku",
+    "Input Tokens:": "Tokens de Entrada:",
+    "Output Tokens:": "Tokens de Saída:"
 }

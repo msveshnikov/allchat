@@ -13,7 +13,7 @@ import jaTranslations from "./locales/ja.json";
 import deTranslations from "./locales/de.json";
 import frTranslations from "./locales/fr.json";
 import itTranslations from "./locales/it.json";
-const availableLanguages = ["en", "es", "zh", "ar", "hi", "pt", "bn", "ru", "ja", "de", "fr", "it", "ko", "tr"];
+const availableLanguages = ["en", "es", "zh", "ar", "hi", "pt", "bn", "ru", "ja", "de", "fr", "it"];
 
 i18n.use(initReactI18next)
     .use(LanguageDetector)

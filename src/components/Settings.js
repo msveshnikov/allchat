@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Typography, Card, CardContent, Grid, Avatar, Button, Link, TextField, MenuItem } from "@mui/material";
 import md5 from "md5";
+import { useTranslation } from "react-i18next";
 
 const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) => {
+    const { t } = useTranslation();
     const gravatarUrl = `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
     const [apiKey, setApiKey] = useState("");
     const [selectedModel, setSelectedModel] = useState("gemini-1.5-pro-latest");
@@ -48,7 +50,6 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                     marginBottom: "1rem",
                 }}
             />
-
             <Card
                 sx={{
                     width: "100%",
@@ -61,7 +62,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                     <Grid container spacing={1}>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h6" gutterBottom color="secondary">
-                                Email
+                                {t("Email")}
                             </Typography>
                             <Typography variant="body1" color="#fff">
                                 {user.email}
@@ -69,7 +70,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h6" gutterBottom color="secondary">
-                                Subscription Status
+                                {t("Subscription Status")}
                             </Typography>
                             <Typography variant="body1" color="#fff">
                                 {user?.subscriptionStatus?.toUpperCase()}
@@ -81,7 +82,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                                     sx={{ mt: 1 }}
                                     onClick={handleCancelSubscription}
                                 >
-                                    Cancel Subscription
+                                    {t("Cancel Subscription")}
                                 </Button>
                             ) : (
                                 <Link
@@ -95,14 +96,14 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                                         color="primary"
                                         sx={{ mt: 1 }}
                                     >
-                                        Start Subscription
+                                        {t("Start Subscription")}
                                     </Button>
                                 </Link>
                             )}
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h6" gutterBottom color="secondary">
-                                Select Model
+                                {t("Select Model")}
                             </Typography>
                             <TextField
                                 value={selectedModel}
@@ -121,7 +122,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h6" gutterBottom color="secondary">
-                                Your API Key
+                                {t("Your API Key")}
                             </Typography>
                             <TextField
                                 value={apiKey}
@@ -133,12 +134,12 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h6" gutterBottom color="secondary">
-                                Gemini Pro 1.5 Usage
+                                {t("Gemini Pro 1.5 Usage")}
                             </Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <Typography variant="body1" color="#fff">
-                                        Input Characters:
+                                        {t("Input Characters:")}
                                     </Typography>
                                     <Typography variant="body2" color="#fff">
                                         <b>{user.usageStats.gemini.inputCharacters}</b>
@@ -146,7 +147,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography variant="body1" color="#fff">
-                                        Output Characters:
+                                        {t("Output Characters:")}
                                     </Typography>
                                     <Typography variant="body2" color="#fff">
                                         <b>{user.usageStats.gemini.outputCharacters}</b>
@@ -154,7 +155,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography variant="body1" color="#fff">
-                                        Images Generated:
+                                        {t("Images Generated:")}
                                     </Typography>
                                     <Typography variant="body2" color="#fff">
                                         <b>{user.usageStats.gemini.imagesGenerated}</b>
@@ -162,7 +163,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography variant="body1" color="#fff">
-                                        Money Consumed:
+                                        {t("Money Consumed:")}
                                     </Typography>
                                     <Typography variant="body2" color="#fff">
                                         <b>${user.usageStats.gemini.moneyConsumed.toFixed(2)}</b>
@@ -172,12 +173,12 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h6" gutterBottom color="secondary">
-                                Claude 3 Haiku Usage
+                                {t("Claude 3 Haiku Usage")}
                             </Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <Typography variant="body1" color="#fff">
-                                        Input Tokens:
+                                        {t("Input Tokens:")}
                                     </Typography>
                                     <Typography variant="body2" color="#fff">
                                         <b>{user.usageStats.claude.inputTokens}</b>
@@ -185,7 +186,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography variant="body1" color="#fff">
-                                        Output Tokens:
+                                        {t("Output Tokens:")}
                                     </Typography>
                                     <Typography variant="body2" color="#fff">
                                         <b>{user.usageStats.claude.outputTokens}</b>
@@ -193,7 +194,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography variant="body1" color="#fff">
-                                        Money Consumed:
+                                        {t("Money Consumed:")}
                                     </Typography>
                                     <Typography variant="body2" color="#fff">
                                         <b>${user.usageStats.claude.moneyConsumed.toFixed(2)}</b>

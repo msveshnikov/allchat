@@ -7,5 +7,18 @@
     "Email": "电子邮件",
     "Password": "密码",
     "Don't have an account? Register": "没有账户？注册",
-    "Already have an account? Login": "已有账户？登录"
+    "Already have an account? Login": "已有账户？登录",
+    "Subscription Status": "订阅状态",
+    "Cancel Subscription": "取消订阅",
+    "Start Subscription": "开始订阅",
+    "Select Model": "选择模型",
+    "Your API Key": "你的 API 密钥",
+    "Gemini Pro 1.5 Usage": "Gemini Pro 1.5 使用情况",
+    "Input Characters:": "输入字符：",
+    "Output Characters:": "输出字符：",
+    "Images Generated:": "生成图像：",
+    "Money Consumed:": "消费金额：",
+    "Claude 3 Haiku Usage": "Claude 3 Haiku 使用情况",
+    "Input Tokens:": "输入代币：",
+    "Output Tokens:": "输出代币："
 }

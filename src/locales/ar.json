@@ -7,5 +7,18 @@
     "Email": "البريد الإلكتروني",
     "Password": "كلمة المرور",
     "Don't have an account? Register": "ليس لديك حساب؟ سجل",
-    "Already have an account? Login": "لديك حساب بالفعل؟ تسجيل الدخول"
+    "Already have an account? Login": "لديك حساب بالفعل؟ تسجيل الدخول",
+    "Subscription Status": "حالة الاشتراك",
+    "Cancel Subscription": "إلغاء الاشتراك",
+    "Start Subscription": "البدء في الاشتراك",
+    "Select Model": "اختر النموذج",
+    "Your API Key": "مفتاح API الخاص بك",
+    "Gemini Pro 1.5 Usage": "استخدام Gemini Pro 1.5",
+    "Input Characters:": "الأحرف المدخلة:",
+    "Output Characters:": "الأحرف المخرجة:",
+    "Images Generated:": "الصور المولدة:",
+    "Money Consumed:": "المال المستهلك:",
+    "Claude 3 Haiku Usage": "استخدام Claude 3 Haiku",
+    "Input Tokens:": "الرموز المدخلة:",
+    "Output Tokens:": "الرموز المخرجة:"
 }

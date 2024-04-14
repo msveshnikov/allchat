@@ -7,5 +7,18 @@
     "Email": "ईमेल",
     "Password": "पासवर्ड",
     "Don't have an account? Register": "खाता नहीं है? रजिस्टर करें",
-    "Already have an account? Login": "पहले से ही खाता है? लॉग इन करें"
+    "Already have an account? Login": "पहले से ही खाता है? लॉग इन करें",
+    "Subscription Status": "सदस्यता स्थिति",
+    "Cancel Subscription": "सदस्यता रद्द करें",
+    "Start Subscription": "सदस्यता शुरू करें",
+    "Select Model": "मॉडल चुनें",
+    "Your API Key": "आपकी API कुंजी",
+    "Gemini Pro 1.5 Usage": "Gemini Pro 1.5 उपयोग",
+    "Input Characters:": "इनपुट वर्ण:",
+    "Output Characters:": "आउटपुट वर्ण:",
+    "Images Generated:": "उत्पन्न छवियाँ:",
+    "Money Consumed:": "खर्च किया गया धन:",
+    "Claude 3 Haiku Usage": "Claude 3 Haiku उपयोग",
+    "Input Tokens:": "इनपुट टोकन:",
+    "Output Tokens:": "आउटपुट टोकन:"
 }

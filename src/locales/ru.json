@@ -7,5 +7,18 @@
     "Email": "Электронная почта",
     "Password": "Пароль",
     "Don't have an account? Register": "У вас нет учетной записи? Зарегистрируйтесь",
-    "Already have an account? Login": "Уже есть учетная запись? Войти"
+    "Already have an account? Login": "Уже есть учетная запись? Войти",
+    "Subscription Status": "Статус подписки",
+    "Cancel Subscription": "Отменить подписку",
+    "Start Subscription": "Начать подписку",
+    "Select Model": "Выберите модель",
+    "Your API Key": "Ваш API-ключ",
+    "Gemini Pro 1.5 Usage": "Использование Gemini Pro 1.5",
+    "Input Characters:": "Входные символы:",
+    "Output Characters:": "Выходные символы:",
+    "Images Generated:": "Сгенерированные изображения:",
+    "Money Consumed:": "Потрачено денег:",
+    "Claude 3 Haiku Usage": "Использование Claude 3 Haiku",
+    "Input Tokens:": "Входные токены:",
+    "Output Tokens:": "Выходные токены:"
 }
