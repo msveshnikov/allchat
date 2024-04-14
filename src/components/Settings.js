@@ -53,11 +53,8 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                 sx={{
                     width: "100%",
                     maxWidth: 800,
-                    backgroundImage: "linear-gradient(to right, #68989e, #9ce1ba)",
-                    boxShadow: "0 8px 12px rgba(0, 0, 0, 0.2)",
+                    backgroundImage: "linear-gradient(135deg,#9ce1ba, #68988e)",
                     borderRadius: "8px",
-                    marginBottom: "3rem",
-                    transition: "transform 0.3s, box-shadow 0.3s",
                 }}
             >
                 <CardContent sx={{ padding: "1rem" }}>
