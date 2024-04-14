@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Typography, Card, CardContent, Grid, Avatar, Button, Link, TextField, MenuItem } from "@mui/material";
 import md5 from "md5";
 
-const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountModal }) => {
+const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) => {
     const gravatarUrl = `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
     const [apiKey, setApiKey] = useState("");
     const [selectedModel, setSelectedModel] = useState("gemini-1.5-pro-latest");
@@ -93,7 +93,7 @@ const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountMod
                                     rel="noopener"
                                 >
                                     <Button
-                                        onClick={handleCloseMyAccountModal}
+                                        onClick={handleCloseSettingsModal}
                                         variant="contained"
                                         color="primary"
                                         sx={{ mt: 1 }}
@@ -211,4 +211,4 @@ const MyAccountPage = ({ user, handleCancelSubscription, handleCloseMyAccountMod
     );
 };
 
-export default MyAccountPage;
+export default Settings;

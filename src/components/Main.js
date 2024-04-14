@@ -14,7 +14,7 @@ import SideDrawer from "./SideDrawer";
 import ChatHistory from "./ChatHistory";
 import ChatInput from "./ChatInput";
 import AuthForm from "./AuthForm";
-import MyAccountPage from "./MyAccountPage";
+import Settings from "./Settings";
 import { animateScroll as scroll } from "react-scroll";
 
 const MAX_CHAT_HISTORY_LENGTH = 20;
@@ -39,7 +39,7 @@ function Main() {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState("info");
-    const [openMyAccountModal, setOpenMyAccountModal] = useState(false);
+    const [openSettingsModal, setOpenSettingsModal] = useState(false);
     const [user, setUser] = useState(null);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -293,13 +293,13 @@ function Main() {
         setSnackbarOpen(false);
     };
 
-    const handleMyAccount = () => {
-        setOpenMyAccountModal(true);
+    const handleSettings = () => {
+        setOpenSettingsModal(true);
         fetchUserData();
     };
 
-    const handleCloseMyAccountModal = () => {
-        setOpenMyAccountModal(false);
+    const handleCloseSettingsModal = () => {
+        setOpenSettingsModal(false);
     };
 
     const handleRun = async (language, program) => {
@@ -406,7 +406,7 @@ function Main() {
                 isAuthenticated={isAuthenticated}
                 userEmail={userEmail}
                 onSignOut={handleSignOut}
-                onMyAccount={handleMyAccount}
+                onSettings={handleSettings}
                 onOpenAuthModal={handleOpenAuthModal}
                 onToggle={toggleDrawer}
             />
@@ -434,18 +434,18 @@ function Main() {
                     <Button onClick={handleCloseAuthModal}>Cancel</Button>
                 </DialogActions>
             </Dialog>
-            <Dialog open={openMyAccountModal} onClose={handleCloseMyAccountModal} maxWidth="md" fullWidth>
+            <Dialog open={openSettingsModal} onClose={handleCloseSettingsModal} maxWidth="md" fullWidth>
                 <DialogContent>
                     {user && (
-                        <MyAccountPage
-                            handleCloseMyAccountModal={handleCloseMyAccountModal}
+                        <Settings
+                            handleCloseSettingsModal={handleCloseSettingsModal}
                             handleCancelSubscription={handleCancelSubscription}
                             user={user}
                         />
                     )}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseMyAccountModal}>Close</Button>
+                    <Button onClick={handleCloseSettingsModal}>Close</Button>
                 </DialogActions>
             </Dialog>
             <Container

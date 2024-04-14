@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import MyAccountPage from "../MyAccountPage";
+import Settings from "../Settings";
 import "@testing-library/jest-dom";
 
 const mockUser = {
@@ -20,15 +20,15 @@ const mockUser = {
     },
 };
 
-describe("MyAccountPage", () => {
+describe("Settings", () => {
     it("renders the user email", () => {
-        render(<MyAccountPage user={mockUser} />);
+        render(<Settings user={mockUser} />);
         const emailElement = screen.getByText(/test@example.com/i);
         expect(emailElement).toBeInTheDocument();
     });
 
     it("renders the Gemini Pro 1.5 usage stats", () => {
-        render(<MyAccountPage user={mockUser} />);
+        render(<Settings user={mockUser} />);
         const inputCharactersElement = screen.getByText(/1001/i);
         const outputCharactersElement = screen.getByText(/2000/i);
         const imagesGeneratedElement = screen.getByText(/11/i);
@@ -40,7 +40,7 @@ describe("MyAccountPage", () => {
     });
 
     it("renders the Claude 3 Haiku usage stats", () => {
-        render(<MyAccountPage user={mockUser} />);
+        render(<Settings user={mockUser} />);
         const inputTokensElement = screen.getByText(/500/i);
         const outputTokensElement = screen.getByText(/1000/i);
         const moneyConsumedElement = screen.getByText(/\$2.99/i);

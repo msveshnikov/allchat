@@ -441,8 +441,8 @@ describe("Authentication and Sign-out", () => {
         fireEvent.click(getByText("Settings"));
 
         // Wait for the Settings modal to open
-        const myAccountModal = await screen.findByRole("dialog");
-        expect(myAccountModal).toBeInTheDocument();
+        const settingsModal = await screen.findByRole("dialog");
+        expect(settingsModal).toBeInTheDocument();
 
         // Wait for the user's email to be displayed in the modal
         const userEmailElement = await screen.findByText("test@example.com");

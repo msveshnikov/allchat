@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, Box, IconButton, Button } from "@mui/mater
 import MenuIcon from "@mui/icons-material/Menu";
 import { ProfileMenu } from "./ProfileMenu";
 
-const AppHeader = ({ isAuthenticated, userEmail, onSignOut, onMyAccount, onOpenAuthModal, onToggle }) => {
+const AppHeader = ({ isAuthenticated, userEmail, onSignOut, onSettings, onOpenAuthModal, onToggle }) => {
     return (
         <AppBar position="static">
             <Toolbar>
@@ -18,7 +18,7 @@ const AppHeader = ({ isAuthenticated, userEmail, onSignOut, onMyAccount, onOpenA
                 </Typography>
                 <Box sx={{ ml: "auto" }}>
                     {isAuthenticated ? (
-                        <ProfileMenu userEmail={userEmail} onMyAccount={onMyAccount} onSignOut={onSignOut} />
+                        <ProfileMenu userEmail={userEmail} onSettings={onSettings} onSignOut={onSignOut} />
                     ) : (
                         <Button color="inherit" onClick={onOpenAuthModal}>
                             Sign In

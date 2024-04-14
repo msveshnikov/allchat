@@ -4,7 +4,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import md5 from "md5";
 import LaunchIcon from "@mui/icons-material/Launch";
 
-export function ProfileMenu({ userEmail, onMyAccount, onSignOut }) {
+export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleProfileMenuOpen = (event) => {
@@ -15,8 +15,8 @@ export function ProfileMenu({ userEmail, onMyAccount, onSignOut }) {
         setAnchorEl(null);
     };
 
-    const handleMyAccountClick = () => {
-        onMyAccount();
+    const handleSettingsClick = () => {
+        onSettings();
         handleProfileMenuClose();
     };
 
@@ -65,7 +65,7 @@ export function ProfileMenu({ userEmail, onMyAccount, onSignOut }) {
                     horizontal: "right",
                 }}
             >
-                <MenuItem onClick={handleMyAccountClick}>Settings</MenuItem>
+                <MenuItem onClick={handleSettingsClick}>Settings</MenuItem>
                 <MenuItem onClick={handleSignOutClick}>Sign Out</MenuItem>
                 <MenuItem onClick={handleMangaTVClick}>
                     Manga TV &nbsp; <LaunchIcon fontSize="small" />

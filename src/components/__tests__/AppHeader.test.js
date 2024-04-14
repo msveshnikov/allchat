@@ -82,12 +82,12 @@ describe("AppHeader Component", () => {
     });
 });
 
-describe("handleMyAccountClick", () => {
-    let onMyAccountMock;
+describe("handleSettingsClick", () => {
+    let onSettingsMock;
     let handleProfileMenuCloseMock;
 
     beforeEach(() => {
-        onMyAccountMock = jest.fn();
+        onSettingsMock = jest.fn();
         handleProfileMenuCloseMock = jest.fn();
         window.open = jest.fn();
     });
@@ -96,15 +96,15 @@ describe("handleMyAccountClick", () => {
         jest.clearAllMocks();
     });
 
-    it("calls onMyAccount and handleProfileMenuClose", () => {
-        const handleMyAccountClick = () => {
-            onMyAccountMock();
+    it("calls onSettings and handleProfileMenuClose", () => {
+        const handleSettingsClick = () => {
+            onSettingsMock();
             handleProfileMenuCloseMock();
         };
 
-        handleMyAccountClick();
+        handleSettingsClick();
 
-        expect(onMyAccountMock).toHaveBeenCalledTimes(1);
+        expect(onSettingsMock).toHaveBeenCalledTimes(1);
         expect(handleProfileMenuCloseMock).toHaveBeenCalledTimes(1);
     });
 });
