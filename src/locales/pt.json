@@ -1,0 +1,11 @@
+{
+    "Login": "Entrar",
+    "Register": "Registrar",
+    "Please enter a valid email address.": "Por favor, insira um endereço de e-mail válido.",
+    "Registration successful. Please log in now.": "Registro bem-sucedido. Por favor, faça o login agora.",
+    "An error occurred": "Ocorreu um erro",
+    "Email": "E-mail",
+    "Password": "Senha",
+    "Don't have an account? Register": "Não tem uma conta? Registre-se",
+    "Already have an account? Login": "Já tem uma conta? Faça o login"
+}

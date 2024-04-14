@@ -1,0 +1,11 @@
+{
+    "Login": "लॉग इन करें",
+    "Register": "रजिस्टर करें",
+    "Please enter a valid email address.": "कृपया एक मान्य ईमेल पता दर्ज करें।",
+    "Registration successful. Please log in now.": "पंजीकरण सफल। कृपया अब लॉग इन करें।",
+    "An error occurred": "एक त्रुटि हुई",
+    "Email": "ईमेल",
+    "Password": "पासवर्ड",
+    "Don't have an account? Register": "खाता नहीं है? रजिस्टर करें",
+    "Already have an account? Login": "पहले से ही खाता है? लॉग इन करें"
+}

@@ -1,0 +1,11 @@
+{
+    "Login": "লগইন করুন",
+    "Register": "রেজিস্টার করুন",
+    "Please enter a valid email address.": "অনুগ্রহ করে একটি বৈধ ইমেল ঠিকানা লিখুন।",
+    "Registration successful. Please log in now.": "রেজিস্ট্রেশন সফল। এখন লগইন করুন।",
+    "An error occurred": "একটি ত্রুটি ঘটেছে",
+    "Email": "ইমেল",
+    "Password": "পাসওয়ার্ড",
+    "Don't have an account? Register": "অ্যাকাউন্ট নেই? রেজিস্টার করুন",
+    "Already have an account? Login": "ইতোমধ্যে অ্যাকাউন্ট আছে? লগইন করুন"
+}

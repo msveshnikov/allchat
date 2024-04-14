@@ -1,0 +1,11 @@
+{
+    "Login": "Login",
+    "Register": "Register",
+    "Please enter a valid email address.": "Please enter a valid email address.",
+    "Registration successful. Please log in now.": "Registration successful. Please log in now.",
+    "An error occurred": "An error occurred",
+    "Email": "Email",
+    "Password": "Password",
+    "Don't have an account? Register": "Don't have an account? Register",
+    "Already have an account? Login": "Already have an account? Login"
+}

@@ -1,0 +1,11 @@
+{
+    "Login": "ログイン",
+    "Register": "登録",
+    "Please enter a valid email address.": "有効な電子メールアドレスを入力してください。",
+    "Registration successful. Please log in now.": "登録が完了しました。今すぐログインしてください。",
+    "An error occurred": "エラーが発生しました",
+    "Email": "メールアドレス",
+    "Password": "パスワード",
+    "Don't have an account? Register": "アカウントをお持ちでない方は登録",
+    "Already have an account? Login": "既にアカウントをお持ちの方はログイン"
+}

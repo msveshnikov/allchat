@@ -1,0 +1,11 @@
+{
+    "Login": "Войти",
+    "Register": "Зарегистрироваться",
+    "Please enter a valid email address.": "Пожалуйста, введите действительный адрес электронной почты.",
+    "Registration successful. Please log in now.": "Регистрация прошла успешно. Пожалуйста, войдите в систему сейчас.",
+    "An error occurred": "Произошла ошибка",
+    "Email": "Электронная почта",
+    "Password": "Пароль",
+    "Don't have an account? Register": "У вас нет учетной записи? Зарегистрируйтесь",
+    "Already have an account? Login": "Уже есть учетная запись? Войти"
+}

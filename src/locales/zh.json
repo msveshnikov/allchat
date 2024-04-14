@@ -1,0 +1,11 @@
+{
+    "Login": "登录",
+    "Register": "注册",
+    "Please enter a valid email address.": "请输入有效的电子邮件地址。",
+    "Registration successful. Please log in now.": "注册成功。请现在登录。",
+    "An error occurred": "出现错误",
+    "Email": "电子邮件",
+    "Password": "密码",
+    "Don't have an account? Register": "没有账户？注册",
+    "Already have an account? Login": "已有账户？登录"
+}

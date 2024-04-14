@@ -6,6 +6,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { API_URL } from "./Main";
+import { useTranslation } from "react-i18next";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -15,13 +16,14 @@ const AuthForm = ({ onAuthentication }) => {
     const [isLogin, setIsLogin] = useState(true);
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    const { t } = useTranslation();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Email validation
         if (!emailRegex.test(email)) {
-            setError("Please enter a valid email address.");
+            setError(t("Please enter a valid email address."));
             return;
         }
 
@@ -42,14 +44,14 @@ const AuthForm = ({ onAuthentication }) => {
                     setEmail("");
                     setPassword("");
                     setError("");
-                    setSuccessMessage("Registration successful. Please log in now."); // Set success message
+                    setSuccessMessage(t("Registration successful. Please log in now.")); // Set success message
                 }
             } else {
                 setError(data.error);
                 setSuccessMessage("");
             }
         } catch (error) {
-            setError("An error occurred");
+            setError(t("An error occurred"));
             setSuccessMessage("");
         }
     };
@@ -65,7 +67,7 @@ const AuthForm = ({ onAuthentication }) => {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 2 }}>
             <Typography variant="h4" gutterBottom>
-                {isLogin ? "Login" : "Register"}
+                {isLogin ? t("Login") : t("Register")}
             </Typography>
             {error && (
                 <Typography variant="body1" color="error" gutterBottom>
@@ -82,7 +84,7 @@ const AuthForm = ({ onAuthentication }) => {
                     <Grid item xs={12}>
                         <TextField
                             fullWidth
-                            label="Email"
+                            label={t("Email")}
                             value={email}
                             type="email"
                             autoComplete="email" // Add for better recognition
@@ -95,7 +97,7 @@ const AuthForm = ({ onAuthentication }) => {
                     <Grid item xs={12}>
                         <TextField
                             fullWidth
-                            label="Password"
+                            label={t("Password")}
                             type="password"
                             autoComplete={isLogin ? "current-password" : "new-password"}
                             value={password}
@@ -105,13 +107,13 @@ const AuthForm = ({ onAuthentication }) => {
                     </Grid>
                     <Grid item xs={12}>
                         <Button type="submit" variant="contained" fullWidth>
-                            {isLogin ? "Login" : "Register"}
+                            {isLogin ? t("Login") : t("Register")}
                         </Button>
                     </Grid>
                 </Grid>
             </form>
             <Button onClick={toggleMode} sx={{ mt: 2 }}>
-                {isLogin ? "Don't have an account? Register" : "Already have an account? Login"}
+                {isLogin ? t("Don't have an account? Register") : t("Already have an account? Login")}
             </Button>
         </Box>
     );

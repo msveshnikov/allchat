@@ -7,16 +7,20 @@ import { ThemeProvider } from "@mui/material";
 import theme from "./theme";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import StatsPage from "./components/StatsPage";
+import "./i18n"; // Import the i18n configuration
+import { I18nextProvider } from "react-i18next";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
     <ThemeProvider theme={theme("light")}>
-        <Router>
-            <Routes>
-                <Route path="/admin" element={<StatsPage />} />
-                <Route path="/" element={<Main />} />
-            </Routes>
-        </Router>
+        <I18nextProvider>
+            <Router>
+                <Routes>
+                    <Route path="/admin" element={<StatsPage />} />
+                    <Route path="/" element={<Main />} />
+                </Routes>
+            </Router>
+        </I18nextProvider>
     </ThemeProvider>
 );
 

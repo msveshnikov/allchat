@@ -1,0 +1,11 @@
+{
+    "Login": "تسجيل الدخول",
+    "Register": "التسجيل",
+    "Please enter a valid email address.": "يرجى إدخال عنوان بريد إلكتروني صالح.",
+    "Registration successful. Please log in now.": "تم التسجيل بنجاح. يرجى تسجيل الدخول الآن.",
+    "An error occurred": "حدث خطأ",
+    "Email": "البريد الإلكتروني",
+    "Password": "كلمة المرور",
+    "Don't have an account? Register": "ليس لديك حساب؟ سجل",
+    "Already have an account? Login": "لديك حساب بالفعل؟ تسجيل الدخول"
+}
