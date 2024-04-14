@@ -238,3 +238,19 @@ footer {
     background-color: #1e1e1e;
     color: #f0f0f0;
 }
+
+@media (max-width: 767px) {
+    .hero {
+        flex-direction: column-reverse; /* Reverse the order of the flex items */
+    }
+
+    .hero-content {
+        text-align: center; /* Center the text */
+    }
+
+    .hero-image img {
+        width: 100%; /* Make the image responsive */
+        max-width: 400px; /* Set a maximum width */
+        margin: 0 auto; /* Center the image horizontally */
+    }
+}
