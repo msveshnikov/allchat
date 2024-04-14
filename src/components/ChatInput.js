@@ -16,6 +16,9 @@ const ChatInput = ({ input, setInput, selectedFile, onFileSelect, onSubmit }) =>
                         onSubmit();
                     }
                 }}
+                multiline
+                minRows={1}
+                maxRows={6}
             />
             <FileSelector onFileSelect={onFileSelect} selectedFile={selectedFile} />
             <Button variant="contained" color="primary" onClick={onSubmit} style={{ marginLeft: 8 }}>

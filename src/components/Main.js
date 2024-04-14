@@ -451,7 +451,7 @@ function Main() {
             <Container
                 maxWidth="md"
                 sx={isMobile ? { m: 0, p: 0 } : {}}
-                style={{ display: "flex", flexDirection: "column", height: "91vh" }}
+                style={{ display: "flex", flexDirection: "column", height: "91vh", flexGrow: 1 }}
             >
                 <ChatHistory
                     onChange={handleChange}
