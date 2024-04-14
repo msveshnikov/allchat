@@ -65,7 +65,7 @@ export function ProfileMenu({ userEmail, onMyAccount, onSignOut }) {
                     horizontal: "right",
                 }}
             >
-                <MenuItem onClick={handleMyAccountClick}>My Account</MenuItem>
+                <MenuItem onClick={handleMyAccountClick}>Settings</MenuItem>
                 <MenuItem onClick={handleSignOutClick}>Sign Out</MenuItem>
                 <MenuItem onClick={handleMangaTVClick}>
                     Manga TV &nbsp; <LaunchIcon fontSize="small" />

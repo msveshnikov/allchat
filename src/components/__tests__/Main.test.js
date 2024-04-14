@@ -405,7 +405,7 @@ describe("Authentication and Sign-out", () => {
         await waitFor(() => expect(screen.getByRole("heading", "Login")).toBeInTheDocument());
     });
 
-    it("opens the My Account modal when authenticated", async () => {
+    it("opens the Settings modal when authenticated", async () => {
         // Mock the authentication state and user data
         localStorage.setItem("token", "mock_token");
         localStorage.setItem("userEmail", "test@example.com");
@@ -437,10 +437,10 @@ describe("Authentication and Sign-out", () => {
         // Click the Avatar icon to open the user menu
         fireEvent.click(getByAltText("User Avatar"));
 
-        // Click the "My Account" button
-        fireEvent.click(getByText("My Account"));
+        // Click the "Settings" button
+        fireEvent.click(getByText("Settings"));
 
-        // Wait for the My Account modal to open
+        // Wait for the Settings modal to open
         const myAccountModal = await screen.findByRole("dialog");
         expect(myAccountModal).toBeInTheDocument();
 
@@ -448,23 +448,23 @@ describe("Authentication and Sign-out", () => {
         const userEmailElement = await screen.findByText("test@example.com");
         expect(userEmailElement).toBeInTheDocument();
 
-        // Close the My Account modal
+        // Close the Settings modal
         const closeButton = getByRole("button", { name: "Close" });
         fireEvent.click(closeButton);
 
-        // Wait for the My Account modal to close
+        // Wait for the Settings modal to close
         await waitFor(() => {
             expect(screen.queryByRole("dialog")).toBeNull();
         });
     });
 
-    it("does not open the My Account modal when not authenticated", () => {
+    it("does not open the Settings modal when not authenticated", () => {
         const { queryByRole } = render(<Main />);
 
-        // Click the "My Account" button (should not be available)
-        fireEvent.click(screen.queryByText("My Account") || document.body);
+        // Click the "Settings" button (should not be available)
+        fireEvent.click(screen.queryByText("Settings") || document.body);
 
-        // Check that the My Account modal is not open
+        // Check that the Settings modal is not open
         expect(queryByRole("dialog")).toBeNull();
     });
 
