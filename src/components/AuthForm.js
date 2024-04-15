@@ -44,18 +44,18 @@ const AuthForm = ({ onAuthentication }) => {
                 if (isLogin) {
                     onAuthentication(data.token, email);
                 } else if (isPasswordReset) {
-                    setIsPasswordReset(false); // Transition back to login form after successful password reset
+                    setIsPasswordReset(false);
                     setIsLogin(true);
                     setEmail("");
                     setPassword("");
                     setError("");
-                    setSuccessMessage(t("Password reset successful. Please check email.")); // Set success message
+                    setSuccessMessage(t("Password reset successful. Please check email."));
                 } else {
-                    setIsLogin(true); // Transition to login form after successful registration
+                    setIsLogin(true);
                     setEmail("");
                     setPassword("");
                     setError("");
-                    setSuccessMessage(t("Registration successful. Please log in now.")); // Set success message
+                    setSuccessMessage(t("Registration successful. Please log in now."));
                 }
             } else {
                 setError(data.error);
@@ -108,11 +108,11 @@ const AuthForm = ({ onAuthentication }) => {
                             label={t("Email")}
                             value={email}
                             type="email"
-                            autoComplete="email" // Add for better recognition
+                            autoComplete="email"
                             onChange={(e) => setEmail(e.target.value)}
                             margin="normal"
-                            error={!!error && error.includes("email")} // Highlight the email field if the error message includes "email"
-                            helperText={error && error.includes("email") ? error : ""} // Display the error message as helper text
+                            error={!!error && error.includes("email")}
+                            helperText={error && error.includes("email") ? error : ""}
                         />
                     </Grid>
                     {!isPasswordReset && (

@@ -2,8 +2,11 @@ import React from "react";
 import { AppBar, Toolbar, Typography, Box, IconButton, Button } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { ProfileMenu } from "./ProfileMenu";
+import { useTranslation } from "react-i18next";
 
 const AppHeader = ({ isAuthenticated, userEmail, onSignOut, onSettings, onOpenAuthModal, onToggle }) => {
+    const { t } = useTranslation();
+
     return (
         <AppBar position="static">
             <Toolbar>
@@ -21,7 +24,7 @@ const AppHeader = ({ isAuthenticated, userEmail, onSignOut, onSettings, onOpenAu
                         <ProfileMenu userEmail={userEmail} onSettings={onSettings} onSignOut={onSignOut} />
                     ) : (
                         <Button color="inherit" onClick={onOpenAuthModal}>
-                            Sign In
+                            {t("Login")}
                         </Button>
                     )}
                 </Box>

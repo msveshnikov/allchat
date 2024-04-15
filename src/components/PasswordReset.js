@@ -51,7 +51,7 @@ const PasswordReset = () => {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 2 }}>
             <Typography variant="h4" gutterBottom>
-                {t("Password Reset")}
+                {t("Reset Password")}
             </Typography>
             {error && (
                 <Typography variant="body1" color="error" gutterBottom>
