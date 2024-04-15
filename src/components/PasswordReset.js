@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { API_URL } from "./Main";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
 const PasswordReset = () => {
     const [password, setPassword] = useState("");
@@ -44,26 +49,52 @@ const PasswordReset = () => {
     };
 
     return (
-        <div>
-            <h2>{t("Password Reset")}</h2>
-            {error && <p>{error}</p>}
-            {success && <p>{t("Password reset successful")}</p>}
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="password"
-                    placeholder={t("New Password")}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <input
-                    type="password"
-                    placeholder={t("Confirm New Password")}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-                <button type="submit">{t("Reset Password")}</button>
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 2 }}>
+            <Typography variant="h4" gutterBottom>
+                {t("Password Reset")}
+            </Typography>
+            {error && (
+                <Typography variant="body1" color="error" gutterBottom>
+                    {error}
+                </Typography>
+            )}
+            {success && (
+                <Typography variant="body1" color="success" gutterBottom>
+                    {t("Password reset successful")}
+                </Typography>
+            )}
+            <form autoComplete="on" onSubmit={handleSubmit}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            label={t("New Password")}
+                            type="password"
+                            autoComplete="new-password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            margin="normal"
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            label={t("Confirm New Password")}
+                            type="password"
+                            autoComplete="new-password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            margin="normal"
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button type="submit" variant="contained" fullWidth>
+                            {t("Reset Password")}
+                        </Button>
+                    </Grid>
+                </Grid>
             </form>
-        </div>
+        </Box>
     );
 };
 

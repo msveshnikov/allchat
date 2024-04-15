@@ -45,6 +45,7 @@ const AuthForm = ({ onAuthentication }) => {
                     onAuthentication(data.token, email);
                 } else if (isPasswordReset) {
                     setIsPasswordReset(false); // Transition back to login form after successful password reset
+                    setIsLogin(true);
                     setEmail("");
                     setPassword("");
                     setError("");
