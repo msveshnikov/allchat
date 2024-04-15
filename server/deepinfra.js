@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config({ override: true });
 
-const url = "https://api.textinfra.com/v1/generate";
+const url = "https://api.deepinfra.com/v1/openai/chat/completions";
 
 export const getTextInfra = async (prompt, temperature, model, apiKey) => {
     const headers = new Headers({
@@ -13,7 +13,7 @@ export const getTextInfra = async (prompt, temperature, model, apiKey) => {
         model,
         max_tokens: 4096,
         temperature: temperature || 0.5,
-        text: prompt,
+        messages: [{ role: "user", content: prompt }],
     };
 
     const response = await fetch(url, {
@@ -23,5 +23,5 @@ export const getTextInfra = async (prompt, temperature, model, apiKey) => {
     });
 
     const result = await response.json();
-    return result?.output;
+    return result?.choices[0].message.content;
 };

@@ -12,6 +12,7 @@ import { getTextGemini } from "./gemini.js";
 import { getTextClaude } from "./claude.js";
 import { getImageTitan } from "./aws.js";
 import { getTextTogether } from "./together.js";
+import { getTextInfra } from "./deepinfra.js";
 import { authenticateUser, completePasswordReset, registerUser, resetPassword, verifyToken } from "./auth.js";
 import { User, countCharacters, countTokens, storeUsageStats } from "./model/User.js";
 import { fetchPageContent, fetchSearchResults } from "./search.js";
@@ -108,6 +109,7 @@ app.post("/interact", verifyToken, async (req, res) => {
     const fileType = req.body.fileType;
     const numberOfImages = req.body.numberOfImages || 1;
     const tools = req.body.tools;
+    const lang = req.body.lang;
     const model = req.body.model || "gemini-1.5-pro-latest";
     const apiKey = req.body.apiKey;
     const country = req.headers["geoip_country_code"];
@@ -206,7 +208,7 @@ app.post("/interact", verifyToken, async (req, res) => {
             }
         }
 
-        const contextPrompt = `System: ${systemPrompt} User country code: ${country}
+        const contextPrompt = `System: ${systemPrompt} User country code: ${country} User Lang: ${lang}
             ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
             \n\nSearch Results:${topResultContent}\n\nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
 
@@ -243,6 +245,8 @@ app.post("/interact", verifyToken, async (req, res) => {
                 tools
             );
             outputTokens = countTokens(textResponse);
+        } else if (model?.startsWith("HuggingFace")) {
+            textResponse = await getTextInfra(contextPrompt, temperature, model, apiKey);
         } else {
             textResponse = await getTextTogether(contextPrompt, temperature, model, apiKey);
         }
