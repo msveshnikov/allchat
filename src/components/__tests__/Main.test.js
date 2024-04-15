@@ -97,7 +97,7 @@ describe("Main Component", () => {
 
     it("opens authentication modal when authentication button is clicked", async () => {
         const { getByText, getByRole } = render(<Main />);
-        const authButton = getByText("Sign In");
+        const authButton = getByText("Login");
 
         fireEvent.click(authButton);
 
@@ -108,7 +108,7 @@ describe("Main Component", () => {
 
     it("closes authentication modal when cancel button is clicked", async () => {
         const { getByText, getByRole } = render(<Main />);
-        const authButton = getByText("Sign In");
+        const authButton = getByText("Login");
         fireEvent.click(authButton);
         await waitFor(() => {
             expect(getByRole("heading", "Login")).toBeInTheDocument();
@@ -116,7 +116,7 @@ describe("Main Component", () => {
         const cancelButton = getByText("Cancel");
         fireEvent.click(cancelButton);
         await waitFor(() => {
-            expect(screen.queryByText("Login")).not.toBeInTheDocument();
+            expect(screen.queryByRole("heading", "Login")).not.toBeInTheDocument();
         });
     });
 
@@ -313,12 +313,12 @@ describe("Authentication and Sign-out", () => {
         localStorage.clear();
     });
 
-    it("should sign in successfully", async () => {
+    it("should Login successfully", async () => {
         const mockResponse = { ok: true, status: 200, json: () => Promise.resolve({ token: "123" }) };
         global.fetch.mockResolvedValueOnce(mockResponse);
 
         const { getByText, getByLabelText, getByRole } = render(<Main />);
-        const authButton = getByText("Sign In");
+        const authButton = getByText("Login");
         await act(async () => {
             fireEvent.click(authButton);
         });
@@ -345,8 +345,8 @@ describe("Authentication and Sign-out", () => {
 
         const { getByText, getByLabelText, getByRole } = render(<Main />);
 
-        // Click on the "Sign In" button to open the authentication modal
-        const signInButton = getByText("Sign In");
+        // Click on the "Login" button to open the authentication modal
+        const signInButton = getByText("Login");
         fireEvent.click(signInButton);
 
         // Wait for the authentication modal to open

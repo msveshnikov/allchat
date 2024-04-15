@@ -173,7 +173,7 @@ function Main() {
                 }
             } else if (response.status === 403) {
                 setIsAuthenticated(false);
-                setSnackbarMessage("Authentication failed. Please sign in.");
+                setSnackbarMessage("Authentication failed. Please Login.");
                 setSnackbarSeverity("error");
                 setSnackbarOpen(true);
                 localStorage.removeItem("token");

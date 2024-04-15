@@ -51,7 +51,7 @@ describe("AppHeader Component", () => {
         expect(mockOnSignOut).toHaveBeenCalledTimes(1);
     });
 
-    it("calls onOpenAuthModal when 'Sign In' is clicked", () => {
+    it("calls onOpenAuthModal when 'Login' is clicked", () => {
         const { getByText } = render(
             <AppHeader
                 isAuthenticated={false}
@@ -60,8 +60,8 @@ describe("AppHeader Component", () => {
                 onOpenAuthModal={mockOnOpenAuthModal}
                 onToggle={mockOnToggle}
             />
-        );
-        const signInButton = getByText(/Sign In/i); // Using regular expression
+        ); 
+        const signInButton = getByText(/Login/i); // Using regular expression
         fireEvent.click(signInButton);
         expect(mockOnOpenAuthModal).toHaveBeenCalledTimes(1);
     });
