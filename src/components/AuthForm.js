@@ -14,6 +14,7 @@ const AuthForm = ({ onAuthentication }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLogin, setIsLogin] = useState(true);
+    const [isPasswordReset, setIsPasswordReset] = useState(false);
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const { t } = useTranslation();
@@ -28,17 +29,26 @@ const AuthForm = ({ onAuthentication }) => {
         }
 
         try {
-            const response = await fetch(`${API_URL}/${isLogin ? "login" : "register"}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            });
+            const response = await fetch(
+                `${API_URL}/${isLogin ? "login" : isPasswordReset ? "reset-password" : "register"}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ email, password }),
+                }
+            );
             const data = await response.json();
             if (response.ok) {
                 if (isLogin) {
                     onAuthentication(data.token, email);
+                } else if (isPasswordReset) {
+                    setIsPasswordReset(false); // Transition back to login form after successful password reset
+                    setEmail("");
+                    setPassword("");
+                    setError("");
+                    setSuccessMessage(t("Password reset successful. Please check email.")); // Set success message
                 } else {
                     setIsLogin(true); // Transition to login form after successful registration
                     setEmail("");
@@ -58,6 +68,16 @@ const AuthForm = ({ onAuthentication }) => {
 
     const toggleMode = () => {
         setIsLogin(!isLogin);
+        setIsPasswordReset(false);
+        setEmail("");
+        setPassword("");
+        setError("");
+        setSuccessMessage("");
+    };
+
+    const togglePasswordReset = () => {
+        setIsPasswordReset(!isPasswordReset);
+        setIsLogin(false);
         setEmail("");
         setPassword("");
         setError("");
@@ -67,7 +87,7 @@ const AuthForm = ({ onAuthentication }) => {
     return (
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 2 }}>
             <Typography variant="h4" gutterBottom>
-                {isLogin ? t("Login") : t("Register")}
+                {isLogin ? t("Login") : isPasswordReset ? t("Reset Password") : t("Register")}
             </Typography>
             {error && (
                 <Typography variant="body1" color="error" gutterBottom>
@@ -94,27 +114,38 @@ const AuthForm = ({ onAuthentication }) => {
                             helperText={error && error.includes("email") ? error : ""} // Display the error message as helper text
                         />
                     </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            label={t("Password")}
-                            type="password"
-                            autoComplete={isLogin ? "current-password" : "new-password"}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            margin="normal"
-                        />
-                    </Grid>
+                    {!isPasswordReset && (
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                label={t("Password")}
+                                type="password"
+                                autoComplete={isLogin ? "current-password" : "new-password"}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                margin="normal"
+                            />
+                        </Grid>
+                    )}
                     <Grid item xs={12}>
                         <Button type="submit" variant="contained" fullWidth>
-                            {isLogin ? t("Login") : t("Register")}
+                            {isPasswordReset ? t("Reset") : isLogin ? t("Login") : t("Register")}
                         </Button>
                     </Grid>
                 </Grid>
             </form>
             <Button onClick={toggleMode} sx={{ mt: 2 }}>
-                {isLogin ? t("Don't have an account? Register") : t("Already have an account? Login")}
+                {isLogin
+                    ? t("Don't have an account? Register")
+                    : isPasswordReset
+                    ? t("Back to Login")
+                    : t("Already have an account? Login")}
             </Button>
+            {!isPasswordReset && (
+                <Button onClick={togglePasswordReset} sx={{ mt: 1 }}>
+                    {t("Forgot Password?")}
+                </Button>
+            )}
         </Box>
     );
 };

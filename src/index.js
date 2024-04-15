@@ -7,8 +7,9 @@ import { ThemeProvider } from "@mui/material";
 import theme from "./theme";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import StatsPage from "./components/StatsPage";
-import "./i18n"; // Import the i18n configuration
+import "./i18n";
 import { I18nextProvider } from "react-i18next";
+import PasswordReset from "./components/PasswordReset";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -18,6 +19,7 @@ root.render(
                 <Routes>
                     <Route path="/admin" element={<StatsPage />} />
                     <Route path="/" element={<Main />} />
+                    <Route path="/reset-password/:token" element={<PasswordReset />} />
                 </Routes>
             </Router>
         </I18nextProvider>

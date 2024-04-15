@@ -10,14 +10,16 @@ export const resetPassword = async (email) => {
             return { success: false, error: "Email not found" };
         }
 
-        const resetToken = crypto.randomBytes(20).toString("hex");
-        const resetTokenExpiration = Date.now() + 3600000; // 1 hour
+        const token = jwt.sign(
+            {
+                userId: user._id,
+                reset: true,
+            },
+            process.env.JWT_TOKEN,
+            { expiresIn: "1h" }
+        );
 
-        user.resetPasswordToken = resetToken;
-        user.resetPasswordExpires = resetTokenExpiration;
-        await user.save();
-
-        const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+        const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${token}`;
         const mailOptions = {
             to: user.email,
             from: process.env.EMAIL,
@@ -38,21 +40,14 @@ export const resetPassword = async (email) => {
 
 export const completePasswordReset = async (token, password) => {
     try {
-        const user = await User.findOne({
-            resetPasswordToken: token,
-            resetPasswordExpires: { $gt: Date.now() },
-        });
-
-        if (!user) {
+        token = jwt.verify(token, process.env.JWT_TOKEN);
+        const user = await User.findOne({ _id: token.userId });
+        if (!token.reset || !user) {
             return { success: false, error: "Invalid or expired token" };
         }
-
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-
         user.password = hashedPassword;
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpires = undefined;
         await user.save();
 
         return { success: true };

@@ -23,8 +23,6 @@ const userSchema = new mongoose.Schema({
         enum: ["active", "past_due", "canceled", "none", "trialing"],
         default: "none",
     },
-    resetPasswordToken: { type: String },
-    resetPasswordExpires: { type: Date },
 });
 
 export const User = mongoose.model("User", userSchema);
