@@ -12,7 +12,7 @@ import { getTextGemini } from "./gemini.js";
 import { getTextClaude } from "./claude.js";
 import { getImageTitan } from "./aws.js";
 import { getTextTogether } from "./together.js";
-import { authenticateUser, registerUser, verifyToken } from "./auth.js";
+import { authenticateUser, completePasswordReset, registerUser, resetPassword, verifyToken } from "./auth.js";
 import { User, countCharacters, countTokens, storeUsageStats } from "./model/User.js";
 import { fetchPageContent, fetchSearchResults } from "./search.js";
 import fs from "fs";
@@ -302,6 +302,27 @@ app.post("/login", async (req, res) => {
         res.status(200).json({ token: result.token });
     } else {
         res.status(401).json({ error: result.error });
+    }
+});
+
+app.post("/reset-password", async (req, res) => {
+    const { email } = req.body;
+    const result = await resetPassword(email);
+    if (result.success) {
+        res.status(200).json({ message: "Password reset link sent" });
+    } else {
+        res.status(400).json({ error: result.error });
+    }
+});
+
+app.post("/reset-password/:token", async (req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+    const result = await completePasswordReset(token, password);
+    if (result.success) {
+        res.status(200).json({ message: "Password reset successful" });
+    } else {
+        res.status(400).json({ error: result.error });
     }
 });
 
