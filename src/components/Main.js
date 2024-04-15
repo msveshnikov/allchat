@@ -293,9 +293,9 @@ function Main() {
         setSnackbarOpen(false);
     };
 
-    const handleSettings = () => {
+    const handleSettings = async () => {
+        await fetchUserData();
         setOpenSettingsModal(true);
-        fetchUserData();
     };
 
     const handleCloseSettingsModal = () => {

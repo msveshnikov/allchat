@@ -14,21 +14,17 @@ https://allchat.online/
 -   Audio Input in Gemini
 -   Video Input in Gemini
 -   Image Input (png/jpeg) in Gemini and Haiku
--   Together AI models
+-   Together AI models databricks/dbrx-instruct mistralai/Mixtral-8x7B-Instruct-v0.1
 -   Multiple chats
 -   File upload PDFs, Word, Excel into the conversation
 -   Markdown formatting
--   You edit your messages with a button on the side of the message.
+-   Edit your messages with response regeneration
 -   Image Generation by Amazon Titan
 -   Python Code Run
 -   Mobile friendly, PWA, Android app, etc
 -   Abiility to provide own API key
 -   Web Tools - weather, stocks, email send, Telegram, web search, etc
 -   Please ask for more features in Issues or here https://discord.com/invite/JTk2fHtv
--   New models 
--   databricks/dbrx-instruct
--   mistralai/Mixtral-8x7B-Instruct-v0.1
-
 
 ## Connect model to world with Web Tools
 
@@ -53,6 +49,7 @@ You have to get some of those APIs and set environment variables (or put to .env
 -   TELEGRAM_KEY - for Telegram tools to work
 -   EMAIL - for email tools
 -   EMAIL_PASSWORD - for email tools
+
 # DOCKER DEPLOY
 
 To containerize the Node.js backend and React MUI frontend for easy deployment, we can use Docker. Here's how you can create Docker containers for your application:
