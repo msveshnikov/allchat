@@ -2,8 +2,8 @@
     "name": "allchat",
     "version": "1.1.0",
     "dependencies": {
-        "@mui/icons-material": "^5.15.14",
-        "@mui/material": "^5.15.14",
+        "@mui/icons-material": "^5.15.15",
+        "@mui/material": "^5.15.15",
         "i18next": "^23.11.2",
         "i18next-browser-languagedetector": "^7.2.1",
         "md5": "^2.3.0",
@@ -41,9 +41,9 @@
         ]
     },
     "devDependencies": {
-        "@babel/core": "^7.24.3",
+        "@babel/core": "^7.24.4",
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-        "@babel/preset-env": "^7.24.3",
+        "@babel/preset-env": "^7.24.4",
         "@babel/preset-react": "^7.24.1",
         "@testing-library/jest-dom": "^6.4.2",
         "@testing-library/react": "^14.2.2",
