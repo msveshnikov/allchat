@@ -161,8 +161,16 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
                             </ReactMarkdown>
                         )}
 
-                        {chat.error && chat.error}
-
+                        {chat.error && (
+                            <Box
+                                style={{
+                                    wordBreak: "break-word",
+                                    overflowWrap: "break-word",
+                                }}
+                            >
+                                {chat.error}
+                            </Box>
+                        )}
                         {chat.image && (
                             <>
                                 {Array.isArray(chat.image) ? (
