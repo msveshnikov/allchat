@@ -30,7 +30,6 @@
         "nodemailer-express-handlebars": "^6.1.2",
         "pdf-parse": "1.1.1",
         "stripe": "^15.1.0",
-        "xlsx": "^0.18.5",
-        "yahoo-finance2": "^2.11.1"
+        "xlsx": "^0.18.5"
     }
 }

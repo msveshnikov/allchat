@@ -1,5 +1,4 @@
 import Anthropic from "@anthropic-ai/sdk";
-import yahooFinance from "yahoo-finance2";
 import dotenv from "dotenv";
 import TelegramBot from "node-telegram-bot-api";
 import nodemailer from "nodemailer";
@@ -209,8 +208,19 @@ export async function getStockPrice(ticker) {
 
 export async function getFxRate(baseCurrency, quoteCurrency) {
     try {
-        const quote = await yahooFinance.quote(baseCurrency + quoteCurrency + "=X");
-        return `Current exchange rates for ${baseCurrency + quoteCurrency + "=X"}: ${quote?.regularMarketPrice}`;
+        const apiUrl = `https://yfapi.net/v6/finance/quote?symbols=${baseCurrency + quoteCurrency + "=X"}`;
+        const response = await fetch(apiUrl, {
+            headers: {
+                "X-API-KEY": process.env.YAHOO_FINANCE_API_KEY,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error ${response.status}`);
+        }
+        const data = await response.json();
+        return `Current exchange rates for ${baseCurrency + quoteCurrency + "=X"}: ${
+            data?.quoteResponse?.result?.[0]?.regularMarketPrice
+        }. Additional info: ${JSON.stringify(data?.quoteResponse?.result?.[0])}`;
     } catch (error) {
         console.error("Error fetching FX rates:", error);
         return "Error fetching FX rates:" + error.message;
