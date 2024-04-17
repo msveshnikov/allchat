@@ -141,18 +141,18 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     <Typography variant="body1" color="#fff">
-                                        {t("Input Characters:")}
+                                        {t("Input Tokens:")}
                                     </Typography>
                                     <Typography variant="body2" color="#fff">
-                                        <b>{user.usageStats.gemini.inputCharacters}</b>
+                                        <b>{user.usageStats.gemini.inputTokens}</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography variant="body1" color="#fff">
-                                        {t("Output Characters:")}
+                                        {t("Output Tokens:")}
                                     </Typography>
                                     <Typography variant="body2" color="#fff">
-                                        <b>{user.usageStats.gemini.outputCharacters}</b>
+                                        <b>{user.usageStats.gemini.outputTokens}</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={6}>

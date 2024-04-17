@@ -14,7 +14,7 @@ import { getImageTitan } from "./aws.js";
 import { getTextTogether } from "./together.js";
 import { getTextInfra } from "./deepinfra.js";
 import { authenticateUser, completePasswordReset, registerUser, resetPassword, verifyToken } from "./auth.js";
-import { User, countCharacters, countTokens, storeUsageStats } from "./model/User.js";
+import { User, countTokens, storeUsageStats } from "./model/User.js";
 import { fetchPageContent, fetchSearchResults } from "./search.js";
 import fs from "fs";
 import path from "path";
@@ -215,12 +215,10 @@ app.post("/interact", verifyToken, async (req, res) => {
         let textResponse;
         let inputTokens = 0;
         let outputTokens = 0;
-        let inputCharacters = 0;
-        let outputCharacters = 0;
         let imagesGenerated = 0;
 
+        inputTokens = countTokens(contextPrompt);
         if (model?.startsWith("gemini")) {
-            inputCharacters = countCharacters(contextPrompt);
             textResponse = await getTextGemini(
                 contextPrompt,
                 temperature,
@@ -231,9 +229,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 apiKey,
                 tools
             );
-            outputCharacters = countCharacters(textResponse);
         } else if (model?.startsWith("claude")) {
-            inputTokens = countTokens(contextPrompt);
             textResponse = await getTextClaude(
                 contextPrompt,
                 temperature,
@@ -244,12 +240,12 @@ app.post("/interact", verifyToken, async (req, res) => {
                 apiKey,
                 tools
             );
-            outputTokens = countTokens(textResponse);
         } else if (model?.startsWith("HuggingFace")) {
             textResponse = await getTextInfra(contextPrompt, temperature, model, apiKey);
         } else {
             textResponse = await getTextTogether(contextPrompt, temperature, model, apiKey);
         }
+        outputTokens = countTokens(textResponse);
 
         if (searchResults?.length > 0) {
             textResponse += `\n\nSearch Results:\n${searchResults
@@ -270,15 +266,7 @@ app.post("/interact", verifyToken, async (req, res) => {
             imagesGenerated = numberOfImages;
         }
 
-        storeUsageStats(
-            req.user.id,
-            model,
-            inputTokens,
-            outputTokens,
-            inputCharacters,
-            outputCharacters,
-            imagesGenerated
-        );
+        storeUsageStats(req.user.id, model, inputTokens, outputTokens, imagesGenerated);
 
         res.json({ textResponse, imageResponse });
     } catch (error) {
@@ -347,10 +335,10 @@ app.get("/stats", verifyToken, async (req, res) => {
     try {
         const users = await User.find({});
         const geminiStats = {
-            totalInputCharacters: 0,
-            totalOutputCharacters: 0,
-            totalImagesGenerated: 0,
+            totalInputTokens: 0,
+            totalOutputTokens: 0,
             totalMoneyConsumed: 0,
+            totalImagesGenerated: 0,
         };
         const claudeStats = {
             totalInputTokens: 0,
@@ -360,12 +348,10 @@ app.get("/stats", verifyToken, async (req, res) => {
 
         for (const user of users) {
             const { gemini, claude } = user.usageStats;
-
-            geminiStats.totalInputCharacters += gemini.inputCharacters;
-            geminiStats.totalOutputCharacters += gemini.outputCharacters;
-            geminiStats.totalImagesGenerated += gemini.imagesGenerated;
+            geminiStats.totalInputTokens += gemini.inputTokens;
+            geminiStats.totalOutputTokens += gemini.outputTokens;
             geminiStats.totalMoneyConsumed += gemini.moneyConsumed;
-
+            geminiStats.totalImagesGenerated += gemini.imagesGenerated;
             claudeStats.totalInputTokens += claude.inputTokens;
             claudeStats.totalOutputTokens += claude.outputTokens;
             claudeStats.totalMoneyConsumed += claude.moneyConsumed;

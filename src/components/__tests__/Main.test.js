@@ -415,8 +415,8 @@ describe("Authentication and Sign-out", () => {
             email: "test@example.com",
             usageStats: {
                 gemini: {
-                    inputCharacters: 1000,
-                    outputCharacters: 2000,
+                    inputTokens: 1000,
+                    outputTokens: 2000,
                     imagesGenerated: 10,
                     moneyConsumed: 5.99,
                 },

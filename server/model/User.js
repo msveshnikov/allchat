@@ -6,8 +6,8 @@ const userSchema = new mongoose.Schema({
     admin: { type: Boolean, required: false },
     usageStats: {
         gemini: {
-            inputCharacters: { type: Number, default: 0 },
-            outputCharacters: { type: Number, default: 0 },
+            inputTokens: { type: Number, default: 0 },
+            outputTokens: { type: Number, default: 0 },
             imagesGenerated: { type: Number, default: 0 },
             moneyConsumed: { type: Number, default: 0 },
         },
@@ -27,13 +27,6 @@ const userSchema = new mongoose.Schema({
 
 export const User = mongoose.model("User", userSchema);
 
-export function countCharacters(text) {
-    if (!text) {
-        return 0;
-    }
-    return text.length;
-}
-
 export function countTokens(text) {
     if (!text) {
         return 0;
@@ -50,23 +43,23 @@ export function countTokens(text) {
     return Math.round(tokenCount);
 }
 
-export function storeUsageStats(
-    userId,
-    model,
-    inputTokens,
-    outputTokens,
-    inputCharacters,
-    outputCharacters,
-    imagesGenerated
-) {
+export function storeUsageStats(userId, model, inputTokens, outputTokens, imagesGenerated) {
     let moneyConsumed = 0;
+    const isGemini15 = model === "gemini-1.5-pro-latest";
+    const isGemini10 = model === "gemini-1.0-pro-latest";
+    const isClaude = model.startsWith("claude");
 
-    if (model?.startsWith("gemini")) {
-        const inputCharactersCost = (inputCharacters / 1000) * 0.000125;
-        const outputCharactersCost = (outputCharacters / 1000) * 0.000375;
+    if (isGemini15) {
+        const inputTokensCost = (inputTokens / 1000000) * 7;
+        const outputTokensCost = (outputTokens / 1000000) * 21;
         const imagesGeneratedCost = imagesGenerated * 0.01;
-        moneyConsumed = inputCharactersCost + outputCharactersCost + imagesGeneratedCost;
-    } else if (model?.startsWith("claude")) {
+        moneyConsumed = inputTokensCost + outputTokensCost + imagesGeneratedCost;
+    } else if (isGemini10) {
+        const inputTokensCost = (inputTokens / 1000000) * 0.5;
+        const outputTokensCost = (outputTokens / 1000000) * 1.5;
+        const imagesGeneratedCost = imagesGenerated * 0.01;
+        moneyConsumed = inputTokensCost + outputTokensCost + imagesGeneratedCost;
+    } else if (isClaude) {
         const inputTokensCost = (inputTokens * 0.25) / 1000000;
         const outputTokensCost = (outputTokens * 1.25) / 1000000;
         moneyConsumed = inputTokensCost + outputTokensCost;
@@ -76,12 +69,10 @@ export function storeUsageStats(
         userId,
         {
             $inc: {
-                [`usageStats.${model}.inputTokens`]: inputTokens,
-                [`usageStats.${model}.outputTokens`]: outputTokens,
-                [`usageStats.${model}.inputCharacters`]: inputCharacters,
-                [`usageStats.${model}.outputCharacters`]: outputCharacters,
-                [`usageStats.${model}.imagesGenerated`]: imagesGenerated,
-                [`usageStats.${model}.moneyConsumed`]: moneyConsumed,
+                [`usageStats.${model.slice(0, 6)}.inputTokens`]: inputTokens,
+                [`usageStats.${model.slice(0, 6)}.outputTokens`]: outputTokens,
+                [`usageStats.${model.slice(0, 6)}.imagesGenerated`]: imagesGenerated,
+                [`usageStats.${model.slice(0, 6)}.moneyConsumed`]: moneyConsumed,
             },
         },
         { new: true }

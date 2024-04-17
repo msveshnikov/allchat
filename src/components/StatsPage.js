@@ -49,10 +49,10 @@ const StatsPage = () => {
                                         Gemini Pro 1.5 Usage
                                     </Typography>
                                     <Typography variant="body1" color="text.primary">
-                                        Total Input Characters: {stats.gemini.totalInputCharacters}
+                                        Total Input Tokens: {stats.gemini.totalInputTokens}
                                     </Typography>
                                     <Typography variant="body1" color="text.primary">
-                                        Total Output Characters: {stats.gemini.totalOutputCharacters}
+                                        Total Output Tokens: {stats.gemini.totalOutputTokens}
                                     </Typography>
                                     <Typography variant="body1" color="text.primary">
                                         Total Images Generated: {stats.gemini.totalImagesGenerated}

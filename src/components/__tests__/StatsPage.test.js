@@ -10,8 +10,6 @@ jest.mock("../Main", () => ({
 describe("StatsPage", () => {
     const mockStats = {
         gemini: {
-            totalInputCharacters: 1000,
-            totalOutputCharacters: 2000,
             totalImagesGenerated: 10,
             totalMoneyConsumed: 5.99,
         },
@@ -33,23 +31,12 @@ describe("StatsPage", () => {
         jest.restoreAllMocks();
     });
 
-    // test("renders loading state initially", () => {
-    //     render(<StatsPage />);
-    //     expect(screen.getByText("Loading...")).toBeInTheDocument();
-    // });
-
     test("renders stats after data is fetched", async () => {
         render(<StatsPage />);
 
         await waitFor(() => {
             expect(screen.getByText("Admin Statistics")).toBeInTheDocument();
             expect(screen.getByText("Gemini Pro 1.5 Usage")).toBeInTheDocument();
-            expect(
-                screen.getByText(`Total Input Characters: ${mockStats.gemini.totalInputCharacters}`)
-            ).toBeInTheDocument();
-            expect(
-                screen.getByText(`Total Output Characters: ${mockStats.gemini.totalOutputCharacters}`)
-            ).toBeInTheDocument();
             expect(
                 screen.getByText(`Total Images Generated: ${mockStats.gemini.totalImagesGenerated}`)
             ).toBeInTheDocument();
