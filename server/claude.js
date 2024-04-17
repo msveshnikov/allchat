@@ -366,7 +366,7 @@ async function processToolResult(data, temperature, messages, userId, model, web
 
     const newMessages = [
         ...messages,
-        { role: "assistant", content: data.content },
+        { role: "assistant", content: data.content.filter((c) => c.type !== "text" || c.text) },
         {
             role: "user",
             content: toolResults.map((toolResult) => ({
