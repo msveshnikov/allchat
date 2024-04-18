@@ -16,9 +16,9 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
         "claude-3-opus-20240229",
         "databricks/dbrx-instruct",
         "mistralai/Mixtral-8x7B-Instruct-v0.1",
+        "mistralai/Mixtral-8x22B-Instruct-v0.1",
         "microsoft/WizardLM-2-8x22B",
-        "HuggingFaceH4/zephyr-orpo-141b-A35b-v0.1",
-        // "mistralai/Mixtral-8x22B",
+        // "HuggingFaceH4/zephyr-orpo-141b-A35b-v0.1",
     ];
 
     const handleApiKeyChange = (event) => {

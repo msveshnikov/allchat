@@ -34,9 +34,11 @@ https://allchat.online/
 -   If your task require some compute, Python program will be created and executed in the background. Just say _Calculate first 100 Fibonacci numbers_
 -   Get the latest news from Google News in your preferred language and receive them directly in your inbox. Keep up with industry trends and advancements. Just say _Send me your comment about latest news_
 
+# RUN LOCALLY
+
 ## Environment variables
 
-You have to get some of those APIs and set environment variables (or put to .env file):
+You have to get some of those APIs and set environment variables (or put to .env file in the root folder):
 
 -   GEMINI_KEY - Gemini 1.5 key
 -   CLAUDE_KEY - Anthropic Key (for Haiku)
@@ -49,6 +51,14 @@ You have to get some of those APIs and set environment variables (or put to .env
 -   TELEGRAM_KEY - for Telegram tools to work
 -   EMAIL - for email tools
 -   EMAIL_PASSWORD - for email tools
+
+## Run
+
+-   Start local (or containerized Mongo DB)
+
+-   In server folder, `npm run api`
+
+-   In root folder, `npm run start`
 
 # DOCKER DEPLOY
 
