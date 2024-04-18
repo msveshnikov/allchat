@@ -21,7 +21,6 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
         "mistralai/Mixtral-8x7B-Instruct-v0.1",
         "mistralai/Mixtral-8x22B-Instruct-v0.1",
         "microsoft/WizardLM-2-8x22B",
-        // "HuggingFaceH4/zephyr-orpo-141b-A35b-v0.1",
     ];
 
     const handleApiKeyChange = (event) => {
@@ -177,7 +176,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h6" gutterBottom color="secondary">
-                                {t("Gemini Pro 1.5 Usage")}
+                                {t("Gemini Pro Usage")}
                             </Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
