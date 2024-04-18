@@ -534,13 +534,31 @@ app.post("/customgpt", async (req, res) => {
             }
         }
 
-        const newCustomGPT = new CustomGPT({
-            name,
-            instructions,
-            knowledge,
-        });
-        await newCustomGPT.save();
-        res.json({ message: "CustomGPT saved successfully. You can select it in the Settings.", currentSize: knowledge?.length });
+        // Check if a CustomGPT instance with the same name already exists
+        const existingCustomGPT = await CustomGPT.findOne({ name });
+
+        if (existingCustomGPT) {
+            // Update the existing CustomGPT instance
+            existingCustomGPT.instructions = instructions;
+            existingCustomGPT.knowledge = knowledge;
+            await existingCustomGPT.save();
+            res.json({
+                message: "CustomGPT updated successfully. You can select it in the Settings.",
+                currentSize: knowledge?.length,
+            });
+        } else {
+            // Create a new CustomGPT instance
+            const newCustomGPT = new CustomGPT({
+                name,
+                instructions,
+                knowledge,
+            });
+            await newCustomGPT.save();
+            res.json({
+                message: "CustomGPT saved successfully. You can select it in the Settings.",
+                currentSize: knowledge?.length,
+            });
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
