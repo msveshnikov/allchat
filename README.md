@@ -14,12 +14,12 @@ https://allchat.online/
 -   Audio Input in Gemini
 -   Video Input in Gemini
 -   Image Input (png/jpeg) in Gemini and Haiku
--   Together AI models databricks/dbrx-instruct mistralai/Mixtral-8x7B-Instruct-v0.1
--   Multiple chats
+-   Image Generation by Amazon Titan
+-   Together AI models databricks/dbrx-instruct mistralai/Mixtral-8x22B-Instruct-v0.1, etc
 -   File upload PDFs, Word, Excel into the conversation
+-   Multiple chats
 -   Markdown formatting
 -   Edit your messages with response regeneration
--   Image Generation by Amazon Titan
 -   Python Code Run
 -   Mobile friendly, PWA, Android app, etc
 -   Abiility to provide own API key
@@ -54,7 +54,7 @@ You have to get some of those APIs and set environment variables (or put to .env
 
 ## Run
 
--   Start local (or containerized Mongo DB)
+-   Start local (or containerized) Mongo DB: `docker run -p 27017:27017 -d mongo`
 
 -   In server folder, `npm run api`
 
@@ -167,6 +167,11 @@ sudo systemctl restart nginx
 After completing these steps, your Nginx server should now be correctly configured to act as a reverse proxy for your containerized Node.js backend and React MUI frontend applications, serving them at `allchat.online` and `www.allchat.online`.
 
 Note: Make sure that your backend and frontend containers are running and accessible from your Nginx server. You may need to adjust the firewall rules or security groups on your VM instance to allow incoming traffic on the necessary ports.
+
+# Monitoring
+
+Check /server/monitoring folder for dockerized monitoring solution (Loki+Grafana)
+
 
 [![Stargazers repo roster for @msveshnikov/allchat](https://reporoster.com/stars/msveshnikov/allchat)](https://github.com/msveshnikov/allchat/stargazers)
 
