@@ -146,6 +146,7 @@ function Main() {
                     fileType,
                     fileBytesBase64,
                     model: localStorage.getItem("selectedModel") || "gemini-1.5-pro-latest",
+                    customGPT: localStorage.getItem("selectedCustomGPT"),
                     apiKey: localStorage.getItem("apiKey"),
                     tools,
                     temperature,

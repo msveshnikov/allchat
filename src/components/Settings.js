@@ -60,18 +60,8 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
             console.error("Error fetching custom GPT names:", error);
         }
     };
-
     return (
         <>
-            <Avatar
-                src={gravatarUrl}
-                alt={user.name}
-                sx={{
-                    width: 100,
-                    height: 100,
-                    marginBottom: "1rem",
-                }}
-            />
             <Card
                 sx={{
                     width: "100%",
@@ -82,13 +72,24 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
             >
                 <CardContent sx={{ padding: "1rem" }}>
                     <Grid container spacing={1}>
-                        <Grid item xs={12} md={6}>
+                        <Grid item xs={12} md={4}>
                             <Typography variant="h6" gutterBottom color="secondary">
                                 {t("Email")}
                             </Typography>
                             <Typography variant="body1" color="#fff">
                                 {user.email}
                             </Typography>
+                        </Grid>
+                        <Grid item xs={12} md={2}>
+                            <Avatar
+                                src={gravatarUrl}
+                                alt={user.name}
+                                sx={{
+                                    width: 80,
+                                    height: 80,
+                                    marginTop: "1rem",
+                                }}
+                            />
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h6" gutterBottom color="secondary">

@@ -115,6 +115,7 @@ app.post("/interact", verifyToken, async (req, res) => {
     const tools = req.body.tools;
     const lang = req.body.lang;
     const model = req.body.model || "gemini-1.5-pro-latest";
+    const customGPT = req.body.customGPT;
     const apiKey = req.body.apiKey;
     const country = req.headers["geoip_country_code"];
 
@@ -212,7 +213,15 @@ app.post("/interact", verifyToken, async (req, res) => {
             }
         }
 
-        const contextPrompt = `System: ${systemPrompt} User country code: ${country} User Lang: ${lang}
+        let instructions = "";
+        if (customGPT) {
+            const GPT = await CustomGPT.findOne({ name: customGPT });
+            if (GPT) {
+                instructions = GPT.knowledge + "\n\n" + GPT.instructions;
+            }
+        }
+
+        const contextPrompt = `System: ${instructions || systemPrompt} User country code: ${country} User Lang: ${lang}
             ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
             \n\nSearch Results:${topResultContent}\n\nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
 
@@ -567,14 +576,14 @@ app.post("/customgpt", async (req, res) => {
 
 app.get("/customgpt", async (req, res) => {
     try {
-      const customGPTs = await CustomGPT.find({}, { name: 1, _id: 0 });
-      const names = customGPTs.map((customGPT) => customGPT.name);
-      res.json(names);
+        const customGPTs = await CustomGPT.find({}, { name: 1, _id: 0 });
+        const names = [...new Set(customGPTs.map((customGPT) => customGPT.name))];
+        res.json(names);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: error.message });
+        console.error(error);
+        res.status(500).json({ error: error.message });
     }
-  });
+});
 
 process.on("uncaughtException", (err, origin) => {
     console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
