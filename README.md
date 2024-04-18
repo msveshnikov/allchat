@@ -11,11 +11,12 @@ https://allchat.online/
 ## Features
 
 -   Gemini Pro 1.5 and Claude 3 Haiku
+-   Custom GPTs
 -   Audio Input in Gemini
 -   Video Input in Gemini
 -   Image Input (png/jpeg) in Gemini and Haiku
 -   Image Generation by Amazon Titan
--   Together AI models databricks/dbrx-instruct mistralai/Mixtral-8x22B-Instruct-v0.1, etc
+-   Together AI models databricks/dbrx-instruct mistralai/Mixtral-8x22B-Instruct-v0.1, LLama-3, etc
 -   File upload PDFs, Word, Excel into the conversation
 -   Multiple chats
 -   Markdown formatting

@@ -21,6 +21,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
         "mistralai/Mixtral-8x7B-Instruct-v0.1",
         "mistralai/Mixtral-8x22B-Instruct-v0.1",
         "microsoft/WizardLM-2-8x22B",
+        "meta-llama/Llama-3-70b-chat-hf",
     ];
 
     const handleApiKeyChange = (event) => {
