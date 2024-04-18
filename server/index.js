@@ -565,6 +565,17 @@ app.post("/customgpt", async (req, res) => {
     }
 });
 
+app.get("/customgpt", async (req, res) => {
+    try {
+      const customGPTs = await CustomGPT.find({}, { name: 1, _id: 0 });
+      const names = customGPTs.map((customGPT) => customGPT.name);
+      res.json(names);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
 process.on("uncaughtException", (err, origin) => {
     console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
 });

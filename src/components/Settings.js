@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Typography, Card, CardContent, Grid, Avatar, Button, Link, TextField, MenuItem } from "@mui/material";
 import md5 from "md5";
 import { useTranslation } from "react-i18next";
+import { API_URL } from "./Main";
 
 const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) => {
     const { t } = useTranslation();
     const gravatarUrl = `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
     const [apiKey, setApiKey] = useState("");
     const [selectedModel, setSelectedModel] = useState("gemini-1.5-pro-latest");
+    const [customGPTNames, setCustomGPTNames] = useState([]);
+    const [selectedCustomGPT, setSelectedCustomGPT] = useState("");
     const models = [
         "gemini-1.5-pro-latest",
         "gemini-1.0-pro-latest",
@@ -29,17 +32,35 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
         setSelectedModel(event.target.value);
     };
 
+    const handleCustomGPTChange = (event) => {
+        setSelectedCustomGPT(event.target.value);
+    };
+
     useEffect(() => {
         const storedApiKey = localStorage.getItem("apiKey");
         const storedModel = localStorage.getItem("selectedModel");
+        const storedCustomGPT = localStorage.getItem("selectedCustomGPT");
         if (storedApiKey) setApiKey(storedApiKey);
         if (storedModel) setSelectedModel(storedModel);
+        if (storedCustomGPT) setSelectedCustomGPT(storedCustomGPT);
+        fetchCustomGPTNames();
     }, []);
 
     useEffect(() => {
         localStorage.setItem("apiKey", apiKey);
         localStorage.setItem("selectedModel", selectedModel);
-    }, [apiKey, selectedModel]);
+        localStorage.setItem("selectedCustomGPT", selectedCustomGPT);
+    }, [apiKey, selectedModel, selectedCustomGPT]);
+
+    const fetchCustomGPTNames = async () => {
+        try {
+            const response = await fetch(API_URL + "/customgpt");
+            const data = await response.json();
+            setCustomGPTNames(data);
+        } catch (error) {
+            console.error("Error fetching custom GPT names:", error);
+        }
+    };
 
     return (
         <>
@@ -123,6 +144,26 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                             </TextField>
                         </Grid>
                         <Grid item xs={12} md={6}>
+                            <Typography variant="h6" gutterBottom color="secondary">
+                                {t("Select Custom GPT")}
+                            </Typography>
+                            <TextField
+                                value={selectedCustomGPT}
+                                onChange={handleCustomGPTChange}
+                                fullWidth
+                                select
+                                variant="outlined"
+                                color="secondary"
+                            >
+                                <MenuItem value="">None</MenuItem>
+                                {customGPTNames.map((name) => (
+                                    <MenuItem key={name} value={name}>
+                                        {name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Grid>
+                        <Grid item xs={12} md={12}>
                             <Typography variant="h6" gutterBottom color="secondary">
                                 {t("Your API Key")}
                             </Typography>
