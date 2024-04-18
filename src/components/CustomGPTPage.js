@@ -23,26 +23,52 @@ const CustomGPTPage = () => {
         setFiles(updatedFiles);
         setCurrentSize(newSize);
     };
-
     const handleSubmit = async () => {
-        const formData = new FormData();
-        formData.append("name", name);
-        formData.append("instructions", instructions);
-        files.forEach((file) => {
-            formData.append("files", file);
-        });
-
         try {
+            const filesBase64 = await Promise.all(
+                files.map(async (file) => {
+                    const base64 = await convertToBase64(file);
+                    return base64;
+                })
+            );
+
+            const formData = {
+                name,
+                instructions,
+                files: filesBase64,
+            };
+
             const response = await fetch("/api/customgpt", {
                 method: "POST",
-                body: formData,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
             });
 
             const data = await response.json();
-            setCurrentSize(data.currentSize);
+
+            if (response.ok) {
+                setCurrentSize(data.currentSize);
+            } else {
+                console.error("Error:", data.error);
+            }
         } catch (error) {
             console.error("Error:", error);
         }
+    };
+
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+            fileReader.onload = () => {
+                resolve(fileReader.result);
+            };
+            fileReader.onerror = (error) => {
+                reject(error);
+            };
+        });
     };
 
     return (
