@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const customGPTSchema = new mongoose.Schema(
     {
-        name: { type: String, required: true },
+        name: { type: String, required: true, unique: true },
         instructions: { type: String, required: true },
         knowledge: { type: String, maxlength: 60000 },
     },

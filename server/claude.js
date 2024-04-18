@@ -259,7 +259,7 @@ export async function sendEmail(to, subject, content, userId) {
     }
     const mailOptions = {
         to: recipient,
-        from: "MangaTVShop@gmail.com",
+        from: process.env.EMAIL,
         subject,
         text: content,
     };

@@ -8,6 +8,8 @@ const CustomGPTPage = () => {
     const [instructions, setInstructions] = useState("");
     const [files, setFiles] = useState([]);
     const [currentSize, setCurrentSize] = useState(0);
+    const [error, setError] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     const handleNameChange = (e) => {
         setName(e.target.value);
@@ -18,44 +20,49 @@ const CustomGPTPage = () => {
     };
 
     const handleFilesDrop = (e) => {
+        e.preventDefault();
         const droppedFiles = Array.from(e.dataTransfer.files);
         const updatedFiles = [...files, ...droppedFiles];
-        const newSize = updatedFiles.reduce((acc, file) => acc + file.size, currentSize);
         setFiles(updatedFiles);
-        setCurrentSize(newSize);
     };
+
+    const handleFileUpload = (e) => {
+        const uploadedFiles = Array.from(e.target.files);
+        const updatedFiles = [...files, ...uploadedFiles];
+        setFiles(updatedFiles);
+    };
+
     const handleSubmit = async () => {
-        try {
-            const filesBase64 = await Promise.all(
-                files.map(async (file) => {
-                    const base64 = await convertToBase64(file);
-                    return base64;
-                })
-            );
+        const filesBase64 = await Promise.all(
+            files.map(async (file) => {
+                const base64 = await convertToBase64(file);
+                return base64;
+            })
+        );
 
-            const formData = {
-                name,
-                instructions,
-                files: filesBase64,
-            };
+        const formData = {
+            name,
+            instructions,
+            files: filesBase64,
+        };
 
-            const response = await fetch(`${API_URL}/customgpt`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            });
+        const response = await fetch(`${API_URL}/customgpt`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
 
-            const data = await response.json();
+        const data = await response.json();
 
-            if (response.ok) {
-                setCurrentSize(data.currentSize);
-            } else {
-                console.error("Error:", data.error);
-            }
-        } catch (error) {
-            console.error("Error:", error);
+        if (response.ok) {
+            setError("");
+            setSuccessMessage(data.message);
+            setCurrentSize(data.currentSize);
+        } else {
+            setError(data.error);
+            setSuccessMessage("");
         }
     };
 
@@ -90,7 +97,7 @@ const CustomGPTPage = () => {
                 value={instructions}
                 onChange={handleInstructionsChange}
                 multiline
-                rows={12}
+                rows={10}
                 fullWidth
                 margin="normal"
             />
@@ -110,10 +117,16 @@ const CustomGPTPage = () => {
             >
                 <IconButton color="primary" component="label">
                     <UploadFileIcon fontSize="large" />
-                    <input type="file" multiple hidden />
+                    <input
+                        type="file"
+                        accept=".pdf,.doc,.docx,.xls,.xlsx"
+                        multiple
+                        hidden
+                        onChange={handleFileUpload}
+                    />
                 </IconButton>
                 <Typography variant="body2" color="textSecondary">
-                    Drop files here or click to upload
+                    Drag and drop files here or click to upload
                 </Typography>
                 {files.map((file, index) => (
                     <Typography key={index} variant="body2">
@@ -124,6 +137,16 @@ const CustomGPTPage = () => {
             <Typography variant="body1" gutterBottom>
                 Current Size: {currentSize} bytes (60,000 max)
             </Typography>
+            {error && (
+                <Typography variant="body1" color="error" gutterBottom>
+                    {error}
+                </Typography>
+            )}
+            {successMessage && (
+                <Typography variant="body1" color="success" gutterBottom>
+                    {successMessage}
+                </Typography>
+            )}
             <Button variant="contained" color="primary" onClick={handleSubmit}>
                 Submit
             </Button>

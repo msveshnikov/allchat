@@ -22,7 +22,6 @@ const AuthForm = ({ onAuthentication }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Email validation
         if (!emailRegex.test(email)) {
             setError(t("Please enter a valid email address."));
             return;

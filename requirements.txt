@@ -6,3 +6,4 @@ matplotlib
 fastapi
 pillow
 yfinance
+prettytable

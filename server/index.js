@@ -17,7 +17,6 @@ import { authenticateUser, completePasswordReset, registerUser, resetPassword, v
 import { User, countTokens, storeUsageStats } from "./model/User.js";
 import CustomGPT from "./model/CustomGPT.js";
 import { fetchPageContent, fetchSearchResults } from "./search.js";
-import bufferToStream from "buffer-to-stream";
 import fs from "fs";
 import path from "path";
 import Stripe from "stripe";
@@ -71,6 +70,9 @@ morgan.token("body", (req, res) => {
         }
         if ("password" in clonedBody) {
             clonedBody.password = "<PASSWORD_REDACTED>";
+        }
+        if ("files" in clonedBody) {
+            clonedBody.files = "<FILES_REDACTED>";
         }
         if ("apiKey" in clonedBody) {
             clonedBody.apiKey = "<APIKEY_REDACTED>";
@@ -493,29 +495,27 @@ app.post("/customgpt", async (req, res) => {
     const { name, instructions, files } = req.body;
     let knowledge = "";
     const maxSize = 60000;
-
     try {
         if (files && files.length > 0) {
             for (const file of files) {
-                const fileBuffer = Buffer.from(file.split(",")[1], "base64");
-                const fileStream = bufferToStream(fileBuffer);
-                const fileBytes = fileBuffer.toString("binary");
-                const fileType = fileStream.detectMimeType();
+                const fileType = file.split(";")[0].split("/")[1];
+                const fileBytesBase64 = file.split(",")[1];
+                const fileBytes = Buffer.from(fileBytesBase64, "base64");
 
-                if (fileType === "application/pdf") {
+                if (fileType === "pdf") {
                     const data = await pdfParser(fileBytes);
                     knowledge += `${data.text}\n\n`;
                 } else if (
-                    fileType === "application/msword" ||
-                    fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    fileType === "msword" ||
+                    fileType === "vnd.openxmlformats-officedocument.wordprocessingml.document"
                 ) {
-                    const docResult = await mammoth.extractRawText({ buffer: fileBuffer });
+                    const docResult = await mammoth.extractRawText({ buffer: fileBytes });
                     knowledge += `${docResult.value}\n\n`;
                 } else if (
-                    fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-                    fileType === "application/vnd.ms-excel"
+                    fileType === "xlsx" ||
+                    fileType === "vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 ) {
-                    const workbook = xlsx.read(fileBytes, { type: "binary" });
+                    const workbook = xlsx.read(fileBytes, { type: "buffer" });
                     const sheetNames = workbook.SheetNames;
                     let excelText = "";
                     sheetNames.forEach((sheetName) => {
@@ -528,26 +528,22 @@ app.post("/customgpt", async (req, res) => {
                     return res.status(400).json({ error: "Unsupported file type" });
                 }
 
-                if (knowledge.length > maxSize) {
+                if (knowledge?.length > maxSize) {
                     return res.status(413).json({ error: "Maximum context size exceeded" });
                 }
             }
         }
 
-        // Create a new CustomGPT document
         const newCustomGPT = new CustomGPT({
             name,
             instructions,
             knowledge,
         });
-
-        // Save the document to the database
         await newCustomGPT.save();
-
-        res.json({ message: "CustomGPT saved successfully" });
+        res.json({ message: "CustomGPT saved successfully. You can select it in the Settings.", currentSize: knowledge?.length });
     } catch (error) {
-        console.error("Error:", error);
-        res.status(500).json({ error: "Internal server error" });
+        console.error(error);
+        res.status(500).json({ error: error.message });
     }
 });
 
