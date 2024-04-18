@@ -57,10 +57,9 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
             const response = await fetch(API_URL + "/customgpt");
             const data = await response.json();
             setCustomGPTNames(data);
-        } catch (error) {
-            console.error("Error fetching custom GPT names:", error);
-        }
+        } catch {}
     };
+
     return (
         <>
             <Card
