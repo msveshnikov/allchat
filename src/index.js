@@ -10,6 +10,7 @@ import StatsPage from "./components/StatsPage";
 import "./i18n";
 import { I18nextProvider } from "react-i18next";
 import PasswordReset from "./components/PasswordReset";
+import CustomGPTPage from "./components/CustomGPTPage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -18,6 +19,7 @@ root.render(
             <Router>
                 <Routes>
                     <Route path="/admin" element={<StatsPage />} />
+                    <Route path="/custom" element={<CustomGPTPage />} />
                     <Route path="/" element={<Main />} />
                     <Route path="/reset-password/:token" element={<PasswordReset />} />
                 </Routes>

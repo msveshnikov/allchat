@@ -3,6 +3,7 @@ import { List, ListItem, ListItemText, SwipeableDrawer, Slider, Typography } fro
 import SoundSwitch from "./SoundSwitch";
 import ImagesSwitch from "./ImagesSwitch";
 import ToolsSwitch from "./ToolsSwitch";
+import { Link } from "react-router-dom";
 
 const SideDrawer = ({
     isOpen,
@@ -56,6 +57,11 @@ const SideDrawer = ({
                         <ToolsSwitch tools={tools} onToolsChange={onToolsChange} />
                     </ListItem>
                 </div>
+                <Link to="/custom" style={{ color: "white", backgroundColor: "#30A557", textDecoration: "none" }}>
+                    <ListItem button>
+                        <ListItemText primary="Custom GPT" />
+                    </ListItem>
+                </Link>
                 <ListItem button onClick={onClearAll} style={{ color: "white", backgroundColor: "#F50057" }}>
                     <ListItemText primary="Clear All" />
                 </ListItem>

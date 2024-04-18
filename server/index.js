@@ -15,7 +15,9 @@ import { getTextTogether } from "./together.js";
 import { getTextInfra } from "./deepinfra.js";
 import { authenticateUser, completePasswordReset, registerUser, resetPassword, verifyToken } from "./auth.js";
 import { User, countTokens, storeUsageStats } from "./model/User.js";
+import CustomGPT from "./model/CustomGPT.js";
 import { fetchPageContent, fetchSearchResults } from "./search.js";
+import bufferToStream from "buffer-to-stream";
 import fs from "fs";
 import path from "path";
 import Stripe from "stripe";
@@ -484,6 +486,69 @@ app.post("/cancel", verifyToken, async (req, res) => {
     } catch (error) {
         console.error("Error canceling subscription:", error);
         res.status(500).json({ error: "Failed to cancel subscription" });
+    }
+});
+
+app.post("/api/customgpt", async (req, res) => {
+    const { name, instructions, files } = req.body;
+    let knowledge = "";
+    const maxSize = 60000;
+
+    try {
+        // Process the files
+        if (files && files.length > 0) {
+            for (const file of files) {
+                const fileBuffer = Buffer.from(file.split(",")[1], "base64");
+                const fileStream = bufferToStream(fileBuffer);
+                const fileBytes = fileBuffer.toString("binary");
+                const fileType = fileStream.detectMimeType();
+
+                if (fileType === "application/pdf") {
+                    const data = await pdfParser(fileBytes);
+                    knowledge += `${data.text}\n\n`;
+                } else if (
+                    fileType === "application/msword" ||
+                    fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                ) {
+                    const docResult = await mammoth.extractRawText({ buffer: fileBuffer });
+                    knowledge += `${docResult.value}\n\n`;
+                } else if (
+                    fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+                    fileType === "application/vnd.ms-excel"
+                ) {
+                    const workbook = xlsx.read(fileBytes, { type: "binary" });
+                    const sheetNames = workbook.SheetNames;
+                    let excelText = "";
+                    sheetNames.forEach((sheetName) => {
+                        const worksheet = workbook.Sheets[sheetName];
+                        excelText += xlsx.utils.sheet_to_text(worksheet);
+                    });
+                    knowledge += `${excelText}\n\n`;
+                } else {
+                    console.error("Unsupported file type");
+                    return res.status(400).json({ error: "Unsupported file type" });
+                }
+
+                if (knowledge.length > maxSize) {
+                    return res.status(413).json({ error: "Maximum context size exceeded" });
+                }
+            }
+        }
+
+        // Create a new CustomGPT document
+        const newCustomGPT = new CustomGPT({
+            name,
+            instructions,
+            knowledge,
+        });
+
+        // Save the document to the database
+        await newCustomGPT.save();
+
+        res.json({ message: "CustomGPT saved successfully" });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 
