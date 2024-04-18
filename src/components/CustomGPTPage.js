@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Typography, TextField, Box, Button, IconButton } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import { API_URL } from "./Main";
 
 const CustomGPTPage = () => {
     const [name, setName] = useState("");
@@ -38,7 +39,7 @@ const CustomGPTPage = () => {
                 files: filesBase64,
             };
 
-            const response = await fetch("/api/customgpt", {
+            const response = await fetch(`${API_URL}/customgpt`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

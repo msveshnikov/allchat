@@ -489,13 +489,12 @@ app.post("/cancel", verifyToken, async (req, res) => {
     }
 });
 
-app.post("/api/customgpt", async (req, res) => {
+app.post("/customgpt", async (req, res) => {
     const { name, instructions, files } = req.body;
     let knowledge = "";
     const maxSize = 60000;
 
     try {
-        // Process the files
         if (files && files.length > 0) {
             for (const file of files) {
                 const fileBuffer = Buffer.from(file.split(",")[1], "base64");
