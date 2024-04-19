@@ -150,7 +150,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                     );
                 }
                 if (model?.startsWith("claude")) {
-                    textResponse = getTextClaude(
+                    textResponse = await getTextClaude(
                         userInput || "what's this",
                         temperature,
                         fileBytesBase64,
