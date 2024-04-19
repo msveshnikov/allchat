@@ -4,6 +4,7 @@ import TelegramBot from "node-telegram-bot-api";
 import nodemailer from "nodemailer";
 import { fetchPageContent, fetchSearchResults, googleNews } from "./search.js";
 import { User } from "./model/User.js";
+import sharp from "sharp";
 dotenv.config({ override: true });
 
 const bot = new TelegramBot(process.env.TELEGRAM_KEY);
@@ -306,6 +307,25 @@ export async function searchWebContent(query) {
     return pageContents?.join("\n");
 }
 
+const resizeImage = async (imageBase64, maxSize = 3 * 1024 * 1024) => {
+    const image = sharp(Buffer.from(imageBase64, "base64"));
+    const metadata = await image.metadata();
+
+    if (metadata.size > maxSize) {
+        const resizedBuffer = await image
+            .resize({
+                fit: "inside",
+                withoutEnlargement: true,
+                withMetadata: true,
+            })
+            .toBuffer();
+
+        return resizedBuffer.toString("base64");
+    } else {
+        return imageBase64;
+    }
+};
+
 async function processToolResult(data, temperature, messages, userId, model, webTools) {
     console.log("processToolResult", data, temperature, messages);
 
@@ -410,7 +430,7 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
                               source: {
                                   type: "base64",
                                   media_type: fileType === "png" ? "image/png" : "image/jpeg",
-                                  data: imageBase64,
+                                  data: await resizeImage(imageBase64),
                               },
                           },
                       ]
