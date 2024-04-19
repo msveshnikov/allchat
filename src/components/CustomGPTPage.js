@@ -115,16 +115,20 @@ const CustomGPTPage = () => {
                 onDrop={handleFilesDrop}
                 onDragOver={(e) => e.preventDefault()}
             >
-                <IconButton color="primary" component="label">
-                    <UploadFileIcon fontSize="large" />
-                    <input
-                        type="file"
-                        accept=".pdf,.doc,.docx,.xls,.xlsx"
-                        multiple
-                        hidden
-                        onChange={handleFileUpload}
-                    />
-                </IconButton>
+                <label htmlFor="file-input">
+                    <IconButton color="primary" component="span">
+                        <UploadFileIcon fontSize="large" />
+                    </IconButton>
+                </label>
+                <input
+                    id="file-input"
+                    type="file"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx"
+                    multiple
+                    hidden
+                    onChange={handleFileUpload}
+                    data-testid="file-upload-input" 
+                />
                 <Typography variant="body2" color="textSecondary">
                     Drag and drop files here or click to upload
                 </Typography>
