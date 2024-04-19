@@ -158,6 +158,7 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
     if (model === "gemini") {
         model = "gemini-1.5-pro-latest";
     }
+
     async function uploadFile(fileBase64, mimeType, displayName) {
         const bufferStream = new stream.PassThrough();
         bufferStream.end(Buffer.from(fileBase64, "base64"));
@@ -175,11 +176,7 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
         return { file_data: { file_uri: uploadedFile.uri, mime_type: uploadedFile.mimeType } };
     }
 
-    const genaiService = await google.discoverAPI({ url: GENAI_DISCOVERY_URL });
-    const auth = new google.auth.GoogleAuth().fromAPIKey(process.env.GEMINI_KEY);
-    let parts = [];
-
-    if (fileType === "mp4") {
+    async function processVideo() {
         const outputDir = "./images";
         if (!fs.existsSync(outputDir)) {
             fs.mkdirSync(outputDir, { recursive: true });
@@ -195,7 +192,6 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                     reject(err);
                 })
                 .on("end", () => {
-                    console.log("Frames extraction completed");
                     resolve();
                 })
                 .screenshots({
@@ -205,20 +201,23 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                 });
         });
 
-        const audioPromise = new Promise((resolve, reject) => {
-            ffmpeg(tempVideoPath)
-                .on("error", (err) => {
-                    console.error("Error extracting audio:", err);
-                    reject(err);
-                })
-                .on("end", () => {
-                    console.log("Audio extraction completed");
-                    resolve();
-                })
-                .output(path.join(outputDir, "audio.mp3"))
-                .noVideo()
-                .run();
-        });
+        let audioPromise;
+        try {
+            audioPromise = new Promise((resolve, reject) => {
+                ffmpeg(tempVideoPath)
+                    .on("error", (err) => {
+                        resolve();
+                    })
+                    .on("end", () => {
+                        resolve();
+                    })
+                    .output(path.join(outputDir, "audio.mp3"))
+                    .noVideo()
+                    .run();
+            });
+        } catch (err) {
+            audioPromise = Promise.resolve();
+        }
 
         await Promise.all([framePromise, audioPromise]);
         fs.unlinkSync(tempVideoPath);
@@ -234,10 +233,20 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
         }
 
         const audioFilePath = path.join(outputDir, "audio.mp3");
-        const audioBase64 = fs.readFileSync(audioFilePath, { encoding: "base64" });
-        const uploadedAudioFile = await uploadFile(audioBase64, "audio/mp3", "audio");
-        parts.push(uploadedAudioFile);
-        fs.unlinkSync(audioFilePath);
+        if (fs.existsSync(audioFilePath)) {
+            const audioBase64 = fs.readFileSync(audioFilePath, { encoding: "base64" });
+            const uploadedAudioFile = await uploadFile(audioBase64, "audio/mp3", "audio");
+            parts.push(uploadedAudioFile);
+            fs.unlinkSync(audioFilePath);
+        }
+    }
+
+    const genaiService = await google.discoverAPI({ url: GENAI_DISCOVERY_URL });
+    const auth = new google.auth.GoogleAuth().fromAPIKey(process.env.GEMINI_KEY);
+    let parts = [];
+
+    if (fileType === "mp4") {
+        await processVideo();
     } else if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
         const uploadedImageFile = await uploadFile(imageBase64, `image/png`, "image");
         parts.push(uploadedImageFile);
