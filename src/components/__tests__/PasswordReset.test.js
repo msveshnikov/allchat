@@ -1,18 +1,15 @@
-import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
 import PasswordReset from "../PasswordReset";
 import "@testing-library/jest-dom";
+import { useParams } from "react-router-dom";
 
 describe("PasswordReset", () => {
+    beforeEach(() => {
+        useParams.mockReturnValue({ token: "123" });
+    });
+ 
     test("renders password reset form", () => {
-        render(
-            <MemoryRouter initialEntries={["/reset-password/token"]}>
-                <Routes>
-                    <Route path="/reset-password/:token" element={<PasswordReset />} />
-                </Routes>
-            </MemoryRouter>
-        );
+        render(<PasswordReset />);
 
         expect(screen.getByRole("heading", { level: 4 })).toBeInTheDocument();
         expect(screen.getByLabelText("New Password")).toBeInTheDocument();
@@ -21,13 +18,7 @@ describe("PasswordReset", () => {
     });
 
     test("shows error when passwords do not match", async () => {
-        render(
-            <MemoryRouter initialEntries={["/reset-password/token"]}>
-                <Routes>
-                    <Route path="/reset-password/:token" element={<PasswordReset />} />
-                </Routes>
-            </MemoryRouter>
-        );
+        render(<PasswordReset />);
 
         const newPasswordInput = screen.getByLabelText("New Password");
         const confirmPasswordInput = screen.getByLabelText("Confirm New Password");
@@ -50,13 +41,7 @@ describe("PasswordReset", () => {
             })
         );
 
-        render(
-            <MemoryRouter initialEntries={["/reset-password/token"]}>
-                <Routes>
-                    <Route path="/reset-password/:token" element={<PasswordReset />} />
-                </Routes>
-            </MemoryRouter>
-        );
+        render(<PasswordReset />);
 
         const newPasswordInput = screen.getByLabelText("New Password");
         const confirmPasswordInput = screen.getByLabelText("Confirm New Password");

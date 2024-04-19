@@ -57,11 +57,11 @@ const SideDrawer = ({
                         <ToolsSwitch tools={tools} onToolsChange={onToolsChange} />
                     </ListItem>
                 </div>
-                {/* <Link to="/custom" style={{ color: "white", backgroundColor: "#30A557", textDecoration: "none" }}>
+                <Link to="/custom" style={{ color: "white", backgroundColor: "#30A557", textDecoration: "none" }}>
                     <ListItem button>
                         <ListItemText primary="Custom GPT" />
                     </ListItem>
-                </Link> */}
+                </Link>
                 <ListItem button onClick={onClearAll} style={{ color: "white", backgroundColor: "#F50057" }}>
                     <ListItemText primary="Clear All" />
                 </ListItem>
