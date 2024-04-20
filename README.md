@@ -24,9 +24,9 @@ https://allchat.online/
 -   Edit your messages with response regeneration
 -   Python Code Run
 -   Mobile friendly, PWA, Android app, etc
--   Abiility to provide own API key
+-   Ability to provide own API key
 -   Web Tools - weather, stocks, email send, Telegram, web search, etc
--   Please ask for more features in Issues or here https://discord.com/invite/JTk2fHtv
+-   Please ask for more features in Discussions or here https://discord.com/invite/JTk2fHtv
 
 ## Connect model to world with Web Tools
 
