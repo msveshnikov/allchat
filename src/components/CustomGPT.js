@@ -46,11 +46,15 @@ const CustomGPTPage = () => {
             files: filesBase64,
         };
 
+        const token = localStorage.getItem("token");
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+
         const response = await fetch(`${API_URL}/customgpt`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers,
             body: JSON.stringify(formData),
         });
 
@@ -127,7 +131,7 @@ const CustomGPTPage = () => {
                     multiple
                     hidden
                     onChange={handleFileUpload}
-                    data-testid="file-upload-input" 
+                    data-testid="file-upload-input"
                 />
                 <Typography variant="body2" color="textSecondary">
                     Drag and drop files here or click to upload

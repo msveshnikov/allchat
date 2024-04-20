@@ -500,8 +500,9 @@ app.post("/cancel", verifyToken, async (req, res) => {
     }
 });
 
-app.post("/customgpt", async (req, res) => {
+app.post("/customgpt", verifyToken, async (req, res) => {
     const { name, instructions, files } = req.body;
+    const user = req.user.id;
     let knowledge = "";
     const maxSize = 60000;
     try {
@@ -558,6 +559,7 @@ app.post("/customgpt", async (req, res) => {
         } else {
             // Create a new CustomGPT instance
             const newCustomGPT = new CustomGPT({
+                user,
                 name,
                 instructions,
                 knowledge,
