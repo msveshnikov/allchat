@@ -10,12 +10,13 @@ https://allchat.online/
 
 ## Features
 
--   Gemini Pro 1.5 and Claude 3 Haiku
--   OpenAI GPT3.5, GPT-4
+-   Gemini Pro 1.5 and Claude 3
+-   OpenAI GPT-3.5, GPT-4
 -   Audio Input in Gemini
 -   Video Input in Gemini
 -   Custom GPTs
--   Image Input (png/jpeg) in Gemini and Haiku
+-   Memory (for Gemini & Claude)
+-   Image Input (png/jpeg) in Gemini and Claude
 -   Image Generation by Amazon Titan
 -   Together AI models databricks/dbrx-instruct mistralai/Mixtral-8x22B-Instruct-v0.1, LLama-3, etc
 -   File upload PDFs, Word, Excel into the conversation
@@ -25,7 +26,7 @@ https://allchat.online/
 -   Python Code Run
 -   Mobile friendly, PWA, Android app, etc
 -   Ability to provide own API key
--   Web Tools - weather, stocks, email send, Telegram, web search, etc
+-   Web Tools (for Gemini & Claude) - weather, stocks, email send, Telegram, web search, etc
 -   Please ask for more features in Discussions or here https://discord.com/invite/JTk2fHtv
 
 ## Connect model to world with Web Tools
@@ -173,7 +174,6 @@ Note: Make sure that your backend and frontend containers are running and access
 # Monitoring
 
 Check /server/monitoring folder for dockerized monitoring solution (Loki+Grafana)
-
 
 [![Stargazers repo roster for @msveshnikov/allchat](https://reporoster.com/stars/msveshnikov/allchat)](https://github.com/msveshnikov/allchat/stargazers)
 

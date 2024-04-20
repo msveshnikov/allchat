@@ -11,6 +11,8 @@ import "./i18n";
 import { I18nextProvider } from "react-i18next";
 import PasswordReset from "./components/PasswordReset";
 import CustomGPTPage from "./components/CustomGPT";
+import Privacy from "./components/Privacy";
+import Terms from "./components/Terms";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -20,6 +22,8 @@ root.render(
                 <Routes>
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/custom" element={<CustomGPTPage />} />
+                    <Route path="/privacy" element={<Privacy />} />
+                    <Route path="/terms" element={<Terms />} />
                     <Route path="/" element={<Main />} />
                     <Route path="/reset-password/:token" element={<PasswordReset />} />
                 </Routes>

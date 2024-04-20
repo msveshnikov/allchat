@@ -3,9 +3,11 @@ import { IconButton, Menu, MenuItem, Avatar } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import md5 from "md5";
 import LaunchIcon from "@mui/icons-material/Launch";
+import { useNavigate } from "react-router-dom"; 
 
 export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const navigate = useNavigate(); 
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -40,6 +42,16 @@ export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
         handleProfileMenuClose();
     };
 
+    const handlePrivacyClick = () => {
+        navigate("/privacy");
+        handleProfileMenuClose();
+    };
+
+    const handleTermsClick = () => {
+        navigate("/terms"); 
+        handleProfileMenuClose();
+    };
+
     return (
         <div>
             <IconButton data-testid="profile" color="inherit" onClick={handleProfileMenuOpen}>
@@ -67,6 +79,8 @@ export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
             >
                 <MenuItem onClick={handleSettingsClick}>Settings</MenuItem>
                 <MenuItem onClick={handleSignOutClick}>Sign Out</MenuItem>
+                <MenuItem onClick={handlePrivacyClick}>Privacy</MenuItem>
+                <MenuItem onClick={handleTermsClick}>Terms</MenuItem>
                 <MenuItem onClick={handleMangaTVClick}>
                     Manga TV &nbsp; <LaunchIcon fontSize="small" />
                 </MenuItem>

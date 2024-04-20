@@ -5,3 +5,6 @@ export const Link = mockLink;
 
 const mockParams = {};
 export const useParams = jest.fn(() => mockParams);
+
+const mockNavigate = {};
+export const useNavigate = jest.fn(() => mockNavigate);
