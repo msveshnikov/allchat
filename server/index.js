@@ -544,11 +544,9 @@ app.post("/customgpt", verifyToken, async (req, res) => {
             }
         }
 
-        // Check if a CustomGPT instance with the same name already exists
         const existingCustomGPT = await CustomGPT.findOne({ name });
 
         if (existingCustomGPT) {
-            // Update the existing CustomGPT instance
             existingCustomGPT.instructions = instructions;
             existingCustomGPT.knowledge = knowledge;
             await existingCustomGPT.save();
@@ -557,7 +555,6 @@ app.post("/customgpt", verifyToken, async (req, res) => {
                 currentSize: knowledge?.length,
             });
         } else {
-            // Create a new CustomGPT instance
             const newCustomGPT = new CustomGPT({
                 user,
                 name,

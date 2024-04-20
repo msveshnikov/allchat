@@ -160,7 +160,7 @@ const StatsPage = () => {
                             {gpts?.map((gpt) => (
                                 <TableRow key={gpt.id}>
                                     <TableCell>{gpt.name}</TableCell>
-                                    <TableCell>{gpt.instructions}</TableCell>
+                                    <TableCell>{gpt.instructions?.slice(0, 500)}</TableCell>
                                     <TableCell>{gpt.knowledge?.slice(0, 1500)}</TableCell>
                                     <TableCell>
                                         <IconButton
