@@ -99,14 +99,30 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                                 {user?.subscriptionStatus?.toUpperCase()}
                             </Typography>
                             {user.subscriptionStatus === "active" || user.subscriptionStatus === "trialing" ? (
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    sx={{ mt: 1 }}
-                                    onClick={handleCancelSubscription}
-                                >
-                                    {t("Cancel Subscription")}
-                                </Button>
+                                <>
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        sx={{ mt: 1 }}
+                                        onClick={handleCancelSubscription}
+                                    >
+                                        {t("Cancel Subscription")}
+                                    </Button>
+                                    <Link
+                                        href={"https://billing.stripe.com/p/login/9AQ8zd8ZL79E51e000?prefilled_email=" + user.email}
+                                        target="_blank"
+                                        rel="noopener"
+                                    >
+                                        <Button
+                                            onClick={handleCloseSettingsModal}
+                                            variant="contained"
+                                            color="primary"
+                                            sx={{ mt: 1 }}
+                                        >
+                                            {t("Customer Portal")}
+                                        </Button>
+                                    </Link>
+                                </>
                             ) : (
                                 <Link
                                     href={"https://buy.stripe.com/28oaGDclzeEfgUgcMM?prefilled_email=" + user.email}
