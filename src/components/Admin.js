@@ -12,7 +12,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
     boxShadow: theme.shadows[3],
 }));
 
-const StatsPage = () => {
+const Admin = () => {
     const [stats, setStats] = useState(null);
     const [gpts, setGpts] = useState([]);
 
@@ -158,7 +158,7 @@ const StatsPage = () => {
                         </TableHead>
                         <TableBody>
                             {gpts?.map((gpt) => (
-                                <TableRow key={gpt.id}>
+                                <TableRow key={gpt._id}>
                                     <TableCell>{gpt.name}</TableCell>
                                     <TableCell>{gpt.instructions?.slice(0, 500)}</TableCell>
                                     <TableCell>{gpt.knowledge?.slice(0, 1500)}</TableCell>
@@ -181,4 +181,4 @@ const StatsPage = () => {
     );
 };
 
-export default StatsPage;
+export default Admin;

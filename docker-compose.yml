@@ -22,6 +22,7 @@ services:
             - FRONTEND_URL=${FRONTEND_URL}
             - TOGETHER_KEY=${TOGETHER_KEY}
             - INFRA_KEY=${INFRA_KEY}
+            - OPENAI_KEY=${OPENAI_KEY}
         restart: unless-stopped
         depends_on:
             - mongodb

@@ -13,10 +13,11 @@ import { getTextClaude } from "./claude.js";
 import { getImageTitan } from "./aws.js";
 import { getTextTogether } from "./together.js";
 import { getTextInfra } from "./deepinfra.js";
+import { getTextGpt } from "./openai.js";
 import { authenticateUser, completePasswordReset, registerUser, resetPassword, verifyToken } from "./auth.js";
+import { fetchPageContent, fetchSearchResults } from "./search.js";
 import { User, countTokens, storeUsageStats } from "./model/User.js";
 import CustomGPT from "./model/CustomGPT.js";
-import { fetchPageContent, fetchSearchResults } from "./search.js";
 import fs from "fs";
 import path from "path";
 import Stripe from "stripe";
@@ -255,6 +256,8 @@ app.post("/interact", verifyToken, async (req, res) => {
             );
         } else if (model?.startsWith("HuggingFace")) {
             textResponse = await getTextInfra(contextPrompt, temperature, model, apiKey);
+        } else if (model?.startsWith("gpt")) {
+            textResponse = await getTextGpt(contextPrompt, temperature, model, apiKey);
         } else {
             textResponse = await getTextTogether(contextPrompt, temperature, model, apiKey);
         }

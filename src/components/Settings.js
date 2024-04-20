@@ -17,6 +17,8 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
         "claude-3-haiku-20240307",
         "claude-3-sonnet-20240229",
         "claude-3-opus-20240229",
+        "gpt-3.5-turbo",
+        "gpt-4-turbo",
         "databricks/dbrx-instruct",
         "mistralai/Mixtral-8x7B-Instruct-v0.1",
         "mistralai/Mixtral-8x22B-Instruct-v0.1",
@@ -109,7 +111,10 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                                         {t("Cancel Subscription")}
                                     </Button>
                                     <Link
-                                        href={"https://billing.stripe.com/p/login/9AQ8zd8ZL79E51e000?prefilled_email=" + user.email}
+                                        href={
+                                            "https://billing.stripe.com/p/login/9AQ8zd8ZL79E51e000?prefilled_email=" +
+                                            user.email
+                                        }
                                         target="_blank"
                                         rel="noopener"
                                     >

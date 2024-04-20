@@ -11,9 +11,10 @@ https://allchat.online/
 ## Features
 
 -   Gemini Pro 1.5 and Claude 3 Haiku
--   Custom GPTs
+-   OpenAI GPT3.5, GPT-4
 -   Audio Input in Gemini
 -   Video Input in Gemini
+-   Custom GPTs
 -   Image Input (png/jpeg) in Gemini and Haiku
 -   Image Generation by Amazon Titan
 -   Together AI models databricks/dbrx-instruct mistralai/Mixtral-8x22B-Instruct-v0.1, LLama-3, etc
