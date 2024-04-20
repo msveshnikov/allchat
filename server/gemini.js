@@ -11,6 +11,7 @@ import {
     getLatestNews,
     getStockPrice,
     getWeather,
+    persistUserInfo,
     searchWebContent,
     sendEmail,
     sendTelegramMessage,
@@ -147,6 +148,24 @@ const tools = [
                 },
             },
             required: ["lang"],
+        },
+    },
+    {
+        name: "persist_user_info",
+        description: `Persist user information in the database. Do it if user asked you to remember something. The tool expects an object with a "key" and "value" property. It stores the key-value pair in the user's information.`,
+        parameters: {
+            type: "object",
+            properties: {
+                key: {
+                    type: "string",
+                    description: "The key for the user information, such as Name, Age, Location, Goal, Preference, etc",
+                },
+                value: {
+                    type: "string",
+                    description: "The value for the user information",
+                },
+            },
+            required: ["key", "value"],
         },
     },
 ];
@@ -324,6 +343,9 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                             break;
                         case "get_latest_news":
                             functionResponse = await getLatestNews(args.lang);
+                            break;
+                        case "persist_user_info":
+                            functionResponse = await persistUserInfo(args.key, args.value, userId);
                             break;
                         default:
                             console.error(`Unsupported function call: ${name}`);

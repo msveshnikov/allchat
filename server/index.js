@@ -222,9 +222,14 @@ app.post("/interact", verifyToken, async (req, res) => {
             }
         }
 
+        const user = await User.findById(req.user.id);
+        const userInfo = user ? [...user.info.entries()].map(([key, value]) => `${key}: ${value}`) : [];
+
         const contextPrompt = `System: ${instructions || systemPrompt} User country code: ${country} User Lang: ${lang}
             ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
-            \n\nSearch Results:${topResultContent}\n\nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
+            \n\nSearch Results:${topResultContent}\n
+            User information: ${userInfo.join(", ")}
+            \nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
 
         let textResponse;
         let inputTokens = 0;

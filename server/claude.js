@@ -154,6 +154,24 @@ const tools = [
             required: ["lang"],
         },
     },
+    {
+        name: "persist_user_info",
+        description: `Persist user information in the database. Do it if user asked you to remember something. The tool expects an object with a "key" and "value" property. It stores the key-value pair in the user's information.`,
+        input_schema: {
+            type: "object",
+            properties: {
+                key: {
+                    type: "string",
+                    description: "The key for the user information, such as Name, Age, Location, Goal, Preference, etc",
+                },
+                value: {
+                    type: "string",
+                    description: "The value for the user information",
+                },
+            },
+            required: ["key", "value"],
+        },
+    },
 ];
 
 export async function getWeather(location) {
@@ -307,6 +325,18 @@ export async function searchWebContent(query) {
     return pageContents?.join("\n");
 }
 
+export async function persistUserInfo(key, value, userId) {
+    try {
+        let user = await User.findById(userId);
+        user.info.set(key, value);
+        await user.save();
+        return `User information ${key}: ${value} persisted successfully.`;
+    } catch (error) {
+        console.error("Error persisting user information:", error);
+        return "Error persisting user information:" + error.message;
+    }
+}
+
 const resizeImage = async (imageBase64, maxSize = 3 * 1024 * 1024) => {
     const image = sharp(Buffer.from(imageBase64, "base64"));
     const metadata = await image.metadata();
@@ -373,6 +403,10 @@ async function processToolResult(data, temperature, messages, userId, model, web
                 case "get_latest_news":
                     const { lang } = toolUse.input;
                     toolResult = await getLatestNews(lang);
+                    break;
+                case "persist_user_info":
+                    const { key, value } = toolUse.input;
+                    toolResult = await persistUserInfo(key, value, userId);
                     break;
                 default:
                     console.error(`Unsupported function call: ${toolUse.name}`);

@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
         enum: ["active", "past_due", "canceled", "none", "trialing"],
         default: "none",
     },
+    info: { type: Map, of: String, default: new Map() },
 });
 
 export const User = mongoose.model("User", userSchema);
