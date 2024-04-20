@@ -1,11 +1,11 @@
 import React from "react";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import CustomGPTPage from "../CustomGPTPage";
+import CustomGPT from "../CustomGPT";
 import "@testing-library/jest-dom";
 
 describe("CustomGPTPage", () => {
     beforeEach(() => {
-        render(<CustomGPTPage />);
+        render(<CustomGPT />);
     });
 
     it("renders the page title", () => {
@@ -57,7 +57,7 @@ describe("CustomGPTPage", () => {
         fireEvent.change(fileInput, { target: { files: [file] } });
 
         const submitButton = screen.getByText("Submit");
-        fireEvent.click(submitButton); 
+        fireEvent.click(submitButton);
 
         await waitFor(() => {
             expect(screen.getByText("Success")).toBeInTheDocument();

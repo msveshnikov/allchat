@@ -585,6 +585,38 @@ app.get("/customgpt", async (req, res) => {
     }
 });
 
+app.get("/customgpt-details", verifyToken, async (req, res) => {
+    try {
+        if (!req.user.admin) {
+            return res.status(401).json({ error: "This is admin only route" });
+        }
+        const customGPTs = await CustomGPT.find({});
+        res.json(customGPTs);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.delete("/customgpt/:id", verifyToken, async (req, res) => {
+    try {
+        if (!req.user.admin) {
+            return res.status(401).json({ error: "This is admin only route" });
+        }
+        const customGPTId = req.params.id;
+        const deletedCustomGPT = await CustomGPT.findByIdAndDelete(customGPTId);
+
+        if (!deletedCustomGPT) {
+            return res.status(404).json({ error: "CustomGPT not found" });
+        }
+
+        res.json({ message: "CustomGPT deleted successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 process.on("uncaughtException", (err, origin) => {
     console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
 });

@@ -1,6 +1,6 @@
 import React from "react";
 import { render, waitFor, screen } from "@testing-library/react";
-import StatsPage from "../StatsPage";
+import Admin from "../Admin";
 import "@testing-library/jest-dom";
 
 jest.mock("../Main", () => ({
@@ -32,7 +32,7 @@ describe("StatsPage", () => {
     });
 
     test("renders stats after data is fetched", async () => {
-        render(<StatsPage />);
+        render(<Admin />);
 
         await waitFor(() => {
             expect(screen.getByText("Admin Statistics")).toBeInTheDocument();

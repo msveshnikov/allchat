@@ -6,11 +6,11 @@ import Main from "./components/Main";
 import { ThemeProvider } from "@mui/material";
 import theme from "./theme";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
-import StatsPage from "./components/StatsPage";
+import Admin from "./components/Admin";
 import "./i18n";
 import { I18nextProvider } from "react-i18next";
 import PasswordReset from "./components/PasswordReset";
-import CustomGPTPage from "./components/CustomGPTPage";
+import CustomGPTPage from "./components/CustomGPT";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -18,7 +18,7 @@ root.render(
         <I18nextProvider>
             <Router>
                 <Routes>
-                    <Route path="/admin" element={<StatsPage />} />
+                    <Route path="/admin" element={<Admin />} />
                     <Route path="/custom" element={<CustomGPTPage />} />
                     <Route path="/" element={<Main />} />
                     <Route path="/reset-password/:token" element={<PasswordReset />} />
