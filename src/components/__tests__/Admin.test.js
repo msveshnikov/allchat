@@ -83,7 +83,6 @@ describe("Admin", () => {
 
     test("deletes a custom GPT when delete button is clicked", async () => {
         render(<Admin />);
-        const deleteGptMock = jest.fn().mockResolvedValue({ ok: true });
         global.fetch = jest.fn().mockImplementation((url, options) => {
             if (options.method === "DELETE") {
                 return Promise.resolve({
@@ -101,13 +100,6 @@ describe("Admin", () => {
         });
 
         fireEvent.click(deleteButtons[0]);
-        // expect(deleteGptMock).toHaveBeenCalledWith(`${API_URL}/customgpt/${mockGpts[0]._id}`, {
-        //     method: "DELETE",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //     },
-        // });
 
         waitFor(() => {
             expect(screen.queryByText(mockGpts[0].name)).not.toBeInTheDocument();
