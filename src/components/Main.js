@@ -404,6 +404,7 @@ function Main() {
     return (
         <>
             <AppHeader
+                openSettingsModal={openSettingsModal}
                 isAuthenticated={isAuthenticated}
                 userEmail={userEmail}
                 onSignOut={handleSignOut}

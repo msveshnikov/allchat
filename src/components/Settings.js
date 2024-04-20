@@ -4,6 +4,21 @@ import md5 from "md5";
 import { useTranslation } from "react-i18next";
 import { API_URL } from "./Main";
 
+export const models = [
+    "gemini-1.5-pro-latest",
+    "gemini-1.0-pro-latest",
+    "claude-3-haiku-20240307",
+    "claude-3-sonnet-20240229",
+    "claude-3-opus-20240229",
+    "gpt-3.5-turbo",
+    "gpt-4-turbo",
+    "databricks/dbrx-instruct",
+    "mistralai/Mixtral-8x7B-Instruct-v0.1",
+    "mistralai/Mixtral-8x22B-Instruct-v0.1",
+    "microsoft/WizardLM-2-8x22B",
+    "meta-llama/Llama-3-70b-chat-hf",
+];
+
 const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) => {
     const { t } = useTranslation();
     const gravatarUrl = `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
@@ -11,20 +26,6 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
     const [selectedModel, setSelectedModel] = useState("gemini-1.5-pro-latest");
     const [customGPTNames, setCustomGPTNames] = useState([]);
     const [selectedCustomGPT, setSelectedCustomGPT] = useState("");
-    const models = [
-        "gemini-1.5-pro-latest",
-        "gemini-1.0-pro-latest",
-        "claude-3-haiku-20240307",
-        "claude-3-sonnet-20240229",
-        "claude-3-opus-20240229",
-        "gpt-3.5-turbo",
-        "gpt-4-turbo",
-        "databricks/dbrx-instruct",
-        "mistralai/Mixtral-8x7B-Instruct-v0.1",
-        "mistralai/Mixtral-8x22B-Instruct-v0.1",
-        "microsoft/WizardLM-2-8x22B",
-        "meta-llama/Llama-3-70b-chat-hf",
-    ];
 
     const handleApiKeyChange = (event) => {
         setApiKey(event.target.value);

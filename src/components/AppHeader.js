@@ -3,8 +3,17 @@ import { AppBar, Toolbar, Typography, Box, IconButton, Button } from "@mui/mater
 import MenuIcon from "@mui/icons-material/Menu";
 import { ProfileMenu } from "./ProfileMenu";
 import { useTranslation } from "react-i18next";
+import { ModelSelector } from "./ModelSelector";
 
-const AppHeader = ({ isAuthenticated, userEmail, onSignOut, onSettings, onOpenAuthModal, onToggle }) => {
+const AppHeader = ({
+    isAuthenticated,
+    userEmail,
+    onSignOut,
+    onSettings,
+    onOpenAuthModal,
+    onToggle,
+    openSettingsModal,
+}) => {
     const { t } = useTranslation();
 
     return (
@@ -15,10 +24,8 @@ const AppHeader = ({ isAuthenticated, userEmail, onSignOut, onSettings, onOpenAu
                 </IconButton>
                 <Typography sx={{ ml: 2 }} variant="h6" noWrap>
                     AllChat
-                    <span style={{ fontSize: "0.9rem", color: "#c5c5c5", marginLeft: "0.5rem" }}>
-                        {localStorage.getItem("selectedModel") || "gemini-1.5-pro-latest"}
-                    </span>
                 </Typography>
+                <ModelSelector openSettingsModal={openSettingsModal} />
                 <Box sx={{ ml: "auto" }}>
                     {isAuthenticated ? (
                         <ProfileMenu userEmail={userEmail} onSettings={onSettings} onSignOut={onSignOut} />
