@@ -85,7 +85,7 @@ const StatsPage = () => {
                                 <StyledCard>
                                     <CardContent>
                                         <Typography variant="h5" gutterBottom color="primary">
-                                            Gemini Pro 1.5 Usage
+                                            Gemini Pro Usage
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">
                                             Total Input Tokens: <strong>{stats.gemini.totalInputTokens}</strong>
@@ -163,7 +163,11 @@ const StatsPage = () => {
                                     <TableCell>{gpt.instructions}</TableCell>
                                     <TableCell>{gpt.knowledge?.slice(0, 1500)}</TableCell>
                                     <TableCell>
-                                        <IconButton onClick={() => handleDeleteGpt(gpt._id)} color="error">
+                                        <IconButton
+                                            onClick={() => handleDeleteGpt(gpt._id)}
+                                            color="error"
+                                            data-testid="delete-gpt-button"
+                                        >
                                             <DeleteIcon />
                                         </IconButton>
                                     </TableCell>
