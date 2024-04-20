@@ -9,6 +9,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
     ...theme.typography.body2,
     padding: theme.spacing(2),
     color: theme.palette.text.secondary,
+    boxShadow: theme.shadows[3],
 }));
 
 const StatsPage = () => {
@@ -73,60 +74,62 @@ const StatsPage = () => {
 
     return (
         <>
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-                <Box maxWidth="800px" width="100%">
-                    <Typography variant="h4" gutterBottom align="center" color="primary">
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" bgcolor="#f5f5f5">
+                <Box maxWidth="1200px" width="100%" padding={4}>
+                    <Typography variant="h3" gutterBottom align="center" color="primary">
                         Admin Statistics
                     </Typography>
                     {stats ? (
-                        <Grid container spacing={2} justifyContent="left">
-                            <Grid item xs={12} md={6}>
+                        <Grid container spacing={4} justifyContent="center">
+                            <Grid item xs={12} md={6} lg={4}>
                                 <StyledCard>
                                     <CardContent>
-                                        <Typography variant="h6" gutterBottom color="primary">
+                                        <Typography variant="h5" gutterBottom color="primary">
                                             Gemini Pro 1.5 Usage
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">
-                                            Total Input Tokens: {stats.gemini.totalInputTokens}
+                                            Total Input Tokens: <strong>{stats.gemini.totalInputTokens}</strong>
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">
-                                            Total Output Tokens: {stats.gemini.totalOutputTokens}
+                                            Total Output Tokens: <strong>{stats.gemini.totalOutputTokens}</strong>
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">
-                                            Total Images Generated: {stats.gemini.totalImagesGenerated}
+                                            Total Images Generated: <strong>{stats.gemini.totalImagesGenerated}</strong>
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">
-                                            Total Money Consumed: ${stats.gemini.totalMoneyConsumed.toFixed(2)}
+                                            Total Money Consumed:{" "}
+                                            <strong>${stats.gemini.totalMoneyConsumed.toFixed(2)}</strong>
                                         </Typography>
                                     </CardContent>
                                 </StyledCard>
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <StyledCard>
                                     <CardContent>
-                                        <Typography variant="h6" gutterBottom color="primary">
+                                        <Typography variant="h5" gutterBottom color="primary">
                                             Claude 3 Haiku Usage
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">
-                                            Total Input Tokens: {stats.claude.totalInputTokens}
+                                            Total Input Tokens: <strong>{stats.claude.totalInputTokens}</strong>
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">
-                                            Total Output Tokens: {stats.claude.totalOutputTokens}
+                                            Total Output Tokens: <strong>{stats.claude.totalOutputTokens}</strong>
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">
-                                            Total Money Consumed: ${stats.claude.totalMoneyConsumed.toFixed(2)}
+                                            Total Money Consumed:{" "}
+                                            <strong>${stats.claude.totalMoneyConsumed.toFixed(2)}</strong>
                                         </Typography>
                                     </CardContent>
                                 </StyledCard>
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <StyledCard>
                                     <CardContent>
-                                        <Typography variant="h6" gutterBottom color="primary">
+                                        <Typography variant="h5" gutterBottom color="primary">
                                             Users
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">
-                                            Total User Count: {stats.users}
+                                            Total User Count: <strong>{stats.users}</strong>
                                         </Typography>
                                     </CardContent>
                                 </StyledCard>
@@ -139,11 +142,11 @@ const StatsPage = () => {
                     )}
                 </Box>
             </Box>
-            <Box sx={{ padding: 4 }}>
-                <Typography variant="h4" gutterBottom>
+            <Box bgcolor="#f5f5f5" padding={4}>
+                <Typography variant="h4" gutterBottom align="center" color="primary">
                     Custom GPT Admin
                 </Typography>
-                <TableContainer component={Paper}>
+                <TableContainer component={Paper} elevation={3}>
                     <Table>
                         <TableHead>
                             <TableRow>
@@ -160,7 +163,7 @@ const StatsPage = () => {
                                     <TableCell>{gpt.instructions}</TableCell>
                                     <TableCell>{gpt.knowledge?.slice(0, 1500)}</TableCell>
                                     <TableCell>
-                                        <IconButton onClick={() => handleDeleteGpt(gpt._id)}>
+                                        <IconButton onClick={() => handleDeleteGpt(gpt._id)} color="error">
                                             <DeleteIcon />
                                         </IconButton>
                                     </TableCell>
