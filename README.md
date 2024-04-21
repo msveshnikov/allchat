@@ -4,9 +4,31 @@ Node.js backend and a React MUI frontend for an application that interacts with 
 
 ![image](https://github.com/msveshnikov/allchat/assets/8682996/42b2e4f2-b91b-4712-8ef2-630ebb8919e9)
 
+## Table of Contents
+
+-   [Demo](#demo)
+-   [Features](#features)
+-   [Connect model to world with Web Tools](#connect-model-to-world-with-web-tools)
+-   [Run Locally](#run-locally)
+
+    -   [Environment variables](#environment-variables)
+    -   [Run](#run)
+
+-   [Docker Deploy](#docker-deploy)
+
+    -   [Backend (Node.js)](#backend-nodejs)
+    -   [Frontend (React MUI)](#frontend-react-mui)
+    -   [Running the Containers](#running-the-containers)
+
+-   [Nginx](#nginx)
+-   [Monitoring](#monitoring)
+
 ## Demo
 
-https://allchat.online/
+https://allchat.online
+
+[![GitHub Repo stars](https://img.shields.io/github/stars/msveshnikov/allchat)](https://github.com/msveshnikov/allchat)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
 
