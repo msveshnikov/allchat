@@ -1,11 +1,10 @@
-import React, { lazy } from "react";
+import React from "react";
 import { List, ListItem, ListItemText, SwipeableDrawer, Slider, Typography } from "@mui/material";
 import SoundSwitch from "./SoundSwitch";
 import ImagesSwitch from "./ImagesSwitch";
 import ToolsSwitch from "./ToolsSwitch";
 import { Link } from "react-router-dom";
 import { generatePdfFromChatHistories } from "./pdfGenerator";
-// const PdfGenerator = lazy(() => import("./pdfGenerator"));
 
 const SideDrawer = ({
     isOpen,
@@ -23,10 +22,8 @@ const SideDrawer = ({
     temperature,
     onTemperatureChange,
 }) => {
-    const handleExportPDF = async () => {
-        // const { generatePdfFromChatHistories } = await PdfGenerator;
-        // generatePdfFromChatHistories(storedChatHistories);
-        await generatePdfFromChatHistories(storedChatHistories);
+    const handleExportPDF = () => {
+        generatePdfFromChatHistories(storedChatHistories);
     };
 
     return (
