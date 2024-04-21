@@ -4,20 +4,20 @@ import md5 from "md5";
 import { useTranslation } from "react-i18next";
 import { API_URL } from "./Main";
 
-export const models = [
-    "gemini-1.5-pro-latest",
-    "gemini-1.0-pro-latest",
-    "claude-3-haiku-20240307",
-    "claude-3-sonnet-20240229",
-    "claude-3-opus-20240229",
-    "gpt-3.5-turbo",
-    "gpt-4-turbo",
-    "databricks/dbrx-instruct",
-    "mistralai/Mixtral-8x7B-Instruct-v0.1",
-    "mistralai/Mixtral-8x22B-Instruct-v0.1",
-    "microsoft/WizardLM-2-8x22B",
-    "meta-llama/Llama-3-70b-chat-hf",
-];
+export const models = {
+    "gemini-1.5-pro-latest": ["image", "audio", "video", "document"],
+    "gemini-1.0-pro-latest": ["image", "audio", "video", "document"],
+    "claude-3-haiku-20240307": ["image", "document"],
+    "claude-3-sonnet-20240229": ["image", "document"],
+    "claude-3-opus-20240229": ["image", "document"],
+    "gpt-3.5-turbo": ["document"],
+    "gpt-4-turbo": ["document"],
+    "databricks/dbrx-instruct": ["document"],
+    "mistralai/Mixtral-8x7B-Instruct-v0.1": ["document"],
+    "mistralai/Mixtral-8x22B-Instruct-v0.1": ["document"],
+    "microsoft/WizardLM-2-8x22B": ["document"],
+    "meta-llama/Llama-3-70b-chat-hf": ["document"],
+};
 
 const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) => {
     const { t } = useTranslation();
@@ -146,6 +146,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                                 </Link>
                             )}
                         </Grid>
+
                         <Grid item xs={12} md={6}>
                             <Typography variant="h6" gutterBottom color="secondary">
                                 {t("Select Model")}
@@ -158,7 +159,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
                                 variant="outlined"
                                 color="secondary"
                             >
-                                {models.map((model) => (
+                                {Object.keys(models).map((model) => (
                                     <MenuItem key={model} value={model}>
                                         {model}
                                     </MenuItem>

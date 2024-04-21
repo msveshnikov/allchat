@@ -50,7 +50,7 @@ export const ModelSelector = ({ openSettingsModal }) => {
                     "aria-labelledby": "model-selector-button",
                 }}
             >
-                {models.map((model) => (
+                {Object.keys(models).map((model) => (
                     <MenuItem key={model} onClick={() => handleModelSelect(model)}>
                         {model}
                     </MenuItem>
