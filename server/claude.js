@@ -5,6 +5,7 @@ import nodemailer from "nodemailer";
 import { fetchPageContent, fetchSearchResults, googleNews } from "./search.js";
 import { User } from "./model/User.js";
 import sharp from "sharp";
+import { toolsUsed } from "./index.js";
 dotenv.config({ override: true });
 
 const bot = new TelegramBot(process.env.TELEGRAM_KEY);
@@ -357,7 +358,7 @@ const resizeImage = async (imageBase64, maxSize = 3 * 1024 * 1024) => {
 };
 
 async function processToolResult(data, temperature, messages, userId, model, webTools) {
-    console.log("processToolResult", data, temperature, messages);
+    console.log("processToolResult", data, messages);
 
     const toolUses = data.content.filter((block) => block.type === "tool_use");
     if (!toolUses.length) {
@@ -367,7 +368,7 @@ async function processToolResult(data, temperature, messages, userId, model, web
     const toolResults = await Promise.all(
         toolUses.map(async (toolUse) => {
             let toolResult;
-
+            toolsUsed.push(toolUse.name);
             switch (toolUse.name) {
                 case "get_weather":
                     const { location } = toolUse.input;

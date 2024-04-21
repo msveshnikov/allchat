@@ -30,6 +30,23 @@ const getFileTypeIcon = (mimeType) => {
     }
 };
 
+const toolEmojis = {
+    get_weather: "☀️",
+    get_stock_price: "📈",
+    get_fx_rate: "💰",
+    send_telegram_message: "📨",
+    search_web_content: "🌐",
+    send_email: "✉️",
+    get_current_time_utc: "⌚",
+    execute_python: "🐍",
+    get_latest_news: "📰",
+    persist_user_info: "🗄️",
+};
+
+function toolsToEmojis(toolsUsed) {
+    return toolsUsed.map((tool) => toolEmojis[tool] || "❓").join("");
+}
+
 const linkStyle = {
     maxWidth: "100%",
     overflowWrap: "break-word",
@@ -136,29 +153,36 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
                                 </div>
                             )}
                         {chat.assistant !== null && (
-                            <ReactMarkdown
-                                components={{
-                                    code({ node, inline, className, children, ...props }) {
-                                        const match = /language-(\w+)/.exec(className || "");
-                                        const language = match ? match[1] : null;
-                                        return !inline && language ? (
-                                            <CodeBlock
-                                                language={language}
-                                                value={String(children).replace(/\n$/, "")}
-                                                onRun={onRun}
-                                            />
-                                        ) : (
-                                            <code className={className} {...props}>
-                                                {children}
-                                            </code>
-                                        );
-                                    },
-                                    // eslint-disable-next-line jsx-a11y/anchor-has-content
-                                    a: ({ node, ...props }) => <a style={linkStyle} {...props} />,
-                                }}
-                            >
-                                {chat.assistant}
-                            </ReactMarkdown>
+                            <Box>
+                                <ReactMarkdown
+                                    components={{
+                                        code({ node, inline, className, children, ...props }) {
+                                            const match = /language-(\w+)/.exec(className || "");
+                                            const language = match ? match[1] : null;
+                                            return !inline && language ? (
+                                                <CodeBlock
+                                                    language={language}
+                                                    value={String(children).replace(/\n$/, "")}
+                                                    onRun={onRun}
+                                                />
+                                            ) : (
+                                                <code className={className} {...props}>
+                                                    {children}
+                                                </code>
+                                            );
+                                        },
+                                        // eslint-disable-next-line jsx-a11y/anchor-has-content
+                                        a: ({ node, ...props }) => <a style={linkStyle} {...props} />,
+                                    }}
+                                >
+                                    {chat.assistant}
+                                </ReactMarkdown>
+                                {chat?.toolsUsed?.length > 0 && (
+                                    <Box component="span" marginLeft={1}>
+                                        {toolsToEmojis(chat.toolsUsed)}
+                                    </Box>
+                                )}
+                            </Box>
                         )}
 
                         {chat.error && (

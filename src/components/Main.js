@@ -166,6 +166,7 @@ function Main() {
                     {
                         user: input,
                         assistant: data.textResponse,
+                        toolsUsed: data.toolsUsed,
                         image: data.imageResponse,
                         fileType,
                         userImageData: fileBytesBase64,

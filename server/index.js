@@ -106,7 +106,10 @@ mongoose
     .then(() => console.log("🚀 MongoDB connected"))
     .catch((err) => console.error("MongoDB connection error:", err));
 
+export let toolsUsed = [];
+
 app.post("/interact", verifyToken, async (req, res) => {
+    toolsUsed = [];
     let userInput = req.body.input;
     const chatHistory = req.body.chatHistory || [];
     const temperature = req.body.temperature || 0.8;
@@ -289,7 +292,7 @@ app.post("/interact", verifyToken, async (req, res) => {
 
         storeUsageStats(req.user.id, model, inputTokens, outputTokens, imagesGenerated);
 
-        res.json({ textResponse, imageResponse });
+        res.json({ textResponse, imageResponse, toolsUsed });
     } catch (error) {
         console.error(error);
         res.status(500).json({

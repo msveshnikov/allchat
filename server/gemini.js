@@ -16,6 +16,7 @@ import {
     sendEmail,
     sendTelegramMessage,
 } from "./claude.js";
+import { toolsUsed } from "./index.js";
 dotenv.config({ override: true });
 
 const tools = [
@@ -315,6 +316,8 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                 const functionArgs = functionCall.args;
 
                 const handleFunctionCall = async (name, args) => {
+                    console.log("handleFunctionCall", name, args);
+                    toolsUsed.push(name);
                     let functionResponse;
                     switch (name) {
                         case "get_weather":
