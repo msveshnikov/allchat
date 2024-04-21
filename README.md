@@ -36,6 +36,7 @@ https://allchat.online/
 -   Automate your email and Telegram correspondences: Send emails effortlessly to yourself or others. Just say _Send information to me_
 -   If your task require some compute, Python program will be created and executed in the background. Just say _Calculate first 100 Fibonacci numbers_
 -   Get the latest news from Google News in your preferred language and receive them directly in your inbox. Keep up with industry trends and advancements. Just say _Send me your comment about latest news_
+-   Create PowerPoint presentations. Just say _Create 10 slides for presentation "Comparison of CZC.cz and Alza.cz" then write a Python program that will save it to disk_ then run code and Save To resulting .pptx link
 
 # RUN LOCALLY
 
