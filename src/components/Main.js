@@ -20,7 +20,7 @@ import { animateScroll as scroll } from "react-scroll";
 const MAX_CHAT_HISTORY_LENGTH = 20;
 const MAX_CHATS = 6;
 
-export const API_URL = process.env.NODE_ENV === "production" ? "https://allchat.online/api" : "http://localhost:5000";
+export const API_URL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_API_URL : "http://localhost:5000";
 
 function Main() {
     const [input, setInput] = useState("");

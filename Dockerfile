@@ -13,6 +13,8 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+ENV REACT_APP_API_URL https://allchat.online/api
+
 # Build the React app for production
 RUN npm run build
 

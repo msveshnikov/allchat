@@ -70,8 +70,7 @@ To containerize the Node.js backend and React MUI frontend for easy deployment, 
 
 **Backend (Node.js)**
 
-1. Replace `export const ALLOWED_ORIGIN = ["https://allchat.online", "http://localhost:3000"];` in server/index.js with your domain
-2. Build the Docker image by running the following command in the backend directory:
+-   Build the Docker image by running the following command in the backend directory:
 
 ```
 docker build -t allchat-backend .
@@ -81,8 +80,7 @@ Replace `allchat-backend` with your desired image name. Push to Hub if needed.
 
 **Frontend (React MUI)**
 
-1. Replace `export const API_URL = process.env.NODE_ENV === "production" ? "https://allchat.online/api" : "http://localhost:5000";` in src/components/Main.js with your domain
-2. Build the Docker image by running the following command in the frontend directory:
+-   Build the Docker image by running the following command in the frontend directory:
 
 ```
 docker build -t allchat-frontend .

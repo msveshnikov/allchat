@@ -36,6 +36,8 @@ services:
         restart: unless-stopped
         depends_on:
             - backend
+        logging:
+            driver: none
 
     mongodb:
         image: mongo:latest

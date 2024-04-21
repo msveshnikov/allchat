@@ -302,11 +302,11 @@ export async function executePython(code) {
         body: code,
     });
     const data = await response.text();
-    const jsonData = JSON.parse(data);
     if (response.ok) {
+        const jsonData = JSON.parse(data);
         return jsonData.output;
     } else {
-        return { error: data };
+        return data;
     }
 }
 
@@ -449,7 +449,9 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
         anthropic = new Anthropic({ apiKey });
     } else {
         anthropic = new Anthropic({ apiKey: process.env.CLAUDE_KEY });
-        model = "claude-3-haiku-20240307";
+        if (model.includes("opus")) {
+            model = "claude-3-haiku-20240307";
+        }
     }
 
     const messages = [

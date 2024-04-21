@@ -3,9 +3,8 @@ name: CI/CD Pipeline
 on:
     push:
         branches: [main]
-    # Allows you to run this workflow manually from the Actions tab
     workflow_dispatch:
-        
+
 env:
     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -21,6 +20,15 @@ jobs:
 
         steps:
             - uses: actions/checkout@master
+
+            - name: copy file via ssh
+              uses: garygrossgarten/github-action-scp@master
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  privateKey: ${{ secrets.SSH_KEY }}
+                  local: "docker-compose.yml"
+                  remote: "allchat/docker-compose.yml"
 
             - name: Install dependencies
               run: npm ci
