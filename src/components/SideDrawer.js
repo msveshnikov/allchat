@@ -1,9 +1,11 @@
-import React from "react";
+import React, { lazy } from "react";
 import { List, ListItem, ListItemText, SwipeableDrawer, Slider, Typography } from "@mui/material";
 import SoundSwitch from "./SoundSwitch";
 import ImagesSwitch from "./ImagesSwitch";
 import ToolsSwitch from "./ToolsSwitch";
 import { Link } from "react-router-dom";
+import { generatePdfFromChatHistories } from "./pdfGenerator";
+// const PdfGenerator = lazy(() => import("./pdfGenerator"));
 
 const SideDrawer = ({
     isOpen,
@@ -21,6 +23,12 @@ const SideDrawer = ({
     temperature,
     onTemperatureChange,
 }) => {
+    const handleExportPDF = async () => {
+        // const { generatePdfFromChatHistories } = await PdfGenerator;
+        // generatePdfFromChatHistories(storedChatHistories);
+        await generatePdfFromChatHistories(storedChatHistories);
+    };
+
     return (
         <SwipeableDrawer PaperProps={{ sx: { width: 200 } }} open={isOpen} onClose={onToggle} onOpen={onToggle}>
             <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -55,6 +63,9 @@ const SideDrawer = ({
                     </ListItem>
                     <ListItem>
                         <ToolsSwitch tools={tools} onToolsChange={onToolsChange} />
+                    </ListItem>
+                    <ListItem button style={{ color: "white", backgroundColor: "#0057F5" }} onClick={handleExportPDF}>
+                        <ListItemText primary="Export PDF" />
                     </ListItem>
                 </div>
                 <Link to="/custom" style={{ color: "white", backgroundColor: "#30A557", textDecoration: "none" }}>
