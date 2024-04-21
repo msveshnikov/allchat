@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Typography, Menu, MenuItem } from "@mui/material";
 import { models } from "./Settings";
 
-export const ModelSelector = ({ openSettingsModal }) => {
+export const ModelSelector = ({ selectedModel, onModelSelect }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
-    const [selectedModel, setSelectedModel] = useState();
-
-    useEffect(() => {
-        const storedModel = localStorage.getItem("selectedModel") || "gemini-1.5-pro-latest";
-        if (storedModel) setSelectedModel(storedModel);
-    }, [openSettingsModal]);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -21,8 +15,7 @@ export const ModelSelector = ({ openSettingsModal }) => {
     };
 
     const handleModelSelect = (model) => {
-        setSelectedModel(model);
-        localStorage.setItem("selectedModel", model);
+        onModelSelect(model);
         handleClose();
     };
 

@@ -12,7 +12,8 @@ const AppHeader = ({
     onSettings,
     onOpenAuthModal,
     onToggle,
-    openSettingsModal,
+    selectedModel,
+    onModelSelect,
 }) => {
     const { t } = useTranslation();
 
@@ -25,7 +26,7 @@ const AppHeader = ({
                 <Typography sx={{ ml: 2 }} variant="h6" noWrap>
                     AllChat
                 </Typography>
-                <ModelSelector openSettingsModal={openSettingsModal} />
+                <ModelSelector selectedModel={selectedModel} onModelSelect={onModelSelect} />
                 <Box sx={{ ml: "auto" }}>
                     {isAuthenticated ? (
                         <ProfileMenu userEmail={userEmail} onSettings={onSettings} onSignOut={onSignOut} />

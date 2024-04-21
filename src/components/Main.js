@@ -33,6 +33,9 @@ function Main() {
     const [tools, setTools] = useState(localStorage.getItem("tools") === "true");
     const [numberOfImages, setNumberOfImages] = useState(Number(localStorage.getItem("numberOfImages") || "1"));
     const [temperature, setTemperature] = useState(Number(localStorage.getItem("temperature") || "0.5"));
+    const [selectedModel, setSelectedModel] = useState(
+        localStorage.getItem("selectedModel") || "gemini-1.5-pro-latest"
+    );
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
     const [openAuthModal, setOpenAuthModal] = useState(false);
@@ -100,8 +103,9 @@ function Main() {
             localStorage.setItem("tools", tools);
             localStorage.setItem("numberOfImages", numberOfImages);
             localStorage.setItem("temperature", temperature);
+            localStorage.setItem("selectedModel", selectedModel);
         } catch {}
-    }, [storedChatHistories, sound, numberOfImages, temperature, tools]);
+    }, [storedChatHistories, sound, numberOfImages, temperature, tools, selectedModel]);
 
     const handleSubmit = async () => {
         if (input.trim() || selectedFile) {
@@ -145,7 +149,7 @@ function Main() {
                     lang: (navigator.languages && navigator.languages[0]) || navigator.language,
                     fileType,
                     fileBytesBase64,
-                    model: localStorage.getItem("selectedModel") || "gemini-1.5-pro-latest",
+                    model: selectedModel,
                     customGPT: localStorage.getItem("selectedCustomGPT"),
                     apiKey: localStorage.getItem("apiKey"),
                     tools,
@@ -404,13 +408,14 @@ function Main() {
     return (
         <>
             <AppHeader
-                openSettingsModal={openSettingsModal}
                 isAuthenticated={isAuthenticated}
                 userEmail={userEmail}
                 onSignOut={handleSignOut}
                 onSettings={handleSettings}
                 onOpenAuthModal={handleOpenAuthModal}
                 onToggle={toggleDrawer}
+                selectedModel={selectedModel}
+                onModelSelect={setSelectedModel}
             />
             <SideDrawer
                 isOpen={drawerOpen}
@@ -443,6 +448,8 @@ function Main() {
                             handleCloseSettingsModal={handleCloseSettingsModal}
                             handleCancelSubscription={handleCancelSubscription}
                             user={user}
+                            selectedModel={selectedModel}
+                            onModelSelect={setSelectedModel}
                         />
                     )}
                 </DialogContent>
@@ -465,6 +472,7 @@ function Main() {
                     input={input}
                     setInput={setInput}
                     selectedFile={selectedFile}
+                    selectedModel={selectedModel}
                     onFileSelect={handleFileSelect}
                     onSubmit={handleSubmit}
                 />

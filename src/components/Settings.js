@@ -19,11 +19,11 @@ export const models = {
     "meta-llama/Llama-3-70b-chat-hf": ["document"],
 };
 
-const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) => {
+const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, selectedModel, onModelSelect }) => {
     const { t } = useTranslation();
     const gravatarUrl = `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
     const [apiKey, setApiKey] = useState("");
-    const [selectedModel, setSelectedModel] = useState("gemini-1.5-pro-latest");
+
     const [customGPTNames, setCustomGPTNames] = useState([]);
     const [selectedCustomGPT, setSelectedCustomGPT] = useState("");
 
@@ -32,7 +32,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
     };
 
     const handleModelChange = (event) => {
-        setSelectedModel(event.target.value);
+        onModelSelect(event.target.value);
     };
 
     const handleCustomGPTChange = (event) => {
@@ -41,19 +41,16 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal }) 
 
     useEffect(() => {
         const storedApiKey = localStorage.getItem("apiKey");
-        const storedModel = localStorage.getItem("selectedModel");
         const storedCustomGPT = localStorage.getItem("selectedCustomGPT");
         if (storedApiKey) setApiKey(storedApiKey);
-        if (storedModel) setSelectedModel(storedModel);
         if (storedCustomGPT) setSelectedCustomGPT(storedCustomGPT);
         fetchCustomGPTNames();
     }, []);
 
     useEffect(() => {
         localStorage.setItem("apiKey", apiKey);
-        localStorage.setItem("selectedModel", selectedModel);
         localStorage.setItem("selectedCustomGPT", selectedCustomGPT);
-    }, [apiKey, selectedModel, selectedCustomGPT]);
+    }, [apiKey, selectedCustomGPT]);
 
     const fetchCustomGPTNames = async () => {
         try {
