@@ -3,11 +3,11 @@ import { IconButton, Menu, MenuItem, Avatar } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import md5 from "md5";
 import LaunchIcon from "@mui/icons-material/Launch";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -37,6 +37,11 @@ export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
         handleProfileMenuClose();
     };
 
+    const handleAndroidClick = () => {
+        window.open("https://play.google.com/store/apps/details?id=online.allchat.twa", "_blank");
+        handleProfileMenuClose();
+    };
+
     const handleDiscordClick = () => {
         window.open("https://discord.gg/YOUR_DISCORD_INVITE_LINK", "_blank");
         handleProfileMenuClose();
@@ -48,7 +53,7 @@ export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
     };
 
     const handleTermsClick = () => {
-        navigate("/terms"); 
+        navigate("/terms");
         handleProfileMenuClose();
     };
 
@@ -81,6 +86,9 @@ export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
                 <MenuItem onClick={handleSignOutClick}>Sign Out</MenuItem>
                 <MenuItem onClick={handlePrivacyClick}>Privacy</MenuItem>
                 <MenuItem onClick={handleTermsClick}>Terms</MenuItem>
+                <MenuItem onClick={handleAndroidClick}>
+                    Android App &nbsp; <LaunchIcon fontSize="small" />
+                </MenuItem>
                 <MenuItem onClick={handleMangaTVClick}>
                     Manga TV &nbsp; <LaunchIcon fontSize="small" />
                 </MenuItem>
