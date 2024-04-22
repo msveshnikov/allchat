@@ -423,6 +423,7 @@ function Main() {
                 onToggle={toggleDrawer}
                 onNewChat={handleNewChat}
                 storedChatHistories={storedChatHistories}
+                chatHistory={chatHistory}
                 onHistorySelection={handleHistorySelection}
                 sound={sound}
                 tools={tools}

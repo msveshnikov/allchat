@@ -6,11 +6,14 @@ import ToolsSwitch from "./ToolsSwitch";
 import { Link } from "react-router-dom";
 import { useMediaQuery, useTheme } from "@mui/material";
 
+const PDFGenerator = () => import("./pdfGenerator");
+
 const SideDrawer = ({
     isOpen,
     onToggle,
     onNewChat,
     storedChatHistories,
+    chatHistory,
     onHistorySelection,
     sound,
     onSoundChange,
@@ -22,6 +25,12 @@ const SideDrawer = ({
     temperature,
     onTemperatureChange,
 }) => {
+    const handleExportPDF = async () => {
+        PDFGenerator().then(({ default: generatePdfFromChatHistories}) => {
+            generatePdfFromChatHistories([chatHistory, ...storedChatHistories.map((h) => h.chatHistory)]);
+        });
+    };
+
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const iOS = typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -71,6 +80,9 @@ const SideDrawer = ({
                     </ListItem>
                     <ListItem>
                         <ToolsSwitch tools={tools} onToolsChange={onToolsChange} />
+                    </ListItem>
+                    <ListItem button style={{ color: "white", backgroundColor: "#3057A5" }} onClick={handleExportPDF}>
+                        <ListItemText primary="Export history PDF" />
                     </ListItem>
                 </div>
                 <Link to="/custom" style={{ color: "white", backgroundColor: "#30A557", textDecoration: "none" }}>
