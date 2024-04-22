@@ -10,16 +10,12 @@ Node.js backend and a React MUI frontend for an application that interacts with 
 -   [Features](#features)
 -   [Connect model to world with Web Tools](#connect-model-to-world-with-web-tools)
 -   [Run Locally](#run-locally)
-
     -   [Environment variables](#environment-variables)
     -   [Run](#run)
-
 -   [Docker Deploy](#docker-deploy)
-
     -   [Backend (Node.js)](#backend-nodejs)
     -   [Frontend (React MUI)](#frontend-react-mui)
     -   [Running the Containers](#running-the-containers)
-
 -   [Nginx](#nginx)
 -   [Monitoring](#monitoring)
 
