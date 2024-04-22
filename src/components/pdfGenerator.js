@@ -1,4 +1,7 @@
-import * as pdfMake from "pdfmake/build/pdfmake.min";
+import * as pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const styles = {
     userMessage: {
@@ -48,7 +51,7 @@ const generatePdfDocDefinition = (chatHistory) => {
     return docDefinition;
 };
 
-export const generatePdfFromChatHistories = (chatHistories) => {
+const generatePdfFromChatHistories = (chatHistories) => {
     const docDefinitions = chatHistories.map((history) => generatePdfDocDefinition(history));
     const mergedDefinition = {
         content: [].concat(...docDefinitions.map((def) => def.content)),
@@ -56,3 +59,5 @@ export const generatePdfFromChatHistories = (chatHistories) => {
     };
     pdfMake.createPdf(mergedDefinition).download("chat_histories.pdf");
 };
+
+export default generatePdfFromChatHistories;

@@ -1,11 +1,12 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { List, ListItem, ListItemText, SwipeableDrawer, Slider, Typography } from "@mui/material";
 import SoundSwitch from "./SoundSwitch";
 import ImagesSwitch from "./ImagesSwitch";
 import ToolsSwitch from "./ToolsSwitch";
 import { Link } from "react-router-dom";
-import { generatePdfFromChatHistories } from "./pdfGenerator";
 import { useMediaQuery, useTheme } from "@mui/material";
+
+const PDFGenerator = () => import("./pdfGenerator");
 
 const SideDrawer = ({
     isOpen,
@@ -24,9 +25,12 @@ const SideDrawer = ({
     temperature,
     onTemperatureChange,
 }) => {
-    const handleExportPDF = () => {
-        generatePdfFromChatHistories([chatHistory, ...storedChatHistories.map((h) => h.chatHistory)]);
+    const handleExportPDF = async () => {
+        PDFGenerator().then(({ default: actualModule, member1 }) => {
+            actualModule([chatHistory, ...storedChatHistories.map((h) => h.chatHistory)]);
+        });
     };
+
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const iOS = typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -77,9 +81,15 @@ const SideDrawer = ({
                     <ListItem>
                         <ToolsSwitch tools={tools} onToolsChange={onToolsChange} />
                     </ListItem>
-                    <ListItem button style={{ color: "white", backgroundColor: "#3057A5" }} onClick={handleExportPDF}>
-                        <ListItemText primary="Export PDF" />
-                    </ListItem>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <ListItem
+                            button
+                            style={{ color: "white", backgroundColor: "#3057A5" }}
+                            onClick={handleExportPDF}
+                        >
+                            <ListItemText primary="Export history PDF" />
+                        </ListItem>
+                    </Suspense>
                 </div>
                 <Link to="/custom" style={{ color: "white", backgroundColor: "#30A557", textDecoration: "none" }}>
                     <ListItem button>
