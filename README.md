@@ -32,8 +32,9 @@ https://allchat.online
 -   OpenAI GPT-3.5, GPT-4
 -   Audio Input in Gemini
 -   Video Input in Gemini
--   Custom GPTs
--   Memory (for Gemini & Claude)
+-   Custom GPTs (best to use with LlaMa-3 :)
+-   Memory (for Gemini & Claude) - any information about user which you agreed to persist
+-   Scheduling any action (hourly or daily) to your email
 -   Image Input (png/jpeg) in Gemini and Claude
 -   Image Generation by Amazon Titan
 -   Together AI models databricks/dbrx-instruct mistralai/Mixtral-8x22B-Instruct-v0.1, LLama-3, etc
@@ -42,12 +43,13 @@ https://allchat.online
 -   Markdown formatting
 -   Edit your messages with response regeneration
 -   Python Code Run
+-   PDF export of all chats
 -   Mobile friendly, PWA, Android app, etc
 -   Ability to provide own API key
 -   Web Tools (for Gemini & Claude) - weather, stocks, email send, Telegram, web search, etc
 -   Please ask for more features in Discussions or here https://discord.com/invite/JTk2fHtv
 
-## Connect model to world with Web Tools
+## Connect model to world with Web Tools (switch on WebTools option)
 
 -   Instantly run Python code: Just ask AI to write your code and let Python Code Run take care of execution. You can even create pictures or graphs - simply instruct AI to save them to a file. Just say _Create a python program which will draw house and clouds and save to disk_
 -   Effortlessly fetch real-time data: Easily access important information such as weather updates, stock prices, and the latest news - _just ask Whats weather in my country?_
