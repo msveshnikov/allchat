@@ -1,4 +1,4 @@
-import * as pdfMake from 'pdfmake/build/pdfmake.min';
+import * as pdfMake from "pdfmake/build/pdfmake.min";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import html2canvas from "html2canvas";
 
@@ -23,7 +23,7 @@ const generatePdfDocDefinition = async (chatHistory) => {
         styles: styles,
     };
 
-    for (const chat of chatHistory.chatHistory) {
+    for (const chat of chatHistory) {
         if (chat.user) {
             docDefinition.content.push({ text: chat.user, style: "userMessage" });
         }
@@ -34,7 +34,7 @@ const generatePdfDocDefinition = async (chatHistory) => {
 
             if (chat.image) {
                 const imageDataUrl = Array.isArray(chat.image)
-                    ? await Promise.all(chat.image.map((imgData) => html2canvas(imgData)))
+                    ? await Promise.all(chat.image.map(async (imgData) => await html2canvas(imgData)))
                     : await html2canvas(chat.image);
 
                 const images = Array.isArray(imageDataUrl)
@@ -54,7 +54,6 @@ const generatePdfDocDefinition = async (chatHistory) => {
 
 export const generatePdfFromChatHistories = async (chatHistories) => {
     const docDefinitions = await Promise.all(chatHistories.map((history) => generatePdfDocDefinition(history)));
-
     const mergedDefinition = {
         content: [].concat(...docDefinitions.map((def) => def.content)),
         styles: styles,

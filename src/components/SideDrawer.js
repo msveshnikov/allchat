@@ -12,6 +12,7 @@ const SideDrawer = ({
     onToggle,
     onNewChat,
     storedChatHistories,
+    chatHistory,
     onHistorySelection,
     sound,
     onSoundChange,
@@ -24,7 +25,7 @@ const SideDrawer = ({
     onTemperatureChange,
 }) => {
     const handleExportPDF = () => {
-        generatePdfFromChatHistories(storedChatHistories);
+        generatePdfFromChatHistories([chatHistory, ...storedChatHistories.map((h) => h.chatHistory)]);
     };
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
