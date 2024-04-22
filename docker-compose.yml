@@ -23,6 +23,7 @@ services:
             - TOGETHER_KEY=${TOGETHER_KEY}
             - INFRA_KEY=${INFRA_KEY}
             - OPENAI_KEY=${OPENAI_KEY}
+            - YOUTUBE_KEY=${YOUTUBE_KEY}
         restart: unless-stopped
         depends_on:
             - mongodb

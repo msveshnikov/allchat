@@ -18,6 +18,7 @@ import {
 } from "./claude.js";
 import { toolsUsed } from "./index.js";
 import { scheduleAction } from "./scheduler.js";
+import { summarizeYouTubeVideo } from "./youtube.js";
 dotenv.config({ override: true });
 
 const tools = [
@@ -187,6 +188,21 @@ const tools = [
                 },
             },
             required: ["action", "schedule"],
+        },
+    },
+    {
+        name: "summarize_youtube_video",
+        description:
+            "Summarize a YouTube video based on its video ID. The tool fetches the captions from the video using the YouTube Data API and generates a summary of the video content.",
+        parameters: {
+            type: "object",
+            properties: {
+                videoId: {
+                    type: "string",
+                    description: "The ID of the YouTube video to be summarized",
+                },
+            },
+            required: ["videoId"],
         },
     },
 ];
@@ -372,6 +388,9 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                             break;
                         case "schedule_action":
                             functionResponse = await scheduleAction(args.action, args.schedule, userId);
+                            break;
+                        case "summarize_youtube_video":
+                            functionResponse = await summarizeYouTubeVideo(args.videoId);
                             break;
                         default:
                             console.error(`Unsupported function call: ${name}`);

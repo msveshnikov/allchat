@@ -41,6 +41,8 @@ const toolEmojis = {
     execute_python: "🐍",
     get_latest_news: "📰",
     persist_user_info: "🗄️",
+    schedule_and_execute_action: "🗓️",
+    summarize_youtube_video: "📺",
 };
 
 function toolsToEmojis(toolsUsed) {

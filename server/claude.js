@@ -7,6 +7,7 @@ import { User } from "./model/User.js";
 import sharp from "sharp";
 import { scheduleAction } from "./scheduler.js";
 import { toolsUsed } from "./index.js";
+import { summarizeYouTubeVideo } from "./youtube.js";
 dotenv.config({ override: true });
 
 const bot = new TelegramBot(process.env.TELEGRAM_KEY);
@@ -191,6 +192,21 @@ const tools = [
                 },
             },
             required: ["action", "schedule"],
+        },
+    },
+    {
+        name: "summarize_youtube_video",
+        description:
+            "Summarize a YouTube video based on its video ID. The tool fetches the captions from the video using the YouTube Data API and generates a summary of the video content.",
+        input_schema: {
+            type: "object",
+            properties: {
+                videoId: {
+                    type: "string",
+                    description: "The ID of the YouTube video to be summarized",
+                },
+            },
+            required: ["videoId"],
         },
     },
 ];
@@ -432,6 +448,10 @@ async function processToolResult(data, temperature, messages, userId, model, web
                 case "schedule_action":
                     const { action, schedule } = toolUse.input;
                     toolResult = await scheduleAction(action, schedule, userId);
+                    break;
+                case "summarize_youtube_video":
+                    const { videoId } = toolUse.input;
+                    toolResult = await summarizeYouTubeVideo(videoId);
                     break;
                 default:
                     console.error(`Unsupported function call: ${toolUse.name}`);

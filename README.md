@@ -35,6 +35,7 @@ https://allchat.online
 -   Custom GPTs (best to use with LlaMa-3 :)
 -   Memory (for Gemini & Claude) - any information about user which you agreed to persist
 -   Scheduling any action (hourly or daily) to your email
+-   YouTube video summary
 -   Image Input (png/jpeg) in Gemini and Claude
 -   Image Generation by Amazon Titan
 -   Together AI models databricks/dbrx-instruct mistralai/Mixtral-8x22B-Instruct-v0.1, LLama-3, etc
