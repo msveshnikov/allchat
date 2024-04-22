@@ -22,13 +22,13 @@ const mockUser = {
 
 describe("Settings", () => {
     it("renders the user email", () => {
-        render(<Settings user={mockUser} />);
+        render(<Settings user={mockUser} selectedModel="gemini-1.5-pro-latest" />);
         const emailElement = screen.getByText(/test@example.com/i);
         expect(emailElement).toBeInTheDocument();
     });
 
     it("renders the Gemini Pro 1.5 usage stats", () => {
-        render(<Settings user={mockUser} />);
+        render(<Settings user={mockUser} selectedModel="gemini-1.5-pro-latest" />);
         const inputTokensElement = screen.getByText(/1001/i);
         const outputTokensElement = screen.getByText(/2000/i);
         const imagesGeneratedElement = screen.getByText(/11/i);
@@ -40,7 +40,7 @@ describe("Settings", () => {
     });
 
     it("renders the Claude 3 Haiku usage stats", () => {
-        render(<Settings user={mockUser} />);
+        render(<Settings user={mockUser} selectedModel="gemini-1.5-pro-latest" />);
         const inputTokensElement = screen.getByText(/500/i);
         const outputTokensElement = screen.getByText(/1000/i);
         const moneyConsumedElement = screen.getByText(/\$2.99/i);
