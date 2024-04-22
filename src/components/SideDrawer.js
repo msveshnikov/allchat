@@ -26,7 +26,7 @@ const SideDrawer = ({
     onTemperatureChange,
 }) => {
     const handleExportPDF = async () => {
-        PDFGenerator().then(({ default: actualModule, member1 }) => {
+        PDFGenerator().then(({ default: actualModule}) => {
             actualModule([chatHistory, ...storedChatHistories.map((h) => h.chatHistory)]);
         });
     };
