@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { List, ListItem, ListItemText, SwipeableDrawer, Slider, Typography } from "@mui/material";
 import SoundSwitch from "./SoundSwitch";
 import ImagesSwitch from "./ImagesSwitch";
@@ -81,15 +81,9 @@ const SideDrawer = ({
                     <ListItem>
                         <ToolsSwitch tools={tools} onToolsChange={onToolsChange} />
                     </ListItem>
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <ListItem
-                            button
-                            style={{ color: "white", backgroundColor: "#3057A5" }}
-                            onClick={handleExportPDF}
-                        >
-                            <ListItemText primary="Export history PDF" />
-                        </ListItem>
-                    </Suspense>
+                    <ListItem button style={{ color: "white", backgroundColor: "#3057A5" }} onClick={handleExportPDF}>
+                        <ListItemText primary="Export history PDF" />
+                    </ListItem>
                 </div>
                 <Link to="/custom" style={{ color: "white", backgroundColor: "#30A557", textDecoration: "none" }}>
                     <ListItem button>
