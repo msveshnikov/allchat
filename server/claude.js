@@ -5,6 +5,7 @@ import nodemailer from "nodemailer";
 import { fetchPageContent, fetchSearchResults, googleNews } from "./search.js";
 import { User } from "./model/User.js";
 import sharp from "sharp";
+import { scheduleAction } from "./scheduler.js";
 import { toolsUsed } from "./index.js";
 dotenv.config({ override: true });
 
@@ -171,6 +172,25 @@ const tools = [
                 },
             },
             required: ["key", "value"],
+        },
+    },
+    {
+        name: "schedule_action",
+        description:
+            "Schedule any action (prompt) hourly or daily. The action and result will be sent by email to the user.",
+        input_schema: {
+            type: "object",
+            properties: {
+                action: {
+                    type: "string",
+                    description: "The action (prompt) to be scheduled",
+                },
+                schedule: {
+                    type: "string",
+                    description: "The schedule for the action execution (hourly or daily)",
+                },
+            },
+            required: ["action", "schedule"],
         },
     },
 ];
@@ -408,6 +428,10 @@ async function processToolResult(data, temperature, messages, userId, model, web
                 case "persist_user_info":
                     const { key, value } = toolUse.input;
                     toolResult = await persistUserInfo(key, value, userId);
+                    break;
+                case "schedule_action":
+                    const { action, schedule } = toolUse.input;
+                    toolResult = await scheduleAction(action, schedule, userId);
                     break;
                 default:
                     console.error(`Unsupported function call: ${toolUse.name}`);

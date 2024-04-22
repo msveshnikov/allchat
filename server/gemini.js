@@ -17,6 +17,7 @@ import {
     sendTelegramMessage,
 } from "./claude.js";
 import { toolsUsed } from "./index.js";
+import { scheduleAction } from "./scheduler.js";
 dotenv.config({ override: true });
 
 const tools = [
@@ -167,6 +168,25 @@ const tools = [
                 },
             },
             required: ["key", "value"],
+        },
+    },
+    {
+        name: "schedule_action",
+        description:
+            "Schedule any action (prompt) hourly or daily. The action and result will be sent by email to the user.",
+        parameters: {
+            type: "object",
+            properties: {
+                action: {
+                    type: "string",
+                    description: "The action (prompt) to be scheduled",
+                },
+                schedule: {
+                    type: "string",
+                    description: "The schedule for the action execution (hourly or daily)",
+                },
+            },
+            required: ["action", "schedule"],
         },
     },
 ];
@@ -349,6 +369,9 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                             break;
                         case "persist_user_info":
                             functionResponse = await persistUserInfo(args.key, args.value, userId);
+                            break;
+                        case "schedule_action":
+                            functionResponse = await scheduleAction(args.action, args.schedule, userId);
                             break;
                         default:
                             console.error(`Unsupported function call: ${name}`);
