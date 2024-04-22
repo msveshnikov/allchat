@@ -4,6 +4,7 @@ import SoundSwitch from "./SoundSwitch";
 import ImagesSwitch from "./ImagesSwitch";
 import ToolsSwitch from "./ToolsSwitch";
 import { Link } from "react-router-dom";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 const SideDrawer = ({
     isOpen,
@@ -21,8 +22,23 @@ const SideDrawer = ({
     temperature,
     onTemperatureChange,
 }) => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const iOS = typeof navigator !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
+
     return (
-        <SwipeableDrawer PaperProps={{ sx: { width: 200 } }} open={isOpen} onClose={onToggle} onOpen={onToggle}>
+        <SwipeableDrawer
+            disableBackdropTransition={!iOS}
+            disableDiscovery={iOS}
+            PaperProps={{
+                sx: {
+                    width: isMobile ? 200 : 350,
+                },
+            }}
+            open={isOpen}
+            onClose={onToggle}
+            onOpen={onToggle}
+        >
             <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
                 <List style={{ flexGrow: 1, overflowY: "auto" }}>
                     <ListItem button onClick={onNewChat}>
