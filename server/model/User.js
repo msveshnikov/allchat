@@ -46,9 +46,9 @@ export function countTokens(text) {
 
 export function storeUsageStats(userId, model, inputTokens, outputTokens, imagesGenerated) {
     let moneyConsumed = 0;
-    const isGemini15 = model === "gemini-1.5-pro-latest";
-    const isGemini10 = model === "gemini-1.0-pro-latest";
-    const isClaude = model.startsWith("claude");
+    const isGemini15 = model?.startsWith("gemini-1.5");
+    const isGemini10 = model?.startsWith("gemini-1.0");
+    const isClaude = model?.startsWith("claude");
 
     if (isGemini15) {
         const inputTokensCost = (inputTokens / 1000000) * 7;

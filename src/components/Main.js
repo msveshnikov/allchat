@@ -34,7 +34,7 @@ function Main() {
     const [numberOfImages, setNumberOfImages] = useState(Number(localStorage.getItem("numberOfImages") || "1"));
     const [temperature, setTemperature] = useState(Number(localStorage.getItem("temperature") || "0.5"));
     const [selectedModel, setSelectedModel] = useState(
-        localStorage.getItem("selectedModel") || "gemini-1.5-pro-latest"
+        localStorage.getItem("selectedModel") || "gemini-1.5-pro-preview-0409"
     );
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
@@ -231,7 +231,7 @@ function Main() {
             method: "POST",
             headers,
             body: JSON.stringify({
-                model: "gemini-1.0-pro-latest",
+                model: "gemini-1.0-pro",
                 temperature: 0.1,
                 input: "Extract main topic of this chat in one simple short statement (30 chars max) and return it without anything else in [] ",
                 chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
