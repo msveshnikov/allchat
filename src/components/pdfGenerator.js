@@ -34,19 +34,23 @@ const generatePdfDocDefinition = (chatHistory) => {
         if (chat.user || chat.userImageData) {
             const content = [];
             if (chat.userImageData && (chat.fileType === "png" || chat.fileType === "jpeg")) {
-                content.push({ image: `data:image/${chat.fileType};base64,` + chat.userImageData, width: 300 });
+                content.push({
+                    image: `data:image/${chat.fileType};base64,` + chat.userImageData,
+                    width: 500,
+                });
             }
             content.push({ text: chat.user, style: "userMessage" });
             docDefinition.content.push(...content);
         }
+
         if (chat.assistant) {
             const content = [];
             if (chat.image) {
                 const images = Array.isArray(chat.image)
                     ? chat.image.map((imgData) => {
-                          return { image: "data:image/png;base64," + imgData, width: 300 };
+                          return { image: "data:image/png;base64," + imgData, width: 500 };
                       })
-                    : [{ image: "data:image/png;base64," + chat.image, width: 300 }];
+                    : [{ image: "data:image/png;base64," + chat.image, width: 500 }];
                 content.push(...images);
             }
             content.push({ text: chat.assistant, style: "assistantMessage" });
@@ -63,6 +67,7 @@ const generatePdfFromChatHistories = (chatHistories) => {
         content: [].concat(...docDefinitions.map((def) => def.content)),
         styles: styles,
     };
+
     pdfMake.createPdf(mergedDefinition).download("chat_histories.pdf");
 };
 

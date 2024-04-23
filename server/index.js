@@ -284,7 +284,7 @@ app.post("/interact", verifyToken, async (req, res) => {
         let imageResponse;
         if (hasPaintWord(userInput)) {
             imageResponse = await getImageTitan(
-                userInput?.substr(0, 200) + textResponse?.substr(0, 300),
+                userInput?.substr(0, 200) + textResponse?.substr(0, 500),
                 numberOfImages
             );
             imagesGenerated = numberOfImages;

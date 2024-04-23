@@ -4,9 +4,9 @@ const paintingWords = [
     "painting",
     "picture",
     "draw",
+    "image",
     "drawing",
     "generate",
-    "canvas",
     "palette",
     "sketch",
 
