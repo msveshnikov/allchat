@@ -8,6 +8,7 @@ services:
         environment:
             - NODE_ENV=production
             - GEMINI_KEY=${GEMINI_KEY}
+            - GOOGLE_KEY=${GOOGLE_KEY}
             - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
             - AWS_SECRET_KEY=${AWS_SECRET_KEY}
             - CLAUDE_KEY=${CLAUDE_KEY}
@@ -25,6 +26,8 @@ services:
             - OPENAI_KEY=${OPENAI_KEY}
             - YOUTUBE_KEY=${YOUTUBE_KEY}
         restart: unless-stopped
+        volumes:
+            - ./allchat.json:/app/allchat.json
         depends_on:
             - mongodb
 

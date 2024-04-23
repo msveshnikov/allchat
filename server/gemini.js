@@ -1,9 +1,3 @@
-import fs from "fs";
-import path from "path";
-import { google } from "googleapis";
-import dotenv from "dotenv";
-import stream from "stream";
-import ffmpeg from "fluent-ffmpeg";
 import {
     executePython,
     getCurrentTimeUTC,
@@ -16,10 +10,13 @@ import {
     sendEmail,
     sendTelegramMessage,
 } from "./claude.js";
+import { VertexAI } from "@google-cloud/vertexai";
 import { toolsUsed } from "./index.js";
 import { scheduleAction } from "./scheduler.js";
 import { summarizeYouTubeVideo } from "./youtube.js";
+import dotenv from "dotenv";
 dotenv.config({ override: true });
+process.env["GOOGLE_APPLICATION_CREDENTIALS"] = "./allchat.json";
 
 const tools = [
     {
@@ -208,107 +205,35 @@ const tools = [
 ];
 
 export async function getTextGemini(prompt, temperature, imageBase64, fileType, userId, model, apiKey, webTools) {
-    const GENAI_DISCOVERY_URL = `https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=${
-        apiKey || process.env.GEMINI_KEY
-    }`;
-    if (model === "gemini") {
-        model = "gemini-1.5-pro-latest";
+    const vertex_ai = new VertexAI({ project: apiKey || process.env.GOOGLE_KEY, location: "europe-west3" });
+
+    if (model === "gemini-1.5-pro-latest") {
+        model = "gemini-1.5-pro-preview-0409";
     }
 
-    async function uploadFile(fileBase64, mimeType, displayName) {
-        const bufferStream = new stream.PassThrough();
-        bufferStream.end(Buffer.from(fileBase64, "base64"));
-        const media = {
-            mimeType: mimeType,
-            body: bufferStream,
-        };
-        let body = { file: { displayName: displayName } };
-        const createFileResponse = await genaiService.media.upload({
-            media: media,
-            auth: auth,
-            requestBody: body,
-        });
-        const uploadedFile = createFileResponse.data.file;
-        return { file_data: { file_uri: uploadedFile.uri, mime_type: uploadedFile.mimeType } };
-    }
-
-    async function processVideo() {
-        const outputDir = "./images";
-        if (!fs.existsSync(outputDir)) {
-            fs.mkdirSync(outputDir, { recursive: true });
-        }
-
-        const tempVideoPath = path.join(outputDir, "temp_video.mp4");
-        fs.writeFileSync(tempVideoPath, Buffer.from(imageBase64, "base64"));
-
-        const framePromise = new Promise((resolve, reject) => {
-            ffmpeg(tempVideoPath)
-                .on("error", (err) => {
-                    console.error("Error extracting frames:", err);
-                    reject(err);
-                })
-                .on("end", () => {
-                    resolve();
-                })
-                .screenshots({
-                    count: 10,
-                    folder: path.join(outputDir, "frames"),
-                    filename: "frame_%05d.png",
-                });
-        });
-
-        let audioPromise;
-        try {
-            audioPromise = new Promise((resolve, reject) => {
-                ffmpeg(tempVideoPath)
-                    .on("error", (err) => {
-                        resolve();
-                    })
-                    .on("end", () => {
-                        resolve();
-                    })
-                    .output(path.join(outputDir, "audio.mp3"))
-                    .noVideo()
-                    .run();
-            });
-        } catch (err) {
-            audioPromise = Promise.resolve();
-        }
-
-        await Promise.all([framePromise, audioPromise]);
-        fs.unlinkSync(tempVideoPath);
-
-        const framesDir = path.join(outputDir, "frames");
-        const frameFiles = fs.readdirSync(framesDir);
-        for (const file of frameFiles) {
-            const filePath = path.join(framesDir, file);
-            const imageBase64 = fs.readFileSync(filePath, { encoding: "base64" });
-            const uploadedFile = await uploadFile(imageBase64, "image/png", file);
-            parts.push(uploadedFile);
-            fs.unlinkSync(filePath);
-        }
-
-        const audioFilePath = path.join(outputDir, "audio.mp3");
-        if (fs.existsSync(audioFilePath)) {
-            const audioBase64 = fs.readFileSync(audioFilePath, { encoding: "base64" });
-            const uploadedAudioFile = await uploadFile(audioBase64, "audio/mp3", "audio");
-            parts.push(uploadedAudioFile);
-            fs.unlinkSync(audioFilePath);
-        }
-    }
-
-    const genaiService = await google.discoverAPI({ url: GENAI_DISCOVERY_URL });
-    const auth = new google.auth.GoogleAuth().fromAPIKey(process.env.GEMINI_KEY);
     let parts = [];
 
     if (fileType === "mp4") {
-        await processVideo();
+        parts.push({
+            inlineData: {
+                mimeType: "video/mp4",
+                data: imageBase64,
+            },
+        });
     } else if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
-        const uploadedImageFile = await uploadFile(imageBase64, `image/png`, "image");
-        parts.push(uploadedImageFile);
+        parts.push({
+            inlineData: {
+                mimeType: "image/png",
+                data: imageBase64,
+            },
+        });
     } else if (fileType === "mp3" || fileType === "x-m4a" || fileType === "mpeg") {
-        const uploadedAudioFile = await uploadFile(imageBase64, `audio/mp3`, "audio");
-        parts.push(uploadedAudioFile);
+        parts.push({
+            inlineData: {
+                mimeType: "audio/mp3",
+                data: imageBase64,
+            },
+        });
     }
 
     const contents = {
@@ -325,23 +250,21 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                   },
               ]
             : [],
+    };
+
+    const generativeModel = vertex_ai.preview.getGenerativeModel({
+        model: model,
         generation_config: {
             maxOutputTokens: 8192,
             temperature: temperature || 0.5,
-            topP: 0.8,
         },
-    };
+    });
 
     let finalResponse = null;
 
     while (!finalResponse) {
-        const generateContentResponse = await genaiService.models.generateContent({
-            model: `models/${model}`,
-            requestBody: contents,
-            auth: auth,
-        });
-
-        const modelResponse = generateContentResponse?.data?.candidates?.[0]?.content;
+        const generateContentResponse = await generativeModel.generateContent(contents);
+        const modelResponse = generateContentResponse?.response?.candidates?.[0]?.content;
 
         if (modelResponse) {
             const functionCallPart = modelResponse.parts.find((part) => part.functionCall);

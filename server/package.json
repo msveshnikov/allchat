@@ -12,6 +12,7 @@
     "dependencies": {
         "@anthropic-ai/sdk": "^0.20.6",
         "@aws-sdk/client-bedrock-runtime": "^3.556.0",
+        "@google-cloud/vertexai": "^1.1.0",
         "bcrypt": "^5.1.1",
         "cheerio": "^1.0.0-rc.12",
         "cors": "^2.8.5",
@@ -19,7 +20,6 @@
         "express": "^4.19.2",
         "express-prom-bundle": "^7.0.0",
         "express-rate-limit": "^7.2.0",
-        "fluent-ffmpeg": "^2.1.2",
         "googleapis": "^134.0.0",
         "jsonwebtoken": "^9.0.2",
         "mammoth": "^1.7.1",
