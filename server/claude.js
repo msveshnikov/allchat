@@ -197,13 +197,13 @@ const tools = [
     {
         name: "summarize_youtube_video",
         description:
-            "Summarize a YouTube video based on its video ID. The tool fetches the captions from the video using the YouTube Data API and generates a summary of the video content.",
+            "Summarize a YouTube video based on its video ID or video URL. The tool fetches the captions from the video using the YouTube Data API and generates a summary of the video content.",
         input_schema: {
             type: "object",
             properties: {
                 videoId: {
                     type: "string",
-                    description: "The ID of the YouTube video to be summarized",
+                    description: "The ID or URL of the YouTube video to be summarized",
                 },
             },
             required: ["videoId"],
