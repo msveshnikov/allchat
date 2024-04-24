@@ -14,10 +14,10 @@
         "pdfmake": "^0.2.10",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-i18next": "^14.1.0",
+        "react-i18next": "^14.1.1",
         "react-markdown": "^8.0.0",
         "react-modal-image": "^2.6.0",
-        "react-router-dom": "^6.22.3",
+        "react-router-dom": "^6.23.0",
         "react-scroll": "^1.9.0",
         "react-syntax-highlighter": "^15.5.0"
     },
@@ -51,7 +51,7 @@
         "@babel/preset-env": "^7.24.4",
         "@babel/preset-react": "^7.24.1",
         "@testing-library/jest-dom": "^6.4.2",
-        "@testing-library/react": "^15.0.2",
+        "@testing-library/react": "^15.0.4",
         "@testing-library/user-event": "^14.5.2",
         "babel-jest": "^29.7.0",
         "react-scripts": "5.0.1"
