@@ -240,10 +240,10 @@ function Main() {
 
         if (response?.ok) {
             const data = await response.json();
-            return removeBrackets(data?.textResponse?.trim())?.slice(0, 30) + "...";
+            return removeBrackets(data?.textResponse?.trim())?.slice(0, 30);
         } else {
             const messages = chatHistory.map((chat) => chat.user + (chat.assistant || ""));
-            const summary = messages.join(" ").slice(0, 30) + "...";
+            const summary = messages.join(" ").slice(0, 30);
             return summary;
         }
     };
