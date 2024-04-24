@@ -346,7 +346,7 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
 
                 await handleFunctionCall(functionName, functionArgs);
             } else {
-                finalResponse = modelResponse?.parts[0]?.text;
+                finalResponse = modelResponse?.parts?.[0]?.text;
             }
         } else {
             console.log("No valid response from the model");
