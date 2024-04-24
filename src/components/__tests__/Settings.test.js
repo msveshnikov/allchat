@@ -27,7 +27,7 @@ describe("Settings", () => {
         expect(emailElement).toBeInTheDocument();
     });
 
-    it("renders the Gemini Pro 1.5 usage stats", () => {
+    it("renders the Gemini Pro Usage stats", () => {
         render(<Settings user={mockUser} selectedModel="gemini-1.5-pro-preview-0409" />);
         const inputTokensElement = screen.getByText(/1001/i);
         const outputTokensElement = screen.getByText(/2000/i);

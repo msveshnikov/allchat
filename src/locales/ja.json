@@ -1,5 +1,6 @@
 {
     "Login": "ログイン",
+    "Select Custom GPT": "カスタム GPT を選択",
     "Reset Password": "パスワードを再設定",
     "Register": "登録",
     "Please enter a valid email address.": "有効なメールアドレスを入力してください。",
@@ -22,7 +23,7 @@
     "Start Subscription": "サブスクリプションを開始する",
     "Select Model": "モデルを選択する",
     "Your API Key": "あなたの API キー",
-    "Gemini Pro 1.5 Usage": "Gemini Pro 1.5の使用状況",
+    "Gemini Pro Usage": "Gemini Pro 1.5の使用状況",
     "Images Generated:": "生成された画像:",
     "Money Consumed:": "消費された金額:",
     "Claude 3 Haiku Usage": "Claude 3 Haikuの使用状況",

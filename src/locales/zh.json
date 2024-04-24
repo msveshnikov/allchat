@@ -1,5 +1,6 @@
 {
     "Login": "登录",
+    "Select Custom GPT": "选择自定义 GPT",
     "Reset Password": "重置密码",
     "Register": "注册",
     "Please enter a valid email address.": "请输入有效的电子邮件地址。",
@@ -22,7 +23,7 @@
     "Start Subscription": "开始订阅",
     "Select Model": "选择模型",
     "Your API Key": "你的 API 密钥",
-    "Gemini Pro 1.5 Usage": "Gemini Pro 1.5 使用情况",
+    "Gemini Pro Usage": "Gemini Pro  使用情况",
     "Images Generated:": "生成图像：",
     "Money Consumed:": "消费金额：",
     "Claude 3 Haiku Usage": "Claude 3 Haiku 使用情况",

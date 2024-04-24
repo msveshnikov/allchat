@@ -1,5 +1,6 @@
 {
     "Login": "Login",
+    "Select Custom GPT": "Select Custom GPT",
     "Reset Password": "Reset Password",
     "Register": "Register",
     "Please enter a valid email address.": "Please enter a valid email address.",
@@ -22,7 +23,7 @@
     "Start Subscription": "Start Subscription",
     "Select Model": "Select Model",
     "Your API Key": "Your API Key",
-    "Gemini Pro 1.5 Usage": "Gemini Pro 1.5 Usage",
+    "Gemini Pro Usage": "Gemini Pro Usage",
     "Images Generated:": "Images Generated:",
     "Money Consumed:": "Money Consumed:",
     "Claude 3 Haiku Usage": "Claude 3 Haiku Usage",

@@ -1,5 +1,6 @@
 {
     "Login": "लॉग इन करें",
+    "Select Custom GPT": "कस्टम GPT चुनें",
     "Reset Password": "पासवर्ड रीसेट करें",
     "Register": "रजिस्टर करें",
     "Please enter a valid email address.": "कृपया एक मान्य ईमेल पता दर्ज करें।",
@@ -22,7 +23,7 @@
     "Start Subscription": "सदस्यता शुरू करें",
     "Select Model": "मॉडल चुनें",
     "Your API Key": "आपकी API कुंजी",
-    "Gemini Pro 1.5 Usage": "Gemini Pro 1.5 उपयोग",
+    "Gemini Pro Usage": "Gemini Pro  उपयोग",
     "Images Generated:": "उत्पन्न छवियाँ:",
     "Money Consumed:": "खर्च किया गया धन:",
     "Claude 3 Haiku Usage": "Claude 3 Haiku उपयोग",

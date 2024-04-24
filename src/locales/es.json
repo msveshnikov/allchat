@@ -1,5 +1,6 @@
 {
     "Login": "Iniciar sesión",
+    "Select Custom GPT": "Seleccionar GPT personalizado",
     "Reset Password": "Restablecer contraseña",
     "Register": "Registrarse",
     "Please enter a valid email address.": "Por favor ingrese una dirección de correo electrónico válida.",
@@ -22,7 +23,7 @@
     "Start Subscription": "Iniciar Suscripción",
     "Select Model": "Seleccionar Modelo",
     "Your API Key": "Tu Clave API",
-    "Gemini Pro 1.5 Usage": "Uso de Gemini Pro 1.5",
+    "Gemini Pro Usage": "Uso de Gemini Pro ",
     "Images Generated:": "Imágenes Generadas:",
     "Money Consumed:": "Dinero Consumido:",
     "Claude 3 Haiku Usage": "Uso de Claude 3 Haiku",
