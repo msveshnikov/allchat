@@ -6,6 +6,7 @@ import { API_URL } from "./Main";
 
 export const models = {
     "gemini-1.5-pro-preview-0409": ["image", "audio", "video", "document", "tools"],
+    "gemini-experimental": ["image", "audio", "video", "document", "tools"],
     "gemini-1.0-pro": ["document", "tools"],
     "claude-3-haiku-20240307": ["image", "document", "tools"],
     "claude-3-sonnet-20240229": ["image", "document", "tools"],

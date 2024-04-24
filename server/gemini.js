@@ -207,7 +207,7 @@ const tools = [
 export async function getTextGemini(prompt, temperature, imageBase64, fileType, userId, model, apiKey, webTools) {
     const vertex_ai = new VertexAI({ project: apiKey || process.env.GOOGLE_KEY, location: "europe-west3" });
 
-    if (model === "gemini-1.5-pro-latest") {
+    if (model === "gemini-1.5-pro-latest" || "gemini") {
         model = "gemini-1.5-pro-preview-0409";
     }
 
@@ -271,7 +271,7 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
         const modelResponse = generateContentResponse?.response?.candidates?.[0]?.content;
 
         if (modelResponse) {
-            const functionCallPart = modelResponse.parts.find((part) => part.functionCall);
+            const functionCallPart = modelResponse?.parts?.find((part) => part.functionCall);
 
             if (functionCallPart) {
                 const functionCall = functionCallPart.functionCall;
@@ -346,7 +346,7 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
 
                 await handleFunctionCall(functionName, functionArgs);
             } else {
-                finalResponse = modelResponse.parts[0].text;
+                finalResponse = modelResponse?.parts[0]?.text;
             }
         } else {
             console.log("No valid response from the model");
