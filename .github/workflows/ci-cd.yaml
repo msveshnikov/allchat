@@ -48,6 +48,25 @@ jobs:
                   docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }} .
                   docker push ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }}
 
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
+
+            - name: Build and Push Backend Image (arm64)
+              run: |
+                  docker buildx build \
+                  --platform linux/arm64 \
+                  --output "type=image,push=true" \
+                  --tag ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }} \
+                  ./server
+
+            - name: Build and Push Frontend Image (arm64)
+              run: |
+                  docker buildx build \
+                  --platform linux/arm64/v8 \
+                  --output "type=image,push=true" \
+                  --tag ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }} \
+                  .
+
     deploy:
         needs: build-and-push
         runs-on: ubuntu-latest
