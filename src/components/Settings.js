@@ -66,17 +66,18 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                 sx={{
                     width: "100%",
                     maxWidth: 800,
-                    backgroundImage: "linear-gradient(135deg,#9ce1ba, #68988e)",
+                    backgroundColor: "#ffffff",
                     borderRadius: "8px",
+                    boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
                 }}
             >
-                <CardContent sx={{ padding: "1rem" }}>
-                    <Grid container spacing={1}>
+                <CardContent sx={{ padding: "2rem" }}>
+                    <Grid container spacing={3} alignItems="center">
                         <Grid item xs={12} md={4}>
-                            <Typography variant="h6" gutterBottom color="secondary">
+                            <Typography variant="h6" gutterBottom color="primary">
                                 {t("Email")}
                             </Typography>
-                            <Typography variant="body1" color="#fff">
+                            <Typography variant="body1" color="textPrimary">
                                 {user.email}
                             </Typography>
                         </Grid>
@@ -87,15 +88,14 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                                 sx={{
                                     width: 80,
                                     height: 80,
-                                    marginTop: "1rem",
                                 }}
                             />
                         </Grid>
                         <Grid item xs={12} md={6}>
-                            <Typography variant="h6" gutterBottom color="secondary">
+                            <Typography variant="h6" gutterBottom color="primary">
                                 {t("Subscription Status")}
                             </Typography>
-                            <Typography variant="body1" color="#fff">
+                            <Typography variant="body1" color="textPrimary">
                                 {user?.subscriptionStatus?.toUpperCase()}
                             </Typography>
                             {user.subscriptionStatus === "active" || user.subscriptionStatus === "trialing" ? (
@@ -120,7 +120,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                                             onClick={handleCloseSettingsModal}
                                             variant="contained"
                                             color="primary"
-                                            sx={{ mt: 1 }}
+                                            sx={{ mt: 1, ml: 1 }}
                                         >
                                             {t("Customer Portal")}
                                         </Button>
@@ -145,7 +145,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                         </Grid>
 
                         <Grid item xs={12} md={6}>
-                            <Typography variant="h6" gutterBottom color="secondary">
+                            <Typography variant="h6" gutterBottom color="primary">
                                 {t("Select Model")}
                             </Typography>
                             <TextField
@@ -154,7 +154,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                                 fullWidth
                                 select
                                 variant="outlined"
-                                color="secondary"
+                                color="primary"
                             >
                                 {Object.keys(models).map((model) => (
                                     <MenuItem key={model} value={model}>
@@ -164,7 +164,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                             </TextField>
                         </Grid>
                         <Grid item xs={12} md={6}>
-                            <Typography variant="h6" gutterBottom color="secondary">
+                            <Typography variant="h6" gutterBottom color="primary">
                                 {t("Select Custom GPT")}
                             </Typography>
                             <TextField
@@ -173,7 +173,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                                 fullWidth
                                 select
                                 variant="outlined"
-                                color="secondary"
+                                color="primary"
                             >
                                 <MenuItem value="">None</MenuItem>
                                 {customGPTNames.map((name) => (
@@ -184,7 +184,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                             </TextField>
                         </Grid>
                         <Grid item xs={12} md={12}>
-                            <Typography variant="h6" gutterBottom color="secondary">
+                            <Typography variant="h6" gutterBottom color="primary">
                                 {t("Your API Key")}
                             </Typography>
                             <TextField
@@ -192,74 +192,74 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                                 onChange={handleApiKeyChange}
                                 fullWidth
                                 variant="outlined"
-                                color="secondary"
+                                color="primary"
                             />
                         </Grid>
                         <Grid item xs={12} md={6}>
-                            <Typography variant="h6" gutterBottom color="secondary">
+                            <Typography variant="h6" gutterBottom color="primary">
                                 {t("Gemini Pro Usage")}
                             </Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
-                                    <Typography variant="body1" color="#fff">
+                                    <Typography variant="body1" color="textPrimary">
                                         {t("Input Tokens:")}
                                     </Typography>
-                                    <Typography variant="body2" color="#fff">
+                                    <Typography variant="body2" color="textPrimary">
                                         <b>{user.usageStats.gemini.inputTokens}</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <Typography variant="body1" color="#fff">
+                                    <Typography variant="body1" color="textPrimary">
                                         {t("Output Tokens:")}
                                     </Typography>
-                                    <Typography variant="body2" color="#fff">
+                                    <Typography variant="body2" color="textPrimary">
                                         <b>{user.usageStats.gemini.outputTokens}</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <Typography variant="body1" color="#fff">
+                                    <Typography variant="body1" color="textPrimary">
                                         {t("Images Generated:")}
                                     </Typography>
-                                    <Typography variant="body2" color="#fff">
+                                    <Typography variant="body2" color="textPrimary">
                                         <b>{user.usageStats.gemini.imagesGenerated}</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <Typography variant="body1" color="#fff">
+                                    <Typography variant="body1" color="textPrimary">
                                         {t("Money Consumed:")}
                                     </Typography>
-                                    <Typography variant="body2" color="#fff">
+                                    <Typography variant="body2" color="textPrimary">
                                         <b>${user.usageStats.gemini.moneyConsumed.toFixed(2)}</b>
                                     </Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
                         <Grid item xs={12} md={6}>
-                            <Typography variant="h6" gutterBottom color="secondary">
+                            <Typography variant="h6" gutterBottom color="primary">
                                 {t("Claude 3 Haiku Usage")}
                             </Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
-                                    <Typography variant="body1" color="#fff">
+                                    <Typography variant="body1" color="textPrimary">
                                         {t("Input Tokens:")}
                                     </Typography>
-                                    <Typography variant="body2" color="#fff">
+                                    <Typography variant="body2" color="textPrimary">
                                         <b>{user.usageStats.claude.inputTokens}</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <Typography variant="body1" color="#fff">
+                                    <Typography variant="body1" color="textPrimary">
                                         {t("Output Tokens:")}
                                     </Typography>
-                                    <Typography variant="body2" color="#fff">
+                                    <Typography variant="body2" color="textPrimary">
                                         <b>{user.usageStats.claude.outputTokens}</b>
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <Typography variant="body1" color="#fff">
+                                    <Typography variant="body1" color="textPrimary">
                                         {t("Money Consumed:")}
                                     </Typography>
-                                    <Typography variant="body2" color="#fff">
+                                    <Typography variant="body2" color="textPrimary">
                                         <b>${user.usageStats.claude.moneyConsumed.toFixed(2)}</b>
                                     </Typography>
                                 </Grid>
