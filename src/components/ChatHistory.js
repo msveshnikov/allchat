@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import EditIcon from "@mui/icons-material/Edit";
 import { CodeBlock } from "./CodeBlock";
 import { Lightbox } from "react-modal-image";
+import "katex/dist/katex.min.css";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import { LazyLatexComponents } from "./LazyLatexComponents";
