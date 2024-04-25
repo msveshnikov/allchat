@@ -5,9 +5,7 @@ body {
 }
 
 .katex .katex-mathml {
-    /* Accessibility hack to only show to screen readers
-           Found at: http://a11yproject.com/posts/how-to-hide-content/ */
-    /* position: absolute; */
+    position: relative !important;
     clip: rect(1px, 1px, 1px, 1px);
     padding: 0;
     border: 0;
