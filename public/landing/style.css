@@ -60,6 +60,7 @@ nav ul li a {
 .hero-content {
     flex: 1;
     padding-right: 40px;
+    text-align: center;
 }
 
 .hero-content h1 {
