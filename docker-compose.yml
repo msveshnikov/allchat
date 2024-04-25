@@ -11,6 +11,7 @@ services:
             - GOOGLE_KEY=${GOOGLE_KEY}
             - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
             - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+            - STABILITY_KEY=${STABILITY_KEY}
             - CLAUDE_KEY=${CLAUDE_KEY}
             - STRIPE_KEY=${STRIPE_KEY}
             - STRIPE_WH_SECRET=${STRIPE_WH_SECRET}

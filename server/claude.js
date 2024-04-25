@@ -518,7 +518,7 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
         anthropic = new Anthropic({ apiKey });
     } else {
         anthropic = new Anthropic({ apiKey: process.env.CLAUDE_KEY });
-        if (model.includes("opus")) {
+        if (model?.includes("opus") || !model) {
             model = "claude-3-haiku-20240307";
         }
     }

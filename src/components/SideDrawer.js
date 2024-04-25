@@ -1,7 +1,6 @@
 import React from "react";
 import { List, ListItem, ListItemText, SwipeableDrawer, Slider, Typography } from "@mui/material";
 import SoundSwitch from "./SoundSwitch";
-import ImagesSwitch from "./ImagesSwitch";
 import ToolsSwitch from "./ToolsSwitch";
 import { Link } from "react-router-dom";
 import { useMediaQuery, useTheme } from "@mui/material";
@@ -20,13 +19,11 @@ const SideDrawer = ({
     tools,
     onToolsChange,
     onClearAll,
-    numberOfImages,
-    onImagesChange,
     temperature,
     onTemperatureChange,
 }) => {
     const handleExportPDF = async () => {
-        PDFGenerator().then(({ default: generatePdfFromChatHistories}) => {
+        PDFGenerator().then(({ default: generatePdfFromChatHistories }) => {
             generatePdfFromChatHistories([chatHistory, ...storedChatHistories.map((h) => h.chatHistory)]);
         });
     };
@@ -71,9 +68,6 @@ const SideDrawer = ({
                             step={0.1}
                             valueLabelDisplay="auto"
                         />
-                    </ListItem>
-                    <ListItem>
-                        <ImagesSwitch numberOfImages={numberOfImages} onImagesChange={onImagesChange} />
                     </ListItem>
                     <ListItem>
                         <SoundSwitch sound={sound} onSoundChange={onSoundChange} />

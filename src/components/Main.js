@@ -31,7 +31,6 @@ function Main() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [sound, setSound] = useState(localStorage.getItem("sound") === "true");
     const [tools, setTools] = useState(localStorage.getItem("tools") === "true");
-    const [numberOfImages, setNumberOfImages] = useState(Number(localStorage.getItem("numberOfImages") || "1"));
     const [temperature, setTemperature] = useState(Number(localStorage.getItem("temperature") || "0.5"));
     const [selectedModel, setSelectedModel] = useState(
         localStorage.getItem("selectedModel") || "gemini-1.5-pro-preview-0409"
@@ -101,11 +100,10 @@ function Main() {
             }
             localStorage.setItem("sound", sound);
             localStorage.setItem("tools", tools);
-            localStorage.setItem("numberOfImages", numberOfImages);
             localStorage.setItem("temperature", temperature);
             localStorage.setItem("selectedModel", selectedModel);
         } catch {}
-    }, [storedChatHistories, sound, numberOfImages, temperature, tools, selectedModel]);
+    }, [storedChatHistories, sound, temperature, tools, selectedModel]);
 
     const handleSubmit = async () => {
         if (input.trim() || selectedFile) {
@@ -154,7 +152,6 @@ function Main() {
                     apiKey: localStorage.getItem("apiKey"),
                     tools,
                     temperature,
-                    numberOfImages,
                     chatHistory: (newHistory || chatHistory).map((h) => ({ user: h.user, assistant: h.assistant })),
                 }),
             });
@@ -430,8 +427,6 @@ function Main() {
                 onSoundChange={setSound}
                 onToolsChange={setTools}
                 onClearAll={clearAllChatHistory}
-                numberOfImages={numberOfImages}
-                onImagesChange={setNumberOfImages}
                 temperature={temperature}
                 onTemperatureChange={setTemperature}
             />

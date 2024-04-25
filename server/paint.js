@@ -39,7 +39,6 @@ const paintingWords = [
     "dibujo",
     "pincel",
     "lienzo",
-    "paleta",
     "boceto",
 
     // Arabic
@@ -67,11 +66,6 @@ const paintingWords = [
     "картина",
     "живопись",
     "рисунок",
-    "кисть",
-    "холст",
-    "цвет",
-    "палитра",
-    "эскиз",
     "искусство",
 
     // Portuguese
@@ -81,7 +75,6 @@ const paintingWords = [
     "desenho",
     "pincel",
     "tela",
-    "paleta",
     "esboço",
 
     // French
@@ -91,7 +84,6 @@ const paintingWords = [
     "dessiner",
     "pinceau",
     "couleur",
-    "palette",
     "esquisse",
     
 ];
