@@ -217,7 +217,7 @@ const tools = [
 export async function getTextGemini(prompt, temperature, imageBase64, fileType, userId, model, apiKey, webTools) {
     const vertex_ai = new VertexAI({ project: apiKey || process.env.GOOGLE_KEY, location: "europe-west3" });
 
-    if (model === "gemini-1.5-pro-latest" || "gemini") {
+    if (model === "gemini-1.5-pro-latest" || model==="gemini") {
         model = "gemini-1.5-pro-preview-0409";
     }
 
