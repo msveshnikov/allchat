@@ -176,6 +176,15 @@ const tools = [
         },
     },
     {
+        name: "remove_user_info",
+        description: "Removes all information about user.",
+        input_schema: {
+            type: "object",
+            properties: {},
+            required: [],
+        },
+    },
+    {
         name: "schedule_action",
         description:
             "Schedule any action (prompt) hourly or daily. The action and result will be sent by email to the user.",
@@ -374,6 +383,18 @@ export async function persistUserInfo(key, value, userId) {
     }
 }
 
+export async function removeUserInfo(userId) {
+    try {
+        const user = await User.findById(userId);
+        user.info = {}; // Clear the user's info object
+        await user.save();
+        return `User information removed successfully for user ${userId}.`;
+    } catch (error) {
+        console.error("Error removing user information:", error);
+        return "Error removing user information: " + error.message;
+    }
+}
+
 const resizeImage = async (imageBase64, maxSize = 3 * 1024 * 1024) => {
     const image = sharp(Buffer.from(imageBase64, "base64"));
     const metadata = await image.metadata();
@@ -444,6 +465,9 @@ async function processToolResult(data, temperature, messages, userId, model, web
                 case "persist_user_info":
                     const { key, value } = toolUse.input;
                     toolResult = await persistUserInfo(key, value, userId);
+                    break;
+                case "remove_user_info":
+                    toolResult = await removeUserInfo(userId);
                     break;
                 case "schedule_action":
                     const { action, schedule } = toolUse.input;

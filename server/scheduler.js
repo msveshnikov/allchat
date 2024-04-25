@@ -14,8 +14,9 @@ export const scheduleAction = async (action, schedule, userId) => {
     const task = cron.schedule(schedule === "hourly" ? "0 * * * *" : "0 0 * * *", async () => {
         try {
             const result = await getTextClaude(action, 0.5, null, null, userId, "claude-3-haiku-20240307", null, true);
-            user.info.set(`${schedule}_action_${Date.now()}`, action);
-            user.info.set(`${schedule}_result_${Date.now()}`, result);
+            const actionTimestamp = Date.now();
+            user.scheduling.set(`${schedule}_action_${actionTimestamp}`, action);
+            user.scheduling.set(`${schedule}_result_${actionTimestamp}`, result);
             await user.save();
             await sendEmail(user.email, `${schedule} action result`, result, userId);
         } catch (error) {

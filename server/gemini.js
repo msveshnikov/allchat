@@ -6,6 +6,7 @@ import {
     getStockPrice,
     getWeather,
     persistUserInfo,
+    removeUserInfo,
     searchWebContent,
     sendEmail,
     sendTelegramMessage,
@@ -169,6 +170,15 @@ const tools = [
         },
     },
     {
+        name: "remove_user_info",
+        description: "Removes all information about user.",
+        parameters: {
+            type: "object",
+            properties: {},
+            required: [],
+        },
+    },
+    {
         name: "schedule_action",
         description:
             "Schedule any action (prompt) hourly or daily. The action and result will be sent by email to the user.",
@@ -312,6 +322,9 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                             break;
                         case "persist_user_info":
                             functionResponse = await persistUserInfo(args.key, args.value, userId);
+                            break;
+                        case "remove_user_info":
+                            functionResponse = await removeUserInfo(userId);
                             break;
                         case "schedule_action":
                             functionResponse = await scheduleAction(args.action, args.schedule, userId);

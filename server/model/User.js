@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema({
         default: "none",
     },
     info: { type: Map, of: String, default: new Map() },
+    scheduling: { type: Map, of: String, default: new Map() },
 });
 
 export const User = mongoose.model("User", userSchema);
