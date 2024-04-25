@@ -13,7 +13,6 @@ import PasswordReset from "./components/PasswordReset";
 import CustomGPTPage from "./components/CustomGPT";
 import Privacy from "./components/Privacy";
 import Terms from "./components/Terms";
-import { load } from "./components/LazyLatexComponents";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -33,5 +32,4 @@ root.render(
     </ThemeProvider>
 );
 
-load();
 serviceWorkerRegistration.register();
