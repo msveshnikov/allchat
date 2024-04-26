@@ -13,7 +13,7 @@ dotenv.config({ override: true });
 const bot = new TelegramBot(process.env.TELEGRAM_KEY);
 let anthropic;
 
-const tools = [
+export const tools = [
     {
         name: "get_weather",
         description:

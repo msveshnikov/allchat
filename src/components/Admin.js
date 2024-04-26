@@ -146,6 +146,25 @@ const Admin = () => {
                                 <StyledCard>
                                     <CardContent>
                                         <Typography variant="h5" gutterBottom color="primary">
+                                            Together Usage
+                                        </Typography>
+                                        <Typography variant="body1" color="text.primary">
+                                            Total Input Tokens: <strong>{stats.together.totalInputTokens}</strong>
+                                        </Typography>
+                                        <Typography variant="body1" color="text.primary">
+                                            Total Output Tokens: <strong>{stats.together.totalOutputTokens}</strong>
+                                        </Typography>
+                                        <Typography variant="body1" color="text.primary">
+                                            Total Money Consumed:{" "}
+                                            <strong>${stats.together.totalMoneyConsumed.toFixed(2)}</strong>
+                                        </Typography>
+                                    </CardContent>
+                                </StyledCard>
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <StyledCard>
+                                    <CardContent>
+                                        <Typography variant="h5" gutterBottom color="primary">
                                             Users
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">

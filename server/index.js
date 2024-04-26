@@ -369,9 +369,14 @@ app.get("/stats", verifyToken, async (req, res) => {
             totalOutputTokens: 0,
             totalMoneyConsumed: 0,
         };
+        const togetherStats = {
+            totalInputTokens: 0,
+            totalOutputTokens: 0,
+            totalMoneyConsumed: 0,
+        };
 
         for (const user of users) {
-            const { gemini, claude } = user.usageStats;
+            const { gemini, claude, together } = user.usageStats;
             geminiStats.totalInputTokens += gemini.inputTokens;
             geminiStats.totalOutputTokens += gemini.outputTokens;
             geminiStats.totalMoneyConsumed += gemini.moneyConsumed;
@@ -379,9 +384,12 @@ app.get("/stats", verifyToken, async (req, res) => {
             claudeStats.totalInputTokens += claude.inputTokens;
             claudeStats.totalOutputTokens += claude.outputTokens;
             claudeStats.totalMoneyConsumed += claude.moneyConsumed;
+            togetherStats.totalInputTokens += together.inputTokens;
+            togetherStats.totalOutputTokens += together.outputTokens;
+            togetherStats.totalMoneyConsumed += together.moneyConsumed;
         }
 
-        res.json({ users: users.length, gemini: geminiStats, claude: claudeStats });
+        res.json({ users: users.length, gemini: geminiStats, claude: claudeStats, together: togetherStats });
     } catch (error) {
         console.error("Error fetching stats:", error);
         res.status(500).json({ error: error.message });
