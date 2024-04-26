@@ -8,10 +8,15 @@ const userSchema = new mongoose.Schema({
         gemini: {
             inputTokens: { type: Number, default: 0 },
             outputTokens: { type: Number, default: 0 },
-            imagesGenerated: { type: Number, default: 0 },
             moneyConsumed: { type: Number, default: 0 },
+            imagesGenerated: { type: Number, default: 0 },
         },
         claude: {
+            inputTokens: { type: Number, default: 0 },
+            outputTokens: { type: Number, default: 0 },
+            moneyConsumed: { type: Number, default: 0 },
+        },
+        together: {
             inputTokens: { type: Number, default: 0 },
             outputTokens: { type: Number, default: 0 },
             moneyConsumed: { type: Number, default: 0 },
@@ -50,31 +55,43 @@ export function storeUsageStats(userId, model, inputTokens, outputTokens, images
     const isGemini15 = model?.startsWith("gemini-1.5");
     const isGemini10 = model?.startsWith("gemini-1.0");
     const isClaude = model?.startsWith("claude");
+    const isTogether = !isGemini15 && !isGemini10 && !isClaude;
+    const imagesGeneratedCost = imagesGenerated * 0.002; //SDXL
 
     if (isGemini15) {
         const inputTokensCost = (inputTokens / 1000000) * 7;
         const outputTokensCost = (outputTokens / 1000000) * 21;
-        const imagesGeneratedCost = imagesGenerated * 0.01;
         moneyConsumed = inputTokensCost + outputTokensCost + imagesGeneratedCost;
     } else if (isGemini10) {
         const inputTokensCost = (inputTokens / 1000000) * 0.5;
         const outputTokensCost = (outputTokens / 1000000) * 1.5;
-        const imagesGeneratedCost = imagesGenerated * 0.01;
         moneyConsumed = inputTokensCost + outputTokensCost + imagesGeneratedCost;
     } else if (isClaude) {
-        const inputTokensCost = (inputTokens * 0.25) / 1000000;
-        const outputTokensCost = (outputTokens * 1.25) / 1000000;
-        moneyConsumed = inputTokensCost + outputTokensCost;
+        if (model?.includes("haiku")) {
+            moneyConsumed = (inputTokens * 0.25 + outputTokens * 1.25) / 1000000;
+        } else if (model?.includes("opus")) {
+            moneyConsumed = (inputTokens * 15 + outputTokens * 75) / 1000000;
+        } else if (model?.includes("sonnet")) {
+            moneyConsumed = (inputTokens * 3 + outputTokens * 15) / 1000000;
+        }
+    } else if (isTogether) {
+        moneyConsumed = (inputTokens + outputTokens) / 1000000;
+    }
+
+    if (isTogether) {
+        model = "together";
+    } else {
+        model = model.slice(0, 6);
     }
 
     User.findByIdAndUpdate(
         userId,
         {
             $inc: {
-                [`usageStats.${model.slice(0, 6)}.inputTokens`]: inputTokens,
-                [`usageStats.${model.slice(0, 6)}.outputTokens`]: outputTokens,
-                [`usageStats.${model.slice(0, 6)}.imagesGenerated`]: imagesGenerated,
-                [`usageStats.${model.slice(0, 6)}.moneyConsumed`]: moneyConsumed,
+                [`usageStats.${model}.inputTokens`]: inputTokens,
+                [`usageStats.${model}.outputTokens`]: outputTokens,
+                [`usageStats.${model}.moneyConsumed`]: moneyConsumed,
+                [`usageStats.gemini.imagesGenerated`]: imagesGenerated,
             },
         },
         { new: true }
