@@ -17,6 +17,11 @@ describe("Admin", () => {
             totalOutputTokens: 1000,
             totalMoneyConsumed: 3.99,
         },
+        together: {
+            totalInputTokens: 700,
+            totalOutputTokens: 1001,
+            totalMoneyConsumed: 4.99,
+        },
     };
 
     const mockGpts = [
