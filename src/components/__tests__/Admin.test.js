@@ -62,7 +62,7 @@ describe("Admin", () => {
             expect(screen.getByText("Gemini Pro Usage")).toBeInTheDocument();
             expect(screen.getByText(`${mockStats.gemini.totalImagesGenerated}`)).toBeInTheDocument();
             expect(screen.getByText(`$${mockStats.gemini.totalMoneyConsumed.toFixed(2)}`)).toBeInTheDocument();
-            expect(screen.getByText("Claude 3 Haiku Usage")).toBeInTheDocument();
+            expect(screen.getByText("Claude 3 Usage")).toBeInTheDocument();
             expect(screen.getByText(`${mockStats.claude.totalInputTokens}`)).toBeInTheDocument();
             expect(screen.getByText(`${mockStats.claude.totalOutputTokens}`)).toBeInTheDocument();
             expect(screen.getByText(`$${mockStats.claude.totalMoneyConsumed.toFixed(2)}`)).toBeInTheDocument();

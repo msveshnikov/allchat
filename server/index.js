@@ -28,7 +28,7 @@ const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
 const MAX_CONTEXT_LENGTH = 16000;
 const MAX_SEARCH_RESULT_LENGTH = 3000;
 const stripe = new Stripe(process.env.STRIPE_KEY);
-const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro 1.5 and Claude Haiku language models. Your capabilities include:
+const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro 1.5 and Claude language models. Your capabilities include:
 
 - Engaging in natural language conversations and answering user queries.
 - Providing informative, insightful, and relevant responses based on the given context and user input.

@@ -26,7 +26,7 @@ describe("Settings", () => {
         const emailElement = screen.getByText(/test@example.com/i);
         expect(emailElement).toBeInTheDocument();
     });
-
+ 
     it("renders the Gemini Pro Usage stats", () => {
         render(<Settings user={mockUser} selectedModel="gemini-1.5-pro-preview-0409" />);
         const inputTokensElement = screen.getByText(/1001/i);
@@ -39,7 +39,7 @@ describe("Settings", () => {
         expect(moneyConsumedElement).toBeInTheDocument();
     });
 
-    it("renders the Claude 3 Haiku usage stats", () => {
+    it("renders the Claude 3 usage stats", () => {
         render(<Settings user={mockUser} selectedModel="gemini-1.5-pro-preview-0409" />);
         const inputTokensElement = screen.getByText(/500/i);
         const outputTokensElement = screen.getByText(/1000/i);

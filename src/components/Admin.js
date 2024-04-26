@@ -127,7 +127,7 @@ const Admin = () => {
                                 <StyledCard>
                                     <CardContent>
                                         <Typography variant="h5" gutterBottom color="primary">
-                                            Claude 3 Haiku Usage
+                                            Claude 3 Usage
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">
                                             Total Input Tokens: <strong>{stats.claude.totalInputTokens}</strong>

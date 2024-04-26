@@ -246,7 +246,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h6" gutterBottom color="primary">
-                                {t("Claude 3 Haiku Usage")}
+                                {t("Claude 3 Usage")}
                             </Typography>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
