@@ -54,9 +54,19 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
 
     const fetchCustomGPTNames = async () => {
         try {
-            const response = await fetch(API_URL + "/customgpt");
+            const token = localStorage.getItem("token");
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            };
+
+            const response = await fetch(API_URL + "/customgpt", {
+                headers,
+            });
             const data = await response.json();
-            setCustomGPTNames(data);
+            if (response.ok) {
+                setCustomGPTNames(data);
+            }
         } catch {}
     };
 
@@ -72,7 +82,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                 }}
             >
                 <CardContent sx={{ padding: "2rem" }}>
-                    <Grid container spacing={3} alignItems="center">
+                    <Grid container spacing={2} alignItems="center">
                         <Grid item xs={12} md={4}>
                             <Typography variant="h6" gutterBottom color="primary">
                                 {t("Email")}
@@ -176,7 +186,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                                 color="primary"
                             >
                                 <MenuItem value="">None</MenuItem>
-                                {customGPTNames.map((name) => (
+                                {customGPTNames?.map((name) => (
                                     <MenuItem key={name} value={name}>
                                         {name}
                                     </MenuItem>

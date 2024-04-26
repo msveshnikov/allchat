@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Grid, Card, CardContent, styled } from "@mui/material";
+import { Box, Typography, Grid, Card, CardContent, styled, Switch, FormControlLabel } from "@mui/material";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { API_URL } from "./Main";
@@ -50,6 +50,26 @@ const Admin = () => {
         }
     };
 
+    const handlePrivateGpt = async (id, isPrivate) => {
+        const token = localStorage.getItem("token");
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+        const response = await fetch(`${API_URL}/customgpt/${id}/private`, {
+            method: "PUT",
+            headers,
+            body: JSON.stringify({ isPrivate }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+            const updatedGpts = gpts.map((gpt) => (gpt._id === id ? { ...gpt, isPrivate } : gpt));
+            setGpts(updatedGpts);
+        } else {
+            console.error(data.error);
+        }
+    };
+
     useEffect(() => {
         const fetchStats = async () => {
             const token = localStorage.getItem("token");
@@ -74,7 +94,7 @@ const Admin = () => {
 
     return (
         <>
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" bgcolor="#f5f5f5">
+            <Box display="flex" justifyContent="center" alignItems="center" bgcolor="#f5f5f5">
                 <Box maxWidth="1200px" width="100%" padding={4}>
                     <Typography variant="h3" gutterBottom align="center" color="primary">
                         Admin Statistics
@@ -153,6 +173,7 @@ const Admin = () => {
                                 <TableCell>Name</TableCell>
                                 <TableCell>Instructions</TableCell>
                                 <TableCell>Knowledge</TableCell>
+                                <TableCell>Private</TableCell>
                                 <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
@@ -162,6 +183,16 @@ const Admin = () => {
                                     <TableCell>{gpt.name}</TableCell>
                                     <TableCell>{gpt.instructions?.slice(0, 500)}</TableCell>
                                     <TableCell>{gpt.knowledge?.slice(0, 1500)}</TableCell>
+                                    <TableCell>
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    checked={gpt.isPrivate}
+                                                    onChange={() => handlePrivateGpt(gpt._id, !gpt.isPrivate)}
+                                                />
+                                            }
+                                        />
+                                    </TableCell>
                                     <TableCell>
                                         <IconButton
                                             onClick={() => handleDeleteGpt(gpt._id)}
