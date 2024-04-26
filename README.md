@@ -47,7 +47,7 @@ https://allchat.online
 -   PDF export of all chats
 -   Mobile friendly, PWA, Android app, etc
 -   Ability to provide own API key
--   Web Tools (for Gemini & Claude) - weather, stocks, email send, Telegram, web search, etc
+-   Web Tools - weather, stocks, email send, Telegram, web search, etc
 -   Please ask for more features in Discussions or here https://discord.com/invite/JTk2fHtv
 
 ## Connect model to world with Web Tools (switch on WebTools option)

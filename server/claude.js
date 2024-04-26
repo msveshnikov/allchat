@@ -553,7 +553,7 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
     });
 
     if (!data) {
-        throw new Error("Anthropic Claude Error");
+        throw new Error("Claude Error");
     } else {
         if (data.stop_reason === "tool_use") {
             return processToolResult(data, temperature, messages, userId, model, webTools);

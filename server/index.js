@@ -265,7 +265,7 @@ app.post("/interact", verifyToken, async (req, res) => {
         } else if (model?.startsWith("HuggingFace")) {
             textResponse = await getTextInfra(contextPrompt, temperature, model, apiKey);
         } else if (model?.startsWith("gpt")) {
-            textResponse = await getTextGpt(contextPrompt, temperature, model, apiKey);
+            textResponse = await getTextGpt(contextPrompt, temperature, req.user.id, model, apiKey, tools);
         } else {
             textResponse = await getTextTogether(contextPrompt, temperature, model, apiKey);
         }
