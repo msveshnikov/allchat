@@ -1,6 +1,6 @@
 {
     "Login": "Войти",
-    "Select Custom GPT": "Выбрать пользовательский GPT",
+    "Select Custom GPT": "Выберите пользовательский GPT",
     "Reset Password": "Сбросить пароль",
     "Register": "Зарегистрироваться",
     "Please enter a valid email address.": "Пожалуйста, введите действительный адрес электронной почты.",
@@ -26,7 +26,7 @@
     "Gemini Pro Usage": "Использование Gemini Pro ",
     "Images Generated:": "Сгенерированные изображения:",
     "Money Consumed:": "Потрачено денег:",
-    "Claude 3 Haiku Usage": "Использование Claude 3 Haiku",
+    "Claude 3 Usage": "Использование Claude 3",
     "Input Tokens:": "Входные токены:",
     "Output Tokens:": "Выходные токены:"
 }

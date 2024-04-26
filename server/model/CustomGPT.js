@@ -6,6 +6,7 @@ const customGPTSchema = new mongoose.Schema(
         name: { type: String, required: true, unique: true },
         instructions: { type: String, required: true },
         knowledge: { type: String, maxlength: 60000 },
+        isPrivate: { type: Boolean, required: false, default: false },
     },
     { timestamps: true }
 );

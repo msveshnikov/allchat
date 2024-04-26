@@ -38,7 +38,7 @@ const SideDrawer = ({
             disableDiscovery={iOS}
             PaperProps={{
                 sx: {
-                    width: isMobile ? 200 : 350,
+                    width: isMobile ? 200 : 300,
                 },
             }}
             open={isOpen}

@@ -28,7 +28,7 @@ const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
 const MAX_CONTEXT_LENGTH = 16000;
 const MAX_SEARCH_RESULT_LENGTH = 3000;
 const stripe = new Stripe(process.env.STRIPE_KEY);
-const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro 1.5 and Claude Haiku language models. Your capabilities include:
+const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro 1.5 and Claude language models. Your capabilities include:
 
 - Engaging in natural language conversations and answering user queries.
 - Providing informative, insightful, and relevant responses based on the given context and user input.
@@ -584,9 +584,20 @@ app.post("/customgpt", verifyToken, async (req, res) => {
     }
 });
 
-app.get("/customgpt", async (req, res) => {
+app.get("/customgpt", verifyToken, async (req, res) => {
     try {
-        const customGPTs = await CustomGPT.find({}, { name: 1, _id: 0 });
+        const userId = req.user.id;
+
+        const customGPTs = await CustomGPT.find(
+            {
+                $or: [
+                    { user: userId, isPrivate: true },
+                    { $or: [{ isPrivate: false }, { isPrivate: { $exists: false } }] },
+                ],
+            },
+            { name: 1, _id: 0 }
+        );
+
         const names = [...new Set(customGPTs.map((customGPT) => customGPT.name))];
         res.json(names);
     } catch (error) {
@@ -602,6 +613,26 @@ app.get("/customgpt-details", verifyToken, async (req, res) => {
         }
         const customGPTs = await CustomGPT.find({});
         res.json(customGPTs);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.put("/customgpt/:id/private", verifyToken, async (req, res) => {
+    try {
+        if (!req.user.admin) {
+            return res.status(401).json({ error: "This is admin only route" });
+        }
+        const customGPTId = req.params.id;
+        const { isPrivate } = req.body;
+        const updatedCustomGPT = await CustomGPT.findByIdAndUpdate(customGPTId, { isPrivate }, { new: true });
+
+        if (!updatedCustomGPT) {
+            return res.status(404).json({ error: "CustomGPT not found" });
+        }
+
+        res.json({ message: "CustomGPT private flag updated successfully" });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
