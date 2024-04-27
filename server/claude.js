@@ -560,11 +560,7 @@ export async function handleIncomingEmails() {
             imapClient.openBox("INBOX", false, () => {
                 imapClient.search(["UNSEEN"], (err, results) => {
                     if (err) throw err;
-
-                    const f = imapClient.fetch(results, {
-                        bodies: "HEADER.FIELDS (FROM TO SUBJECT DATE)",
-                        struct: true,
-                    });
+                    const f = imapClient.fetch(results, { bodies: "" });
                     f.on("message", (msg) => {
                         let emailBody = "";
                         msg.on("body", (stream) => {
@@ -574,11 +570,13 @@ export async function handleIncomingEmails() {
                             stream.once("end", async () => {
                                 console.log("New email found");
                                 const emailFrom = await simpleParser(emailBody);
-                                console.log("Email", emailFrom);
+                                // console.log("Email", emailFrom);
+                                console.log("Email From:", emailFrom?.from?.value?.[0]?.address);
+                                console.log("Email Text:", emailFrom.text);
                                 const user = await User.findOne({ email: emailFrom?.from?.value?.[0]?.address });
                                 if (user && emailBody) {
                                     const response = await getTextClaude(
-                                        emailBody,
+                                        emailFrom.text,
                                         0.2,
                                         null,
                                         null,
@@ -599,6 +597,14 @@ export async function handleIncomingEmails() {
                                             emailFrom.from.value[0].address
                                         );
                                     }
+                                    // Mark the email as seen (processed)
+                                    imapClient.setFlags(msg.seqno, "\\Seen", (err) => {
+                                        if (err) {
+                                            console.error("Error marking email as seen:", err);
+                                        } else {
+                                            console.log("Email marked as seen");
+                                        }
+                                    });
                                 } else {
                                     console.error("User not found or email content is empty");
                                 }
@@ -623,4 +629,6 @@ export async function handleIncomingEmails() {
     }
 }
 
+// Call the checkForNewEmails function every minute
+// setInterval(handleIncomingEmails, 60 * 1000);
 handleIncomingEmails();
