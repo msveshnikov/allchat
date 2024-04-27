@@ -561,9 +561,13 @@ export async function handleIncomingEmails() {
                 imapClient.search(["UNSEEN"], (err, results) => {
                     if (err) throw err;
 
-                    const f = imapClient.fetch(results, { bodies: "" });
+                    const f = imapClient.fetch(results, {
+                        bodies: "HEADER.FIELDS (FROM TO SUBJECT DATE)",
+                        struct: true,
+                    });
                     f.on("message", async (msg) => {
                         console.log("New email found", msg);
+                        console.log(msg.source);
                         const emailFrom = await simpleParser(msg.source);
                         console.log("Email", emailFrom);
                         const user = await User.findOne({ email: emailFrom?.from?.value?.[0]?.address });
