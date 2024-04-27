@@ -47,7 +47,11 @@ export const getTextGpt = async (prompt, temperature, userId, model, apiKey, web
         const toolCalls = responseMessage?.tool_calls;
         messages.push(responseMessage);
         for (const toolCall of toolCalls) {
-            const toolResult = await handleToolCall(toolCall.function, userId);
+            const toolResult = await handleToolCall(
+                toolCall.function.name,
+                JSON.parse(toolCall.function.arguments),
+                userId
+            );
             messages.push({
                 role: "tool",
                 name: toolCall.name,
@@ -60,10 +64,8 @@ export const getTextGpt = async (prompt, temperature, userId, model, apiKey, web
     return responseMessage?.content;
 };
 
-const handleToolCall = async (toolCall, userId) => {
-    const name = toolCall.name;
+export const handleToolCall = async (name, args, userId) => {
     toolsUsed.push(name);
-    const args = JSON.parse(toolCall.arguments);
     console.log("handleToolCall", name, args);
 
     switch (name) {
