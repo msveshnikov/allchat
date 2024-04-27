@@ -559,62 +559,61 @@ export async function handleIncomingEmails() {
         imapClient.once("ready", () => {
             imapClient.openBox("INBOX", false, () => {
                 imapClient.search(["UNSEEN"], (err, results) => {
-                    if (err) throw err;
-                    const f = imapClient.fetch(results, { bodies: "" });
-                    f.on("message", (msg) => {
-                        let emailBody = "";
-                        msg.on("body", (stream) => {
-                            stream.on("data", (chunk) => {
-                                emailBody += chunk.toString("utf8");
-                            });
-                            stream.once("end", async () => {
-                                console.log("New email found");
-                                const emailFrom = await simpleParser(emailBody);
-                                // console.log("Email", emailFrom);
-                                console.log("Email From:", emailFrom?.from?.value?.[0]?.address);
-                                console.log("Email Text:", emailFrom.text);
-                                const user = await User.findOne({ email: emailFrom?.from?.value?.[0]?.address });
-                                if (user && emailBody) {
-                                    const response = await getTextClaude(
-                                        emailFrom.text,
-                                        0.2,
-                                        null,
-                                        null,
-                                        user._id,
-                                        "claude-3-haiku-20240307",
-                                        null,
-                                        true
-                                    );
-                                    if (response) {
-                                        await sendEmail(
-                                            emailFrom.from.value[0].address,
-                                            "Response to your email",
-                                            response
+                    try {
+                        if (err) {
+                            console.error("Search Error:", err);
+                            return;
+                        }
+                        const f = imapClient.fetch(results, { bodies: "", markSeen: true });
+                        f.on("message", (msg) => {
+                            let emailBody = "";
+                            msg.on("body", (stream) => {
+                                stream.on("data", (chunk) => {
+                                    emailBody += chunk.toString("utf8");
+                                });
+                                stream.once("end", async () => {
+                                    console.log("New email found");
+                                    const emailFrom = await simpleParser(emailBody);
+                                    // console.log("Email", emailFrom);
+                                    console.log("Email From:", emailFrom?.from?.value?.[0]?.address);
+                                    console.log("Email Text:", emailFrom.text);
+                                    const user = await User.findOne({ email: emailFrom?.from?.value?.[0]?.address });
+                                    if (user && emailBody) {
+                                        const response = await getTextClaude(
+                                            emailFrom.text,
+                                            0.2,
+                                            null,
+                                            null,
+                                            user._id,
+                                            "claude-3-haiku-20240307",
+                                            null,
+                                            true
                                         );
-                                    } else {
-                                        console.error(
-                                            "No response generated for email from:",
-                                            emailFrom.from.value[0].address
-                                        );
-                                    }
-                                    // Mark the email as seen (processed)
-                                    imapClient.setFlags(msg.seqno, "\\Seen", (err) => {
-                                        if (err) {
-                                            console.error("Error marking email as seen:", err);
+                                        if (response) {
+                                            await sendEmail(
+                                                emailFrom.from.value[0].address,
+                                                "Response to your email",
+                                                response
+                                            );
                                         } else {
-                                            console.log("Email marked as seen");
+                                            console.error(
+                                                "No response generated for email from:",
+                                                emailFrom.from.value[0].address
+                                            );
                                         }
-                                    });
-                                } else {
-                                    console.error("User not found or email content is empty");
-                                }
+                                    } else {
+                                        console.error("User not found or email content is empty");
+                                    }
+                                });
                             });
                         });
-                    });
 
-                    f.once("error", (ex) => {
-                        throw ex;
-                    });
+                        f.once("error", (err) => {
+                            console.error("IMAP fetch error:", err.message);
+                        });
+                    } catch (err) {
+                        return;
+                    }
                 });
             });
         });
@@ -629,6 +628,4 @@ export async function handleIncomingEmails() {
     }
 }
 
-// Call the checkForNewEmails function every minute
-// setInterval(handleIncomingEmails, 60 * 1000);
-handleIncomingEmails();
+setInterval(handleIncomingEmails, 60 * 1000);
