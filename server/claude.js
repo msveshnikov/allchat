@@ -395,7 +395,7 @@ export async function removeUserInfo(userId) {
     }
 }
 
-const resizeImage = async (imageBase64, maxSize = 3 * 1024 * 1024) => {
+const resizeImage = async (imageBase64, maxSize = 2 * 1024 * 1024) => {
     const image = sharp(Buffer.from(imageBase64, "base64"));
     const metadata = await image.metadata();
 
