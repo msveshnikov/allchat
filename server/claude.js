@@ -7,6 +7,8 @@ import { User } from "./model/User.js";
 import sharp from "sharp";
 import { scheduleAction } from "./scheduler.js";
 import { toolsUsed } from "./index.js";
+import { simpleParser } from "mailparser";
+import imap from "imap";
 import { summarizeYouTubeVideo } from "./youtube.js";
 dotenv.config({ override: true });
 
@@ -540,3 +542,68 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
         }
     }
 };
+
+export async function handleIncomingEmails() {
+    try {
+        const imapClient = new imap({
+            user: process.env.EMAIL,
+            password: process.env.EMAIL_PASSWORD,
+            host: "imap.gmail.com",
+            port: 993,
+            tls: true,
+            tlsOptions: {
+                rejectUnauthorized: false,
+            },
+        });
+
+        imapClient.once("ready", () => {
+            imapClient.openBox("INBOX", false, () => {
+                imapClient.search(["UNSEEN"], (err, results) => {
+                    if (err) throw err;
+
+                    const f = imapClient.fetch(results, { bodies: "" });
+                    f.on("message", async (msg) => {
+                        console.log("New email found", msg);
+                        const emailFrom = await simpleParser(msg.source);
+                        console.log("Email", emailFrom);
+                        const user = await User.findOne({ email: emailFrom?.from?.value?.[0]?.address });
+
+                        if (user && emailFrom.text) {
+                            const response = await getTextClaude(
+                                emailFrom.text,
+                                0.2,
+                                null,
+                                null,
+                                user._id,
+                                "claude-3-haiku-20240307",
+                                null,
+                                true
+                            );
+                            if (response) {
+                                await sendEmail(emailFrom.from.value[0].address, "Response to your email", response);
+                            } else {
+                                console.error("No response generated for email from:", emailFrom.from.value[0].address);
+                            }
+                        } else {
+                            console.error("User not found or email content is empty");
+                        }
+                    });
+
+                    f.once("error", (ex) => {
+                        throw ex;
+                    });
+                });
+            });
+        });
+
+        imapClient.once("error", (err) => {
+            console.error("Error connecting to IMAP server:", err);
+        });
+
+        imapClient.connect();
+    } catch (err) {
+        console.error("Error handling incoming emails:", err);
+    }
+}
+
+handleIncomingEmails();
