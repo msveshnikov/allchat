@@ -1,6 +1,6 @@
 # ALLCHAT
 
-Node.js backend and a React MUI frontend for an application that interacts with the Gemini Pro 1.5 (and others), with history, image generating/recognition, PDF/Word/Excel upload, code run, model function calls and markdown support. Written fully by _Claude 3 Sonnet_.
+AI assistant app that interacts with the all major models, with history, image generating/recognition, PDF/Word/Excel upload, code run, model function calls, and markdown support and more. Written fully by _Claude 3 Sonnet_.
 
 ![image](https://github.com/msveshnikov/allchat/assets/8682996/42b2e4f2-b91b-4712-8ef2-630ebb8919e9)
 
