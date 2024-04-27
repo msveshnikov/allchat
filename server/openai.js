@@ -31,15 +31,18 @@ export const getTextGpt = async (prompt, temperature, userId, model, apiKey, web
     const openAiTools = tools.map(renameProperty).map((f) => ({ type: "function", function: f }));
     const messages = [{ role: "user", content: prompt }];
 
-    const completion = await openai.chat.completions.create({
-        model: model || "gpt-3.5-turbo",
-        max_tokens: 4096,
-        messages,
-        temperature: temperature || 0.5,
-        tools: webTools ? openAiTools : null,
-    });
-    let responseMessage = completion?.choices?.[0]?.message;
+    const getMessage = async () => {
+        const completion = await openai.chat.completions.create({
+            model: model || "gpt-3.5-turbo",
+            max_tokens: 4096,
+            messages,
+            temperature: temperature || 0.5,
+            tools: webTools ? openAiTools : null,
+        });
+        return completion?.choices?.[0]?.message;
+    };
 
+    let responseMessage = await getMessage();
     while (responseMessage?.tool_calls) {
         const toolCalls = responseMessage?.tool_calls;
         messages.push(responseMessage);
@@ -52,15 +55,7 @@ export const getTextGpt = async (prompt, temperature, userId, model, apiKey, web
                 content: toolResult,
             });
         }
-
-        const completion = await openai.chat.completions.create({
-            model: model || "gpt-3.5-turbo",
-            max_tokens: 4096,
-            messages,
-            temperature: temperature || 0.5,
-            tools: webTools ? openAiTools : null,
-        });
-        responseMessage = completion?.choices?.[0]?.message;
+        responseMessage = await getMessage();
     }
     return responseMessage?.content;
 };
@@ -70,51 +65,35 @@ const handleToolCall = async (toolCall, userId) => {
     toolsUsed.push(name);
     const args = JSON.parse(toolCall.arguments);
     console.log("handleToolCall", name, args);
-    let functionResponse;
 
     switch (name) {
         case "get_weather":
-            functionResponse = await getWeather(args.location);
-            break;
+            return getWeather(args.location);
         case "get_stock_price":
-            functionResponse = await getStockPrice(args.ticker);
-            break;
+            return getStockPrice(args.ticker);
         case "get_fx_rate":
-            functionResponse = await getFxRate(args.baseCurrency, args.quoteCurrency);
-            break;
+            return getFxRate(args.baseCurrency, args.quoteCurrency);
         case "send_telegram_message":
-            functionResponse = await sendTelegramMessage(args.chatId, args.message);
-            break;
+            return sendTelegramMessage(args.chatId, args.message);
         case "search_web_content":
-            functionResponse = await searchWebContent(args.query);
-            break;
+            return searchWebContent(args.query);
         case "send_email":
-            functionResponse = await sendEmail(args.to, args.subject, args.content, userId);
-            break;
+            return sendEmail(args.to, args.subject, args.content, userId);
         case "get_current_time_utc":
-            functionResponse = await getCurrentTimeUTC();
-            break;
+            return getCurrentTimeUTC();
         case "execute_python":
-            functionResponse = await executePython(args.code);
-            break;
+            return executePython(args.code);
         case "get_latest_news":
-            functionResponse = await getLatestNews(args.lang);
-            break;
+            return getLatestNews(args.lang);
         case "persist_user_info":
-            functionResponse = await persistUserInfo(args.key, args.value, userId);
-            break;
+            return persistUserInfo(args.key, args.value, userId);
         case "remove_user_info":
-            functionResponse = await removeUserInfo(userId);
-            break;
+            return removeUserInfo(userId);
         case "schedule_action":
-            functionResponse = await scheduleAction(args.action, args.schedule, userId);
-            break;
+            return scheduleAction(args.action, args.schedule, userId);
         case "summarize_youtube_video":
-            functionResponse = await summarizeYouTubeVideo(args.videoId);
-            break;
+            return summarizeYouTubeVideo(args.videoId);
         default:
             console.error(`Unsupported function call: ${name}`);
     }
-
-    return functionResponse;
 };
