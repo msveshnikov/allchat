@@ -104,73 +104,58 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                 const handleFunctionCall = async (name, args) => {
                     console.log("handleFunctionCall", name, args);
                     toolsUsed.push(name);
-                    let functionResponse;
                     switch (name) {
                         case "get_weather":
-                            functionResponse = await getWeather(args.location);
-                            break;
+                            return await getWeather(args.location);
                         case "get_stock_price":
-                            functionResponse = await getStockPrice(args.ticker);
-                            break;
+                            return await getStockPrice(args.ticker);
                         case "get_fx_rate":
-                            functionResponse = await getFxRate(args.baseCurrency, args.quoteCurrency);
-                            break;
+                            return await getFxRate(args.baseCurrency, args.quoteCurrency);
                         case "send_telegram_message":
-                            functionResponse = await sendTelegramMessage(args.chatId, args.message);
-                            break;
+                            return await sendTelegramMessage(args.chatId, args.message);
                         case "search_web_content":
-                            functionResponse = await searchWebContent(args.query);
-                            break;
+                            return await searchWebContent(args.query);
                         case "send_email":
-                            functionResponse = await sendEmail(args.to, args.subject, args.content, userId);
-                            break;
+                            return await sendEmail(args.to, args.subject, args.content, userId);
                         case "get_current_time_utc":
-                            functionResponse = await getCurrentTimeUTC();
-                            break;
+                            return await getCurrentTimeUTC();
                         case "execute_python":
-                            functionResponse = await executePython(args.code);
-                            break;
+                            return await executePython(args.code);
                         case "get_latest_news":
-                            functionResponse = await getLatestNews(args.lang);
-                            break;
+                            return await getLatestNews(args.lang);
                         case "persist_user_info":
-                            functionResponse = await persistUserInfo(args.key, args.value, userId);
-                            break;
+                            return await persistUserInfo(args.key, args.value, userId);
                         case "remove_user_info":
-                            functionResponse = await removeUserInfo(userId);
-                            break;
+                            return await removeUserInfo(userId);
                         case "schedule_action":
-                            functionResponse = await scheduleAction(args.action, args.schedule, userId);
-                            break;
+                            return await scheduleAction(args.action, args.schedule, userId);
                         case "summarize_youtube_video":
-                            functionResponse = await summarizeYouTubeVideo(args.videoId);
-                            break;
+                            return await summarizeYouTubeVideo(args.videoId);
                         default:
                             console.error(`Unsupported function call: ${name}`);
-                            break;
                     }
-                    contents.contents.push(
-                        {
-                            role: "model",
-                            parts: [{ functionCall: functionCall }],
-                        },
-                        {
-                            role: "function",
-                            parts: [
-                                {
-                                    functionResponse: {
-                                        name: name,
-                                        response: {
-                                            content: functionResponse,
-                                        },
-                                    },
-                                },
-                            ],
-                        }
-                    );
                 };
 
-                await handleFunctionCall(functionName, functionArgs);
+                const functionResponse = await handleFunctionCall(functionName, functionArgs);
+                contents.contents.push(
+                    {
+                        role: "model",
+                        parts: [{ functionCall: functionCall }],
+                    },
+                    {
+                        role: "function",
+                        parts: [
+                            {
+                                functionResponse: {
+                                    name: functionName,
+                                    response: {
+                                        content: functionResponse,
+                                    },
+                                },
+                            },
+                        ],
+                    }
+                );
             } else {
                 finalResponse = modelResponse?.parts?.[0]?.text;
             }
