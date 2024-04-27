@@ -27,7 +27,3 @@ export const LazyLatexComponents = {
     inlineMath: (props) => <LazyInlineMath {...props} />,
     blockMath: (props) => <LazyBlockMath {...props} />,
 };
-
-export const load = () => {
-    import("katex/dist/katex.min.css");
-};
