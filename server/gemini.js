@@ -1,6 +1,6 @@
 import { tools } from "./claude.js";
 import { VertexAI } from "@google-cloud/vertexai";
-import { handleToolCall } from "./openai.js";
+import { handleToolCall } from "./claude.js";
 import dotenv from "dotenv";
 dotenv.config({ override: true });
 process.env["GOOGLE_APPLICATION_CREDENTIALS"] = "./allchat.json";

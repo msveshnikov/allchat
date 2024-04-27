@@ -220,6 +220,42 @@ export const tools = [
     },
 ];
 
+export const handleToolCall = async (name, args, userId) => {
+    toolsUsed.push(name);
+    console.log("handleToolCall", name, args);
+
+    switch (name) {
+        case "get_weather":
+            return getWeather(args.location);
+        case "get_stock_price":
+            return getStockPrice(args.ticker);
+        case "get_fx_rate":
+            return getFxRate(args.baseCurrency, args.quoteCurrency);
+        case "send_telegram_message":
+            return sendTelegramMessage(args.chatId, args.message);
+        case "search_web_content":
+            return searchWebContent(args.query);
+        case "send_email":
+            return sendEmail(args.to, args.subject, args.content, userId);
+        case "get_current_time_utc":
+            return getCurrentTimeUTC();
+        case "execute_python":
+            return executePython(args.code);
+        case "get_latest_news":
+            return getLatestNews(args.lang);
+        case "persist_user_info":
+            return persistUserInfo(args.key, args.value, userId);
+        case "remove_user_info":
+            return removeUserInfo(userId);
+        case "schedule_action":
+            return scheduleAction(args.action, args.schedule, userId);
+        case "summarize_youtube_video":
+            return summarizeYouTubeVideo(args.videoId);
+        default:
+            console.error(`Unsupported function call: ${name}`);
+    }
+};
+
 export async function getWeather(location) {
     const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}`;
     const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}`;
@@ -424,68 +460,10 @@ async function processToolResult(data, temperature, messages, userId, model, web
 
     const toolResults = await Promise.all(
         toolUses.map(async (toolUse) => {
-            let toolResult;
-            toolsUsed.push(toolUse.name);
-            switch (toolUse.name) {
-                case "get_weather":
-                    const { location } = toolUse.input;
-                    toolResult = await getWeather(location);
-                    break;
-                case "get_stock_price":
-                    const { ticker } = toolUse.input;
-                    toolResult = await getStockPrice(ticker);
-                    break;
-                case "get_fx_rate":
-                    const { baseCurrency, quoteCurrency } = toolUse.input;
-                    toolResult = await getFxRate(baseCurrency, quoteCurrency);
-                    break;
-                case "send_telegram_message":
-                    const { chatId, message } = toolUse.input;
-                    toolResult = await sendTelegramMessage(chatId, message);
-                    break;
-                case "search_web_content":
-                    const { query } = toolUse.input;
-                    toolResult = await searchWebContent(query);
-                    break;
-                case "send_email":
-                    const { to, subject, content } = toolUse.input;
-                    toolResult = await sendEmail(to, subject, content, userId);
-                    break;
-                case "get_current_time_utc":
-                    toolResult = await getCurrentTimeUTC();
-                    break;
-                case "execute_python":
-                    const { code } = toolUse.input;
-                    toolResult = await executePython(code);
-                    break;
-                case "get_latest_news":
-                    const { lang } = toolUse.input;
-                    toolResult = await getLatestNews(lang);
-                    break;
-                case "persist_user_info":
-                    const { key, value } = toolUse.input;
-                    toolResult = await persistUserInfo(key, value, userId);
-                    break;
-                case "remove_user_info":
-                    toolResult = await removeUserInfo(userId);
-                    break;
-                case "schedule_action":
-                    const { action, schedule } = toolUse.input;
-                    toolResult = await scheduleAction(action, schedule, userId);
-                    break;
-                case "summarize_youtube_video":
-                    const { videoId } = toolUse.input;
-                    toolResult = await summarizeYouTubeVideo(videoId);
-                    break;
-                default:
-                    console.error(`Unsupported function call: ${toolUse.name}`);
-                    break;
-            }
-
+            const toolResult = await handleToolCall(toolUse.name, toolUse.input, userId);
             return { tool_use_id: toolUse.id, content: toolResult };
         })
     );
-    console.log(toolResults);
 
     const newMessages = [
         ...messages,
