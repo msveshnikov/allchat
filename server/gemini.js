@@ -1,21 +1,6 @@
-import {
-    executePython,
-    getCurrentTimeUTC,
-    getFxRate,
-    getLatestNews,
-    getStockPrice,
-    getWeather,
-    persistUserInfo,
-    removeUserInfo,
-    searchWebContent,
-    sendEmail,
-    sendTelegramMessage,
-    tools,
-} from "./claude.js";
+import { tools } from "./claude.js";
 import { VertexAI } from "@google-cloud/vertexai";
-import { toolsUsed } from "./index.js";
-import { scheduleAction } from "./scheduler.js";
-import { summarizeYouTubeVideo } from "./youtube.js";
+import { handleToolCall } from "./openai.js";
 import dotenv from "dotenv";
 dotenv.config({ override: true });
 process.env["GOOGLE_APPLICATION_CREDENTIALS"] = "./allchat.json";
@@ -101,42 +86,7 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                 const functionName = functionCall.name;
                 const functionArgs = functionCall.args;
 
-                const handleFunctionCall = async (name, args) => {
-                    console.log("handleFunctionCall", name, args);
-                    toolsUsed.push(name);
-                    switch (name) {
-                        case "get_weather":
-                            return await getWeather(args.location);
-                        case "get_stock_price":
-                            return await getStockPrice(args.ticker);
-                        case "get_fx_rate":
-                            return await getFxRate(args.baseCurrency, args.quoteCurrency);
-                        case "send_telegram_message":
-                            return await sendTelegramMessage(args.chatId, args.message);
-                        case "search_web_content":
-                            return await searchWebContent(args.query);
-                        case "send_email":
-                            return await sendEmail(args.to, args.subject, args.content, userId);
-                        case "get_current_time_utc":
-                            return await getCurrentTimeUTC();
-                        case "execute_python":
-                            return await executePython(args.code);
-                        case "get_latest_news":
-                            return await getLatestNews(args.lang);
-                        case "persist_user_info":
-                            return await persistUserInfo(args.key, args.value, userId);
-                        case "remove_user_info":
-                            return await removeUserInfo(userId);
-                        case "schedule_action":
-                            return await scheduleAction(args.action, args.schedule, userId);
-                        case "summarize_youtube_video":
-                            return await summarizeYouTubeVideo(args.videoId);
-                        default:
-                            console.error(`Unsupported function call: ${name}`);
-                    }
-                };
-
-                const functionResponse = await handleFunctionCall(functionName, functionArgs);
+                const functionResponse = await handleToolCall(functionName, functionArgs, userId);
                 contents.contents.push(
                     {
                         role: "model",
