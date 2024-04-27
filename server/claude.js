@@ -565,32 +565,45 @@ export async function handleIncomingEmails() {
                         bodies: "HEADER.FIELDS (FROM TO SUBJECT DATE)",
                         struct: true,
                     });
-                    f.on("message", async (msg) => {
-                        console.log("New email found", msg);
-                        console.log(msg.source);
-                        const emailFrom = await simpleParser(msg.source);
-                        console.log("Email", emailFrom);
-                        const user = await User.findOne({ email: emailFrom?.from?.value?.[0]?.address });
-
-                        if (user && emailFrom.text) {
-                            const response = await getTextClaude(
-                                emailFrom.text,
-                                0.2,
-                                null,
-                                null,
-                                user._id,
-                                "claude-3-haiku-20240307",
-                                null,
-                                true
-                            );
-                            if (response) {
-                                await sendEmail(emailFrom.from.value[0].address, "Response to your email", response);
-                            } else {
-                                console.error("No response generated for email from:", emailFrom.from.value[0].address);
-                            }
-                        } else {
-                            console.error("User not found or email content is empty");
-                        }
+                    f.on("message", (msg) => {
+                        let emailBody = "";
+                        msg.on("body", (stream) => {
+                            stream.on("data", (chunk) => {
+                                emailBody += chunk.toString("utf8");
+                            });
+                            stream.once("end", async () => {
+                                console.log("New email found");
+                                const emailFrom = await simpleParser(emailBody);
+                                console.log("Email", emailFrom);
+                                const user = await User.findOne({ email: emailFrom?.from?.value?.[0]?.address });
+                                if (user && emailBody) {
+                                    const response = await getTextClaude(
+                                        emailBody,
+                                        0.2,
+                                        null,
+                                        null,
+                                        user._id,
+                                        "claude-3-haiku-20240307",
+                                        null,
+                                        true
+                                    );
+                                    if (response) {
+                                        await sendEmail(
+                                            emailFrom.from.value[0].address,
+                                            "Response to your email",
+                                            response
+                                        );
+                                    } else {
+                                        console.error(
+                                            "No response generated for email from:",
+                                            emailFrom.from.value[0].address
+                                        );
+                                    }
+                                } else {
+                                    console.error("User not found or email content is empty");
+                                }
+                            });
+                        });
                     });
 
                     f.once("error", (ex) => {
