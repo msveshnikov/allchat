@@ -590,7 +590,7 @@ export async function handleIncomingEmails() {
                                             true
                                         );
                                         if (response) {
-                                            const emailSignature = `\n\n---\nBest regards,\n AllChat (AI assistant created by MaxSoft)`;
+                                            const emailSignature = `\n\n---\nBest regards,\nAllChat`;
                                             await sendEmail(
                                                 emailFrom.from.value[0].address,
                                                 "RE: " + emailFrom.subject,

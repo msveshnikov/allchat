@@ -94,7 +94,7 @@ const Admin = () => {
 
     return (
         <>
-            <Box display="flex" justifyContent="center" alignItems="center" bgcolor="#f5f5f5">
+            <Box display="flex" justifyContent="center" alignItems="center">
                 <Box maxWidth="1200px" width="100%" padding={4}>
                     <Typography variant="h3" gutterBottom align="center" color="primary">
                         Admin Statistics
@@ -200,7 +200,7 @@ const Admin = () => {
                     )}
                 </Box>
             </Box>
-            <Box bgcolor="#f5f5f5" padding={4}>
+            <Box padding={4}>
                 <Typography variant="h4" gutterBottom align="center" color="primary">
                     Custom GPT Admin
                 </Typography>

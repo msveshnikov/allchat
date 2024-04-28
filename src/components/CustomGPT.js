@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Typography, TextField, Box, Button, IconButton } from "@mui/material";
+import { Typography, TextField, Box, Button, IconButton, useTheme } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { API_URL } from "./Main";
 
@@ -10,6 +10,7 @@ const CustomGPTPage = () => {
     const [currentSize, setCurrentSize] = useState(0);
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    const theme = useTheme();
 
     const handleNameChange = (e) => {
         setName(e.target.value);
@@ -92,10 +93,21 @@ const CustomGPTPage = () => {
                 padding: 4,
             }}
         >
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" gutterBottom color={theme.palette.text.primary}>
                 Custom GPT
             </Typography>
-            <TextField label="Name" value={name} onChange={handleNameChange} fullWidth margin="normal" />
+            <TextField
+                label="Name"
+                value={name}
+                onChange={handleNameChange}
+                fullWidth
+                margin="normal"
+                InputProps={{
+                    style: {
+                        color: theme.palette.text.primary,
+                    },
+                }}
+            />
             <TextField
                 label="Instructions"
                 value={instructions}
@@ -104,10 +116,15 @@ const CustomGPTPage = () => {
                 rows={10}
                 fullWidth
                 margin="normal"
+                InputProps={{
+                    style: {
+                        color: theme.palette.text.primary,
+                    },
+                }}
             />
             <Box
                 sx={{
-                    border: "2px dashed gray",
+                    border: `2px dashed ${theme.palette.text.secondary}`,
                     borderRadius: 2,
                     padding: 2,
                     marginTop: 2,
@@ -133,16 +150,16 @@ const CustomGPTPage = () => {
                     onChange={handleFileUpload}
                     data-testid="file-upload-input"
                 />
-                <Typography variant="body2" color="textSecondary">
+                <Typography variant="body2" color={theme.palette.text.secondary}>
                     Drag and drop files here or click to upload
                 </Typography>
                 {files.map((file, index) => (
-                    <Typography key={index} variant="body2">
+                    <Typography key={index} variant="body2" color={theme.palette.text.primary}>
                         {file.name}
                     </Typography>
                 ))}
             </Box>
-            <Typography variant="body1" gutterBottom>
+            <Typography variant="body1" gutterBottom color={theme.palette.text.primary}>
                 Current Size: {currentSize} bytes (60,000 max)
             </Typography>
             {error && (
@@ -151,7 +168,7 @@ const CustomGPTPage = () => {
                 </Typography>
             )}
             {successMessage && (
-                <Typography variant="body1" color="success" gutterBottom>
+                <Typography variant="body1" color={theme.palette.success.main} gutterBottom>
                     {successMessage}
                 </Typography>
             )}
