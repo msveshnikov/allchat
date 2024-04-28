@@ -140,23 +140,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 fileType === "mpeg" ||
                 fileType === "x-m4a"
             ) {
-                let instructions = "";
-                if (customGPT) {
-                    const GPT = await CustomGPT.findOne({ name: customGPT });
-                    if (GPT) {
-                        instructions = GPT.knowledge + "\n\n" + GPT.instructions;
-                    }
-                }
-
-                const user = await User.findById(req.user.id);
-                const userInfo = user ? [...user.info.entries()].map(([key, value]) => `${key}: ${value}`) : [];
-
-                const contextPrompt = `System: ${
-                    instructions || systemPrompt
-                } User country code: ${country} User Lang: ${lang}
-                    ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
-                    \nUser information: ${userInfo.join(", ")}
-                    \nHuman: ${userInput || "what's this"}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
+                const contextPrompt = await getContext();
 
                 let textResponse;
                 if (model?.startsWith("gemini")) {
@@ -235,22 +219,7 @@ app.post("/interact", verifyToken, async (req, res) => {
             }
         }
 
-        let instructions = "";
-        if (customGPT) {
-            const GPT = await CustomGPT.findOne({ name: customGPT });
-            if (GPT) {
-                instructions = GPT.knowledge + "\n\n" + GPT.instructions;
-            }
-        }
-
-        const user = await User.findById(req.user.id);
-        const userInfo = user ? [...user.info.entries()].map(([key, value]) => `${key}: ${value}`) : [];
-
-        const contextPrompt = `System: ${instructions || systemPrompt} User country code: ${country} User Lang: ${lang}
-            ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
-            \n\nSearch Results:${topResultContent}\n
-            User information: ${userInfo.join(", ")}
-            \nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
+        const contextPrompt = await getContext();
 
         let textResponse;
         let inputTokens = 0;
@@ -316,6 +285,25 @@ app.post("/interact", verifyToken, async (req, res) => {
         res.status(500).json({
             error: "Model Returned Error: " + error.message,
         });
+    }
+
+    async function getContext() {
+        let instructions = "";
+        if (customGPT) {
+            const GPT = await CustomGPT.findOne({ name: customGPT });
+            if (GPT) {
+                instructions = GPT.knowledge + "\n\n" + GPT.instructions;
+            }
+        }
+
+        const user = await User.findById(req.user.id);
+        const userInfo = user ? [...user.info.entries()].map(([key, value]) => `${key}: ${value}`) : [];
+
+        const contextPrompt = `System: ${instructions || systemPrompt} User country code: ${country} User Lang: ${lang}
+                    ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
+                    \nUser information: ${userInfo.join(", ")}
+                    \nHuman: ${userInput || "what's this"}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
+        return contextPrompt;
     }
 });
 
