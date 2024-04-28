@@ -351,11 +351,11 @@ app.get("/user", verifyToken, async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 });
-
 app.get("/stats", verifyToken, async (req, res) => {
     if (!req.user.admin) {
         return res.status(401).json({ error: "This is admin only route" });
     }
+
     try {
         const users = await User.find({});
         const geminiStats = {
@@ -374,9 +374,14 @@ app.get("/stats", verifyToken, async (req, res) => {
             totalOutputTokens: 0,
             totalMoneyConsumed: 0,
         };
+        const gptStats = {
+            totalInputTokens: 0,
+            totalOutputTokens: 0,
+            totalMoneyConsumed: 0,
+        };
 
         for (const user of users) {
-            const { gemini, claude, together } = user.usageStats;
+            const { gemini, claude, together, gpt } = user.usageStats;
             geminiStats.totalInputTokens += gemini.inputTokens;
             geminiStats.totalOutputTokens += gemini.outputTokens;
             geminiStats.totalMoneyConsumed += gemini.moneyConsumed;
@@ -387,9 +392,18 @@ app.get("/stats", verifyToken, async (req, res) => {
             togetherStats.totalInputTokens += together.inputTokens;
             togetherStats.totalOutputTokens += together.outputTokens;
             togetherStats.totalMoneyConsumed += together.moneyConsumed;
+            gptStats.totalInputTokens += gpt.inputTokens;
+            gptStats.totalOutputTokens += gpt.outputTokens;
+            gptStats.totalMoneyConsumed += gpt.moneyConsumed;
         }
 
-        res.json({ users: users.length, gemini: geminiStats, claude: claudeStats, together: togetherStats });
+        res.json({
+            users: users.length,
+            gemini: geminiStats,
+            claude: claudeStats,
+            together: togetherStats,
+            gpt: gptStats,
+        });
     } catch (error) {
         console.error("Error fetching stats:", error);
         res.status(500).json({ error: error.message });

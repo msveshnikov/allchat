@@ -21,6 +21,11 @@ const userSchema = new mongoose.Schema({
             outputTokens: { type: Number, default: 0 },
             moneyConsumed: { type: Number, default: 0 },
         },
+        gpt: {
+            inputTokens: { type: Number, default: 0 },
+            outputTokens: { type: Number, default: 0 },
+            moneyConsumed: { type: Number, default: 0 },
+        },
     },
     subscriptionId: { type: String, required: false },
     subscriptionStatus: {
@@ -55,7 +60,9 @@ export function storeUsageStats(userId, model, inputTokens, outputTokens, images
     const isGemini15 = model?.startsWith("gemini-1.5");
     const isGemini10 = model?.startsWith("gemini-1.0");
     const isClaude = model?.startsWith("claude");
-    const isTogether = !isGemini15 && !isGemini10 && !isClaude;
+    const isGPT4 = model?.startsWith("gpt-4");
+    const isGPT35 = model?.startsWith("gpt-3.5");
+    const isTogether = !isGemini15 && !isGemini10 && !isClaude && !isGPT4 && !isGPT35;
     const imagesGeneratedCost = imagesGenerated * 0.002; //SDXL
 
     if (isGemini15) {
@@ -74,12 +81,22 @@ export function storeUsageStats(userId, model, inputTokens, outputTokens, images
         } else if (model?.includes("sonnet")) {
             moneyConsumed = (inputTokens * 3 + outputTokens * 15) / 1000000;
         }
+    } else if (isGPT4) {
+        const inputTokensCost = (inputTokens / 1000000) * 10;
+        const outputTokensCost = (outputTokens / 1000000) * 30;
+        moneyConsumed = inputTokensCost + outputTokensCost;
+    } else if (isGPT35) {
+        const inputTokensCost = (inputTokens / 1000000) * 0.5;
+        const outputTokensCost = (outputTokens / 1000000) * 1.5;
+        moneyConsumed = inputTokensCost + outputTokensCost;
     } else if (isTogether) {
         moneyConsumed = (inputTokens + outputTokens) / 1000000;
     }
 
     if (isTogether) {
         model = "together";
+    } else if (isGPT4 || isGPT35) {
+        model = "gpt";
     } else {
         model = model.slice(0, 6);
     }
