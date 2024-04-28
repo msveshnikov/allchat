@@ -579,7 +579,7 @@ export async function handleIncomingEmails() {
                                     });
                                     if (user && emailBody) {
                                         const response = await getTextClaude(
-                                            //TODO: some user context
+                                            //TODO: some user context and attachments
                                             emailFrom.subject + "\n" + emailFrom.text,
                                             0.2,
                                             null,

@@ -59,6 +59,7 @@ https://allchat.online
 -   Get the latest news from Google News in your preferred language and receive them directly in your inbox. Keep up with industry trends and advancements. Just say _Send me your comment about latest news_
 -   Create PowerPoint presentations. Just say _Create 10 slides for presentation "Comparison of CZC.cz and Alza.cz" then write a Python program that will save it to disk_ then run code and Save To resulting .pptx link
 -   Schedule action and send results to you. Just say _schedule hourly action: generate haiku about spring_
+-   Write an email to Assistant <allchatonline.ai@gmail.com> with any inquiry
 
 # RUN LOCALLY
 
