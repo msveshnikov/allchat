@@ -574,13 +574,13 @@ export async function handleIncomingEmails() {
                                 stream.once("end", async () => {
                                     console.log("New email found");
                                     const emailFrom = await simpleParser(emailBody);
-                                    // console.log("Email", emailFrom);
-                                    console.log("Email From:", emailFrom?.from?.value?.[0]?.address);
-                                    console.log("Email Text:", emailFrom.text);
-                                    const user = await User.findOne({ email: emailFrom?.from?.value?.[0]?.address });
+                                    const user = await User.findOne({
+                                        email: emailFrom?.from?.value?.[0]?.address,
+                                    });
                                     if (user && emailBody) {
                                         const response = await getTextClaude(
-                                            emailFrom.text,
+                                            //TODO: some user context
+                                            emailFrom.subject + "\n" + emailFrom.text,
                                             0.2,
                                             null,
                                             null,
@@ -590,10 +590,11 @@ export async function handleIncomingEmails() {
                                             true
                                         );
                                         if (response) {
+                                            const emailSignature = `\n\n---\nBest regards,\n AllChat (AI assistant created by MaxSoft)`;
                                             await sendEmail(
                                                 emailFrom.from.value[0].address,
-                                                "Response to your email",
-                                                response
+                                                "RE: " + emailFrom.subject,
+                                                response + emailSignature
                                             );
                                         } else {
                                             console.error(
