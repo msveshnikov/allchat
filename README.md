@@ -1,6 +1,6 @@
 # ALLCHAT
 
-An AI assistant app that interacts with all major models, maintains history, generates and recognizes images, uploads PDFs/Word/Excel files, runs code, makes function calls to models, and supports Markdown formatting, and more. Fully written by _Claude 3 Sonnet_.
+An AI assistant app that interacts with all major models, maintains history, generates and recognizes images, uploads PDFs/Word/Excel files, runs code, makes function calls to models, supports Markdown formatting, and more. Fully written by _Claude 3 Sonnet_.
 
 ![image](https://github.com/msveshnikov/allchat/assets/8682996/42b2e4f2-b91b-4712-8ef2-630ebb8919e9)
 
@@ -47,7 +47,7 @@ https://allchat.online
 -   PDF export of all chats
 -   Mobile friendly, PWA, Android app, etc
 -   Ability to provide own API key
--   Web Tools - weather, stocks, email send, Telegram, web search, etc
+-   Web Tools - weather, stocks, email send, Telegram, web search, etc - in Gemini, Claude, OpenAI models
 -   Please ask for more features in Discussions or here https://discord.com/invite/JTk2fHtv
 
 ## Connect model to world with Web Tools (switch on WebTools option)
@@ -64,7 +64,7 @@ https://allchat.online
 
 ## Environment variables
 
-You have to get some of those APIs and set environment variables (or put to .env file in the root folder):
+You have to get some of those APIs and set environment variables (or put to .env file in the server folder, you can start with /server/.env.example, rename it to .env):
 
 -   GEMINI_KEY - Gemini 1.5 key
 -   CLAUDE_KEY - Anthropic Key (for Haiku)
@@ -80,11 +80,9 @@ You have to get some of those APIs and set environment variables (or put to .env
 
 ## Run
 
--   Start local (or containerized) Mongo DB: `docker run -p 27017:27017 -d mongo`
-
--   In server folder, `npm run api`
-
--   In root folder, `npm run start`
+-   Start local Mongo DB (or containerized: `docker run -p 27017:27017 -d mongo`)
+-   In the server folder, `npm i` then `npm run api`
+-   In the root folder, `npm i` then `npm run start`
 
 # DOCKER DEPLOY
 
@@ -102,6 +100,7 @@ Replace `allchat-backend` with your desired image name. Push to Hub if needed.
 
 **Frontend (React MUI)**
 
+-   Replace ENV REACT_APP_API_URL in the root Dockerfile with your host
 -   Build the Docker image by running the following command in the frontend directory:
 
 ```
@@ -113,9 +112,10 @@ Replace `allchat-frontend` with your desired image name. Push to Hub if needed.
 **Running the Containers**
 
 After building the Docker images, you can run the containers using Docker Compose.
-Make sure to replace `allchat-backend` and `allchat-frontend` with the names you used when building the Docker images.
 
-Now, you can start the containers by running the following command in the root directory of your project:
+-   Make sure to replace `allchat-backend` and `allchat-frontend` with the names you used when building the Docker images.
+-   Put .env file to the same folder as docker-compose.yml
+-   Start the containers by running the following command in that folder:
 
 ```
 docker-compose up
