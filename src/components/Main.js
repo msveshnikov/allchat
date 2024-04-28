@@ -24,6 +24,7 @@ export const API_URL = process.env.NODE_ENV === "production" ? process.env.REACT
 
 function Main({ darkMode, toggleTheme }) {
     const [input, setInput] = useState("");
+    const [pastedImage, setPastedImage] = useState(null);
     const [chatHistory, setChatHistory] = useState([]);
     const [storedChatHistories, setStoredChatHistories] = useState([]);
     const [isModelResponding, setIsModelResponding] = useState(false);
@@ -106,10 +107,10 @@ function Main({ darkMode, toggleTheme }) {
     }, [storedChatHistories, sound, temperature, tools, selectedModel]);
 
     const handleSubmit = async () => {
-        if (input.trim() || selectedFile) {
+        if (input.trim() || pastedImage || selectedFile) {
             let fileType = "";
 
-            if (selectedFile) {
+            if (pastedImage || selectedFile) {
                 const reader = new FileReader();
                 reader.onload = () => {
                     const fileData = reader.result;
@@ -117,7 +118,7 @@ function Main({ darkMode, toggleTheme }) {
                     const fileBytesBase64 = fileData.split(",")[1];
                     sendFileAndQuery(fileType, fileBytesBase64, input);
                 };
-                reader.readAsDataURL(selectedFile);
+                reader.readAsDataURL(pastedImage || selectedFile);
             } else {
                 sendFileAndQuery("", "", input);
             }
@@ -474,6 +475,8 @@ function Main({ darkMode, toggleTheme }) {
                     selectedModel={selectedModel}
                     onFileSelect={handleFileSelect}
                     onSubmit={handleSubmit}
+                    pastedImage={pastedImage}
+                    setPastedImage={setPastedImage}
                 />
             </Container>
             <Snackbar

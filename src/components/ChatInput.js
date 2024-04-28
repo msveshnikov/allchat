@@ -3,7 +3,27 @@ import { Box, TextField, Button } from "@mui/material";
 import FileSelector from "./FileSelector";
 import { models } from "./Settings";
 
-const ChatInput = ({ input, setInput, selectedFile, onFileSelect, onSubmit, selectedModel }) => {
+const ChatInput = ({
+    input,
+    setInput,
+    selectedFile,
+    onFileSelect,
+    onSubmit,
+    selectedModel,
+    pastedImage,
+    setPastedImage,
+}) => {
+    const handlePaste = (e) => {
+        const items = e.clipboardData.items;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.startsWith("image/")) {
+                const file = items[i].getAsFile();
+                setPastedImage(file);
+                break;
+            }
+        }
+    };
+
     return (
         <Box display="flex" padding={2}>
             <TextField
@@ -20,6 +40,7 @@ const ChatInput = ({ input, setInput, selectedFile, onFileSelect, onSubmit, sele
                 multiline
                 minRows={1}
                 maxRows={6}
+                onPaste={handlePaste}
             />
             <FileSelector
                 onFileSelect={onFileSelect}
