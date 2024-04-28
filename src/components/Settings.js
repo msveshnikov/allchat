@@ -76,7 +76,6 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                 sx={{
                     width: "100%",
                     maxWidth: 800,
-                    backgroundColor: "#ffffff",
                     borderRadius: "8px",
                     boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
                 }}
