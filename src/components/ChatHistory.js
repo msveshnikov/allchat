@@ -4,7 +4,6 @@ import ReactMarkdown from "react-markdown";
 import EditIcon from "@mui/icons-material/Edit";
 import { CodeBlock } from "./CodeBlock";
 import { Lightbox } from "react-modal-image";
-import darkBgImage from "./assets/darkbg.jpg";
 
 const getFileTypeIcon = (mimeType) => {
     switch (mimeType) {
@@ -91,21 +90,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
     };
 
     return (
-        <Box
-            id="chatid"
-            flex={1}
-            overflow="auto"
-            padding={2}
-            display="flex"
-            flexDirection="column"
-            style={{
-                backgroundColor: theme.palette.mode === "dark" ? "transparent" : "#fff", 
-                backgroundImage: theme.palette.mode === "dark" ? `url(${darkBgImage})` : "none",
-                backgroundSize: "cover", 
-                backgroundPosition: "center", 
-                backgroundRepeat: "no-repeat",
-            }}
-        >
+        <Box id="chatid" flex={1} overflow="auto" padding={2} display="flex" flexDirection="column">
             {chatHistory.map((chat, index) => (
                 <Box
                     data-testid="chat-item"
