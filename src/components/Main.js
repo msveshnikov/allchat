@@ -457,7 +457,7 @@ function Main({ darkMode, toggleTheme }) {
                 </DialogActions>
             </Dialog>
             <Container
-                maxWidth="md"
+                maxWidth="lg"
                 sx={isMobile ? { m: 0, p: 0 } : {}}
                 style={{ display: "flex", flexDirection: "column", height: "91vh", flexGrow: 1 }}
             >
