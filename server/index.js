@@ -140,10 +140,28 @@ app.post("/interact", verifyToken, async (req, res) => {
                 fileType === "mpeg" ||
                 fileType === "x-m4a"
             ) {
+                let instructions = "";
+                if (customGPT) {
+                    const GPT = await CustomGPT.findOne({ name: customGPT });
+                    if (GPT) {
+                        instructions = GPT.knowledge + "\n\n" + GPT.instructions;
+                    }
+                }
+
+                const user = await User.findById(req.user.id);
+                const userInfo = user ? [...user.info.entries()].map(([key, value]) => `${key}: ${value}`) : [];
+
+                const contextPrompt = `System: ${
+                    instructions || systemPrompt
+                } User country code: ${country} User Lang: ${lang}
+                    ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
+                    \nUser information: ${userInfo.join(", ")}
+                    \nHuman: ${userInput || "what's this"}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
+
                 let textResponse;
                 if (model?.startsWith("gemini")) {
                     textResponse = await getTextGemini(
-                        userInput || "what's this",
+                        contextPrompt,
                         temperature,
                         fileBytesBase64,
                         fileType,
@@ -155,7 +173,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 }
                 if (model?.startsWith("claude")) {
                     textResponse = await getTextClaude(
-                        userInput || "what's this",
+                        contextPrompt,
                         temperature,
                         fileBytesBase64,
                         fileType,
