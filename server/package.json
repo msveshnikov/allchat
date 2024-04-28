@@ -1,6 +1,6 @@
 {
     "name": "allchat",
-    "version": "1.5",
+    "version": "2.0",
     "description": "API for AllChat",
     "main": "index.js",
     "scripts": {
@@ -10,8 +10,8 @@
     "license": "MIT",
     "type": "module",
     "dependencies": {
-        "@anthropic-ai/sdk": "^0.20.6",
-        "@aws-sdk/client-bedrock-runtime": "^3.561.0",
+        "@anthropic-ai/sdk": "^0.20.7",
+        "@aws-sdk/client-bedrock-runtime": "^3.564.0",
         "@google-cloud/vertexai": "^1.1.0",
         "bcrypt": "^5.1.1",
         "cheerio": "^1.0.0-rc.12",
@@ -23,17 +23,17 @@
         "imap": "^0.8.19",
         "jsonwebtoken": "^9.0.2",
         "mailparser": "^3.7.1",
-        "mammoth": "^1.7.1",
+        "mammoth": "^1.7.2",
         "mongoose": "^8.3.2",
         "morgan": "^1.10.0",
         "node-cron": "^3.0.3",
         "node-telegram-bot-api": "^0.65.1",
         "nodemailer": "^6.9.13",
         "nodemailer-express-handlebars": "^6.1.2",
-        "openai": "^4.38.3",
+        "openai": "^4.38.5",
         "pdf-parse": "1.1.1",
         "sharp": "^0.33.3",
-        "stripe": "^15.3.0",
+        "stripe": "^15.4.0",
         "xlsx": "^0.18.5",
         "youtube-transcript": "^1.2.1"
     }
