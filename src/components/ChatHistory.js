@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react";
-import { Box, CircularProgress, TextField, IconButton } from "@mui/material";
+import { Box, CircularProgress, TextField, IconButton, useTheme } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import EditIcon from "@mui/icons-material/Edit";
 import { CodeBlock } from "./CodeBlock";
@@ -61,6 +61,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
     const [lightboxMessageIndex, setLightboxMessageIndex] = useState(0);
     const [editingMessageIndex, setEditingMessageIndex] = useState(-1);
     const [editingMessage, setEditingMessage] = useState("");
+    const theme = useTheme();
 
     const handleImageClick = (index, message) => {
         setLightboxImageIndex(index);
@@ -103,8 +104,12 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
                 >
                     <Box
                         alignSelf="flex-end"
-                        bgcolor={index !== editingMessageIndex ? "#d4edda" : "#f5f5a5"}
-                        color="#155724"
+                        bgcolor={
+                            index !== editingMessageIndex
+                                ? theme.palette.chatBubble.userBg
+                                : theme.palette.chatBubble.editBg
+                        }
+                        color={theme.palette.chatBubble.userColor}
                         padding={1}
                         borderRadius={2}
                         display="flex"
@@ -141,8 +146,14 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
                     </Box>
                     <Box
                         alignSelf="flex-start"
-                        bgcolor={chat.error ? "#f8d7da" : "#cff4fc"}
-                        color={chat.error ? "#721c24" : "#0c5460"}
+                        bgcolor={
+                            chat.error ? theme.palette.chatBubble.errorBg : theme.palette.chatBubble.assistantBg
+                        }
+                        color={
+                            chat.error
+                                ? theme.palette.chatBubble.errorColor
+                                : theme.palette.chatBubble.assistantColor
+                        }
                         padding={1}
                         marginTop={1}
                         borderRadius={2}

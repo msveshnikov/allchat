@@ -15,8 +15,17 @@ import Privacy from "./components/Privacy";
 import Terms from "./components/Terms";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
+const type = "light";
+const element = document.body;
+if (type === "dark") {
+    element.classList.add("dark-mode");
+} else {
+    element.classList.remove("dark-mode");
+}
+
 root.render(
-    <ThemeProvider theme={theme("light")}>
+    <ThemeProvider theme={theme(type)}>
         <I18nextProvider>
             <Router>
                 <Routes>
