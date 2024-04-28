@@ -362,6 +362,10 @@ function Main({ darkMode, toggleTheme }) {
         sendFileAndQuery(null, null, newHistory[index].user, newHistory.slice(0, index));
     };
 
+    const handleDelete = async (newHistory) => {
+        setChatHistory(newHistory);
+    };
+
     const fetchUserData = async () => {
         const token = localStorage.getItem("token");
         const headers = {
@@ -466,6 +470,7 @@ function Main({ darkMode, toggleTheme }) {
             >
                 <ChatHistory
                     onChange={handleChange}
+                    onDelete={handleDelete}
                     onRun={handleRun}
                     chatHistory={chatHistory}
                     isModelResponding={isModelResponding}

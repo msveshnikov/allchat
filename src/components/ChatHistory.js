@@ -1,6 +1,7 @@
 import React, { memo, useState } from "react";
 import { Box, CircularProgress, TextField, IconButton, useTheme } from "@mui/material";
 import ReactMarkdown from "react-markdown";
+import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { CodeBlock } from "./CodeBlock";
 import { Lightbox } from "react-modal-image";
@@ -55,7 +56,7 @@ const linkStyle = {
     wordBreak: "break-all",
 };
 
-const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) => {
+const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onDelete }) => {
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
     const [lightboxMessageIndex, setLightboxMessageIndex] = useState(0);
@@ -76,6 +77,12 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
 
     const handleMessageEdit = (index, newMessage) => {
         setEditingMessage(newMessage);
+    };
+
+    const handleDeleteClick = (index) => {
+        const updatedChatHistory = [...chatHistory];
+        updatedChatHistory.splice(index, 1);
+        onDelete(updatedChatHistory);
     };
 
     const handleKeyDown = (e) => {
@@ -127,6 +134,9 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
                             />
                         ) : (
                             <>
+                                <IconButton size="small" onClick={() => handleDeleteClick(index)}>
+                                    <DeleteIcon fontSize="inherit" />
+                                </IconButton>
                                 {chat.user}
                                 <IconButton size="small" onClick={() => handleEditClick(index, chat.user)}>
                                     <EditIcon fontSize="inherit" />
