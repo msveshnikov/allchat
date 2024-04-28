@@ -106,10 +106,10 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
                         alignSelf="flex-end"
                         bgcolor={
                             index !== editingMessageIndex
-                                ? theme.palette.chatBubble.userBg
-                                : theme.palette.chatBubble.editBg
+                                ? theme.palette.chatBubble?.userBg
+                                : theme.palette.chatBubble?.editBg
                         }
-                        color={theme.palette.chatBubble.userColor}
+                        color={theme.palette.chatBubble?.userColor}
                         padding={1}
                         borderRadius={2}
                         display="flex"
@@ -147,12 +147,12 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange }) =
                     <Box
                         alignSelf="flex-start"
                         bgcolor={
-                            chat.error ? theme.palette.chatBubble.errorBg : theme.palette.chatBubble.assistantBg
+                            chat.error ? theme.palette.chatBubble?.errorBg : theme.palette.chatBubble?.assistantBg
                         }
                         color={
                             chat.error
-                                ? theme.palette.chatBubble.errorColor
-                                : theme.palette.chatBubble.assistantColor
+                                ? theme.palette.chatBubble?.errorColor
+                                : theme.palette.chatBubble?.assistantColor
                         }
                         padding={1}
                         marginTop={1}
