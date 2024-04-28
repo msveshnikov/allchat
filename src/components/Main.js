@@ -22,7 +22,7 @@ const MAX_CHATS = 6;
 
 export const API_URL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_API_URL : "http://localhost:5000";
 
-function Main() {
+function Main({ darkMode, toggleTheme }) {
     const [input, setInput] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
     const [storedChatHistories, setStoredChatHistories] = useState([]);
@@ -414,6 +414,8 @@ function Main() {
                 onToggle={toggleDrawer}
                 selectedModel={selectedModel}
                 onModelSelect={setSelectedModel}
+                darkMode={darkMode}
+                toggleTheme={toggleTheme}
             />
             <SideDrawer
                 isOpen={drawerOpen}
