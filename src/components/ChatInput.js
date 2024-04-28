@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField, Button, Typography } from "@mui/material";
 import FileSelector from "./FileSelector";
 import { models } from "./Settings";
 
@@ -26,22 +26,36 @@ const ChatInput = ({
 
     return (
         <Box display="flex" padding={2}>
-            <TextField
-                data-testid="input-field"
-                fullWidth
-                label="Enter your question"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => {
-                    if (e.key === "Enter") {
-                        onSubmit();
-                    }
-                }}
-                multiline
-                minRows={1}
-                maxRows={6}
-                onPaste={handlePaste}
-            />
+            <Box display="flex" flexDirection="column" width="100%">
+                <TextField
+                    data-testid="input-field"
+                    fullWidth
+                    label="Enter your question"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                            onSubmit();
+                        }
+                    }}
+                    multiline
+                    minRows={1}
+                    maxRows={6}
+                    onPaste={handlePaste}
+                />
+                {pastedImage && (
+                    <Box mt={2}>
+                        <Typography variant="subtitle2">Pasted Image:</Typography>
+                        <img
+                            src={URL.createObjectURL(pastedImage)}
+                            alt="Pasted"
+                            width="100"
+                            height="100"
+                            style={{ objectFit: "contain" }}
+                        />
+                    </Box>
+                )}
+            </Box>
             <FileSelector
                 onFileSelect={onFileSelect}
                 allowedFileTypes={models[selectedModel]}

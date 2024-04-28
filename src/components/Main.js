@@ -116,6 +116,7 @@ function Main({ darkMode, toggleTheme }) {
                     const fileData = reader.result;
                     fileType = fileData.split(";")[0].split("/")[1];
                     const fileBytesBase64 = fileData.split(",")[1];
+                    setPastedImage(null);
                     sendFileAndQuery(fileType, fileBytesBase64, input);
                 };
                 reader.readAsDataURL(pastedImage || selectedFile);
@@ -208,6 +209,7 @@ function Main({ darkMode, toggleTheme }) {
 
         setIsModelResponding(false);
         setSelectedFile(null);
+        setPastedImage(null);
     };
 
     function removeBrackets(text) {
