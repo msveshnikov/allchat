@@ -7,7 +7,7 @@
         "@mui/icons-material": "^5.15.15",
         "@mui/material": "^5.15.15",
         "html-to-pdfmake": "^2.5.7",
-        "i18next": "^23.11.2",
+        "i18next": "^23.11.3",
         "i18next-browser-languagedetector": "^7.2.1",
         "markdown-it": "^14.1.0",
         "md5": "^2.3.0",

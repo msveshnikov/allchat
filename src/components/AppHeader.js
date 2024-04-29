@@ -43,7 +43,7 @@ const AppHeader = ({
                         <ProfileMenu userEmail={userEmail} onSettings={onSettings} onSignOut={onSignOut} />
                     ) : (
                         <Box component="span" onClick={onOpenAuthModal} sx={{ cursor: "pointer" }}>
-                            {t("Login")}
+                            <Typography>{t("Login")}</Typography>
                         </Box>
                     )}
                 </Box>

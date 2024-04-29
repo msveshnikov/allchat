@@ -4,6 +4,12 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     admin: { type: Boolean, required: false },
+    ip: {
+        type: String,
+        required: true,
+        unique: [true, "Cannot signup with the same IP"],
+    },
+    userAgent: { type: String, required: false },
     usageStats: {
         gemini: {
             inputTokens: { type: Number, default: 0 },

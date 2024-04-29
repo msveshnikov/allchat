@@ -57,11 +57,23 @@ export const completePasswordReset = async (token, password) => {
     }
 };
 
-export const registerUser = async (email, password) => {
+export const getIpFromRequest = (req) => {
+    let ips = (req.headers["x-real-ip"] || req.headers["x-forwarded-for"] || req.connection.remoteAddress || "").split(
+        ","
+    );
+    return ips[0].trim();
+};
+
+export const registerUser = async (email, password, req) => {
     try {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        const user = new User({ email, password: hashedPassword });
+        const user = new User({
+            email,
+            password: hashedPassword,
+            userAgent: req.headers["user-agent"],
+            ip: getIpFromRequest(req),
+        });
         await user.save();
         sendWelcomeEmail(user);
         return { success: true };
