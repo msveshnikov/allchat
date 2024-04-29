@@ -51,21 +51,21 @@ export async function handleIncomingEmails() {
                                                 const fileType = attachment.contentType;
                                                 const fileBytes = attachment.content;
 
-                                                if (fileType === "pdf") {
+                                                if (fileType === "application/pdf") {
                                                     const data = await pdfParser(fileBytes);
                                                     emailBody += `\n\n${data.text}`;
                                                 } else if (
-                                                    fileType === "msword" ||
+                                                    fileType === "application/msword" ||
                                                     fileType ===
-                                                        "vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                                                 ) {
                                                     const docResult = await mammoth.extractRawText({
                                                         buffer: fileBytes,
                                                     });
                                                     emailBody += `\n\n${docResult.value}`;
                                                 } else if (
-                                                    fileType === "xlsx" ||
-                                                    fileType === "vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                                    fileType === "application/xlsx" ||
+                                                    fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                                                 ) {
                                                     const workbook = xlsx.read(fileBytes, { type: "buffer" });
                                                     const sheetNames = workbook.SheetNames;
