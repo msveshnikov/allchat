@@ -44,7 +44,6 @@ export async function handleIncomingEmails() {
                                         email: emailFrom?.from?.value?.[0]?.address,
                                     });
                                     if (user && emailBody) {
-                                        // Check if the email has attachments
                                         const attachments = emailFrom.attachments;
                                         if (attachments && attachments.length > 0) {
                                             for (const attachment of attachments) {
@@ -65,7 +64,8 @@ export async function handleIncomingEmails() {
                                                     emailBody += `\n\n${docResult.value}`;
                                                 } else if (
                                                     fileType === "application/xlsx" ||
-                                                    fileType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                                    fileType ===
+                                                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                                                 ) {
                                                     const workbook = xlsx.read(fileBytes, { type: "buffer" });
                                                     const sheetNames = workbook.SheetNames;
@@ -82,7 +82,7 @@ export async function handleIncomingEmails() {
                                         }
 
                                         const response = await getTextClaude(
-                                            //TODO: some user context and attachments
+                                            //TODO: some user context
                                             emailFrom.subject + "\n" + emailBody,
                                             0.2,
                                             null,

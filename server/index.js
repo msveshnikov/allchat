@@ -358,6 +358,7 @@ app.get("/user", verifyToken, async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 });
+
 app.get("/stats", verifyToken, async (req, res) => {
     if (!req.user.admin) {
         return res.status(401).json({ error: "This is admin only route" });
@@ -512,15 +513,11 @@ async function handleSubscriptionUpdate(subscription) {
         console.error("User not found");
         return;
     }
-    if (subscription.status === "active") {
-        user.subscriptionStatus = "active";
-    } else if (subscription.status === "trialing") {
-        user.subscriptionStatus = "trialing";
-    } else if (subscription.status === "past_due") {
-        user.subscriptionStatus = "past_due";
-    } else if (subscription.status === "canceled") {
-        user.subscriptionStatus = "canceled";
+    if (user.subscriptionStatus === "past_due" && subscription.status === "trialing") {
+        console.error("User has past_due, trialing not possible");
+        return;
     }
+    user.subscriptionStatus = subscription.status;
     user.subscriptionId = subscription.id;
     await user.save();
 }
@@ -690,6 +687,5 @@ app.delete("/customgpt/:id", verifyToken, async (req, res) => {
 process.on("uncaughtException", (err, origin) => {
     console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
 });
-
 
 setInterval(handleIncomingEmails, 60 * 1000);
