@@ -26,6 +26,7 @@ services:
             - INFRA_KEY=${INFRA_KEY}
             - OPENAI_KEY=${OPENAI_KEY}
             - YOUTUBE_KEY=${YOUTUBE_KEY}
+            - REPLICATE_KEY=${REPLICATE_KEY}
         restart: unless-stopped
         volumes:
             - ./allchat.json:/app/allchat.json

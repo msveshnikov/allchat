@@ -23,6 +23,7 @@ import path from "path";
 import Stripe from "stripe";
 import dotenv from "dotenv";
 import { handleIncomingEmails } from "./email.js";
+import { getTextReplicate } from "./replicate.js";
 dotenv.config({ override: true });
 
 const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
@@ -255,6 +256,8 @@ app.post("/interact", verifyToken, async (req, res) => {
             textResponse = await getTextInfra(contextPrompt, temperature, model, apiKey);
         } else if (model?.startsWith("gpt")) {
             textResponse = await getTextGpt(contextPrompt, temperature, req.user.id, model, apiKey, tools);
+        } else if (model?.includes("phi-3")) {
+            textResponse = await getTextReplicate(contextPrompt, temperature, model, apiKey);
         } else {
             textResponse = await getTextTogether(contextPrompt, temperature, model, apiKey);
         }

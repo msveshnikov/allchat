@@ -18,7 +18,7 @@ export const getTextTogether = async (prompt, temperature, model, apiKey) => {
                 content: prompt,
             },
         ],
-    };
+    }; 
 
     const response = await fetch(url, {
         method: "POST",

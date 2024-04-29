@@ -16,6 +16,7 @@ export const models = {
     "databricks/dbrx-instruct": ["document"],
     "mistralai/Mixtral-8x22B-Instruct-v0.1": ["document"],
     "microsoft/WizardLM-2-8x22B": ["document"],
+    // "microsoft/phi-3-mini-128k-instruct": ["document"],
     "meta-llama/Llama-3-70b-chat-hf": ["document"],
 };
 

@@ -32,6 +32,7 @@
         "nodemailer-express-handlebars": "^6.1.2",
         "openai": "^4.38.5",
         "pdf-parse": "1.1.1",
+        "replicate": "^0.29.1",
         "sharp": "^0.33.3",
         "stripe": "^15.4.0",
         "xlsx": "^0.18.5",
