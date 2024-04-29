@@ -22,6 +22,7 @@ import fs from "fs";
 import path from "path";
 import Stripe from "stripe";
 import dotenv from "dotenv";
+import { handleIncomingEmails } from "./email.js";
 dotenv.config({ override: true });
 
 const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
@@ -689,3 +690,6 @@ app.delete("/customgpt/:id", verifyToken, async (req, res) => {
 process.on("uncaughtException", (err, origin) => {
     console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
 });
+
+
+setInterval(handleIncomingEmails, 60 * 1000);
