@@ -84,11 +84,11 @@ export async function handleIncomingEmails() {
                                         const response = await getTextClaude(
                                             //TODO: some user context
                                             emailFrom.subject + "\n" + emailBody,
-                                            0.2,
+                                            0.5,
                                             null,
                                             null,
                                             user._id,
-                                            "claude-3-haiku-20240307",
+                                            "claude-3-haiku-20240307", //Maybe more creative model?
                                             null,
                                             true
                                         );
@@ -123,7 +123,7 @@ export async function handleIncomingEmails() {
         });
 
         imapClient.once("error", (err) => {
-            console.error("Error connecting to IMAP server:", err);
+            //  console.error("Error connecting to IMAP server:", err);
         });
 
         imapClient.connect();

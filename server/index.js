@@ -27,6 +27,7 @@ dotenv.config({ override: true });
 
 const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
 const MAX_CONTEXT_LENGTH = 16000;
+const MAX_CONTEXT_LENGTH_GPT = 12000;
 const MAX_SEARCH_RESULT_LENGTH = 3000;
 const stripe = new Stripe(process.env.STRIPE_KEY);
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro 1.5 and Claude language models. Your capabilities include:
@@ -303,7 +304,9 @@ app.post("/interact", verifyToken, async (req, res) => {
         const contextPrompt = `System: ${instructions || systemPrompt} User country code: ${country} User Lang: ${lang}
                     ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
                     \nUser information: ${userInfo.join(", ")}
-                    \nHuman: ${userInput || "what's this"}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
+                    \nHuman: ${userInput || "what's this"}\nAssistant:`.slice(
+            model?.includes("gpt") ? -MAX_CONTEXT_LENGTH_GPT : -MAX_CONTEXT_LENGTH
+        );
         return contextPrompt;
     }
 });
