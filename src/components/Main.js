@@ -233,7 +233,7 @@ function Main({ darkMode, toggleTheme }) {
             body: JSON.stringify({
                 model: "gemini-1.0-pro",
                 temperature: 0.1,
-                input: "Extract main topic of this chat in one simple short statement (30 chars max) and return it without anything else in [] ",
+                input: "Extract main topic of this chat in one simple short statement without formatting (30 chars max) and return it without anything else in [] ",
                 chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
             }),
         });
