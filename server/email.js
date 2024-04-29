@@ -1,8 +1,12 @@
 import { User } from "./model/User.js";
 import { simpleParser } from "mailparser";
 import imap from "imap";
-import { getTextClaude, sendEmail } from "./claude.js";
+import { getTextClaude } from "./claude.js";
+import { sendEmail } from "./tools.js";
 import dotenv from "dotenv";
+import pdfParser from "pdf-parse/lib/pdf-parse.js";
+import mammoth from "mammoth";
+import xlsx from "xlsx";
 dotenv.config({ override: true });
 
 export async function handleIncomingEmails() {
@@ -40,9 +44,46 @@ export async function handleIncomingEmails() {
                                         email: emailFrom?.from?.value?.[0]?.address,
                                     });
                                     if (user && emailBody) {
+                                        // Check if the email has attachments
+                                        const attachments = emailFrom.attachments;
+                                        if (attachments && attachments.length > 0) {
+                                            for (const attachment of attachments) {
+                                                const fileType = attachment.contentType;
+                                                const fileBytes = attachment.content;
+
+                                                if (fileType === "pdf") {
+                                                    const data = await pdfParser(fileBytes);
+                                                    emailBody += `\n\n${data.text}`;
+                                                } else if (
+                                                    fileType === "msword" ||
+                                                    fileType ===
+                                                        "vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                ) {
+                                                    const docResult = await mammoth.extractRawText({
+                                                        buffer: fileBytes,
+                                                    });
+                                                    emailBody += `\n\n${docResult.value}`;
+                                                } else if (
+                                                    fileType === "xlsx" ||
+                                                    fileType === "vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                                ) {
+                                                    const workbook = xlsx.read(fileBytes, { type: "buffer" });
+                                                    const sheetNames = workbook.SheetNames;
+                                                    let excelText = "";
+                                                    sheetNames.forEach((sheetName) => {
+                                                        const worksheet = workbook.Sheets[sheetName];
+                                                        excelText += xlsx.utils.sheet_to_text(worksheet);
+                                                    });
+                                                    emailBody += `\n\n${excelText}`;
+                                                } else {
+                                                    console.warn(`Unsupported file type: ${fileType}`);
+                                                }
+                                            }
+                                        }
+
                                         const response = await getTextClaude(
                                             //TODO: some user context and attachments
-                                            emailFrom.subject + "\n" + emailFrom.text,
+                                            emailFrom.subject + "\n" + emailBody,
                                             0.2,
                                             null,
                                             null,

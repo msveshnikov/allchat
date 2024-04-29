@@ -1,7 +1,7 @@
 import cron from "node-cron";
 import { getTextClaude } from "./claude.js";
 import { User } from "./model/User.js";
-import { sendEmail } from "./claude.js";
+import { sendEmail } from "./tools.js";
 
 const scheduledActions = {};
 

@@ -1,8 +1,8 @@
 import OpenAI from "openai";
 import {
     handleToolCall,
-    tools,
-} from "./claude.js";
+    tools
+} from "./tools.js";
 import { renameProperty } from "./gemini.js";
 import dotenv from "dotenv";
 dotenv.config({ override: true });
