@@ -32,7 +32,8 @@ https://allchat.online
 -   OpenAI GPT-3.5, GPT-4
 -   Audio Input in Gemini
 -   Video Input in Gemini
--   Custom GPTs (best to use with LlaMa-3 :)
+-   Custom GPTs (best to use with LlaMa-3)
+-   Email respond (with attachments, like PDFs, Word, etc)
 -   Memory (for Gemini & Claude) - any information about user which you agreed to persist
 -   Scheduling any action (hourly or daily) to your email
 -   YouTube video summary
@@ -59,7 +60,7 @@ https://allchat.online
 -   Get the latest news from Google News in your preferred language and receive them directly in your inbox. Keep up with industry trends and advancements. Just say _Send me your comment about latest news_
 -   Create PowerPoint presentations. Just say _Create 10 slides for presentation "Comparison of CZC.cz and Alza.cz" then write a Python program that will save it to disk_ then run code and Save To resulting .pptx link
 -   Schedule action and send results to you. Just say _schedule hourly action: generate haiku about spring_
--   Write an email to Assistant <allchatonline.ai@gmail.com> with any inquiry
+-   Write an email to Assistant <allchatonline.ai@gmail.com> with any inquiry (attachments allowed)
 
 # RUN LOCALLY
 
