@@ -25,7 +25,7 @@ const getFileTypeIcon = (mimeType) => {
         case "mp3":
         case "mpeg":
         case "x-m4a":
-            return "🎵";
+            return "🔊";
         default:
             return "📁";
     }
