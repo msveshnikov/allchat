@@ -41,7 +41,7 @@ export async function handleIncomingEmails() {
                                     console.log("New email found");
                                     const emailFrom = await simpleParser(emailBody);
                                     const user = await User.findOne({
-                                        email: emailFrom?.from?.value?.[0]?.address,
+                                        email: { $regex: new RegExp(emailFrom?.from?.value?.[0]?.address, "i") },
                                     });
                                     if (user && emailBody) {
                                         const attachments = emailFrom.attachments;
