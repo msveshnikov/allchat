@@ -19,12 +19,14 @@ An AI assistant app that interacts with all major models, maintains history, gen
 -   [Nginx](#nginx)
 -   [Monitoring](#monitoring)
 
-## Demo
+## PROD (with $4.99 subscription)
 
 https://allchat.online
 
 [![GitHub Repo stars](https://img.shields.io/github/stars/msveshnikov/allchat)](https://github.com/msveshnikov/allchat)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
+<a href="https://www.producthunt.com/posts/allchat-3?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-allchat&#0045;3" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=454662&theme=light" alt="AllChat - Unleash&#0032;the&#0032;Power&#0032;of&#0032;All&#0032;Major&#0032;AI&#0032;Models&#0032;in&#0032;One&#0032;Place | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
 ## Features
 
@@ -85,6 +87,7 @@ You have to get some of those APIs and set environment variables (or put to .env
 -   Start local Mongo DB (or containerized: `docker run -p 27017:27017 -d mongo`)
 -   In the server folder, `npm i` then `npm run api`
 -   In the root folder, `npm i` then `npm run start`
+-   (Optional) In the python-scripts folder, `python shell.py`
 
 # DOCKER DEPLOY
 

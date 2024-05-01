@@ -10,12 +10,11 @@ import mongoose from "mongoose";
 import * as xlsx from "xlsx";
 import { getTextGemini } from "./gemini.js";
 import { getTextClaude } from "./claude.js";
-import { getImageTitan } from "./aws.js";
 import { getTextTogether } from "./together.js";
 import { getTextInfra } from "./deepinfra.js";
 import { getTextGpt } from "./openai.js";
 import { authenticateUser, completePasswordReset, registerUser, resetPassword, verifyToken } from "./auth.js";
-import { fetchPageContent, fetchSearchResults } from "./search.js";
+import { fetchPageContent } from "./search.js";
 import { User, countTokens, storeUsageStats } from "./model/User.js";
 import CustomGPT from "./model/CustomGPT.js";
 import fs from "fs";
@@ -23,7 +22,7 @@ import path from "path";
 import Stripe from "stripe";
 import dotenv from "dotenv";
 import { handleIncomingEmails } from "./email.js";
-import { getTextReplicate } from "./replicate.js";
+import { getImage } from "./image.js";
 dotenv.config({ override: true });
 
 const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
@@ -47,10 +46,18 @@ const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro
 
 Your ultimate goal is to provide an excellent user experience by leveraging the capabilities of AI while adhering to ethical principles.`;
 
+promBundle.normalizePath = (req, opts) => {
+    return req.route?.path ?? "No";
+};
 const metricsMiddleware = promBundle({
     metricType: "summary",
     includeMethod: true,
     includePath: true,
+    customLabels: { model: "No" },
+    transformLabels: (labels, req, res) => {
+        labels.model = req?.body?.model ?? "No";
+        return labels;
+    },
 });
 
 const app = express();
@@ -127,8 +134,10 @@ app.post("/interact", verifyToken, async (req, res) => {
     const country = req.headers["geoip_country_code"];
 
     // const user = await User.findById(req.user.id);
-    // if (user.subscriptionStatus !== 'active' && user.subscriptionStatus !== 'trialing' && !user.admin && !apiKey) {
-    //     return res.status(402).json({ error: 'Subscription is not active. Please provide your API key in the Settings.' });
+    // if (user.subscriptionStatus !== "active" && user.subscriptionStatus !== "trialing" && !user.admin && !apiKey) {
+    //     return res
+    //         .status(402)
+    //         .json({ error: "Subscription is not active. Please provide your API key in the Settings." });
     // }
 
     try {
@@ -195,9 +204,6 @@ app.post("/interact", verifyToken, async (req, res) => {
             }
         }
 
-        let searchResults = [];
-        let topResultContent = "";
-
         const urlRegex = /https?:\/\/[^\s]+/;
         const match = userInput?.match(urlRegex);
         if (match) {
@@ -205,20 +211,6 @@ app.post("/interact", verifyToken, async (req, res) => {
             const urlContent = await fetchPageContent(url);
             if (urlContent) {
                 userInput = userInput.replace(url, `\n${urlContent.slice(0, MAX_SEARCH_RESULT_LENGTH)}\n`);
-            }
-        } else {
-            if (userInput?.toLowerCase()?.includes("search") || userInput?.toLowerCase()?.includes("google")) {
-                const searchQuery = userInput.replace(/search\s*|google\s*/gi, "").trim();
-                searchResults = (await fetchSearchResults(searchQuery)) || [];
-                topResultContent = searchResults.map((result) => result.title + " " + result.snippet).join("\n\n");
-                for (let i = 0; i < 3 && i < searchResults.length; i++) {
-                    const pageContent = await fetchPageContent(searchResults[i].link);
-                    topResultContent += pageContent;
-                    if (topResultContent.length > MAX_SEARCH_RESULT_LENGTH) {
-                        break;
-                    }
-                    topResultContent = topResultContent.slice(0, MAX_SEARCH_RESULT_LENGTH);
-                }
             }
         }
 
@@ -256,29 +248,15 @@ app.post("/interact", verifyToken, async (req, res) => {
             textResponse = await getTextInfra(contextPrompt, temperature, model, apiKey);
         } else if (model?.startsWith("gpt")) {
             textResponse = await getTextGpt(contextPrompt, temperature, req.user.id, model, apiKey, tools);
-        } else if (model?.includes("phi-3")) {
-            textResponse = await getTextReplicate(contextPrompt, temperature, model, apiKey);
         } else {
             textResponse = await getTextTogether(contextPrompt, temperature, model, apiKey);
         }
         outputTokens = countTokens(textResponse);
 
-        if (searchResults?.length > 0) {
-            textResponse += `\n\nSearch Results:\n${searchResults
-                .map(
-                    (result, index) =>
-                        `${index + 1}. ${result.title}\n[${result.link}](${result.link})\n${result.snippet}\n`
-                )
-                .join("\n")}`;
-        }
-
         userInput = userInput?.toLowerCase();
         let imageResponse;
         if (hasPaintWord(userInput)) {
-            imageResponse = await getImageTitan(
-                userInput?.substr(0, 200) + textResponse?.substr(0, 300),
-                numberOfImages
-            );
+            imageResponse = await getImage(userInput?.substr(0, 200) + textResponse?.substr(0, 300), numberOfImages);
             imagesGenerated = numberOfImages;
         }
 
@@ -445,10 +423,8 @@ app.post("/run", verifyToken, async (req, res) => {
 
         if (response.ok) {
             const jsonData = JSON.parse(data);
-            const output = jsonData.output;
+            let output = jsonData.output;
             const newFiles = jsonData.new_files;
-
-            let outputWithLinks = output;
             const imageResponse = [];
 
             for (const [filePath, base64Content] of Object.entries(newFiles)) {
@@ -462,11 +438,11 @@ app.post("/run", verifyToken, async (req, res) => {
                     const fileSavePath = path.join(contentFolder, fileName);
                     fs.writeFileSync(fileSavePath, fileContent);
                     const hyperlink = `[${fileName}](/api/get?file=${encodeURIComponent(fileName)})`;
-                    outputWithLinks += `\n${hyperlink}`;
+                    output += `\n${hyperlink}`;
                 }
             }
 
-            res.status(200).send({ output: outputWithLinks, imageResponse });
+            res.status(200).send({ output, imageResponse });
         } else {
             res.status(response.status).json({ error: data });
         }
