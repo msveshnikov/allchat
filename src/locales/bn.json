@@ -28,5 +28,12 @@
     "Money Consumed:": "খরচ করা অর্থ:",
     "Claude 3 Usage": "Claude 3 ব্যবহার",
     "Input Tokens:": "ইনপুট টোকেন:",
-    "Output Tokens:": "আউটপুট টোকেন:"
+    "Output Tokens:": "আউটপুট টোকেন:",
+    "Enter your question": "আপনার প্রশ্নটি লিখুন",
+    "New Chat": "নতুন চ্যাট",
+    "Export history PDF": "ইতিহাস PDF রপ্তানি করুন",
+    "Custom GPT": "কাস্টম GPT",
+    "Clear All": "সব পরিষ্কার করুন",
+    "Sound": "শব্দ",
+    "Web Tools": "ওয়েব টুল"
 }

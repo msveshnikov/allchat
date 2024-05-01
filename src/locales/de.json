@@ -28,5 +28,12 @@
     "Money Consumed:": "Verbrauchtes Geld:",
     "Claude 3 Usage": "Claude 3 Nutzung",
     "Input Tokens:": "Eingabe-Tokens:",
-    "Output Tokens:": "Ausgabe-Tokens:"
+    "Output Tokens:": "Ausgabe-Tokens:",
+    "Enter your question": "Stellen Sie Ihre Frage",
+    "New Chat": "Neuer Chat",
+    "Export history PDF": "Verlauf als PDF exportieren",
+    "Custom GPT": "Benutzerdefiniertes GPT",
+    "Clear All": "Alle löschen",
+    "Sound": "Ton",
+    "Web Tools": "Web-Tools"
 }

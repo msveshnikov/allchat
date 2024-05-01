@@ -28,5 +28,12 @@
     "Money Consumed:": "Money Consumed:",
     "Claude 3 Usage": "Claude 3 Usage",
     "Input Tokens:": "Input Tokens:",
-    "Output Tokens:": "Output Tokens:"
+    "Output Tokens:": "Output Tokens:",
+    "Enter your question": "Enter your question",
+    "New Chat": "New Chat",
+    "Export history PDF": "Export history PDF",
+    "Custom GPT": "Custom GPT",
+    "Clear All": "Clear All",
+    "Sound": "Sound",
+    "Web Tools": "Web Tools"
 }

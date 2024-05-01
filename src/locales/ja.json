@@ -28,5 +28,12 @@
     "Money Consumed:": "消費された金額:",
     "Claude 3 Usage": "Claude 3 Haikuの使用状況",
     "Input Tokens:": "入力トークン数:",
-    "Output Tokens:": "出力トークン数:"
+    "Output Tokens:": "出力トークン数:",
+    "Enter your question": "質問を入力してください",
+    "New Chat": "新しいチャット",
+    "Export history PDF": "履歴をPDFでエクスポート",
+    "Custom GPT": "カスタムGPT",
+    "Clear All": "すべてクリア",
+    "Sound": "音声",
+    "Web Tools": "Webツール"
 }

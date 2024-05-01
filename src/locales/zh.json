@@ -28,5 +28,12 @@
     "Money Consumed:": "消费金额：",
     "Claude 3 Usage": "Claude 3 使用情况",
     "Input Tokens:": "输入代币：",
-    "Output Tokens:": "输出代币："
+    "Output Tokens:": "输出代币：",
+    "Enter your question": "输入您的问题",
+    "New Chat": "新对话",
+    "Export history PDF": "导出历史记录 PDF",
+    "Custom GPT": "自定义 GPT",
+    "Clear All": "全部清除",
+    "Sound": "声音",
+    "Web Tools": "网络工具"
 }

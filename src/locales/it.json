@@ -28,5 +28,12 @@
     "Money Consumed:": "Denaro Consumato:",
     "Claude 3 Usage": "Utilizzo di Claude 3 Haiku",
     "Input Tokens:": "Token in Ingresso:",
-    "Output Tokens:": "Token in Uscita:"
+    "Output Tokens:": "Token in Uscita:",
+    "Enter your question": "Inserisci la tua domanda",
+    "New Chat": "Nuova chat",
+    "Export history PDF": "Esporta cronologia in PDF",
+    "Custom GPT": "GPT personalizzato",
+    "Clear All": "Cancella tutto",
+    "Sound": "Suono",
+    "Web Tools": "Strumenti Web"
 }

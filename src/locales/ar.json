@@ -28,5 +28,12 @@
     "Money Consumed:": "المال المستهلك:",
     "Claude 3 Usage": "استخدام Claude 3 Haiku",
     "Input Tokens:": "الرموز المدخلة:",
-    "Output Tokens:": "الرموز المخرجة:"
+    "Output Tokens:": "الرموز المخرجة:",
+    "Enter your question": "أدخل سؤالك",
+    "New Chat": "دردشة جديدة",
+    "Export history PDF": "تصدير سجل PDF",
+    "Custom GPT": "GPT مخصص",
+    "Clear All": "امسح الكل",
+    "Sound": "الصوت",
+    "Web Tools": "أدوات الويب"
 }

@@ -2,6 +2,7 @@ import React from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
 import FileSelector from "./FileSelector";
 import { models } from "./Settings";
+import { useTranslation } from "react-i18next";
 
 const ChatInput = ({
     input,
@@ -13,6 +14,7 @@ const ChatInput = ({
     pastedImage,
     setPastedImage,
 }) => {
+    const { t } = useTranslation();
     const handlePaste = (e) => {
         const items = e.clipboardData.items;
         for (let i = 0; i < items.length; i++) {
@@ -30,7 +32,7 @@ const ChatInput = ({
                 <TextField
                     data-testid="input-field"
                     fullWidth
-                    label="Enter your question"
+                    label={t("Enter your question")}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyPress={(e) => {

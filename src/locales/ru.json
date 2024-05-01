@@ -28,5 +28,12 @@
     "Money Consumed:": "Потрачено денег:",
     "Claude 3 Usage": "Использование Claude 3",
     "Input Tokens:": "Входные токены:",
-    "Output Tokens:": "Выходные токены:"
+    "Output Tokens:": "Выходные токены:",
+    "Enter your question": "Введите ваш вопрос",
+    "New Chat": "Новый чат",
+    "Export history PDF": "Экспорт истории в PDF",
+    "Custom GPT": "Пользовательский GPT",
+    "Clear All": "Очистить все",
+    "Sound": "Звук",
+    "Web Tools": "Веб-инструменты"
 }
