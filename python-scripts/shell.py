@@ -22,7 +22,7 @@ class PythonExecutionServer(http.server.BaseHTTPRequestHandler):
         try:
             with contextlib.redirect_stdout(output_stream), contextlib.redirect_stderr(output_stream):
                 signal.signal(signal.SIGALRM, self.handle_timeout)
-                signal.alarm(180)  # Set a 3-minute timeout
+                signal.alarm(60)  # Set a 1-minute timeout
                 execute_with_timeout()
                 signal.alarm(0)  # Cancel the timeout
             output = output_stream.getvalue()

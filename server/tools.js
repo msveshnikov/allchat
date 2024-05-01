@@ -1,10 +1,21 @@
 import nodemailer from "nodemailer";
+import fs from "fs";
+import path from "path";
 import { fetchPageContent, fetchSearchResults, googleNews } from "./search.js";
 import { User } from "./model/User.js";
 import { scheduleAction } from "./scheduler.js";
-import { toolsUsed } from "./index.js";
+import { contentFolder, toolsUsed } from "./index.js";
 import { summarizeYouTubeVideo } from "./youtube.js";
-import { bot } from "./claude.js";
+import TelegramBot from "node-telegram-bot-api";
+
+const bot = new TelegramBot(process.env.TELEGRAM_KEY);
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+    },
+});
 
 export const tools = [
     {
@@ -250,37 +261,38 @@ export const handleToolCall = async (name, args, userId) => {
 };
 
 export async function getWeather(location) {
-    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}`;
-    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}`;
+    try {
+        const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}`;
+        const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=${process.env.OPENWEATHER_API_KEY}`;
+        const [weatherResponse, forecastResponse] = await Promise.all([fetch(weatherUrl), fetch(forecastUrl)]);
+        const [weatherData, forecastData] = await Promise.all([weatherResponse.json(), forecastResponse.json()]);
+        const { name, weather, main } = weatherData;
+        const { list } = forecastData;
 
-    const [weatherResponse, forecastResponse] = await Promise.all([fetch(weatherUrl), fetch(forecastUrl)]);
+        const currentWeather = `In ${name}, the weather is ${
+            weather?.[0]?.description
+        } with a temperature of ${Math.round(main?.temp - 273)}°C`;
 
-    const [weatherData, forecastData] = await Promise.all([weatherResponse.json(), forecastResponse.json()]);
+        const fiveDayForecast = list
+            ?.filter((_, index) => index % 8 === 4) //noon
+            ?.map((item) => {
+                const date = new Date(item.dt * 1000).toLocaleDateString();
+                const temperature = Math.round(item.main.temp - 273);
+                const description = item.weather[0].description;
+                return `On ${date}, the weather will be ${description} with a temperature of ${temperature}°C`;
+            })
+            ?.join("\n");
 
-    const { name, weather, main } = weatherData;
-    const { list } = forecastData;
-
-    const currentWeather = `In ${name}, the weather is ${weather?.[0]?.description} with a temperature of ${Math.round(
-        main?.temp - 273
-    )}°C`;
-
-    const fiveDayForecast = list
-        ?.filter((_, index) => index % 8 === 0) // Get one forecast per day
-        ?.map((item) => {
-            const date = new Date(item.dt * 1000).toLocaleDateString();
-            const temperature = Math.round(item.main.temp - 273);
-            const description = item.weather[0].description;
-            return `On ${date}, the weather will be ${description} with a temperature of ${temperature}°C`;
-        })
-        ?.join("\n");
-
-    return `${currentWeather}\n\nFive-day forecast:\n${fiveDayForecast}`;
+        return `${currentWeather}\n\nFive-day forecast:\n${fiveDayForecast}`;
+    } catch (error) {
+        console.error("Error fetching weather:", error);
+        return "Error fetching weather:" + error.message;
+    }
 }
 
 export async function getStockPrice(ticker) {
-    const apiUrl = `https://yfapi.net/v8/finance/chart/${ticker}?range=1wk&interval=1d&lang=en-US&region=US&includePrePost=false&corsDomain=finance.yahoo.com`;
-
     try {
+        const apiUrl = `https://yfapi.net/v8/finance/chart/${ticker}?range=1wk&interval=1d&lang=en-US&region=US&includePrePost=false&corsDomain=finance.yahoo.com`;
         const response = await fetch(apiUrl, {
             headers: {
                 "X-API-KEY": process.env.YAHOO_FINANCE_API_KEY,
@@ -330,13 +342,6 @@ export async function sendTelegramMessage(chatId, message) {
         return "Error sending Telegram message:" + error.message;
     }
 }
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASSWORD,
-    },
-});
 
 export async function sendEmail(to, subject, content, userId) {
     let recipient;
@@ -378,7 +383,17 @@ export async function executePython(code) {
     const data = await response.text();
     if (response.ok) {
         const jsonData = JSON.parse(data);
-        return jsonData.output;
+        let output = jsonData.output;
+        const newFiles = jsonData.new_files;
+        for (const [filePath, base64Content] of Object.entries(newFiles)) {
+            const fileName = path.basename(filePath);
+            const fileContent = Buffer.from(base64Content, "base64");
+            const fileSavePath = path.join(contentFolder, fileName);
+            fs.writeFileSync(fileSavePath, fileContent);
+            const hyperlink = `[${fileName}](/api/get?file=${encodeURIComponent(fileName)})`;
+            output += `\n${hyperlink}`;
+        }
+        return output;
     } else {
         return data;
     }
