@@ -55,7 +55,7 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
         },
     ];
 
-    let data = await anthropic.beta.tools.messages.create({
+    let response = await anthropic.beta.tools.messages.create({
         model,
         max_tokens: 4096,
         temperature: temperature || 0.5,
@@ -63,15 +63,15 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
         messages,
     });
 
-    if (!data) {
+    if (!response) {
         throw new Error("Claude Error");
     } else {
-        let toolUses, toolResults, newMessages, newData;
+        let toolUses, toolResults;
 
-        while (data.stop_reason === "tool_use") {
-            toolUses = data.content.filter((block) => block.type === "tool_use");
+        while (response.stop_reason === "tool_use") {
+            toolUses = response.content.filter((block) => block.type === "tool_use");
             if (!toolUses.length) {
-                return data?.content?.[0]?.text;
+                return response?.content?.[0]?.text;
             }
 
             toolResults = await Promise.all(
@@ -81,23 +81,21 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
                 })
             );
 
-            newMessages = [
-                ...messages,
-                { role: "assistant", content: data.content.filter((c) => c.type !== "text" || c.text) },
-                { role: "user", content: toolResults.map((toolResult) => ({ type: "tool_result", ...toolResult })) },
-            ];
+            messages.push({ role: "assistant", content: response.content.filter((c) => c.type !== "text" || c.text) });
+            messages.push({
+                role: "user",
+                content: toolResults.map((toolResult) => ({ type: "tool_result", ...toolResult })),
+            });
 
-            newData = await anthropic.beta.tools.messages.create({
+            response = await anthropic.beta.tools.messages.create({
                 model,
                 max_tokens: 4096,
                 temperature: temperature || 0.5,
                 tools: webTools ? tools : [],
-                messages: newMessages,
+                messages,
             });
-
-            data = newData;
         }
 
-        return data?.content?.[0]?.text;
+        return response?.content?.[0]?.text;
     }
 };
