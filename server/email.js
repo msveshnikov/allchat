@@ -80,10 +80,12 @@ export async function handleIncomingEmails() {
                                                 }
                                             }
                                         }
+                                        const userInfo = [...user.info.entries()]
+                                            .map(([key, value]) => `${key}: ${value}`)
+                                            .join(", ");
 
                                         const response = await getTextClaude(
-                                            //TODO: some user context
-                                            emailFrom.subject + "\n" + emailBody,
+                                            `Subject: ${emailFrom.subject} User information: ${userInfo} Human: ${emailBody} Assistant:`,
                                             0.5,
                                             null,
                                             null,
@@ -111,19 +113,11 @@ export async function handleIncomingEmails() {
                                 });
                             });
                         });
-
-                        f.once("error", (err) => {
-                            console.error("IMAP fetch error:", err.message);
-                        });
                     } catch (err) {
                         return;
                     }
                 });
             });
-        });
-
-        imapClient.once("error", (err) => {
-            //  console.error("Error connecting to IMAP server:", err);
         });
 
         imapClient.connect();

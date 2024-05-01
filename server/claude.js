@@ -39,7 +39,7 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
             role: "user",
             content: [
                 { type: "text", text: prompt },
-                ...(imageBase64
+                ...(fileType && imageBase64
                     ? [
                           {
                               type: "image",

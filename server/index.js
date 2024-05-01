@@ -11,7 +11,6 @@ import * as xlsx from "xlsx";
 import { getTextGemini } from "./gemini.js";
 import { getTextClaude } from "./claude.js";
 import { getTextTogether } from "./together.js";
-import { getTextInfra } from "./deepinfra.js";
 import { getTextGpt } from "./openai.js";
 import { authenticateUser, completePasswordReset, registerUser, resetPassword, verifyToken } from "./auth.js";
 import { fetchPageContent } from "./search.js";
@@ -119,76 +118,42 @@ mongoose
 export let toolsUsed = [];
 
 app.post("/interact", verifyToken, async (req, res) => {
-    toolsUsed = [];
-    let userInput = req.body.input;
-    const chatHistory = req.body.chatHistory || [];
-    const temperature = req.body.temperature || 0.8;
-    const fileBytesBase64 = req.body.fileBytesBase64;
-    const fileType = req.body.fileType;
-    const numberOfImages = req.body.numberOfImages || 1;
-    const tools = req.body.tools;
-    const lang = req.body.lang;
-    const model = req.body.model || "gemini-1.5-pro-preview-0409";
-    const customGPT = req.body.customGPT;
-    const apiKey = req.body.apiKey;
-    const country = req.headers["geoip_country_code"];
-
-    // const user = await User.findById(req.user.id);
-    // if (user.subscriptionStatus !== "active" && user.subscriptionStatus !== "trialing" && !user.admin && !apiKey) {
-    //     return res
-    //         .status(402)
-    //         .json({ error: "Subscription is not active. Please provide your API key in the Settings." });
-    // }
-
     try {
-        if (fileBytesBase64) {
-            const fileBytes = Buffer.from(fileBytesBase64, "base64");
-            if (
-                fileType === "png" ||
-                fileType === "jpg" ||
-                fileType === "jpeg" ||
-                fileType === "mp4" ||
-                fileType === "mp3" ||
-                fileType === "mpeg" ||
-                fileType === "x-m4a"
-            ) {
-                const contextPrompt = await getContext();
+        toolsUsed = [];
+        let userInput = req.body.input;
+        const chatHistory = req.body.chatHistory || [];
+        const temperature = req.body.temperature || 0.8;
+        const fileBytesBase64 = req.body.fileBytesBase64;
+        let fileType = req.body.fileType;
+        const numberOfImages = req.body.numberOfImages || 1;
+        const tools = req.body.tools;
+        const lang = req.body.lang;
+        const model = req.body.model || "gemini-1.5-pro-preview-0409";
+        const customGPT = req.body.customGPT;
+        const apiKey = req.body.apiKey;
+        const country = req.headers["geoip_country_code"];
 
-                let textResponse;
-                if (model?.startsWith("gemini")) {
-                    textResponse = await getTextGemini(
-                        contextPrompt,
-                        temperature,
-                        fileBytesBase64,
-                        fileType,
-                        req.user.id,
-                        model,
-                        apiKey,
-                        tools
-                    );
-                }
-                if (model?.startsWith("claude")) {
-                    textResponse = await getTextClaude(
-                        contextPrompt,
-                        temperature,
-                        fileBytesBase64,
-                        fileType,
-                        req.user.id,
-                        model,
-                        apiKey,
-                        tools
-                    );
-                }
-                return res.json({ textResponse });
-            } else if (fileType === "pdf") {
+        // const user = await User.findById(req.user.id);
+        // if (user.subscriptionStatus !== "active" && user.subscriptionStatus !== "trialing" && !user.admin && !apiKey) {
+        //     return res
+        //         .status(402)
+        //         .json({ error: "Subscription is not active. Please provide your API key in the Settings." });
+        // }
+
+        let fileBytes;
+        if (fileBytesBase64) {
+            fileBytes = Buffer.from(fileBytesBase64, "base64");
+            if (fileType === "pdf") {
                 const data = await pdfParser(fileBytes);
                 userInput = `${data.text}\n\n${userInput}`;
+                fileType = "";
             } else if (
                 fileType === "msword" ||
                 fileType === "vnd.openxmlformats-officedocument.wordprocessingml.document"
             ) {
                 const docResult = await mammoth.extractRawText({ buffer: fileBytes });
                 userInput = `${docResult.value}\n\n${userInput}`;
+                fileType = "";
             } else if (fileType === "xlsx" || fileType === "vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
                 const workbook = xlsx.read(fileBytes, { type: "buffer" });
                 const sheetNames = workbook.SheetNames;
@@ -198,9 +163,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                     excelText += xlsx.utils.sheet_to_txt(worksheet);
                 });
                 userInput = `${excelText}\n\n${userInput}`;
-            } else {
-                console.error("Unsupported file type");
-                return res.status(400).json({ error: "Unsupported file type" });
+                fileType = "";
             }
         }
 
@@ -214,7 +177,21 @@ app.post("/interact", verifyToken, async (req, res) => {
             }
         }
 
-        const contextPrompt = await getContext();
+        let instructions = "";
+        if (customGPT) {
+            const GPT = await CustomGPT.findOne({ name: customGPT });
+            if (GPT) {
+                instructions = GPT.knowledge + "\n\n" + GPT.instructions;
+            }
+        }
+        const user = await User.findById(req.user.id);
+        const userInfo = [...user.info.entries()].map(([key, value]) => `${key}: ${value}`).join(", ");
+        const contextPrompt = `System: ${instructions || systemPrompt} User country code: ${country} User Lang: ${lang}
+                    ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
+                    \nUser information: ${userInfo}
+                    \nHuman: ${userInput || "what's this"}\nAssistant:`.slice(
+            model?.includes("gpt") ? -MAX_CONTEXT_LENGTH_GPT : -MAX_CONTEXT_LENGTH
+        );
 
         let textResponse;
         let inputTokens = 0;
@@ -226,8 +203,8 @@ app.post("/interact", verifyToken, async (req, res) => {
             textResponse = await getTextGemini(
                 contextPrompt,
                 temperature,
-                null,
-                null,
+                fileBytesBase64,
+                fileType,
                 req.user.id,
                 model,
                 apiKey,
@@ -237,15 +214,13 @@ app.post("/interact", verifyToken, async (req, res) => {
             textResponse = await getTextClaude(
                 contextPrompt,
                 temperature,
-                null,
-                null,
+                fileBytesBase64,
+                fileType,
                 req.user.id,
                 model,
                 apiKey,
                 tools
             );
-        } else if (model?.startsWith("HuggingFace")) {
-            textResponse = await getTextInfra(contextPrompt, temperature, model, apiKey);
         } else if (model?.startsWith("gpt")) {
             textResponse = await getTextGpt(contextPrompt, temperature, req.user.id, model, apiKey, tools);
         } else {
@@ -268,27 +243,6 @@ app.post("/interact", verifyToken, async (req, res) => {
         res.status(500).json({
             error: "Model Returned Error: " + error.message,
         });
-    }
-
-    async function getContext() {
-        let instructions = "";
-        if (customGPT) {
-            const GPT = await CustomGPT.findOne({ name: customGPT });
-            if (GPT) {
-                instructions = GPT.knowledge + "\n\n" + GPT.instructions;
-            }
-        }
-
-        const user = await User.findById(req.user.id);
-        const userInfo = user ? [...user.info.entries()].map(([key, value]) => `${key}: ${value}`) : [];
-
-        const contextPrompt = `System: ${instructions || systemPrompt} User country code: ${country} User Lang: ${lang}
-                    ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
-                    \nUser information: ${userInfo.join(", ")}
-                    \nHuman: ${userInput || "what's this"}\nAssistant:`.slice(
-            model?.includes("gpt") ? -MAX_CONTEXT_LENGTH_GPT : -MAX_CONTEXT_LENGTH
-        );
-        return contextPrompt;
     }
 });
 
