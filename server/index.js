@@ -424,7 +424,7 @@ app.get("/stats", verifyToken, async (req, res) => {
     }
 });
 
-const contentFolder = path.join(process.cwd(), "content");
+export const contentFolder = path.join(process.cwd(), "content");
 if (!fs.existsSync(contentFolder)) {
     fs.mkdirSync(contentFolder, { recursive: true });
 }
