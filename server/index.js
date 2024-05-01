@@ -83,6 +83,9 @@ morgan.token("body", (req, res) => {
         if ("files" in clonedBody) {
             clonedBody.files = "<FILES_REDACTED>";
         }
+        if ("instructions" in clonedBody) {
+            clonedBody.instructions = "<FILES_REDACTED>";
+        }
         if ("apiKey" in clonedBody) {
             clonedBody.apiKey = "<APIKEY_REDACTED>";
         }

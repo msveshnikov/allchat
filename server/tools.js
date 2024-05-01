@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { fetchPageContent, fetchSearchResults, googleNews } from "./search.js";
 import { User } from "./model/User.js";
-import { scheduleAction } from "./scheduler.js";
+import { scheduleAction, stopScheduledAction } from "./scheduler.js";
 import { contentFolder, toolsUsed } from "./index.js";
 import { summarizeYouTubeVideo } from "./youtube.js";
 import TelegramBot from "node-telegram-bot-api";
@@ -208,6 +208,15 @@ export const tools = [
         },
     },
     {
+        name: "stop_scheduled_action",
+        description: "Stop and remove any scheduled task for user.",
+        input_schema: {
+            type: "object",
+            properties: {},
+            required: [],
+        },
+    },
+    {
         name: "summarize_youtube_video",
         description:
             "Summarize a YouTube video based on its video ID or video URL. The tool fetches the captions from the video using the YouTube Data API and generates a summary of the video content.",
@@ -253,6 +262,8 @@ export const handleToolCall = async (name, args, userId) => {
             return removeUserInfo(userId);
         case "schedule_action":
             return scheduleAction(args.action, args.schedule, userId);
+        case "stop_scheduled_action":
+            return stopScheduledAction(userId);
         case "summarize_youtube_video":
             return summarizeYouTubeVideo(args.videoId);
         default:

@@ -12,7 +12,7 @@ export const scheduleAction = async (action, schedule, userId) => {
     }
 
     const task = cron.schedule(schedule === "hourly" ? "0 * * * *" : "0 0 * * *", async () => {
-        try {  //Maybe more creative model?
+        try {  //TODO: user context
             const result = await getTextClaude(action, 0.8, null, null, userId, "claude-3-haiku-20240307", null, true);
             const actionTimestamp = Date.now();
             user.scheduling.set(`${schedule}_action_${actionTimestamp}`, action);
