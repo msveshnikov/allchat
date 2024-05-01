@@ -124,7 +124,6 @@ app.post("/interact", verifyToken, async (req, res) => {
         const temperature = req.body.temperature || 0.8;
         const fileBytesBase64 = req.body.fileBytesBase64;
         let fileType = req.body.fileType;
-        const numberOfImages = req.body.numberOfImages || 1;
         const tools = req.body.tools;
         const lang = req.body.lang;
         const model = req.body.model || "gemini-1.5-pro-preview-0409";
@@ -230,8 +229,8 @@ app.post("/interact", verifyToken, async (req, res) => {
         userInput = userInput?.toLowerCase();
         let imageResponse;
         if (hasPaintWord(userInput)) {
-            imageResponse = await getImage(userInput?.substr(0, 200) + textResponse?.substr(0, 300), numberOfImages);
-            imagesGenerated = numberOfImages;
+            imageResponse = await getImage(userInput?.substr(0, 200) + textResponse?.substr(0, 300));
+            imagesGenerated = 1;
         }
 
         storeUsageStats(req.user.id, model, inputTokens, outputTokens, imagesGenerated);
