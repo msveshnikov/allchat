@@ -34,45 +34,6 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
         }
     }
 
-    async function processToolResult(data, temperature, messages, userId, model, webTools) {
-        const toolUses = data.content.filter((block) => block.type === "tool_use");
-        if (!toolUses.length) {
-            return data?.content?.[0]?.text;
-        }
-
-        const toolResults = await Promise.all(
-            toolUses.map(async (toolUse) => {
-                const toolResult = await handleToolCall(toolUse.name, toolUse.input, userId);
-                return { tool_use_id: toolUse.id, content: toolResult };
-            })
-        );
-
-        const newMessages = [
-            ...messages,
-            { role: "assistant", content: data.content.filter((c) => c.type !== "text" || c.text) },
-            {
-                role: "user",
-                content: toolResults.map((toolResult) => ({
-                    type: "tool_result",
-                    ...toolResult,
-                })),
-            },
-        ];
-
-        const newData = await anthropic.beta.tools.messages.create({
-            model,
-            max_tokens: 4096,
-            temperature: temperature || 0.5,
-            tools: webTools ? tools : [],
-            messages: newMessages,
-        });
-        if (newData.stop_reason === "tool_use") {
-            return await processToolResult(newData, temperature, newMessages, userId, model, webTools);
-        } else {
-            return newData?.content?.[0]?.text;
-        }
-    }
-
     const messages = [
         {
             role: "user",
@@ -94,7 +55,7 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
         },
     ];
 
-    const data = await anthropic.beta.tools.messages.create({
+    let data = await anthropic.beta.tools.messages.create({
         model,
         max_tokens: 4096,
         temperature: temperature || 0.5,
@@ -105,10 +66,38 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
     if (!data) {
         throw new Error("Claude Error");
     } else {
-        if (data.stop_reason === "tool_use") {
-            return processToolResult(data, temperature, messages, userId, model, webTools);
-        } else {
-            return data?.content?.[0]?.text;
+        let toolUses, toolResults, newMessages, newData;
+
+        while (data.stop_reason === "tool_use") {
+            toolUses = data.content.filter((block) => block.type === "tool_use");
+            if (!toolUses.length) {
+                return data?.content?.[0]?.text;
+            }
+
+            toolResults = await Promise.all(
+                toolUses.map(async (toolUse) => {
+                    const toolResult = await handleToolCall(toolUse.name, toolUse.input, userId);
+                    return { tool_use_id: toolUse.id, content: toolResult };
+                })
+            );
+
+            newMessages = [
+                ...messages,
+                { role: "assistant", content: data.content.filter((c) => c.type !== "text" || c.text) },
+                { role: "user", content: toolResults.map((toolResult) => ({ type: "tool_result", ...toolResult })) },
+            ];
+
+            newData = await anthropic.beta.tools.messages.create({
+                model,
+                max_tokens: 4096,
+                temperature: temperature || 0.5,
+                tools: webTools ? tools : [],
+                messages: newMessages,
+            });
+
+            data = newData;
         }
+
+        return data?.content?.[0]?.text;
     }
 };
