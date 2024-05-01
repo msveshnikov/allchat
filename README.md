@@ -40,7 +40,7 @@ https://allchat.online
 -   Scheduling any action (hourly or daily) to your email
 -   YouTube video summary
 -   Image Input (png/jpeg) in Gemini and Claude
--   Image Generation by Amazon Titan
+-   Image Generation by SDXL
 -   Together AI models databricks/dbrx-instruct mistralai/Mixtral-8x22B-Instruct-v0.1, LLama-3, etc
 -   File upload PDFs, Word, Excel into the conversation
 -   Multiple chats
