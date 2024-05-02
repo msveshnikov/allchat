@@ -16,7 +16,7 @@ const FileSelector = ({ onFileSelect, selectedFile, allowedFileTypes }) => {
                   if (type === "image") {
                       acc.push(".png", ".jpeg", ".jpg");
                   } else if (type === "audio") {
-                      acc.push(".mp3", ".m4a");
+                      acc.push(".mp3", ".m4a", ".ogg", ".wav");
                   } else if (type === "video") {
                       acc.push(".mp4");
                   } else if (type === "document") {
@@ -25,7 +25,7 @@ const FileSelector = ({ onFileSelect, selectedFile, allowedFileTypes }) => {
                   return acc;
               }, [])
               .join(",")
-        : ".pdf,.doc,.docx,.xls,.xlsx,.png,.jpeg,.jpg,.mp4,.mp3,.m4a";
+        : ".pdf,.doc,.docx,.xls,.xlsx,.png,.jpeg,.jpg,.mp4,.mp3,.m4a,.ogg";
 
     return (
         <Tooltip title="Upload file">

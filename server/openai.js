@@ -18,7 +18,7 @@ export const getTextGpt = async (prompt, temperature, userId, model, apiKey, web
     const openAiTools = tools.map(renameProperty).map((f) => ({ type: "function", function: f }));
     const messages = [{ role: "user", content: prompt }];
 
-    const getMessage = async () => {
+    const getResponse = async () => {
         const completion = await openai.chat.completions.create({
             model: model || "gpt-3.5-turbo",
             max_tokens: 3000,
@@ -29,10 +29,10 @@ export const getTextGpt = async (prompt, temperature, userId, model, apiKey, web
         return completion?.choices?.[0]?.message;
     };
 
-    let responseMessage = await getMessage();
-    while (responseMessage?.tool_calls) {
-        const toolCalls = responseMessage?.tool_calls;
-        messages.push(responseMessage);
+    let response = await getResponse();
+    while (response?.tool_calls) {
+        const toolCalls = response?.tool_calls;
+        messages.push(response);
         for (const toolCall of toolCalls) {
             const toolResult = await handleToolCall(
                 toolCall.function.name,
@@ -46,7 +46,7 @@ export const getTextGpt = async (prompt, temperature, userId, model, apiKey, web
                 content: toolResult,
             });
         }
-        responseMessage = await getMessage();
+        response = await getResponse();
     }
-    return responseMessage?.content;
+    return response?.content;
 };

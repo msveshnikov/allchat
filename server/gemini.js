@@ -50,6 +50,20 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                 data: imageBase64,
             },
         });
+    } else if (fileType === "ogg") {
+        parts.push({
+            inlineData: {
+                mimeType: "audio/ogg",
+                data: imageBase64,
+            },
+        });
+    } else if (fileType === "wav") {
+        parts.push({
+            inlineData: {
+                mimeType: "audio/wav",
+                data: imageBase64,
+            },
+        });
     }
 
     const contents = {

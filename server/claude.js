@@ -55,47 +55,39 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
         },
     ];
 
-    let response = await anthropic.beta.tools.messages.create({
-        model,
-        max_tokens: 4096,
-        temperature: temperature || 0.5,
-        tools: webTools ? tools : [],
-        messages,
-    });
+    let response = await getResponse();
+    let toolUses, toolResults;
 
-    if (!response) {
-        throw new Error("Claude Error");
-    } else {
-        let toolUses, toolResults;
-
-        while (response.stop_reason === "tool_use") {
-            toolUses = response.content.filter((block) => block.type === "tool_use");
-            if (!toolUses.length) {
-                return response?.content?.[0]?.text;
-            }
-
-            toolResults = await Promise.all(
-                toolUses.map(async (toolUse) => {
-                    const toolResult = await handleToolCall(toolUse.name, toolUse.input, userId);
-                    return { tool_use_id: toolUse.id, content: toolResult };
-                })
-            );
-
-            messages.push({ role: "assistant", content: response.content.filter((c) => c.type !== "text" || c.text) });
-            messages.push({
-                role: "user",
-                content: toolResults.map((toolResult) => ({ type: "tool_result", ...toolResult })),
-            });
-
-            response = await anthropic.beta.tools.messages.create({
-                model,
-                max_tokens: 4096,
-                temperature: temperature || 0.5,
-                tools: webTools ? tools : [],
-                messages,
-            });
+    while (response?.stop_reason === "tool_use") {
+        toolUses = response.content.filter((block) => block.type === "tool_use");
+        if (!toolUses.length) {
+            return response?.content?.[0]?.text;
         }
 
-        return response?.content?.[0]?.text;
+        toolResults = await Promise.all(
+            toolUses.map(async (toolUse) => {
+                const toolResult = await handleToolCall(toolUse.name, toolUse.input, userId);
+                return { tool_use_id: toolUse.id, content: toolResult };
+            })
+        );
+
+        messages.push({ role: "assistant", content: response.content.filter((c) => c.type !== "text" || c.text) });
+        messages.push({
+            role: "user",
+            content: toolResults.map((toolResult) => ({ type: "tool_result", ...toolResult })),
+        });
+        response = await getResponse();
+    }
+
+    return response?.content?.[0]?.text;
+
+    async function getResponse() {
+        return anthropic.beta.tools.messages.create({
+            model,
+            max_tokens: 4096,
+            temperature: temperature || 0.5,
+            tools: webTools ? tools : [],
+            messages,
+        });
     }
 };
