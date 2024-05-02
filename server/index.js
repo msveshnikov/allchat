@@ -26,7 +26,7 @@ dotenv.config({ override: true });
 
 const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
 const MAX_CONTEXT_LENGTH = 16000;
-const MAX_CONTEXT_LENGTH_GPT = 12000;
+const MAX_CONTEXT_LENGTH_GPT = 8000;
 const MAX_SEARCH_RESULT_LENGTH = 3000;
 const stripe = new Stripe(process.env.STRIPE_KEY);
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro 1.5 and Claude language models. Your capabilities include:
@@ -133,13 +133,13 @@ app.post("/interact", verifyToken, async (req, res) => {
         const customGPT = req.body.customGPT;
         const apiKey = req.body.apiKey;
         const country = req.headers["geoip_country_code"];
+        const user = await User.findById(req.user.id);
 
-        // const user = await User.findById(req.user.id);
-        // if (user.subscriptionStatus !== "active" && user.subscriptionStatus !== "trialing" && !user.admin && !apiKey) {
-        //     return res
-        //         .status(402)
-        //         .json({ error: "Subscription is not active. Please provide your API key in the Settings." });
-        // }
+        if (user.subscriptionStatus !== "active" && user.subscriptionStatus !== "trialing" && !user.admin && !apiKey) {
+            return res
+                .status(402)
+                .json({ error: "Subscription is not active. Please provide your API key in the Settings." });
+        }
 
         let fileBytes;
         if (fileBytesBase64) {
@@ -185,7 +185,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 instructions = GPT.knowledge + "\n\n" + GPT.instructions;
             }
         }
-        const user = await User.findById(req.user.id);
+
         const userInfo = [...user.info.entries()].map(([key, value]) => `${key}: ${value}`).join(", ");
         const contextPrompt = `System: ${instructions || systemPrompt} User country code: ${country} User Lang: ${lang}
                     ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}

@@ -113,13 +113,14 @@ export async function handleIncomingEmails() {
                                 });
                             });
                         });
+                        f.once("error", (err) => {});
                     } catch (err) {
                         return;
                     }
                 });
             });
         });
-
+        imapClient.once("error", (err) => {});
         imapClient.connect();
     } catch (err) {
         console.error("Error handling incoming emails:", err);
