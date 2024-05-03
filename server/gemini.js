@@ -19,12 +19,16 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
         model = "gemini-1.5-pro-preview-0409";
     }
 
-    if (model === "gemini-experimental") {
-        webTools = false; // stop working 3 days ago
-    }
-
     if (model === "gemini-1.0-pro-latest") {
         model = "gemini-1.0-pro";
+    }
+
+    if (model === "gemini-experimental") {
+        webTools = false; // stop working 5 days ago
+    }
+
+    if (fileType && model === "gemini-1.5-pro-preview-0409") {
+        webTools = false; // stop working 5 days ago
     }
 
     let parts = [];
