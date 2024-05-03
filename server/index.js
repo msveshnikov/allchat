@@ -429,6 +429,7 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
         switch (event.type) {
             case "customer.subscription.updated":
             case "customer.subscription.created":
+            case "customer.subscription.deleted":
                 const subscription = event.data.object;
                 await handleSubscriptionUpdate(subscription);
                 break;

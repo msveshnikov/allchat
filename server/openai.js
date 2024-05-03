@@ -21,7 +21,7 @@ export const getTextGpt = async (prompt, temperature, userId, model, apiKey, web
     const getResponse = async () => {
         const completion = await openai.chat.completions.create({
             model: model || "gpt-3.5-turbo",
-            max_tokens: 3000,
+            max_tokens: 2048,
             messages,
             temperature: temperature || 0.5,
             tools: webTools ? openAiTools : null,
