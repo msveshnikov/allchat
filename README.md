@@ -12,12 +12,6 @@ An AI assistant app that interacts with all major models, maintains history, gen
 -   [Run Locally](#run-locally)
     -   [Environment variables](#environment-variables)
     -   [Run](#run)
--   [Docker Deploy](#docker-deploy)
-    -   [Backend (Node.js)](#backend-nodejs)
-    -   [Frontend (React MUI)](#frontend-react-mui)
-    -   [Running the Containers](#running-the-containers)
--   [Nginx](#nginx)
--   [Monitoring](#monitoring)
 
 ## PROD (with $4.99 subscription and Premium features)
 
