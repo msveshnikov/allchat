@@ -34,6 +34,18 @@ const CustomGPTPage = () => {
     };
 
     const handleSubmit = async () => {
+        if (!name.trim()) {
+            setError("Name cannot be empty");
+            setSuccessMessage("");
+            return;
+        }
+
+        if (!instructions.trim()) {
+            setError("Instructions cannot be empty");
+            setSuccessMessage("");
+            return;
+        }
+
         const filesBase64 = await Promise.all(
             files.map(async (file) => {
                 const base64 = await convertToBase64(file);
