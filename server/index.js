@@ -446,6 +446,9 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
 async function handleSubscriptionUpdate(subscription) {
     console.log(subscription);
     const customer = await stripe.customers.retrieve(subscription.customer);
+    if (customer?.name?.includes("bramble") || customer?.name?.includes("jemon") || customer?.name?.includes("Max G")) {
+        return;
+    }
     const user = await User.findOne({ email: customer.email });
     if (!user) {
         console.error("User not found");
