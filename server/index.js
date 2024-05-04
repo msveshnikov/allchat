@@ -86,9 +86,6 @@ morgan.token("body", (req, res) => {
         if ("instructions" in clonedBody) {
             clonedBody.instructions = "<FILES_REDACTED>";
         }
-        if ("apiKey" in clonedBody) {
-            clonedBody.apiKey = "<APIKEY_REDACTED>";
-        }
         return JSON.stringify(clonedBody);
     }
     return JSON.stringify(body);
@@ -131,14 +128,13 @@ app.post("/interact", verifyToken, async (req, res) => {
         const lang = req.body.lang;
         const model = req.body.model || "gemini-1.5-pro-preview-0409";
         const customGPT = req.body.customGPT;
-        const apiKey = req.body.apiKey;
         const country = req.headers["geoip_country_code"];
         const user = await User.findById(req.user.id);
 
-        if (user.subscriptionStatus !== "active" && user.subscriptionStatus !== "trialing" && !user.admin && !apiKey) {
+        if (user.subscriptionStatus !== "active" && user.subscriptionStatus !== "trialing" && !user.admin) {
             return res
                 .status(402)
-                .json({ error: "Subscription is not active. Please provide your API key in the Settings." });
+                .json({ error: "Subscription is not active. Please activate subscription in the Settings." });
         }
 
         let fileBytes;
@@ -208,7 +204,6 @@ app.post("/interact", verifyToken, async (req, res) => {
                 fileType,
                 req.user.id,
                 model,
-                apiKey,
                 tools
             );
         } else if (model?.startsWith("claude")) {
@@ -219,13 +214,12 @@ app.post("/interact", verifyToken, async (req, res) => {
                 fileType,
                 req.user.id,
                 model,
-                apiKey,
                 tools
             );
         } else if (model?.startsWith("gpt")) {
-            textResponse = await getTextGpt(contextPrompt, temperature, req.user.id, model, apiKey, tools);
+            textResponse = await getTextGpt(contextPrompt, temperature, req.user.id, model, tools);
         } else {
-            textResponse = await getTextTogether(contextPrompt, temperature, model, apiKey);
+            textResponse = await getTextTogether(contextPrompt, temperature, model);
         }
         outputTokens = countTokens(textResponse);
 

@@ -151,7 +151,6 @@ function Main({ darkMode, toggleTheme }) {
                     fileBytesBase64,
                     model: selectedModel,
                     customGPT: localStorage.getItem("selectedCustomGPT"),
-                    apiKey: localStorage.getItem("apiKey"),
                     tools,
                     temperature,
                     chatHistory: (newHistory || chatHistory).map((h) => ({ user: h.user, assistant: h.assistant })),

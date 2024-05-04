@@ -12,8 +12,8 @@ export const renameProperty = (obj) => {
     return newObj;
 };
 
-export async function getTextGemini(prompt, temperature, imageBase64, fileType, userId, model, apiKey, webTools) {
-    const vertex_ai = new VertexAI({ project: apiKey || process.env.GOOGLE_KEY, location: "us-central1" });
+export async function getTextGemini(prompt, temperature, imageBase64, fileType, userId, model, webTools) {
+    const vertex_ai = new VertexAI({ project: process.env.GOOGLE_KEY, location: "us-central1" });
 
     if (model === "gemini-1.5-pro-latest" || model === "gemini") {
         model = "gemini-1.5-pro-preview-0409";

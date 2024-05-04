@@ -3,6 +3,7 @@ import { Typography, Grid, Avatar, Button, Link, TextField, MenuItem } from "@mu
 import md5 from "md5";
 import { useTranslation } from "react-i18next";
 import { API_URL } from "./Main";
+import { useNavigate } from "react-router-dom";
 
 export const models = {
     "gemini-1.5-pro-preview-0409": ["image", "audio", "video", "document", "tools"],
@@ -10,9 +11,7 @@ export const models = {
     "gemini-1.0-pro": ["document", "tools"],
     "claude-3-haiku-20240307": ["image", "document", "tools"],
     "claude-3-sonnet-20240229": ["image", "document", "tools"],
-    "claude-3-opus-20240229": ["image", "document", "tools"],
     "gpt-3.5-turbo": ["document", "tools"],
-    "gpt-4-turbo": ["document", "tools"],
     "databricks/dbrx-instruct": ["document"],
     "mistralai/Mixtral-8x22B-Instruct-v0.1": ["document"],
     "microsoft/WizardLM-2-8x22B": ["document"],
@@ -21,15 +20,11 @@ export const models = {
 
 const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, selectedModel, onModelSelect }) => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const gravatarUrl = `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
-    const [apiKey, setApiKey] = useState("");
 
     const [customGPTNames, setCustomGPTNames] = useState([]);
     const [selectedCustomGPT, setSelectedCustomGPT] = useState("");
-
-    const handleApiKeyChange = (event) => {
-        setApiKey(event.target.value);
-    };
 
     const handleModelChange = (event) => {
         onModelSelect(event.target.value);
@@ -40,17 +35,14 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
     };
 
     useEffect(() => {
-        const storedApiKey = localStorage.getItem("apiKey");
         const storedCustomGPT = localStorage.getItem("selectedCustomGPT");
-        if (storedApiKey) setApiKey(storedApiKey);
         if (storedCustomGPT) setSelectedCustomGPT(storedCustomGPT);
         fetchCustomGPTNames();
     }, []);
 
     useEffect(() => {
-        localStorage.setItem("apiKey", apiKey);
         localStorage.setItem("selectedCustomGPT", selectedCustomGPT);
-    }, [apiKey, selectedCustomGPT]);
+    }, [selectedCustomGPT]);
 
     const fetchCustomGPTNames = async () => {
         try {
@@ -68,6 +60,10 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                 setCustomGPTNames(data);
             }
         } catch {}
+    };
+
+    const handleTermsClick = () => {
+        navigate("/terms");
     };
 
     return (
@@ -135,6 +131,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                         </Link>
                     )
                 )}
+                <MenuItem onClick={handleTermsClick}>Terms</MenuItem>
             </Grid>
 
             <Grid item xs={12} md={6}>
@@ -175,82 +172,6 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                         </MenuItem>
                     ))}
                 </TextField>
-            </Grid>
-            <Grid item xs={12} md={12}>
-                <Typography variant="h6" gutterBottom color="primary">
-                    {t("Your API Key")}
-                </Typography>
-                <TextField value={apiKey} onChange={handleApiKeyChange} fullWidth variant="outlined" color="primary" />
-            </Grid>
-            <Grid item xs={12} md={6}>
-                <Typography variant="h6" gutterBottom color="primary">
-                    {t("Gemini Pro Usage")}
-                </Typography>
-                <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                        <Typography variant="body1" color="textPrimary">
-                            {t("Input Tokens:")}
-                        </Typography>
-                        <Typography variant="body2" color="textPrimary">
-                            <b>{user.usageStats.gemini.inputTokens}</b>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="body1" color="textPrimary">
-                            {t("Output Tokens:")}
-                        </Typography>
-                        <Typography variant="body2" color="textPrimary">
-                            <b>{user.usageStats.gemini.outputTokens}</b>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="body1" color="textPrimary">
-                            {t("Images Generated:")}
-                        </Typography>
-                        <Typography variant="body2" color="textPrimary">
-                            <b>{user.usageStats.gemini.imagesGenerated}</b>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="body1" color="textPrimary">
-                            {t("Money Consumed:")}
-                        </Typography>
-                        <Typography variant="body2" color="textPrimary">
-                            <b>${user.usageStats.gemini.moneyConsumed.toFixed(2)}</b>
-                        </Typography>
-                    </Grid>
-                </Grid>
-            </Grid>
-            <Grid item xs={12} md={6}>
-                <Typography variant="h6" gutterBottom color="primary">
-                    {t("Claude 3 Usage")}
-                </Typography>
-                <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                        <Typography variant="body1" color="textPrimary">
-                            {t("Input Tokens:")}
-                        </Typography>
-                        <Typography variant="body2" color="textPrimary">
-                            <b>{user.usageStats.claude.inputTokens}</b>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="body1" color="textPrimary">
-                            {t("Output Tokens:")}
-                        </Typography>
-                        <Typography variant="body2" color="textPrimary">
-                            <b>{user.usageStats.claude.outputTokens}</b>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="body1" color="textPrimary">
-                            {t("Money Consumed:")}
-                        </Typography>
-                        <Typography variant="body2" color="textPrimary">
-                            <b>${user.usageStats.claude.moneyConsumed.toFixed(2)}</b>
-                        </Typography>
-                    </Grid>
-                </Grid>
             </Grid>
         </Grid>
     );

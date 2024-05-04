@@ -3,10 +3,10 @@ dotenv.config({ override: true });
 
 const url = "https://api.together.xyz/v1/chat/completions";
 
-export const getTextTogether = async (prompt, temperature, model, apiKey) => {
+export const getTextTogether = async (prompt, temperature, model) => {
     const headers = new Headers({
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey || process.env.TOGETHER_KEY}`,
+        Authorization: `Bearer ${process.env.TOGETHER_KEY}`,
     });
     const data = {
         model,
@@ -18,7 +18,7 @@ export const getTextTogether = async (prompt, temperature, model, apiKey) => {
                 content: prompt,
             },
         ],
-    }; 
+    };
 
     const response = await fetch(url, {
         method: "POST",

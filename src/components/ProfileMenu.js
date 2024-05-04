@@ -21,7 +21,7 @@ export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
         onSettings();
         handleProfileMenuClose();
     };
-
+ 
     const handleSignOutClick = () => {
         onSignOut();
         handleProfileMenuClose();
@@ -39,11 +39,6 @@ export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
 
     const handleAndroidClick = () => {
         window.open("https://play.google.com/store/apps/details?id=online.allchat.twa", "_blank");
-        handleProfileMenuClose();
-    };
-
-    const handleDiscordClick = () => {
-        window.open("https://discord.gg/YOUR_DISCORD_INVITE_LINK", "_blank");
         handleProfileMenuClose();
     };
 
@@ -94,9 +89,6 @@ export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
                 </MenuItem>
                 <MenuItem onClick={handleGitHubClick}>
                     GitHub &nbsp; <LaunchIcon fontSize="small" />
-                </MenuItem>
-                <MenuItem onClick={handleDiscordClick}>
-                    Discord &nbsp; <LaunchIcon fontSize="small" />
                 </MenuItem>
             </Menu>
         </div>

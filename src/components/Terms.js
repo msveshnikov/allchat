@@ -68,17 +68,14 @@ const Terms = () => {
                 <br />
 
                 <Typography variant="body2">
-                    7. The AllChat.online service is available with free access to all models, including Claude Opus and
-                    GPT-4, if the user provides their own API key. Alternatively, users can subscribe to the service for
-                    $4.99 per month, which includes a 14-day free trial period. The subscription provides access to the
-                    full suite of AI models and capabilities offered by AllChat.online, excluding the Claude Opus and
-                    GPT-4 models which are not included, without requiring the user to provide their own API key. The
-                    subscription automatically renews on a monthly basis unless cancelled by the user. Cancellation can
-                    be done at any time, but there are no refunds for partially used subscription periods. The use of
-                    the AllChat.online service, whether through the free access with an API key or the paid
-                    subscription, is subject to the terms of service and privacy policy, which may be updated from time
-                    to time. Use of the service constitutes acceptance of the applicable terms and policies in effect at
-                    that time.
+                    7. The AllChat.online service is available to users with subscription only. Users can subscribe to
+                    the service for $4.99 per month, which includes a free trial period. The subscription provides
+                    access to the full suite of AI models and capabilities offered by AllChat.online. The subscription
+                    automatically renews on a monthly basis unless cancelled by the user. Cancellation can be done at
+                    any time, but there are no refunds for partially used subscription periods. The use of the
+                    AllChat.online service is subject to the terms of service and privacy policy, which may be updated
+                    from time to time. Use of the service constitutes acceptance of the applicable terms and policies in
+                    effect at that time.
                 </Typography>
                 <br />
             </Container>

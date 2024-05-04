@@ -30,8 +30,7 @@ https://allchat.online
 
 ## Features
 
--   Gemini Pro 1.5 and Claude 3
--   OpenAI GPT-3.5, GPT-4
+-   Gemini Pro 1.5, Claude 3 and GPT-3.5
 -   Audio Input in Gemini
 -   Video Input in Gemini
 -   Custom GPTs (best to use with LlaMa-3)
@@ -49,9 +48,8 @@ https://allchat.online
 -   Python Code Run
 -   PDF export of all chats
 -   Mobile friendly, PWA, Android app, etc
--   Ability to provide own API key
--   Web Tools - weather, stocks, email send, Telegram, web search, etc - in Gemini, Claude, OpenAI models
--   Please ask for more features in Discussions or here https://discord.com/invite/JTk2fHtv
+-   Web Tools - weather, stocks, email send, Telegram, web search, etc - with Gemini, Claude, OpenAI models
+-   Please ask for more features in Discussions
 
 ## Connect model to world with Web Tools (switch on WebTools option)
 
@@ -70,10 +68,8 @@ https://allchat.online
 
 You have to get some of those APIs and set environment variables (or put to .env file in the server folder, you can start with /server/.env.example, rename it to .env):
 
--   GEMINI_KEY - Gemini 1.5 key
+-   GOOGLE_KEY - Google cloud project name
 -   CLAUDE_KEY - Anthropic Key (for Haiku)
--   AWS_SECRET_KEY
--   AWS_ACCESS_KEY - (for Titan image generation)
 -   TOGETHER_KEY - for Together models
 -   JWT_TOKEN - any random string
 -   OPENWEATHER_API_KEY - for weather tools

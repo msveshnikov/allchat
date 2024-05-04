@@ -7,10 +7,7 @@ services:
             - "6000:5000"
         environment:
             - NODE_ENV=production
-            - GEMINI_KEY=${GEMINI_KEY}
             - GOOGLE_KEY=${GOOGLE_KEY}
-            - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
-            - AWS_SECRET_KEY=${AWS_SECRET_KEY}
             - STABILITY_KEY=${STABILITY_KEY}
             - CLAUDE_KEY=${CLAUDE_KEY}
             - STRIPE_KEY=${STRIPE_KEY}
@@ -23,10 +20,8 @@ services:
             - EMAIL_PASSWORD=${EMAIL_PASSWORD}
             - FRONTEND_URL=${FRONTEND_URL}
             - TOGETHER_KEY=${TOGETHER_KEY}
-            - INFRA_KEY=${INFRA_KEY}
             - OPENAI_KEY=${OPENAI_KEY}
             - YOUTUBE_KEY=${YOUTUBE_KEY}
-            - REPLICATE_KEY=${REPLICATE_KEY}
         restart: unless-stopped
         volumes:
             - ./allchat.json:/app/allchat.json
