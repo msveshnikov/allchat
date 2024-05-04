@@ -14,7 +14,7 @@ import SideDrawer from "./SideDrawer";
 import ChatHistory from "./ChatHistory";
 import ChatInput from "./ChatInput";
 import AuthForm from "./AuthForm";
-import Settings from "./Settings";
+import Settings, { models } from "./Settings";
 import { animateScroll as scroll } from "react-scroll";
 
 const MAX_CHAT_HISTORY_LENGTH = 20;
@@ -151,7 +151,7 @@ function Main({ darkMode, toggleTheme }) {
                     fileBytesBase64,
                     model: selectedModel,
                     customGPT: localStorage.getItem("selectedCustomGPT"),
-                    tools,
+                    tools: models[selectedModel].includes("tools") && tools,
                     temperature,
                     chatHistory: (newHistory || chatHistory).map((h) => ({ user: h.user, assistant: h.assistant })),
                 }),

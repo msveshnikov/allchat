@@ -219,7 +219,7 @@ app.post("/interact", verifyToken, async (req, res) => {
         } else if (model?.startsWith("gpt")) {
             textResponse = await getTextGpt(contextPrompt, temperature, req.user.id, model, tools);
         } else {
-            textResponse = await getTextTogether(contextPrompt, temperature, model);
+            textResponse = await getTextTogether(contextPrompt, temperature, req.user.id, model, tools);
         }
         outputTokens = countTokens(textResponse);
 
