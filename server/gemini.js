@@ -23,7 +23,7 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
         model = "gemini-1.0-pro";
     }
 
-    if (model === "gemini-experimental") {
+    if (fileType && model === "gemini-experimental") {
         webTools = false; // stop working 5 days ago
     }
 
