@@ -22,6 +22,7 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import { handleIncomingEmails } from "./email.js";
 import { getImage } from "./image.js";
+import { blackListCountries } from "./utils.js";
 dotenv.config({ override: true });
 
 const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
@@ -242,6 +243,11 @@ app.post("/interact", verifyToken, async (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
+    const country = req.headers["geoip_country_code"];
+    if (blackListCountries.includes(country)) {
+        res.status(400).json({ error: "Unknown Error" });
+    }
+
     const { email, password } = req.body;
     const result = await registerUser(email, password, req);
     if (result.success) {
