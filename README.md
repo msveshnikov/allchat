@@ -19,7 +19,7 @@ An AI assistant app that interacts with all major models, maintains history, gen
 -   [Nginx](#nginx)
 -   [Monitoring](#monitoring)
 
-## PROD (with $4.99 subscription)
+## PROD (with $4.99 subscription and Premium features)
 
 https://allchat.online
 
