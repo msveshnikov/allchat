@@ -31,7 +31,7 @@ const AppHeader = ({
                 </IconButton>
                 {!isMobile && (
                     <Typography sx={{ ml: 2 }} variant="h6" noWrap>
-                        AllChat
+                        AllChat Premium
                     </Typography>
                 )}
                 <ModelSelector selectedModel={selectedModel} onModelSelect={onModelSelect} />

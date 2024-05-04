@@ -14,6 +14,7 @@ export const models = {
     "gpt-3.5-turbo": ["document", "tools"],
     "databricks/dbrx-instruct": ["document"],
     "mistralai/Mixtral-8x22B-Instruct-v0.1": ["document"],
+    "mistralai/Mixtral-8x7B-Instruct-v0.1": ["document", "tools"],
     "microsoft/WizardLM-2-8x22B": ["document"],
     "meta-llama/Llama-3-70b-chat-hf": ["document"],
 };
