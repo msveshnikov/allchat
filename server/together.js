@@ -10,7 +10,14 @@ export const getTextTogether = async (prompt, temperature, userId, model, webToo
         baseURL: "https://api.together.xyz/v1",
     });
     const openAiTools = tools.map(renameProperty).map((f) => ({ type: "function", function: f }));
-    const messages = [{ role: "user", content: prompt }];
+    const messages = [
+        {
+            role: "system",
+            content:
+                "You are a helpful assistant that can access external functions. The responses from these function calls will be appended to this dialogue. Please provide responses based on the information from these function calls.",
+        },
+        { role: "user", content: prompt },
+    ];
 
     const getResponse = async () => {
         const completion = await openai.chat.completions.create({
