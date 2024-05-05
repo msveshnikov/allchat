@@ -4,7 +4,7 @@ import hbs from "nodemailer-express-handlebars";
 import dotenv from "dotenv";
 dotenv.config();
 
-const blacklistedCustomers = ["bramble", "jemon", "max g"];
+const blacklistedCustomers = ["bramble", "jemon", "Max G", "Jeff Grimshaw"];
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
