@@ -22,7 +22,7 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import { handleIncomingEmails } from "./email.js";
 import { getImage } from "./image.js";
-import { blackListCountries } from "./utils.js";
+import { blackListCountries, isCustomerNameBlacklisted as isCustomerBlacklisted } from "./utils.js";
 dotenv.config({ override: true });
 
 const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
@@ -443,7 +443,8 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
 async function handleSubscriptionUpdate(subscription) {
     console.log(subscription);
     const customer = await stripe.customers.retrieve(subscription.customer);
-    if (customer?.name?.includes("bramble") || customer?.name?.includes("jemon") || customer?.name?.includes("Max G")) {
+    if (await isCustomerBlacklisted(customer?.name)) {
+        console.error("Customer blacklisted");
         return;
     }
     const user = await User.findOne({ email: customer.email });

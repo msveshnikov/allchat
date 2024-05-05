@@ -4,6 +4,8 @@ import hbs from "nodemailer-express-handlebars";
 import dotenv from "dotenv";
 dotenv.config();
 
+const blacklistedCustomers = ["bramble", "jemon", "Max G"];
+
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -117,3 +119,12 @@ export const blackListCountries = [
     "LY",
     "GM",
 ];
+
+export async function isCustomerNameBlacklisted(customerName) {
+    for (const name of blacklistedCustomers) {
+        if (customerName.toLowerCase().includes(name.toLowerCase())) {
+            return true;
+        }
+    }
+    return false;
+}
