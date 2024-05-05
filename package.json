@@ -4,11 +4,13 @@
     "dependencies": {
         "@emotion/react": "^11.11.4",
         "@emotion/styled": "^11.11.5",
+        "@loadable/component": "^5.16.4",
         "@mui/icons-material": "^5.15.16",
         "@mui/material": "^5.15.16",
         "html-to-pdfmake": "^2.5.7",
         "i18next": "^23.11.3",
         "i18next-browser-languagedetector": "^7.2.1",
+        "katex": "^0.16.10",
         "markdown-it": "^14.1.0",
         "md5": "^2.3.0",
         "pdfmake": "^0.2.10",
@@ -16,10 +18,13 @@
         "react-dom": "^18.3.1",
         "react-i18next": "^14.1.1",
         "react-markdown": "^9.0.1",
+        "react-katex": "^3.0.1",
         "react-modal-image": "^2.6.0",
         "react-router-dom": "^6.23.0",
         "react-scroll": "^1.9.0",
-        "react-syntax-highlighter": "^15.5.0"
+        "react-syntax-highlighter": "^15.5.0",
+        "rehype-katex": "^7.0.0",
+        "remark-math": "^6.0.0"
     },
     "scripts": {
         "start": "react-scripts start",
@@ -44,26 +49,6 @@
         ]
     },
     "devDependencies": {
-        "@babel/core": "^7.24.5",
-        "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-        "@babel/preset-env": "^7.24.5",
-        "@babel/preset-react": "^7.24.1",
-        "@testing-library/jest-dom": "^6.4.5",
-        "@testing-library/react": "^15.0.6",
-        "@testing-library/user-event": "^14.5.2",
-        "babel-jest": "^29.7.0",
         "react-scripts": "5.0.1"
-    },
-    "jest": {
-        "transform": {
-            "^.+\\.(js|jsx)$": "babel-jest"
-        },
-        "moduleNameMapper": {
-            "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
-            "react-markdown": "<rootDir>/node_modules/react-markdown/react-markdown.min.js"
-        },
-        "transformIgnorePatterns": [
-            "/node_modules/(?!react-syntax-highlighter)"
-        ]
     }
 }

@@ -44,6 +44,7 @@ https://allchat.online
 -   File upload PDFs, Word, Excel into the conversation
 -   Multiple chats
 -   Markdown formatting
+-   LaTeX render
 -   Edit your messages with response regeneration
 -   Python Code Run
 -   PDF export of all chats
