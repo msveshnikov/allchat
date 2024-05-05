@@ -31,7 +31,8 @@ export const getTextTogether = async (prompt, temperature, userId, model, webToo
     };
 
     let response = await getResponse();
-    while (response?.tool_calls) {
+    let iterationCount = 0;
+    while (response?.tool_calls && iterationCount < 5) {
         const toolCalls = response?.tool_calls;
         messages.push(response);
         for (const toolCall of toolCalls) {
@@ -48,6 +49,7 @@ export const getTextTogether = async (prompt, temperature, userId, model, webToo
             });
         }
         response = await getResponse();
+        iterationCount++;
     }
     return response?.content;
 };

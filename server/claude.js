@@ -52,8 +52,9 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
 
     let response = await getResponse();
     let toolUses, toolResults;
+    let iterationCount = 0;
 
-    while (response?.stop_reason === "tool_use") {
+    while (response?.stop_reason === "tool_use" && iterationCount < 5) {
         toolUses = response.content.filter((block) => block.type === "tool_use");
         if (!toolUses.length) {
             return response?.content?.[0]?.text;
@@ -72,6 +73,7 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
             content: toolResults.map((toolResult) => ({ type: "tool_result", ...toolResult })),
         });
         response = await getResponse();
+        iterationCount++;
     }
 
     return response?.content?.[0]?.text;

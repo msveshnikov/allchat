@@ -95,10 +95,10 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
             { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_ONLY_HIGH" },
         ],
     });
-
+    let iterationCount = 0;
     let finalResponse = null;
 
-    while (!finalResponse) {
+    while (!finalResponse && iterationCount < 5) {
         const generateContentResponse = await generativeModel.generateContent(contents);
         const modelResponse = generateContentResponse?.response?.candidates?.[0]?.content;
 
@@ -137,6 +137,8 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
             console.log("No valid response from the model");
             break;
         }
+
+        iterationCount++;
     }
 
     return finalResponse;
