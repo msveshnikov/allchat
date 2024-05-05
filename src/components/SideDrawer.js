@@ -78,7 +78,7 @@ const SideDrawer = ({
                     <ListItem>
                         <ToolsSwitch tools={tools} onToolsChange={onToolsChange} />
                     </ListItem>
-                    <ListItem button style={{ color: "white", backgroundColor: "#3057A5" }} onClick={handleExportPDF}>
+                    <ListItem button style={{ color: "black", backgroundColor: "orange" }} onClick={handleExportPDF}>
                         <ListItemText primary={t("Export history PDF")} />
                     </ListItem>
                 </div>
