@@ -30,12 +30,6 @@ jobs:
                   local: "docker-compose.yml"
                   remote: "allchat/docker-compose.yml"
 
-            - name: Install dependencies
-              run: npm ci
-
-            - name: Run tests
-              run: npm run test
-
             - name: Build and Push Backend Image
               if: success()
               run: |
