@@ -4,7 +4,7 @@ import path from "path";
 import { fetchPageContent, fetchSearchResults, googleNews } from "./search.js";
 import { User } from "./model/User.js";
 import { scheduleAction, stopScheduledAction } from "./scheduler.js";
-import { contentFolder, toolsUsed } from "./index.js";
+import { MAX_SEARCH_RESULT_LENGTH, contentFolder, toolsUsed } from "./index.js";
 import { summarizeYouTubeVideo } from "./youtube.js";
 import TelegramBot from "node-telegram-bot-api";
 
@@ -422,7 +422,7 @@ export async function searchWebContent(query) {
             return await fetchPageContent(result.link);
         })
     );
-    return pageContents?.join("\n");
+    return pageContents?.join("\n").slice(0, MAX_SEARCH_RESULT_LENGTH * 2);
 }
 
 export async function persistUserInfo(key, value, userId) {

@@ -1,5 +1,4 @@
 import { getTextClaude } from "./claude.js";
-import { googleImages } from "./search.js";
 import dotenv from "dotenv";
 dotenv.config({ override: true });
 
@@ -8,10 +7,6 @@ export const getImage = async (prompt, imageModel) => {
     const translated = await getTextClaude("Translate sentences in brackets [] into English:\n[" + prompt + "]\n");
     if (translated) {
         prompt = translated;
-    }
-    if (imageModel === "google-images") {
-        prompt = prompt.substring(0, 80);
-        return await getGoogleImage(prompt);
     }
 
     console.log("Image Prompt: " + prompt);
@@ -52,22 +47,4 @@ export const getRawImageJson = async (prompt, imageModel) => {
         return null;
     }
     return response.json();
-};
-
-export const getGoogleImage = async (prompt) => {
-    try {
-        const images = await googleImages(prompt, "en");
-        const randomImage = images[Math.floor(Math.random() * images.length)];
-        const response = await fetch(randomImage.original);
-
-        if (!response.ok) {
-            return null;
-        }
-
-        const buffer = Buffer.from(await response.arrayBuffer());
-        return buffer.toString("base64");
-    } catch (error) {
-        console.error("Error fetching Google image:", error);
-        return null;
-    }
 };
