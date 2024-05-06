@@ -18,7 +18,7 @@ import Settings, { models } from "./Settings";
 import { animateScroll as scroll } from "react-scroll";
 
 const MAX_CHAT_HISTORY_LENGTH = 20;
-const MAX_CHATS = 6;
+const MAX_CHATS = 5;
 
 export const API_URL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_API_URL : "http://localhost:5000";
 
