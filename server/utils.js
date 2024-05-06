@@ -78,6 +78,7 @@ export const whiteListCountries = [
 export const blackListCountries = [
     // countries which never pay, SDN list, Africa
     "IN",
+    "VN",
     "PK",
     "CN",
     "BR",
