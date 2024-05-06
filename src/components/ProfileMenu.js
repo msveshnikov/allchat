@@ -21,19 +21,9 @@ export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
         onSettings();
         handleProfileMenuClose();
     };
- 
+
     const handleSignOutClick = () => {
         onSignOut();
-        handleProfileMenuClose();
-    };
-
-    const handleMangaTVClick = () => {
-        window.open("https://mangatv.shop/", "_blank");
-        handleProfileMenuClose();
-    };
-
-    const handleGitHubClick = () => {
-        window.open("https://github.com/msveshnikov/allchat", "_blank");
         handleProfileMenuClose();
     };
 
@@ -83,12 +73,6 @@ export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
                 <MenuItem onClick={handleTermsClick}>Terms</MenuItem>
                 <MenuItem onClick={handleAndroidClick}>
                     Android App &nbsp; <LaunchIcon fontSize="small" />
-                </MenuItem>
-                <MenuItem onClick={handleMangaTVClick}>
-                    Manga TV &nbsp; <LaunchIcon fontSize="small" />
-                </MenuItem>
-                <MenuItem onClick={handleGitHubClick}>
-                    GitHub &nbsp; <LaunchIcon fontSize="small" />
                 </MenuItem>
             </Menu>
         </div>
