@@ -130,12 +130,12 @@ app.post("/interact", verifyToken, async (req, res) => {
         const customGPT = req.body.customGPT;
         const country = req.headers["geoip_country_code"];
         const user = await User.findById(req.user.id);
-
+        console.log("Referer" + req.headers.referer);
         if (
             user.subscriptionStatus !== "active" &&
             user.subscriptionStatus !== "trialing" &&
             !user.admin &&
-            req.headers.referer !== "android-app://online.allchat.twa/"
+            req.headers.referer !== "android-app://online.allchat.twa"
         ) {
             return res
                 .status(402)
