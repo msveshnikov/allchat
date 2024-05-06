@@ -465,8 +465,8 @@ async function handleSubscriptionUpdate(subscription) {
 }
 
 app.post("/cancel", verifyToken, async (req, res) => {
-    const { subscriptionId } = req.body;
     try {
+        const { subscriptionId } = req.body;
         await stripe.subscriptions.cancel(subscriptionId);
         const userId = req.user.id;
         const user = await User.findById(userId);
@@ -480,11 +480,11 @@ app.post("/cancel", verifyToken, async (req, res) => {
 });
 
 app.post("/customgpt", verifyToken, async (req, res) => {
-    const { name, instructions, files } = req.body;
-    const user = req.user.id;
-    let knowledge = "";
-    const maxSize = 60000;
     try {
+        const { name, instructions, files } = req.body;
+        const user = req.user.id;
+        let knowledge = "";
+        const maxSize = 60000;
         if (files && files.length > 0) {
             for (const file of files) {
                 const fileType = file.split(";")[0].split("/")[1];
