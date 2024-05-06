@@ -239,22 +239,32 @@ app.post("/interact", verifyToken, async (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-    const { email, password } = req.body;
-    const result = await registerUser(email, password, req);
-    if (result.success) {
-        res.status(200).json({ message: "Registration successful" });
-    } else {
-        res.status(400).json({ error: result.error });
+    try {
+        const { email, password } = req.body;
+        const result = await registerUser(email, password, req);
+        if (result.success) {
+            res.status(200).json({ message: "Registration successful" });
+        } else {
+            res.status(400).json({ error: result.error });
+        }
+    } catch (error) {
+        console.error("Error in /register", error);
+        res.status(500).json({ error: error.message });
     }
 });
 
 app.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-    const result = await authenticateUser(email, password);
-    if (result.success) {
-        res.status(200).json({ token: result.token });
-    } else {
-        res.status(401).json({ error: result.error });
+    try {
+        const { email, password } = req.body;
+        const result = await authenticateUser(email, password);
+        if (result.success) {
+            res.status(200).json({ token: result.token });
+        } else {
+            res.status(401).json({ error: result.error });
+        }
+    } catch (error) {
+        console.error("Error in /login", error);
+        res.status(500).json({ error: error.message });
     }
 });
 
