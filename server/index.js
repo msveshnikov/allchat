@@ -131,7 +131,12 @@ app.post("/interact", verifyToken, async (req, res) => {
         const country = req.headers["geoip_country_code"];
         const user = await User.findById(req.user.id);
 
-        if (user.subscriptionStatus !== "active" && user.subscriptionStatus !== "trialing" && !user.admin) {
+        if (
+            user.subscriptionStatus !== "active" &&
+            user.subscriptionStatus !== "trialing" &&
+            !user.admin &&
+            req.headers.referer !== "android-app://online.allchat.twa/"
+        ) {
             return res
                 .status(402)
                 .json({ error: "Subscription is not active. Please activate subscription in the Settings." });
