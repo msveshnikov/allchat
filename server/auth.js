@@ -70,11 +70,11 @@ export const registerUser = async (email, password, req) => {
             email,
             password: hashedPassword,
             userAgent: req.headers["user-agent"],
-            ip: getIpFromRequest(req),
+            ip,
             subscriptionStatus,
         });
         await user.save();
-        sendWelcomeEmail(user);
+        await sendWelcomeEmail(user);
         return { success: true };
     } catch (error) {
         console.error("Registration error:", error);

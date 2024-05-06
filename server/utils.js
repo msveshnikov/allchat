@@ -35,7 +35,7 @@ const sendEmail = async (options) => {
     }
 };
 
-export const sendWelcomeEmail = (user) => {
+export const sendWelcomeEmail = async (user) => {
     sendEmail({
         to: user.email,
         from: process.env.EMAIL,
