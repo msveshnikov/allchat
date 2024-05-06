@@ -59,7 +59,7 @@ class PythonExecutionServer(http.server.BaseHTTPRequestHandler):
         self.wfile.write(json_response.encode('utf-8'))
 
     def handle_timeout(self, signum, frame):
-        raise Exception("Execution timed out after 3 minutes")
+        raise Exception("Execution timed out after 1 minute")
 
 def run_server(server_class=http.server.HTTPServer, handler_class=PythonExecutionServer, port=8000):
     server_address = ('', port)

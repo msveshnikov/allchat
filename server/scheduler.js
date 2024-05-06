@@ -12,8 +12,17 @@ export const scheduleAction = async (action, schedule, userId) => {
     }
 
     const task = cron.schedule(schedule === "hourly" ? "0 * * * *" : "0 0 * * *", async () => {
-        try {  //TODO: user context
-            const result = await getTextClaude(action, 0.8, null, null, userId, "claude-3-haiku-20240307", null, true);
+        try {
+            const userInfo = [...user.info.entries()].map(([key, value]) => `${key}: ${value}`).join(", ");
+            const result = await getTextClaude(
+                `User information: ${userInfo} Human: Please execute action: ${action} Assistant:`,
+                0.8,
+                null,
+                null,
+                userId,
+                "claude-3-haiku-20240307",
+                true
+            );
             const actionTimestamp = Date.now();
             user.scheduling.set(`${schedule}_action_${actionTimestamp}`, action);
             user.scheduling.set(`${schedule}_result_${actionTimestamp}`, result);

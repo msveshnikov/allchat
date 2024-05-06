@@ -90,8 +90,7 @@ export async function handleIncomingEmails() {
                                             null,
                                             null,
                                             user._id,
-                                            "claude-3-haiku-20240307", //Maybe more creative model?
-                                            null,
+                                            "claude-3-haiku-20240307",
                                             true
                                         );
                                         if (response) {
