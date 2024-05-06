@@ -7,7 +7,6 @@ const userSchema = new mongoose.Schema({
     ip: {
         type: String,
         required: false,
-        unique: [true, "Cannot signup with the same IP"],
     },
     userAgent: { type: String, required: false },
     usageStats: {

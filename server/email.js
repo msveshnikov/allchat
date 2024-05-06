@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import pdfParser from "pdf-parse/lib/pdf-parse.js";
 import mammoth from "mammoth";
 import xlsx from "xlsx";
+import { MAX_CONTEXT_LENGTH } from "./index.js";
 dotenv.config({ override: true });
 
 export async function handleIncomingEmails() {
@@ -85,7 +86,9 @@ export async function handleIncomingEmails() {
                                             .join(", ");
 
                                         const response = await getTextClaude(
-                                            `Subject: ${emailFrom.subject} User information: ${userInfo} Human: ${emailBody} Assistant:`,
+                                            `Subject: ${emailFrom.subject} User information: ${userInfo} Human: ${emailBody} Assistant:`.slice(
+                                                -MAX_CONTEXT_LENGTH
+                                            ),
                                             0.5,
                                             null,
                                             null,

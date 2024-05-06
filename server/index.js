@@ -22,12 +22,12 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import { handleIncomingEmails } from "./email.js";
 import { getImage } from "./image.js";
-import { blackListCountries, isCustomerNameBlacklisted as isCustomerBlacklisted } from "./utils.js";
+import { isCustomerNameBlacklisted as isCustomerBlacklisted } from "./utils.js";
 dotenv.config({ override: true });
 
 const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
 export const MAX_SEARCH_RESULT_LENGTH = 10000;
-const MAX_CONTEXT_LENGTH = 16000;
+export const MAX_CONTEXT_LENGTH = 16000;
 const stripe = new Stripe(process.env.STRIPE_KEY);
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro 1.5 and Claude language models. Your capabilities include:
 
@@ -239,11 +239,6 @@ app.post("/interact", verifyToken, async (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-    const country = req.headers["geoip_country_code"];
-    if (blackListCountries.includes(country)) {
-        res.status(400).json({ error: "Unknown Error" });
-    }
-
     const { email, password } = req.body;
     const result = await registerUser(email, password, req);
     if (result.success) {

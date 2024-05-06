@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "./model/User.js";
-import { sendResetEmail, sendWelcomeEmail } from "./utils.js";
+import { sendResetEmail, sendWelcomeEmail, whiteListCountries } from "./utils.js";
 
 export const resetPassword = async (email) => {
     try {
@@ -56,6 +56,14 @@ export const getIpFromRequest = (req) => {
 
 export const registerUser = async (email, password, req) => {
     try {
+        const country = req.headers["geoip_country_code"];
+        const ip = getIpFromRequest(req);
+        const existingUser = await User.findOne({ ip });
+        let subscriptionStatus = "none";
+        if (existingUser || !whiteListCountries.includes(country)) {
+            subscriptionStatus = "canceled";
+        }
+
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         const user = new User({
@@ -63,6 +71,7 @@ export const registerUser = async (email, password, req) => {
             password: hashedPassword,
             userAgent: req.headers["user-agent"],
             ip: getIpFromRequest(req),
+            subscriptionStatus,
         });
         await user.save();
         sendWelcomeEmail(user);

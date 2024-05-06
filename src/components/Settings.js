@@ -115,22 +115,19 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                         </Link>
                     </>
                 ) : (
-                    user.subscriptionStatus !== "past_due" && (
-                        <Link
-                            href={"https://buy.stripe.com/28oaGDclzeEfgUgcMM?prefilled_email=" + user.email}
-                            target="_blank"
-                            rel="noopener"
-                        >
-                            <Button
-                                onClick={handleCloseSettingsModal}
-                                variant="contained"
-                                color="primary"
-                                sx={{ mt: 1 }}
-                            >
-                                {t("Start Subscription")}
-                            </Button>
-                        </Link>
-                    )
+                    <Link
+                        href={
+                            (user.subscriptionStatus === "none"
+                                ? "https://buy.stripe.com/fZe6qn4T7cw7gUgeUV?prefilled_email="
+                                : "https://buy.stripe.com/28oaGDclzeEfgUgcMM?prefilled_email=") + user.email
+                        }
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <Button onClick={handleCloseSettingsModal} variant="contained" color="primary" sx={{ mt: 1 }}>
+                            {t("Start Subscription")}
+                        </Button>
+                    </Link>
                 )}
                 <MenuItem onClick={handleTermsClick}>Terms</MenuItem>
             </Grid>
