@@ -1,5 +1,4 @@
 import { load } from "cheerio";
-import fetch from "node-fetch";
 import { MAX_SEARCH_RESULT_LENGTH } from "./index.js";
 
 const userAgents = [

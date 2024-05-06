@@ -24,7 +24,7 @@ export const getTextTogether = async (prompt, temperature, userId, model, webToo
             model: model,
             max_tokens: 4096,
             messages,
-            temperature: temperature || 0.5,
+            temperature: webTools ? 0 : temperature || 0.5,
             tools: webTools ? openAiTools : null,
         });
         return completion?.choices?.[0]?.message;

@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "./model/User.js";
-import { sendEmail, sendWelcomeEmail } from "./utils.js";
+import { sendResetEmail, sendWelcomeEmail } from "./utils.js";
 
 export const resetPassword = async (email) => {
     try {
@@ -20,17 +20,7 @@ export const resetPassword = async (email) => {
         );
 
         const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${token}`;
-        const mailOptions = {
-            to: user.email,
-            from: process.env.EMAIL,
-            subject: "Password Reset Request",
-            template: "reset",
-            context: {
-                resetUrl,
-            },
-        };
-
-        await sendEmail(mailOptions);
+        await sendResetEmail(user, resetUrl);
         return { success: true };
     } catch (error) {
         console.error("Password reset error:", error);
@@ -102,11 +92,11 @@ export const authenticateUser = async (email, password) => {
 };
 
 export const verifyToken = (req, res, next) => {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-        return res.status(401).json({ error: "Unauthorized" });
-    }
     try {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
         const decoded = jwt.verify(token, process.env.JWT_TOKEN);
         req.user = {
             id: decoded.userId,

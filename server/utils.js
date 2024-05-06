@@ -4,7 +4,7 @@ import hbs from "nodemailer-express-handlebars";
 import dotenv from "dotenv";
 dotenv.config();
 
-const blacklistedCustomers = ["bramble", "jemon", "Max G", "Jeff Grimshaw"];
+const blacklistedCustomers = ["bramble", "jemon", "Max G", "Jeff Grimshaw"]; //trial violators
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -26,7 +26,7 @@ const handlebarsOptions = {
 
 transporter.use("compile", hbs(handlebarsOptions));
 
-export const sendEmail = async (options) => {
+const sendEmail = async (options) => {
     try {
         const info = await transporter.sendMail(options);
         console.log("Email sent: " + info.response);
@@ -43,6 +43,18 @@ export const sendWelcomeEmail = (user) => {
         template: "welcome",
         context: {
             name: user.email,
+        },
+    });
+};
+
+export const sendResetEmail = async (user, resetUrl) => {
+    sendEmail({
+        to: user.email,
+        from: process.env.EMAIL,
+        subject: "Password Reset Request",
+        template: "reset",
+        context: {
+            resetUrl,
         },
     });
 };

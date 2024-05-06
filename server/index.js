@@ -419,9 +419,8 @@ app.get("/get", (req, res) => {
 
 app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (req, res) => {
     const signature = req.headers["stripe-signature"];
-    let event;
     try {
-        event = stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WH_SECRET);
+        const event = stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WH_SECRET);
         console.log("✅ Success:", event.id);
         switch (event.type) {
             case "customer.subscription.updated":
