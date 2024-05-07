@@ -211,14 +211,6 @@ function Main({ darkMode, toggleTheme }) {
         setPastedImage(null);
     };
 
-    function removeBrackets(text) {
-        if (text?.startsWith("[") && text?.endsWith("]")) {
-            return text.slice(1, -1);
-        } else {
-            return text;
-        }
-    }
-
     const generateChatSummary = async (chatHistory) => {
         const token = localStorage.getItem("token");
         const headers = {
@@ -239,7 +231,7 @@ function Main({ darkMode, toggleTheme }) {
 
         if (response?.ok) {
             const data = await response.json();
-            return removeBrackets(data?.textResponse?.trim())?.replace(/[^a-zA-Z]/g, '').slice(0, 30);
+            return data?.textResponse?.trim();
         } else {
             const messages = chatHistory.map((chat) => chat.user + (chat.assistant || ""));
             const summary = messages.join(" ").slice(0, 30);

@@ -55,7 +55,7 @@ const SideDrawer = ({
                     </ListItem>
                     {storedChatHistories.map((history, index) => (
                         <ListItem button key={index} onClick={() => onHistorySelection(index)}>
-                            <ListItemText primary={history.summary} />
+                            <ListItemText primary={history.summary?.replace(/[^a-zA-Z]/g, "").slice(0, 40)} />
                         </ListItem>
                     ))}
                 </List>
