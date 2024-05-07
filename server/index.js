@@ -409,15 +409,19 @@ app.post("/run", verifyToken, async (req, res) => {
 });
 
 app.get("/get", (req, res) => {
-    const fileName = req.query.file;
-    const filePath = path.join(contentFolder, fileName);
-
-    if (fs.existsSync(filePath)) {
-        const fileContent = fs.readFileSync(filePath);
-        res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
-        res.status(200).send(fileContent);
-    } else {
-        res.status(404).json({ error: "File not found" });
+    try {
+        const fileName = req.query.file;
+        const filePath = path.join(contentFolder, fileName);
+        if (fs.existsSync(filePath)) {
+            const fileContent = fs.readFileSync(filePath);
+            res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+            res.status(200).send(fileContent);
+        } else {
+            res.status(404).json({ error: "File not found" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
     }
 });
 
@@ -453,10 +457,6 @@ async function handleSubscriptionUpdate(subscription) {
     const user = await User.findOne({ email: customer.email });
     if (!user) {
         console.error("User not found");
-        return;
-    }
-    if (user.subscriptionStatus === "past_due" && subscription.status === "trialing") {
-        console.error("User has past_due, trialing not possible");
         return;
     }
     user.subscriptionStatus = subscription.status;
