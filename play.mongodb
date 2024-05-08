@@ -2,3 +2,4 @@
 
 use("allchat");
 db.getCollection("users").updateOne({ email: "msveshnikov@gmail.com" }, { $set: { admin: true } });
+db.getCollection("users").updateOne({ email: "4@gmail.com" }, { $set: { subscriptionStatus: "active" } });

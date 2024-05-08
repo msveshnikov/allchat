@@ -8,6 +8,8 @@ import {
     Button,
     useMediaQuery,
     useTheme,
+    Box,
+    Typography,
 } from "@mui/material";
 import AppHeader from "./AppHeader";
 import SideDrawer from "./SideDrawer";
@@ -46,6 +48,7 @@ function Main({ darkMode, toggleTheme }) {
     const [user, setUser] = useState(null);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
     const handleAuthentication = (token, email) => {
         localStorage.setItem("token", token);
@@ -376,6 +379,10 @@ function Main({ darkMode, toggleTheme }) {
     };
 
     const handleCancelSubscription = async () => {
+        setShowConfirmationModal(true);
+    };
+
+    const confirmCancelSubscription = async () => {
         const token = localStorage.getItem("token");
         const headers = {
             "Content-Type": "application/json",
@@ -399,6 +406,8 @@ function Main({ darkMode, toggleTheme }) {
             setSnackbarSeverity("error");
             setSnackbarOpen(true);
         }
+
+        setShowConfirmationModal(false);
     };
 
     return (
@@ -454,6 +463,44 @@ function Main({ darkMode, toggleTheme }) {
                 <DialogActions>
                     <Button onClick={handleCloseSettingsModal}>Close</Button>
                 </DialogActions>
+            </Dialog>
+            <Dialog
+                open={showConfirmationModal}
+                style={{
+                    border: "1px solid #ccc",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                    borderRadius: "8px",
+                    padding: "24px",
+                }}
+            >
+                <Box
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    textAlign="center"
+                    p={4} 
+                    m={2} 
+                >
+                    <Typography variant="h6" gutterBottom>
+                        Confirm Cancellation
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                        Are you sure you want to cancel your subscription?
+                    </Typography>
+                    <Box mt={2}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={confirmCancelSubscription}
+                            style={{ marginRight: "8px" }}
+                        >
+                            Yes
+                        </Button>
+                        <Button variant="outlined" color="primary" onClick={() => setShowConfirmationModal(false)}>
+                            No
+                        </Button>
+                    </Box>
+                </Box>
             </Dialog>
             <Container
                 maxWidth="lg"
