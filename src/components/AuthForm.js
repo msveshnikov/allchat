@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { API_URL } from "./Main";
 import { useTranslation } from "react-i18next";
+import ReactGA from "react-ga4";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -28,6 +29,10 @@ const AuthForm = ({ onAuthentication }) => {
         }
 
         try {
+            ReactGA.event({
+                category: "user",
+                action: isLogin ? "Login" : "SignUp",
+            });
             const response = await fetch(
                 `${API_URL}/${isLogin ? "login" : isPasswordReset ? "reset-password" : "register"}`,
                 {

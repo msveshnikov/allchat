@@ -4,6 +4,7 @@ import md5 from "md5";
 import { useTranslation } from "react-i18next";
 import { API_URL } from "./Main";
 import { useNavigate } from "react-router-dom";
+import ReactGA from "react-ga4";
 
 export const models = {
     "gemini-1.5-pro-preview-0409": ["image", "audio", "video", "document", "tools"],
@@ -124,7 +125,19 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                         target="_blank"
                         rel="noopener"
                     >
-                        <Button onClick={handleCloseSettingsModal} variant="contained" color="primary" sx={{ mt: 1 }}>
+                        <Button
+                            onClick={() => {
+                                ReactGA.event({
+                                    category: "buy",
+                                    action: "begin_checkout",
+                                    value: 4.99,
+                                });
+                                handleCloseSettingsModal();
+                            }}
+                            variant="contained"
+                            color="primary"
+                            sx={{ mt: 1 }}
+                        >
                             {t("Start Subscription")}
                         </Button>
                     </Link>

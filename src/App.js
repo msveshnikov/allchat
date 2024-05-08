@@ -9,6 +9,9 @@ import PasswordReset from "./components/PasswordReset";
 import CustomGPTPage from "./components/CustomGPT";
 import Privacy from "./components/Privacy";
 import Terms from "./components/Terms";
+import ReactGA from "react-ga4";
+
+ReactGA.initialize("G-L4KLPWXQ75");
 
 const App = () => {
     const [darkMode, setDarkMode] = useState(localStorage.getItem("darkMode") === "true" || false);
