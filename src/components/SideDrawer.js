@@ -19,6 +19,7 @@ const SideDrawer = ({
     onSoundChange,
     tools,
     onToolsChange,
+    toolsEnabled,
     onClearAll,
     temperature,
     onTemperatureChange,
@@ -76,7 +77,7 @@ const SideDrawer = ({
                         <SoundSwitch sound={sound} onSoundChange={onSoundChange} />
                     </ListItem>
                     <ListItem>
-                        <ToolsSwitch tools={tools} onToolsChange={onToolsChange} />
+                        <ToolsSwitch toolsEnabled={toolsEnabled} tools={tools} onToolsChange={onToolsChange} />
                     </ListItem>
                     <ListItem button style={{ color: "black", backgroundColor: "orange" }} onClick={handleExportPDF}>
                         <ListItemText primary={t("Export history PDF")} />

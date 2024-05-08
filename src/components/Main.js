@@ -424,6 +424,7 @@ function Main({ darkMode, toggleTheme }) {
                 onHistorySelection={handleHistorySelection}
                 sound={sound}
                 tools={tools}
+                toolsEnabled={models[selectedModel].includes("tools")}
                 onSoundChange={setSound}
                 onToolsChange={setTools}
                 onClearAll={clearAllChatHistory}

@@ -32,14 +32,14 @@ i18n.use(initReactI18next)
             fr: { translation: frTranslations },
             it: { translation: itTranslations },
         },
-        lng: undefined, // Let the LanguageDetector determine the initial language
-        fallbackLng: "en", // Fallback language
+        lng: undefined,
+        fallbackLng: "en",
         interpolation: { escapeValue: false },
         detection: {
-            order: ["navigator"], // Try to detect the language from the browser
-            caches: ["localStorage"], // Cache the detected language in localStorage
+            order: ["navigator"],
+            caches: ["localStorage"],
         },
-        supportedLngs: availableLanguages, // List of supported languages
+        supportedLngs: availableLanguages,
     });
 
 export default i18n;
