@@ -4,8 +4,6 @@ import hbs from "nodemailer-express-handlebars";
 import dotenv from "dotenv";
 dotenv.config();
 
-const blacklistedCustomers = ["bramble"];
-
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -83,61 +81,4 @@ export const whiteListCountries = [
     "NL",
     "IL",
     "NO",
-    "SG",
-    "HK",
 ];
-
-export const blackListCountries = [
-    // countries which never pay, SDN list, Africa
-    "IN",
-    "VN",
-    "PK",
-    "CN",
-    "BR",
-    "AF",
-    "SS",
-    "BD",
-    "AM",
-    "IR",
-    "IQ",
-    "SY",
-    "AZ",
-    "KP",
-    "CU",
-    "VE",
-    "SD",
-    "ZW",
-    "MM",
-    "NG",
-    "DZ",
-    "AO",
-    "BJ",
-    "BW",
-    "BF",
-    "BI",
-    "CM",
-    "CV",
-    "CF",
-    "TD",
-    "KM",
-    "CG",
-    "CD",
-    "DJ",
-    "EG",
-    "GQ",
-    "ER",
-    "SZ",
-    "ET",
-    "GA",
-    "LY",
-    "GM",
-];
-
-export async function isCustomerNameBlacklisted(customerName) {
-    for (const name of blacklistedCustomers) {
-        if (customerName.toLowerCase().includes(name.toLowerCase())) {
-            return true;
-        }
-    }
-    return false;
-}
