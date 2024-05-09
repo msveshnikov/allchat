@@ -189,6 +189,31 @@ const Admin = () => {
                                         <Typography variant="body1" color="text.primary">
                                             Total User Count: <strong>{stats.users}</strong>
                                         </Typography>
+                                        {stats.subscriptionStats && (
+                                            <>
+                                                <Typography variant="h6" gutterBottom color="primary" mt={2}>
+                                                    Subscription Status
+                                                </Typography>
+                                                <Typography variant="body1" color="text.primary">
+                                                    Active: <strong>{stats.subscriptionStats.active}</strong>
+                                                </Typography>
+                                                <Typography variant="body1" color="text.primary">
+                                                    Past Due: <strong>{stats.subscriptionStats.past_due}</strong>
+                                                </Typography>
+                                                <Typography variant="body1" color="text.primary">
+                                                    Canceled: <strong>{stats.subscriptionStats.canceled}</strong>
+                                                </Typography>
+                                                <Typography variant="body1" color="text.primary">
+                                                    None: <strong>{stats.subscriptionStats.none}</strong>
+                                                </Typography>
+                                                <Typography variant="body1" color="text.primary">
+                                                    Trialing: <strong>{stats.subscriptionStats.trialing}</strong>
+                                                </Typography>
+                                                <Typography variant="body1" color="text.primary">
+                                                    Incomplete: <strong>{stats.subscriptionStats.incomplete}</strong>
+                                                </Typography>
+                                            </>
+                                        )}
                                     </CardContent>
                                 </StyledCard>
                             </Grid>

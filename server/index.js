@@ -305,6 +305,15 @@ app.get("/stats", verifyToken, async (req, res) => {
 
     try {
         const users = await User.find({});
+        const subscriptionStats = {
+            active: 0,
+            past_due: 0,
+            canceled: 0,
+            none: 0,
+            trialing: 0,
+            incomplete: 0,
+        };
+
         const geminiStats = {
             totalInputTokens: 0,
             totalOutputTokens: 0,
@@ -329,16 +338,21 @@ app.get("/stats", verifyToken, async (req, res) => {
 
         for (const user of users) {
             const { gemini, claude, together, gpt } = user.usageStats;
+            subscriptionStats[user.subscriptionStatus]++;
+
             geminiStats.totalInputTokens += gemini.inputTokens;
             geminiStats.totalOutputTokens += gemini.outputTokens;
             geminiStats.totalMoneyConsumed += gemini.moneyConsumed;
             geminiStats.totalImagesGenerated += gemini.imagesGenerated;
+
             claudeStats.totalInputTokens += claude.inputTokens;
             claudeStats.totalOutputTokens += claude.outputTokens;
             claudeStats.totalMoneyConsumed += claude.moneyConsumed;
+
             togetherStats.totalInputTokens += together.inputTokens;
             togetherStats.totalOutputTokens += together.outputTokens;
             togetherStats.totalMoneyConsumed += together.moneyConsumed;
+
             gptStats.totalInputTokens += gpt.inputTokens;
             gptStats.totalOutputTokens += gpt.outputTokens;
             gptStats.totalMoneyConsumed += gpt.moneyConsumed;
@@ -346,6 +360,7 @@ app.get("/stats", verifyToken, async (req, res) => {
 
         res.json({
             users: users.length,
+            subscriptionStats,
             gemini: geminiStats,
             claude: claudeStats,
             together: togetherStats,
