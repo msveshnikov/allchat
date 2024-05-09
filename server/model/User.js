@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
         required: false,
     },
     userAgent: { type: String, required: false },
+    country: { type: String, required: false },
     usageStats: {
         gemini: {
             inputTokens: { type: Number, default: 0 },

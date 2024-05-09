@@ -71,6 +71,7 @@ export const registerUser = async (email, password, req) => {
             password: hashedPassword,
             userAgent: req.headers["user-agent"],
             ip,
+            country,
             subscriptionStatus,
         });
         await user.save();
