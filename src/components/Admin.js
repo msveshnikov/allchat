@@ -201,12 +201,6 @@ const Admin = () => {
                                                     Past Due: <strong>{stats.subscriptionStats.past_due}</strong>
                                                 </Typography>
                                                 <Typography variant="body1" color="text.primary">
-                                                    Canceled: <strong>{stats.subscriptionStats.canceled}</strong>
-                                                </Typography>
-                                                <Typography variant="body1" color="text.primary">
-                                                    None: <strong>{stats.subscriptionStats.none}</strong>
-                                                </Typography>
-                                                <Typography variant="body1" color="text.primary">
                                                     Trialing: <strong>{stats.subscriptionStats.trialing}</strong>
                                                 </Typography>
                                                 <Typography variant="body1" color="text.primary">
