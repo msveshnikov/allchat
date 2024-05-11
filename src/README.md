@@ -4,6 +4,11 @@ I'm An AI assistant app that interacts with all major models, maintains history,
 
 ![image](https://allchat.online/AllChat.png)
 
+[![GitHub Repo stars](https://img.shields.io/github/stars/msveshnikov/allchat)](https://github.com/msveshnikov/allchat)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
+[![ProductHunt](https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=454662&theme=light)](https://www.producthunt.com/posts/allchat-3?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-allchat-3)
+
 ## My Features
 
 -   Gemini Pro 1.5, Claude 3 and GPT-3.5
