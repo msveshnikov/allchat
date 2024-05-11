@@ -50,14 +50,10 @@ const generatePdfDocDefinition = (chatHistory) => {
         if (chat.assistant) {
             const content = [];
             if (chat.image) {
-                const images = Array.isArray(chat.image)
-                    ? chat.image.map((imgData) => {
-                          return { image: "data:image/png;base64," + imgData, width: 400 };
-                      })
-                    : [{ image: "data:image/png;base64," + chat.image, width: 400 }];
+                const images = [{ image: "data:image/png;base64," + chat.image, width: 400 }];
                 content.push(...images);
             }
-            const renderedMarkdown = md.render(chat.assistant);
+            const renderedMarkdown = md.render(chat.assistant.replace(/!\[.*?\]\(.*?\)/g, ""));
             const pdfmakeContent = htmlToPdfmake(renderedMarkdown);
             content.push(pdfmakeContent);
             docDefinition.content.push(...content);
