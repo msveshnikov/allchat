@@ -18,6 +18,7 @@ import ChatInput from "./ChatInput";
 import AuthForm from "./AuthForm";
 import Settings, { models } from "./Settings";
 import { animateScroll as scroll } from "react-scroll";
+import readmeContent from "../README.md";
 
 const MAX_CHAT_HISTORY_LENGTH = 20;
 const MAX_CHATS = 5;
@@ -76,6 +77,12 @@ function Main({ darkMode, toggleTheme }) {
 
         if (storedHistory) {
             setChatHistory(JSON.parse(storedHistory));
+        } else if (!storedChatHistories) {
+            fetch(readmeContent)
+                .then((res) => res.text())
+                .then((text) => {
+                    setChatHistory([{ user: "Who are you?", assistant: text }]);
+                });
         }
 
         if (storedChatHistories) {
@@ -473,14 +480,7 @@ function Main({ darkMode, toggleTheme }) {
                     padding: "24px",
                 }}
             >
-                <Box
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                    textAlign="center"
-                    p={4} 
-                    m={2} 
-                >
+                <Box display="flex" flexDirection="column" alignItems="center" textAlign="center" p={4} m={2}>
                     <Typography variant="h6" gutterBottom>
                         Confirm Cancellation
                     </Typography>
