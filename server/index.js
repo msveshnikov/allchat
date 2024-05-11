@@ -134,7 +134,7 @@ app.post("/interact", verifyToken, async (req, res) => {
             user.subscriptionStatus !== "active" &&
             user.subscriptionStatus !== "trialing" &&
             !user.admin &&
-            referer !== "android-app://online.allchat.twa"
+            referer !== "android-app://online.allchat.twa/"
         ) {
             return res
                 .status(402)
