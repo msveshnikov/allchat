@@ -15,7 +15,7 @@ export const scheduleAction = async (action, schedule, userId) => {
         try {
             const userInfo = [...user.info.entries()].map(([key, value]) => `${key}: ${value}`).join(", ");
             const result = await getTextGpt(
-                `User information: ${userInfo} Human: Please execute action: ${action} Assistant:`,
+                `User information: ${userInfo} Please execute user requested action (do the task, don't request it but do YOURSELF): ${action}`,
                 0.2,
                 userId,
                 "gpt-3.5-turbo",
