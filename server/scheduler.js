@@ -1,7 +1,7 @@
 import cron from "node-cron";
-import { getTextClaude } from "./claude.js";
 import { User } from "./model/User.js";
 import { sendEmail } from "./tools.js";
+import { getTextGpt } from "./openai.js";
 
 const scheduledActions = {};
 
@@ -14,20 +14,19 @@ export const scheduleAction = async (action, schedule, userId) => {
     const task = cron.schedule(schedule === "hourly" ? "0 * * * *" : "0 0 * * *", async () => {
         try {
             const userInfo = [...user.info.entries()].map(([key, value]) => `${key}: ${value}`).join(", ");
-            const result = await getTextClaude(
+            const result = await getTextGpt(
                 `User information: ${userInfo} Human: Please execute action: ${action} Assistant:`,
-                0.8,
-                null,
-                null,
+                0.2,
                 userId,
-                "claude-3-haiku-20240307",
+                "gpt-3.5-turbo",
                 true
             );
             const actionTimestamp = Date.now();
             user.scheduling.set(`${schedule}_action_${actionTimestamp}`, action);
             user.scheduling.set(`${schedule}_result_${actionTimestamp}`, result);
             await user.save();
-            await sendEmail(user.email, `${schedule} action result`, result, userId);
+            const emailSignature = `\n\n---\nBest regards,\nAllChat`;
+            await sendEmail(user.email, `${schedule} action result`, result + emailSignature, userId);
         } catch (error) {
             console.error(`Error executing scheduled action: ${error}`);
         }
