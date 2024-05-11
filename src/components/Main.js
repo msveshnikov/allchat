@@ -50,6 +50,7 @@ function Main({ darkMode, toggleTheme }) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+    const [referrer, setReferrer] = useState("");
 
     const handleAuthentication = (token, email) => {
         localStorage.setItem("token", token);
@@ -116,6 +117,10 @@ function Main({ darkMode, toggleTheme }) {
         } catch {}
     }, [storedChatHistories, sound, temperature, tools, selectedModel]);
 
+    useEffect(() => {
+        setReferrer(window.document.referrer);
+    }, []);
+
     const handleSubmit = async () => {
         if (input.trim() || pastedImage || selectedFile) {
             let fileType = "";
@@ -160,6 +165,7 @@ function Main({ darkMode, toggleTheme }) {
                     fileType,
                     fileBytesBase64,
                     model: selectedModel,
+                    referrer,
                     customGPT: localStorage.getItem("selectedCustomGPT"),
                     tools: models[selectedModel].includes("tools") && tools,
                     temperature,
@@ -234,6 +240,7 @@ function Main({ darkMode, toggleTheme }) {
             body: JSON.stringify({
                 model: "gemini-1.0-pro",
                 temperature: 0.1,
+                referrer,
                 input: "Extract main topic of this chat in one simple short statement without formatting (30 chars max) and return it without anything else in [] ",
                 chatHistory: chatHistory.map((h) => ({ user: h.user, assistant: h.assistant })),
             }),
