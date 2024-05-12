@@ -118,6 +118,7 @@ function Main({ darkMode, toggleTheme }) {
     }, [storedChatHistories, sound, temperature, tools, selectedModel]);
 
     useEffect(() => {
+        fetchUserData();
         setReferrer(window.document.referrer);
     }, []);
 
@@ -453,6 +454,7 @@ function Main({ darkMode, toggleTheme }) {
                 onClearAll={clearAllChatHistory}
                 temperature={temperature}
                 onTemperatureChange={setTemperature}
+                admin={user?.admin}
             />
             <Dialog open={openAuthModal} onClose={handleCloseAuthModal}>
                 <DialogContent>

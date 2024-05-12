@@ -23,6 +23,7 @@ const SideDrawer = ({
     onClearAll,
     temperature,
     onTemperatureChange,
+    admin, 
 }) => {
     const { t } = useTranslation();
 
@@ -50,6 +51,13 @@ const SideDrawer = ({
             onOpen={onToggle}
         >
             <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                {admin && (
+                    <Link to="/admin" style={{ color: "white", backgroundColor: "purple", textDecoration: "none" }}>
+                        <ListItem button>
+                            <ListItemText primary={t("Admin")} />
+                        </ListItem>
+                    </Link>
+                )}
                 <List style={{ flexGrow: 1, overflowY: "auto" }}>
                     <ListItem button onClick={onNewChat}>
                         <ListItemText primary={t("New Chat")} />
