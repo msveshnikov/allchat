@@ -285,7 +285,7 @@ export async function getWeather(location) {
         } with a temperature of ${Math.round(main?.temp - 273)}°C`;
 
         const fiveDayForecast = list
-            ?.filter((_, index) => index % 8 === 4) //noon
+            ?.filter((item) => item.dt_txt.includes("12:00:00"))
             ?.map((item) => {
                 const date = new Date(item.dt * 1000).toLocaleDateString();
                 const temperature = Math.round(item.main.temp - 273);
