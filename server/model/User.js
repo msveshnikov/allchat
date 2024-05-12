@@ -1,47 +1,50 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    admin: { type: Boolean, required: false },
-    ip: {
-        type: String,
-        required: false,
+const userSchema = new mongoose.Schema(
+    {
+        email: { type: String, required: true, unique: true },
+        password: { type: String, required: true },
+        admin: { type: Boolean, required: false },
+        ip: {
+            type: String,
+            required: false,
+        },
+        userAgent: { type: String, required: false },
+        country: { type: String, required: false },
+        usageStats: {
+            gemini: {
+                inputTokens: { type: Number, default: 0 },
+                outputTokens: { type: Number, default: 0 },
+                moneyConsumed: { type: Number, default: 0 },
+                imagesGenerated: { type: Number, default: 0 },
+            },
+            claude: {
+                inputTokens: { type: Number, default: 0 },
+                outputTokens: { type: Number, default: 0 },
+                moneyConsumed: { type: Number, default: 0 },
+            },
+            together: {
+                inputTokens: { type: Number, default: 0 },
+                outputTokens: { type: Number, default: 0 },
+                moneyConsumed: { type: Number, default: 0 },
+            },
+            gpt: {
+                inputTokens: { type: Number, default: 0 },
+                outputTokens: { type: Number, default: 0 },
+                moneyConsumed: { type: Number, default: 0 },
+            },
+        },
+        subscriptionId: { type: String, required: false },
+        subscriptionStatus: {
+            type: String,
+            enum: ["active", "past_due", "canceled", "none", "trialing", "incomplete"],
+            default: "none",
+        },
+        info: { type: Map, of: String, default: new Map() },
+        scheduling: { type: Map, of: String, default: new Map() },
     },
-    userAgent: { type: String, required: false },
-    country: { type: String, required: false },
-    usageStats: {
-        gemini: {
-            inputTokens: { type: Number, default: 0 },
-            outputTokens: { type: Number, default: 0 },
-            moneyConsumed: { type: Number, default: 0 },
-            imagesGenerated: { type: Number, default: 0 },
-        },
-        claude: {
-            inputTokens: { type: Number, default: 0 },
-            outputTokens: { type: Number, default: 0 },
-            moneyConsumed: { type: Number, default: 0 },
-        },
-        together: {
-            inputTokens: { type: Number, default: 0 },
-            outputTokens: { type: Number, default: 0 },
-            moneyConsumed: { type: Number, default: 0 },
-        },
-        gpt: {
-            inputTokens: { type: Number, default: 0 },
-            outputTokens: { type: Number, default: 0 },
-            moneyConsumed: { type: Number, default: 0 },
-        },
-    },
-    subscriptionId: { type: String, required: false },
-    subscriptionStatus: {
-        type: String,
-        enum: ["active", "past_due", "canceled", "none", "trialing", "incomplete"],
-        default: "none",
-    },
-    info: { type: Map, of: String, default: new Map() },
-    scheduling: { type: Map, of: String, default: new Map() },
-});
+    { timestamps: true }
+);
 
 export const User = mongoose.model("User", userSchema);
 

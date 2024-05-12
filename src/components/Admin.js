@@ -320,6 +320,7 @@ const Admin = () => {
                                 <TableCell>Subscription ID</TableCell>
                                 <TableCell>Subscription Status</TableCell>
                                 <TableCell>Actions</TableCell>
+                                <TableCell>Created At</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -342,6 +343,7 @@ const Admin = () => {
                                             <EditIcon />
                                         </IconButton>
                                     </TableCell>
+                                    <TableCell>{user.createdAt && new Date(user.createdAt).toLocaleString()}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
