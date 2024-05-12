@@ -22,20 +22,22 @@ const Admin = () => {
     const [itemsPerPage] = useState(10);
 
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchUsersData = async (page) => {
             const token = localStorage.getItem("token");
             const headers = {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             };
-            const response = await fetch(`${API_URL}/users`, {
+            const response = await fetch(`${API_URL}/users?page=${page}&limit=${itemsPerPage}`, {
                 headers,
             });
             const data = await response.json();
-            setUsers(data);
+            if (response.ok) {
+                setUsers(data);
+            }
         };
-        fetchUsers();
-    }, []);
+        fetchUsersData(currentPage);
+    }, [currentPage, itemsPerPage]);
 
     useEffect(() => {
         const fetchGpts = async () => {
@@ -321,29 +323,27 @@ const Admin = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {users?.users
-                                ?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                                .map((user) => (
-                                    <TableRow key={user._id}>
-                                        <TableCell>{user.email}</TableCell>
-                                        <TableCell>{user.ip}</TableCell>
-                                        <TableCell>{user.country}</TableCell>
-                                        <TableCell>{user.subscriptionId}</TableCell>
-                                        <TableCell>{user.subscriptionStatus}</TableCell>
-                                        <TableCell>
-                                            <IconButton
-                                                onClick={() =>
-                                                    handleSubscriptionChange(
-                                                        user._id,
-                                                        user.subscriptionStatus === "active" ? "past_due" : "active"
-                                                    )
-                                                }
-                                            >
-                                                <EditIcon />
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                            {users?.users?.map((user) => (
+                                <TableRow key={user._id}>
+                                    <TableCell>{user.email}</TableCell>
+                                    <TableCell>{user.ip}</TableCell>
+                                    <TableCell>{user.country}</TableCell>
+                                    <TableCell>{user.subscriptionId}</TableCell>
+                                    <TableCell>{user.subscriptionStatus}</TableCell>
+                                    <TableCell>
+                                        <IconButton
+                                            onClick={() =>
+                                                handleSubscriptionChange(
+                                                    user._id,
+                                                    user.subscriptionStatus === "active" ? "past_due" : "active"
+                                                )
+                                            }
+                                        >
+                                            <EditIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
                         </TableBody>
                     </Table>
                 </TableContainer>

@@ -655,8 +655,9 @@ app.get("/users", verifyToken, async (req, res) => {
         const users = await User.find({}, { password: 0 }).skip(skip).limit(limit);
 
         const totalUsers = await User.countDocuments();
+        const totalPages = Math.ceil(totalUsers / limit);
 
-        res.json({ users, totalPages: Math.ceil(totalUsers / limit) });
+        res.json({ users, totalPages });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
