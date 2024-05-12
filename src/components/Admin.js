@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography, Grid, Card, CardContent, styled, Switch, FormControlLabel } from "@mui/material";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { Pagination } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
 import { API_URL } from "./Main";
 
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -15,6 +17,25 @@ const StyledCard = styled(Card)(({ theme }) => ({
 const Admin = () => {
     const [stats, setStats] = useState(null);
     const [gpts, setGpts] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            const token = localStorage.getItem("token");
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            };
+            const response = await fetch(`${API_URL}/users`, {
+                headers,
+            });
+            const data = await response.json();
+            setUsers(data);
+        };
+        fetchUsers();
+    }, []);
 
     useEffect(() => {
         const fetchGpts = async () => {
@@ -32,6 +53,27 @@ const Admin = () => {
         fetchGpts();
     }, []);
 
+    const handleSubscriptionChange = async (userId, newStatus) => {
+        const token = localStorage.getItem("token");
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+        const response = await fetch(`${API_URL}/users/${userId}/subscription`, {
+            method: "PUT",
+            headers,
+            body: JSON.stringify({ status: newStatus }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+            const updatedUsers = users.users.map((user) =>
+                user._id === userId ? { ...user, subscriptionStatus: newStatus } : user
+            );
+            setUsers({ ...users, users: updatedUsers });
+        } else {
+            console.error(data.error);
+        }
+    };
     const handleDeleteGpt = async (id) => {
         const token = localStorage.getItem("token");
         const headers = {
@@ -260,6 +302,58 @@ const Admin = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
+            </Box>
+
+            <Box padding={4}>
+                <Typography variant="h4" gutterBottom align="center" color="primary">
+                    User Admin
+                </Typography>
+                <TableContainer component={Paper} elevation={3}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Email</TableCell>
+                                <TableCell>IP</TableCell>
+                                <TableCell>Country</TableCell>
+                                <TableCell>Subscription ID</TableCell>
+                                <TableCell>Subscription Status</TableCell>
+                                <TableCell>Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {users?.users
+                                ?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                                .map((user) => (
+                                    <TableRow key={user._id}>
+                                        <TableCell>{user.email}</TableCell>
+                                        <TableCell>{user.ip}</TableCell>
+                                        <TableCell>{user.country}</TableCell>
+                                        <TableCell>{user.subscriptionId}</TableCell>
+                                        <TableCell>{user.subscriptionStatus}</TableCell>
+                                        <TableCell>
+                                            <IconButton
+                                                onClick={() =>
+                                                    handleSubscriptionChange(
+                                                        user._id,
+                                                        user.subscriptionStatus === "active" ? "past_due" : "active"
+                                                    )
+                                                }
+                                            >
+                                                <EditIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <Box display="flex" justifyContent="center" mt={2}>
+                    <Pagination
+                        count={users.totalPages}
+                        page={currentPage}
+                        onChange={(event, page) => setCurrentPage(page)}
+                    />
+                </Box>
             </Box>
         </>
     );

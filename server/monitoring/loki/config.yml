@@ -2,8 +2,11 @@
     retention_deletes_enabled: true
     retention_period: 720h
 
-querier:
-    max_concurrent: 120 # Increase from the default
-
-limits_config:
-    max_outstanding_requests_per_tenant: 4048 # Increase if needed
+loki:
+    limits_config:
+        split_queries_by_interval: 2h
+        max_query_parallelism: 10
+    query_scheduler:
+        max_outstanding_requests_per_tenant: 4096
+    frontend:
+        max_outstanding_per_tenant: 4096

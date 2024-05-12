@@ -642,6 +642,55 @@ app.delete("/customgpt/:id", verifyToken, async (req, res) => {
     }
 });
 
+app.get("/users", verifyToken, async (req, res) => {
+    try {
+        if (!req.user.admin) {
+            return res.status(401).json({ error: "This is an admin-only route" });
+        }
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const users = await User.find({}, { password: 0 }).skip(skip).limit(limit);
+
+        const totalUsers = await User.countDocuments();
+
+        res.json({ users, totalPages: Math.ceil(totalUsers / limit) });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.put("/users/:userId/subscription", verifyToken, async (req, res) => {
+    try {
+        if (!req.user.admin) {
+            return res.status(401).json({ error: "This is an admin-only route" });
+        }
+
+        const userId = req.params.userId;
+        const { status } = req.body;
+
+        const validStatuses = ["active", "past_due", "canceled", "none", "trialing", "incomplete"];
+
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ error: "Invalid subscription status" });
+        }
+
+        const user = await User.findByIdAndUpdate(userId, { subscriptionStatus: status }, { new: true });
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.json({ message: "Subscription status updated successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 process.on("uncaughtException", (err, origin) => {
     console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
 });
