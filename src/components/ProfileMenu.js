@@ -44,7 +44,7 @@ export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
 
     return (
         <div>
-            <IconButton data-testid="profile" color="inherit" onClick={handleProfileMenuOpen}>
+            <IconButton color="inherit" onClick={handleProfileMenuOpen}>
                 {userEmail ? (
                     <Avatar
                         src={`https://www.gravatar.com/avatar/${md5(userEmail.trim().toLowerCase())}?d=retro`}

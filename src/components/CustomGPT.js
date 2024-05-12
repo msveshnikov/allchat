@@ -160,7 +160,6 @@ const CustomGPTPage = () => {
                     multiple
                     hidden
                     onChange={handleFileUpload}
-                    data-testid="file-upload-input"
                 />
                 <Typography variant="body2" color={theme.palette.text.secondary}>
                     Drag and drop files here or click to upload

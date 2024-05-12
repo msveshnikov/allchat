@@ -107,7 +107,6 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
         <Box id="chatid" flex={1} overflow="auto" padding={2} display="flex" flexDirection="column">
             {chatHistory.map((chat, index) => (
                 <Box
-                    data-testid="chat-item"
                     key={index}
                     display="flex"
                     flexDirection="column"

@@ -30,7 +30,6 @@ const ChatInput = ({
         <Box display="flex" padding={2}>
             <Box display="flex" flexDirection="column" width="100%">
                 <TextField
-                    data-testid="input-field"
                     fullWidth
                     label={t("Enter your question")}
                     value={input}

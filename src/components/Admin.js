@@ -251,11 +251,7 @@ const Admin = () => {
                                         />
                                     </TableCell>
                                     <TableCell>
-                                        <IconButton
-                                            onClick={() => handleDeleteGpt(gpt._id)}
-                                            color="error"
-                                            data-testid="delete-gpt-button"
-                                        >
+                                        <IconButton onClick={() => handleDeleteGpt(gpt._id)} color="error">
                                             <DeleteIcon />
                                         </IconButton>
                                     </TableCell>
