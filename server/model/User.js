@@ -71,7 +71,7 @@ export function storeUsageStats(userId, model, inputTokens, outputTokens, images
     const isClaude = model?.startsWith("claude");
     const isGPT4o = model?.startsWith("gpt-4o");
     const isGPT35 = model?.startsWith("gpt-3.5");
-    const isTogether = !isGemini15 && !isGemini10 && !isClaude && !isGPT4 && !isGPT35;
+    const isTogether = !isGemini15 && !isGemini10 && !isClaude && !isGPT4o && !isGPT35;
     const imagesGeneratedCost = imagesGenerated * 0.002; //SDXL
 
     if (isGemini15) {
