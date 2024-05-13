@@ -23,7 +23,7 @@ const resizeImage = async (imageBase64, maxSize = 2 * 1024 * 1024) => {
     }
 };
 
-export const getTextClaude = async (prompt, temperature, imageBase64, fileType, userId, model, webTools) => {
+export const getTextClaude = async (prompt, temperature, fileBytesBase64, fileType, userId, model, webTools) => {
     const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_KEY });
     if (model?.includes("opus") || !model) {
         model = "claude-3-haiku-20240307";
@@ -34,14 +34,14 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
             role: "user",
             content: [
                 { type: "text", text: prompt },
-                ...(fileType && imageBase64
+                ...(fileType && fileBytesBase64
                     ? [
                           {
                               type: "image",
                               source: {
                                   type: "base64",
                                   media_type: fileType === "png" ? "image/png" : "image/jpeg",
-                                  data: await resizeImage(imageBase64),
+                                  data: await resizeImage(fileBytesBase64),
                               },
                           },
                       ]

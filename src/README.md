@@ -15,11 +15,11 @@ I'm An AI assistant app that interacts with all major models, maintains history,
 -   Audio Input in Gemini
 -   Video Input in Gemini
 -   Image Input (png/jpeg) 
--   Custom GPTs (best to use with LlaMa-3)
+-   Custom GPTs
 -   Image Generation by SDXL
 -   Python Code Run
 -   Email respond (with attachments, like PDFs, Word, etc)
--   Memory (for Gemini & Claude) - any information about user which you agreed to persist
+-   Memory - any information about user which you agreed to persist
 -   Scheduling any action (hourly or daily) to your email
 -   Together AI models: Databricks, Mixtral-8x22B, LLama-3, etc
 -   File upload PDFs, Word, Excel into the conversation

@@ -222,7 +222,15 @@ app.post("/interact", verifyToken, async (req, res) => {
                 tools
             );
         } else if (model?.startsWith("gpt")) {
-            textResponse = await getTextGpt(contextPrompt, temperature, req.user.id, model, tools);
+            textResponse = await getTextGpt(
+                contextPrompt,
+                temperature,
+                fileBytesBase64,
+                fileType,
+                req.user.id,
+                model,
+                tools
+            );
         } else {
             textResponse = await getTextTogether(contextPrompt, temperature, req.user.id, model, tools);
         }
