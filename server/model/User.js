@@ -69,7 +69,7 @@ export function storeUsageStats(userId, model, inputTokens, outputTokens, images
     const isGemini15 = model?.startsWith("gemini-1.5");
     const isGemini10 = model?.startsWith("gemini-1.0");
     const isClaude = model?.startsWith("claude");
-    const isGPT4 = model?.startsWith("gpt-4");
+    const isGPT4o = model?.startsWith("gpt-4o");
     const isGPT35 = model?.startsWith("gpt-3.5");
     const isTogether = !isGemini15 && !isGemini10 && !isClaude && !isGPT4 && !isGPT35;
     const imagesGeneratedCost = imagesGenerated * 0.002; //SDXL
@@ -85,14 +85,12 @@ export function storeUsageStats(userId, model, inputTokens, outputTokens, images
     } else if (isClaude) {
         if (model?.includes("haiku")) {
             moneyConsumed = (inputTokens * 0.25 + outputTokens * 1.25) / 1000000;
-        } else if (model?.includes("opus")) {
-            moneyConsumed = (inputTokens * 15 + outputTokens * 75) / 1000000;
         } else if (model?.includes("sonnet")) {
             moneyConsumed = (inputTokens * 3 + outputTokens * 15) / 1000000;
         }
-    } else if (isGPT4) {
-        const inputTokensCost = (inputTokens / 1000000) * 10;
-        const outputTokensCost = (outputTokens / 1000000) * 30;
+    } else if (isGPT4o) {
+        const inputTokensCost = (inputTokens / 1000000) * 5;
+        const outputTokensCost = (outputTokens / 1000000) * 15;
         moneyConsumed = inputTokensCost + outputTokensCost;
     } else if (isGPT35) {
         const inputTokensCost = (inputTokens / 1000000) * 0.5;
@@ -104,7 +102,7 @@ export function storeUsageStats(userId, model, inputTokens, outputTokens, images
 
     if (isTogether) {
         model = "together";
-    } else if (isGPT4 || isGPT35) {
+    } else if (isGPT4o || isGPT35) {
         model = "gpt";
     } else {
         model = model.slice(0, 6);

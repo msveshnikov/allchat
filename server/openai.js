@@ -6,7 +6,6 @@ dotenv.config({ override: true });
 
 export const getTextGpt = async (prompt, temperature, userId, model, webTools) => {
     const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY });
-    model = "gpt-3.5-turbo";
     const openAiTools = tools.map(renameProperty).map((f) => ({ type: "function", function: f }));
     const messages = [{ role: "user", content: prompt }];
 

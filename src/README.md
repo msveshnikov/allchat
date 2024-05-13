@@ -11,7 +11,7 @@ I'm An AI assistant app that interacts with all major models, maintains history,
 
 ## My Features
 
--   Gemini Pro 1.5, Claude 3 and GPT-3.5
+-   Gemini Pro 1.5, Claude 3, GPT-3.5 and GPT-4o
 -   Audio Input in Gemini
 -   Video Input in Gemini
 -   Image Input (png/jpeg) 
@@ -28,7 +28,7 @@ I'm An AI assistant app that interacts with all major models, maintains history,
 -   LaTeX render
 -   Edit your messages with response regeneration
 -   PDF export of all chats
--   Web Tools - weather, stocks, email send, Telegram, web search, etc - with Gemini, Claude, OpenAI models
+-   Web Tools - weather, stocks, email send, Telegram, web search, calendar, etc - with Gemini, Claude, OpenAI models
 
 ## Examples (please switch on Web Tools option)
 
