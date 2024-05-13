@@ -9,7 +9,7 @@
         "@mui/material": "^5.15.17",
         "html-to-pdfmake": "^2.5.7",
         "i18next": "^23.11.4",
-        "i18next-browser-languagedetector": "^7.2.1",
+        "i18next-browser-languagedetector": "^8.0.0",
         "katex": "^0.16.10",
         "markdown-it": "^14.1.0",
         "md5": "^2.3.0",

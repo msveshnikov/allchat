@@ -74,7 +74,7 @@ morgan.token("body", (req, res) => {
     if (body && typeof body === "object") {
         const clonedBody = { ...body };
         if ("fileBytesBase64" in clonedBody) {
-            clonedBody.fileBytesBase64 = "<FILE_BYTES_REDACTED>";
+            clonedBody.fileBytesBase64 = "<REDACTED>";
         }
         if ("password" in clonedBody) {
             clonedBody.password = "<PASSWORD_REDACTED>";
@@ -82,8 +82,11 @@ morgan.token("body", (req, res) => {
         if ("files" in clonedBody) {
             clonedBody.files = "<FILES_REDACTED>";
         }
+        if ("chatHistory" in clonedBody) {
+            clonedBody.chatHistory = "<REDACTED>";
+        }
         if ("instructions" in clonedBody) {
-            clonedBody.instructions = "<FILES_REDACTED>";
+            clonedBody.instructions = "<REDACTED>";
         }
         return JSON.stringify(clonedBody);
     }
