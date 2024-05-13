@@ -318,6 +318,7 @@ const Admin = () => {
                                 <TableCell>IP</TableCell>
                                 <TableCell>Country</TableCell>
                                 <TableCell>Subscription ID</TableCell>
+                                <TableCell>Money</TableCell>
                                 <TableCell>Subscription Status</TableCell>
                                 <TableCell>Actions</TableCell>
                                 <TableCell>Created At</TableCell>
@@ -330,6 +331,14 @@ const Admin = () => {
                                     <TableCell>{user.ip}</TableCell>
                                     <TableCell>{user.country}</TableCell>
                                     <TableCell>{user.subscriptionId}</TableCell>
+                                    <TableCell>
+                                        {(
+                                            user.usageStats.gemini.moneyConsumed +
+                                            user.usageStats.claude.moneyConsumed +
+                                            user.usageStats.together.moneyConsumed +
+                                            user.usageStats.gpt.moneyConsumed
+                                        ).toFixed(2)}
+                                    </TableCell>
                                     <TableCell>{user.subscriptionStatus}</TableCell>
                                     <TableCell>
                                         <IconButton

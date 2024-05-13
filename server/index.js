@@ -652,7 +652,10 @@ app.get("/users", verifyToken, async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
-        const users = await User.find({}, { password: 0 }).sort({ subscriptionId: -1 }).skip(skip).limit(limit);
+        const users = await User.find({}, { password: 0 })
+            .sort({ subscriptionId: -1, createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
 
         const totalUsers = await User.countDocuments();
         const totalPages = Math.ceil(totalUsers / limit);
