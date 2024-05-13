@@ -48,8 +48,11 @@ const toolEmojis = {
     execute_python: "🐍",
     get_latest_news: "📰",
     persist_user_info: "🗄️",
+    remove_user_info: "🗑️",
     schedule_action: "🗓️",
+    stop_scheduled_action: "⏹️",
     summarize_youtube_video: "📺",
+    add_calendar_event: "📅",
 };
 
 function toolsToEmojis(toolsUsed) {
@@ -68,7 +71,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
         maxWidth: "100%",
         overflowWrap: "break-word",
         wordBreak: "break-all",
-        color: theme.palette.mode === "dark" ? "#8ab4f8" : "blue", 
+        color: theme.palette.mode === "dark" ? "#8ab4f8" : "blue",
     };
 
     const handleImageClick = (index, message) => {

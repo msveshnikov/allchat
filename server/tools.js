@@ -7,6 +7,7 @@ import { scheduleAction, stopScheduledAction } from "./scheduler.js";
 import { MAX_SEARCH_RESULT_LENGTH, contentFolder, toolsUsed } from "./index.js";
 import { summarizeYouTubeVideo } from "./youtube.js";
 import TelegramBot from "node-telegram-bot-api";
+import ical from "ical-generator";
 
 const bot = new TelegramBot(process.env.TELEGRAM_KEY);
 const transporter = nodemailer.createTransport({
@@ -231,6 +232,33 @@ export const tools = [
             required: ["videoId"],
         },
     },
+    {
+        name: "add_calendar_event",
+        description:
+            "Adds an event to the user's calendar and sends an ICS file via email. The tool expects an object with 'title', 'description', 'startTime', and 'endTime' properties. It returns a success message.",
+        input_schema: {
+            type: "object",
+            properties: {
+                title: {
+                    type: "string",
+                    description: "The title of the calendar event",
+                },
+                description: {
+                    type: "string",
+                    description: "The description of the calendar event",
+                },
+                startTime: {
+                    type: "string",
+                    description: "The start time of the event in ISO format (e.g., '2023-05-15T10:00:00')",
+                },
+                endTime: {
+                    type: "string",
+                    description: "The end time of the event in ISO format (e.g., '2023-05-15T11:30:00')",
+                },
+            },
+            required: ["title", "description", "startTime", "endTime"],
+        },
+    },
 ];
 
 export const handleToolCall = async (name, args, userId) => {
@@ -266,6 +294,8 @@ export const handleToolCall = async (name, args, userId) => {
             return stopScheduledAction(userId);
         case "summarize_youtube_video":
             return summarizeYouTubeVideo(args.videoId);
+        case "add_calendar_event":
+            return addCalendarEvent(userId, args);
         default:
             console.error(`Unsupported function call: ${name}`);
     }
@@ -354,7 +384,7 @@ export async function sendTelegramMessage(chatId, message) {
     }
 }
 
-export async function sendEmail(to, subject, content, userId) {
+export async function sendEmail(to, subject, content, userId, attachments = []) {
     let recipient;
 
     if (to && !to?.endsWith("@example.com")) {
@@ -366,12 +396,15 @@ export async function sendEmail(to, subject, content, userId) {
         }
         recipient = user.email;
     }
+
     const mailOptions = {
         to: recipient,
         from: process.env.EMAIL,
         subject,
         text: content,
+        attachments,
     };
+
     const info = await transporter.sendMail(mailOptions);
     return `Email sent: ${info.response}`;
 }
@@ -446,5 +479,37 @@ export async function removeUserInfo(userId) {
     } catch (error) {
         console.error("Error removing user information:", error);
         return "Error removing user information: " + error.message;
+    }
+}
+
+export async function addCalendarEvent(userId, { title, description, startTime, endTime }) {
+    try {
+        const user = await User.findById(userId);
+        if (!user || !user.email) {
+            return "No email address found in user profile";
+        }
+
+        const cal = ical({ domain: "allchat.online" });
+        cal.createEvent({
+            start: new Date(startTime),
+            end: new Date(endTime),
+            summary: title,
+            description,
+        });
+
+        const icsContent = cal.toString();
+
+        const subject = `Calendar Event: ${title}`;
+        const emailContent = `Please find the attached ICS file for the event: ${title}`;
+
+        const attachmentName = `${title}.ics`;
+        const attachments = [{ filename: attachmentName, content: icsContent, contentType: "text/calendar" }];
+
+        await sendEmail(user.email, subject, emailContent, userId, attachments);
+
+        return `Calendar event '${title}' added successfully and ICS file sent to ${user.email}.`;
+    } catch (error) {
+        console.error("Error adding calendar event:", error);
+        return "Error adding calendar event: " + error.message;
     }
 }
