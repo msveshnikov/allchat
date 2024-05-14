@@ -18,7 +18,9 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
     if (fileType) {
         webTools = false;
     }
-
+    if (model === "gemini-1.5-pro-preview-0409") {
+        model = "gemini-1.5-flash-preview-0514";
+    }
     const parts = [];
 
     if (fileType === "mp4") {
