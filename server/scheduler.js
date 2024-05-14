@@ -19,6 +19,8 @@ export const scheduleAction = async (action, schedule, userId) => {
                 0.2,
                 userId,
                 "gpt-3.5-turbo",
+                null,
+                null,
                 true
             );
             const actionTimestamp = Date.now();
