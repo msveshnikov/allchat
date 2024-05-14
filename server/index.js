@@ -25,8 +25,8 @@ import { getImage } from "./image.js";
 dotenv.config({ override: true });
 
 const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
-export const MAX_SEARCH_RESULT_LENGTH = 10000;
-export const MAX_CONTEXT_LENGTH = 16000;
+export const MAX_SEARCH_RESULT_LENGTH = 7000;
+export const MAX_CONTEXT_LENGTH = 10000;
 const stripe = new Stripe(process.env.STRIPE_KEY);
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro 1.5 and Claude language models. Your capabilities include:
 
