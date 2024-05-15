@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import ReactGA from "react-ga4";
 
 export const models = {
-    "gemini-1.5-pro-preview-0409": ["image", "audio", "video", "document", "tools"],
+    "gemini-1.5-pro-preview-0514": ["image", "audio", "video", "document", "tools"],
     // "gemini-1.5-flash-preview-0514": ["image", "audio", "video", "document", "tools"],
     "gemini-experimental": ["image", "audio", "video", "document", "tools"],
     "gemini-1.0-pro": ["document", "tools"],

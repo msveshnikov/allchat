@@ -37,7 +37,7 @@ function Main({ darkMode, toggleTheme }) {
     const [tools, setTools] = useState(localStorage.getItem("tools") === "true");
     const [temperature, setTemperature] = useState(Number(localStorage.getItem("temperature") || "0.5"));
     const [selectedModel, setSelectedModel] = useState(
-        localStorage.getItem("selectedModel") || "gemini-1.5-pro-preview-0409"
+        localStorage.getItem("selectedModel") || "gemini-1.5-pro-preview-0514"
     );
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
@@ -448,7 +448,7 @@ function Main({ darkMode, toggleTheme }) {
                 onHistorySelection={handleHistorySelection}
                 sound={sound}
                 tools={tools}
-                toolsEnabled={models[selectedModel].includes("tools")}
+                toolsEnabled={models[selectedModel]?.includes("tools")}
                 onSoundChange={setSound}
                 onToolsChange={setTools}
                 onClearAll={clearAllChatHistory}

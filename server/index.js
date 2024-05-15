@@ -128,16 +128,16 @@ app.post("/interact", verifyToken, async (req, res) => {
         let fileType = req.body.fileType;
         const tools = req.body.tools;
         const lang = req.body.lang;
-        const model = req.body.model || "gemini-1.5-pro-preview-0409";
+        const model = req.body.model || "gemini-1.5-pro-preview-0514";
         const customGPT = req.body.customGPT;
-        const referrer = req.body.referrer;
+        // const referrer = req.body.referrer;
         const country = req.headers["geoip_country_code"];
         const user = await User.findById(req.user.id);
         if (
             user?.subscriptionStatus !== "active" &&
             user?.subscriptionStatus !== "trialing" &&
-            !user?.admin &&
-            referrer !== "android-app://online.allchat.twa/"
+            !user?.admin
+            //  && referrer !== "android-app://online.allchat.twa/"
         ) {
             return res
                 .status(402)
