@@ -257,7 +257,7 @@ app.post("/interact", verifyToken, async (req, res) => {
 app.post("/register", async (req, res) => {
     try {
         const { email, password } = req.body;
-        const result = await registerUser(email, password, req);
+        const result = await registerUser(email.trim(), password, req);
         if (result.success) {
             res.status(200).json({ message: "Registration successful" });
         } else {
@@ -272,7 +272,7 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
-        const result = await authenticateUser(email, password);
+        const result = await authenticateUser(email.trim(), password);
         if (result.success) {
             res.status(200).json({ token: result.token });
         } else {
@@ -286,7 +286,7 @@ app.post("/login", async (req, res) => {
 
 app.post("/reset-password", async (req, res) => {
     const { email } = req.body;
-    const result = await resetPassword(email);
+    const result = await resetPassword(email.trim());
     if (result.success) {
         res.status(200).json({ message: "Password reset link sent" });
     } else {
