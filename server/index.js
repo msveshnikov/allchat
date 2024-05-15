@@ -134,9 +134,9 @@ app.post("/interact", verifyToken, async (req, res) => {
         const country = req.headers["geoip_country_code"];
         const user = await User.findById(req.user.id);
         if (
-            user.subscriptionStatus !== "active" &&
-            user.subscriptionStatus !== "trialing" &&
-            !user.admin &&
+            user?.subscriptionStatus !== "active" &&
+            user?.subscriptionStatus !== "trialing" &&
+            !user?.admin &&
             referrer !== "android-app://online.allchat.twa/"
         ) {
             return res
