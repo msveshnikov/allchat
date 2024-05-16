@@ -239,7 +239,7 @@ function Main({ darkMode, toggleTheme }) {
             method: "POST",
             headers,
             body: JSON.stringify({
-                model: "gemini-1.0-pro",
+                model: "gemini-1.5-flash-preview-0514",
                 temperature: 0.1,
                 referrer,
                 input: "Extract main topic of this chat in one simple short statement without formatting (30 chars max) and return it without anything else in [] ",
@@ -284,15 +284,17 @@ function Main({ darkMode, toggleTheme }) {
     };
 
     const handleHistorySelection = (index) => {
-        const updatedStoredChatHistories = [...storedChatHistories];
-        if (updatedStoredChatHistories.length >= MAX_CHATS) {
-            updatedStoredChatHistories.shift();
-        }
-        Promise.resolve().then(async () => {
-            const summary = await generateChatSummary(chatHistory);
-            updatedStoredChatHistories[index] = { chatHistory, summary };
+        if (chatHistory.length > 0) {
+            Promise.resolve().then(async () => {
+                const updatedStoredChatHistories = [...storedChatHistories];
+                const summary = await generateChatSummary(chatHistory);
+                updatedStoredChatHistories[index] = { chatHistory, summary };
+                setStoredChatHistories(updatedStoredChatHistories);
+            });
+        } else {
+            const updatedStoredChatHistories = storedChatHistories.filter((_, i) => i !== index);
             setStoredChatHistories(updatedStoredChatHistories);
-        });
+        }
         setChatHistory(storedChatHistories[index].chatHistory);
         setDrawerOpen(false);
     };
