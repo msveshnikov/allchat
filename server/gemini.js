@@ -18,7 +18,7 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
     if (fileType) {
         webTools = false;
     }
-    if (model?.includes("gemini-1.5")) {
+    if (model?.includes("gemini-1.5") && userId !== "65fe9b2dedac81e8fa3c19bc") {
         model = "gemini-1.5-flash-preview-0514";
     }
     const parts = [];
