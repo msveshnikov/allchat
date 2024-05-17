@@ -44,14 +44,6 @@ jobs:
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v2
 
-            - name: Cache Docker layers
-              uses: actions/cache@v4
-              with:
-                  path: /tmp/.buildx-cache
-                  key: ${{ runner.os }}-buildx-${{ github.sha }}
-                  restore-keys: |
-                      ${{ runner.os }}-buildx-
-
             - name: Log in to Docker Hub
               uses: docker/login-action@master
               with:
@@ -73,11 +65,6 @@ jobs:
                   --output "type=image,push=true" \
                   --tag ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }} \
                   .
-
-            - name: Move cache
-              run: |
-                  rm -rf /tmp/.buildx-cache
-                  mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     deploy:
         needs: build-and-push
