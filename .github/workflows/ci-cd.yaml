@@ -42,18 +42,22 @@ jobs:
             - name: Build and Push Backend Image (arm64)
               run: |
                   docker buildx build \
-                  --platform linux/arm64/v8 \
-                  --output "type=image,push=true" \
-                  --tag ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }} \
-                  ./server
+                    --platform linux/arm64/v8 \
+                    --output "type=image,push=true" \
+                    --cache-from ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }}:latest \
+                    --cache-to ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }}:latest \
+                    --tag ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }} \
+                    ./server
 
             - name: Build and Push Frontend Image (arm64)
               run: |
                   docker buildx build \
-                  --platform linux/arm64/v8 \
-                  --output "type=image,push=true" \
-                  --tag ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }} \
-                  .
+                    --platform linux/arm64/v8 \
+                    --output "type=image,push=true" \
+                    --cache-from ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }}:latest \
+                    --cache-to ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }}:latest \
+                    --tag ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }} \
+                    .
 
     deploy:
         needs: build-and-push
