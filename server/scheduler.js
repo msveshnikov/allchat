@@ -2,6 +2,7 @@ import cron from "node-cron";
 import { User } from "./model/User.js";
 import { sendEmail } from "./tools.js";
 import { getTextGpt } from "./openai.js";
+import { emailSignature } from "./email.js";
 
 const scheduledActions = {};
 
@@ -27,7 +28,7 @@ export const scheduleAction = async (action, schedule, userId) => {
             user.scheduling.set(`${schedule}_action_${actionTimestamp}`, action);
             user.scheduling.set(`${schedule}_result_${actionTimestamp}`, result);
             await user.save();
-            const emailSignature = `\n\n---\nBest regards,\nAllChat`;
+
             await sendEmail(user.email, `${schedule} action result`, result + emailSignature, userId);
         } catch (error) {
             console.error(`Error executing scheduled action: ${error}`);

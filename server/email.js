@@ -10,6 +10,8 @@ import xlsx from "xlsx";
 import { MAX_CONTEXT_LENGTH } from "./index.js";
 dotenv.config({ override: true });
 
+export const emailSignature = `\n\n---\nBest regards,\nAllChat`;
+
 export async function handleIncomingEmails() {
     try {
         const imapClient = new imap({
@@ -97,7 +99,6 @@ export async function handleIncomingEmails() {
                                             true
                                         );
                                         if (response) {
-                                            const emailSignature = `\n\n---\nBest regards,\nAllChat`;
                                             await sendEmail(
                                                 emailFrom.from.value[0].address,
                                                 "RE: " + emailFrom.subject,

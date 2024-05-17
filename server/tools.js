@@ -8,6 +8,7 @@ import { MAX_SEARCH_RESULT_LENGTH, contentFolder, toolsUsed } from "./index.js";
 import { summarizeYouTubeVideo } from "./youtube.js";
 import TelegramBot from "node-telegram-bot-api";
 import ical from "ical-generator";
+import { emailSignature } from "./email.js";
 
 const bot = new TelegramBot(process.env.TELEGRAM_KEY);
 const transporter = nodemailer.createTransport({
@@ -277,7 +278,7 @@ export const handleToolCall = async (name, args, userId) => {
         case "search_web_content":
             return searchWebContent(args.query);
         case "send_email":
-            return sendEmail(args.to, args.subject, args.content, userId);
+            return sendEmail(args.to, args.subject, args.content + emailSignature, userId);
         case "get_current_time_utc":
             return getCurrentTimeUTC();
         case "execute_python":
@@ -505,7 +506,7 @@ export async function addCalendarEvent(userId, { title, description, startTime, 
         const attachmentName = `${title}.ics`;
         const attachments = [{ filename: attachmentName, content: icsContent, contentType: "text/calendar" }];
 
-        await sendEmail(user.email, subject, emailContent, userId, attachments);
+        await sendEmail(user.email, subject, emailContent + emailSignature, userId, attachments);
 
         return `Calendar event '${title}' added successfully and ICS file sent to ${user.email}.`;
     } catch (error) {
