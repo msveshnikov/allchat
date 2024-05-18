@@ -1,5 +1,5 @@
 # Use the official Node.js image as the base image
-FROM node:20-slim
+FROM --platform=$BUILDPLATFORM node:20-slim AS build
 
 # Set the working directory in the container
 WORKDIR /app
