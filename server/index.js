@@ -22,6 +22,7 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import { handleIncomingEmails } from "./email.js";
 import { getImage } from "./image.js";
+import { sendWelcomeEmail } from "./utils.js";
 dotenv.config({ override: true });
 
 const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
@@ -488,6 +489,7 @@ async function handleSubscriptionUpdate(subscription) {
             email: customer.email,
             password: customer.email,
         });
+        await sendWelcomeEmail(user);
     }
     user.subscriptionStatus = subscription.status;
     user.subscriptionId = subscription.id;
