@@ -74,11 +74,11 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                   },
               ]
             : [
-                  {
-                      googleSearchRetrieval: {
-                          disableAttribution: true,
-                      },
-                  },
+                  //       {
+                  //           googleSearchRetrieval: {
+                  //               disableAttribution: true,
+                  //           },
+                  //       },
               ],
     };
 
