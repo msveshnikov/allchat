@@ -72,7 +72,7 @@ export function storeUsageStats(userId, model, inputTokens, outputTokens, images
     const isGPT4o = model?.startsWith("gpt-4o");
     const isGPT35 = model?.startsWith("gpt-3.5");
     const isTogether = !isGemini15 && !isGemini10 && !isClaude && !isGPT4o && !isGPT35;
-    const imagesGeneratedCost = imagesGenerated * 0.002; //SDXL
+    const imagesGeneratedCost = imagesGenerated * 0.002;
 
     if (isGemini15) {
         const inputTokensCost = (inputTokens / 1000000) * 7;

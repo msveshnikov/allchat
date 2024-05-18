@@ -130,14 +130,14 @@ app.post("/interact", verifyToken, async (req, res) => {
         const lang = req.body.lang;
         const model = req.body.model || "gemini-1.5-pro-preview-0514";
         const customGPT = req.body.customGPT;
-        // const referrer = req.body.referrer;
+        const referrer = req.body.referrer;
         const country = req.headers["geoip_country_code"];
         const user = await User.findById(req.user.id);
         if (
             user?.subscriptionStatus !== "active" &&
             user?.subscriptionStatus !== "trialing" &&
-            !user?.admin
-            //  && referrer !== "android-app://online.allchat.twa/"
+            !user?.admin &&
+            referrer !== "android-app://online.allchat.twa/"
         ) {
             return res
                 .status(402)
@@ -481,10 +481,13 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
 async function handleSubscriptionUpdate(subscription) {
     console.log(subscription);
     const customer = await stripe.customers.retrieve(subscription.customer);
-    const user = await User.findOne({ email: customer.email });
+    let user = await User.findOne({ email: customer.email });
     if (!user) {
-        console.error("User not found");
-        return;
+        console.error("User not found, creating new one");
+        user = new User({
+            email: customer.email,
+            password: customer.email,
+        });
     }
     user.subscriptionStatus = subscription.status;
     user.subscriptionId = subscription.id;
