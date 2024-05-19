@@ -8,8 +8,6 @@ import {
     Button,
     useMediaQuery,
     useTheme,
-    Box,
-    Typography,
 } from "@mui/material";
 import AppHeader from "./AppHeader";
 import SideDrawer from "./SideDrawer";
@@ -19,6 +17,7 @@ import AuthForm from "./AuthForm";
 import Settings, { models } from "./Settings";
 import { animateScroll as scroll } from "react-scroll";
 import readmeContent from "../README.md";
+import { ConfirmModal } from "./ConfirmModal";
 
 const MAX_CHAT_HISTORY_LENGTH = 20;
 const MAX_CHATS = 5;
@@ -49,7 +48,8 @@ function Main({ darkMode, toggleTheme }) {
     const [user, setUser] = useState(null);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+    const [showCancelConfirmation, setShowCancelConfirmation] = useState(false);
+    const [showClearConfirmation, setShowClearConfirmation] = useState(false);
     const [referrer, setReferrer] = useState("");
 
     const handleAuthentication = (token, email) => {
@@ -261,13 +261,18 @@ function Main({ darkMode, toggleTheme }) {
         setDrawerOpen(!drawerOpen);
     };
 
-    const clearAllChatHistory = () => {
+    const clearAllChatHistory = async () => {
+        setShowClearConfirmation(true);
+    };
+
+    const confirmClearChats = () => {
         setChatHistory([]);
         setStoredChatHistories([]);
         localStorage.removeItem("chatHistory");
         localStorage.removeItem("storedChatHistories");
         setDrawerOpen(false);
         setSelectedFile(null);
+        setShowClearConfirmation(false);
     };
 
     const handleNewChat = () => {
@@ -396,7 +401,7 @@ function Main({ darkMode, toggleTheme }) {
     };
 
     const handleCancelSubscription = async () => {
-        setShowConfirmationModal(true);
+        setShowCancelConfirmation(true);
     };
 
     const confirmCancelSubscription = async () => {
@@ -424,7 +429,7 @@ function Main({ darkMode, toggleTheme }) {
             setSnackbarOpen(true);
         }
 
-        setShowConfirmationModal(false);
+        setShowCancelConfirmation(false);
     };
 
     return (
@@ -482,37 +487,20 @@ function Main({ darkMode, toggleTheme }) {
                     <Button onClick={handleCloseSettingsModal}>Close</Button>
                 </DialogActions>
             </Dialog>
-            <Dialog
-                open={showConfirmationModal}
-                style={{
-                    border: "1px solid #ccc",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                    borderRadius: "8px",
-                    padding: "24px",
-                }}
-            >
-                <Box display="flex" flexDirection="column" alignItems="center" textAlign="center" p={4} m={2}>
-                    <Typography variant="h6" gutterBottom>
-                        Confirm Cancellation
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                        Are you sure you want to cancel your subscription?
-                    </Typography>
-                    <Box mt={2}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={confirmCancelSubscription}
-                            style={{ marginRight: "8px" }}
-                        >
-                            Yes
-                        </Button>
-                        <Button variant="outlined" color="primary" onClick={() => setShowConfirmationModal(false)}>
-                            No
-                        </Button>
-                    </Box>
-                </Box>
-            </Dialog>
+            <ConfirmModal
+                title="Confirm Cancellation"
+                text="Are you sure you want to cancel your subscription?"
+                show={showCancelConfirmation}
+                onConfirm={confirmCancelSubscription}
+                setShow={setShowCancelConfirmation}
+            />
+            <ConfirmModal
+                title="Confirm clear all chats"
+                text="Are you sure you want to clear all chat histories?"
+                show={showClearConfirmation}
+                onConfirm={confirmClearChats}
+                setShow={setShowClearConfirmation}
+            />
             <Container
                 maxWidth="lg"
                 sx={isMobile ? { m: 0, p: 0 } : {}}
