@@ -162,7 +162,7 @@ const CustomGPTPage = () => {
                     onChange={handleFileUpload}
                 />
                 <Typography variant="body2" color={theme.palette.text.secondary}>
-                    Drag and drop files here or click to upload
+                    Drag and drop knowledge files here or click to upload
                 </Typography>
                 {files.map((file, index) => (
                     <Typography key={index} variant="body2" color={theme.palette.text.primary}>
