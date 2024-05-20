@@ -5,10 +5,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { CodeBlock } from "./CodeBlock";
 import { Lightbox } from "react-modal-image";
-import "katex/dist/katex.min.css";
-import rehypeKatex from "rehype-katex";
-import remarkMath from "remark-math";
-import { LazyLatexComponents } from "./LazyLatexComponents";
 
 const getFileTypeIcon = (mimeType) => {
     switch (mimeType) {
@@ -183,8 +179,6 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                         {chat.assistant !== null && (
                             <Box>
                                 <ReactMarkdown
-                                    remarkPlugins={[remarkMath]}
-                                    rehypePlugins={[rehypeKatex]}
                                     components={{
                                         code({ node, inline, className, children, ...props }) {
                                             const match = /language-(\w+)/.exec(className || "");
@@ -203,7 +197,6 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                                         },
                                         // eslint-disable-next-line jsx-a11y/anchor-has-content
                                         a: ({ node, ...props }) => <a style={linkStyle} {...props} />,
-                                        ...LazyLatexComponents,
                                     }}
                                 >
                                     {chat.assistant}

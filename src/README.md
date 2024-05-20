@@ -25,7 +25,6 @@ I'm An AI assistant app that interacts with all major models, maintains history,
 -   File upload PDFs, Word, Excel into the conversation
 -   Multiple chats
 -   YouTube video summary
--   LaTeX render
 -   Edit your messages with response regeneration
 -   PDF export of all chats
 -   Web Tools - weather, stocks, email send, Telegram, web search, calendar, etc - with Gemini, Claude, OpenAI models
