@@ -260,6 +260,15 @@ export const tools = [
             required: ["title", "description", "startTime", "endTime"],
         },
     },
+    {
+        name: "get_user_subscription_info",
+        description: "Get information about the user's subscription status, usage statistics, and API consumption.",
+        input_schema: {
+            type: "object",
+            properties: {},
+            required: [],
+        },
+    },
 ];
 
 export const handleToolCall = async (name, args, userId) => {
@@ -297,6 +306,8 @@ export const handleToolCall = async (name, args, userId) => {
             return summarizeYouTubeVideo(args.videoId);
         case "add_calendar_event":
             return addCalendarEvent(userId, args);
+        case "get_user_subscription_info":
+            return getUserSubscriptionInfo(userId);
         default:
             console.error(`Unsupported function call: ${name}`);
     }
@@ -486,10 +497,6 @@ export async function removeUserInfo(userId) {
 export async function addCalendarEvent(userId, { title, description, startTime, endTime }) {
     try {
         const user = await User.findById(userId);
-        if (!user || !user.email) {
-            return "No email address found in user profile";
-        }
-
         const cal = ical({ domain: "allchat.online" });
         cal.createEvent({
             start: new Date(startTime),
@@ -512,5 +519,41 @@ export async function addCalendarEvent(userId, { title, description, startTime, 
     } catch (error) {
         console.error("Error adding calendar event:", error);
         return "Error adding calendar event: " + error.message;
+    }
+}
+
+async function getUserSubscriptionInfo(userId) {
+    try {
+        const user = await User.findById(userId);
+
+        const { subscriptionStatus, subscriptionId, usageStats, info } = user;
+
+        let output = `Subscription Status: ${subscriptionStatus}\n`;
+        output += `Subscription ID: ${subscriptionId || "N/A"}\n\n`;
+
+        output += "Usage Statistics:\n";
+        for (const [model, stats] of Object.entries(usageStats)) {
+            output += `${model}:\n`;
+            output += `  Input Tokens: ${stats.inputTokens}\n`;
+            output += `  Output Tokens: ${stats.outputTokens}\n`;
+            output += `  Money Consumed: $${stats.moneyConsumed.toFixed(2)}\n`;
+            if (model === "gemini") {
+                output += `  Images Generated: ${stats.imagesGenerated}\n`;
+            }
+            output += "\n";
+        }
+
+        output += "User Information:\n";
+        for (const [key, value] of info.entries()) {
+            output += `${key}: ${value}\n`;
+        }
+        output += "\nTerms of Use:\n";
+        output +=
+            "7. The AllChat.online service is available to users with subscription only. Users can subscribe to the service for $4.99 per month, which includes a free trial period. The subscription provides access to the full suite of AI models and capabilities offered by AllChat.online. The subscription automatically renews on a monthly basis unless cancelled by the user. Cancellation can be done at any time, but there are no refunds for partially used subscription periods. If users exceed $4.99/month in API consumption, the subscription automatically terminates.\n";
+
+        return output;
+    } catch (error) {
+        console.error("Error getting user subscription information:", error);
+        return "Error getting user subscription information: " + error.message;
     }
 }
