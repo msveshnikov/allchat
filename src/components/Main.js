@@ -495,7 +495,7 @@ function Main({ darkMode, toggleTheme }) {
                 setShow={setShowCancelConfirmation}
             />
             <ConfirmModal
-                title="Confirm clear all chats"
+                title="Confirm Clear All"
                 text="Are you sure you want to clear all chat histories?"
                 show={showClearConfirmation}
                 onConfirm={confirmClearChats}

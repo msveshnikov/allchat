@@ -305,7 +305,7 @@ export const handleToolCall = async (name, args, userId) => {
         case "summarize_youtube_video":
             return summarizeYouTubeVideo(args.videoId);
         case "add_calendar_event":
-            return addCalendarEvent(userId, args);
+            return addCalendarEvent(args.title, args.description, args.startTime, args.endTime, userId);
         case "get_user_subscription_info":
             return getUserSubscriptionInfo(userId);
         default:
@@ -494,7 +494,7 @@ export async function removeUserInfo(userId) {
     }
 }
 
-export async function addCalendarEvent(userId, { title, description, startTime, endTime }) {
+export async function addCalendarEvent(title, description, startTime, endTime, userId) {
     try {
         const user = await User.findById(userId);
         const cal = ical({ domain: "allchat.online" });

@@ -263,48 +263,6 @@ const Admin = () => {
                     )}
                 </Box>
             </Box>
-            <Box padding={4}>
-                <Typography variant="h4" gutterBottom align="center" color="primary">
-                    Custom GPT Admin
-                </Typography>
-                <TableContainer component={Paper} elevation={3}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Instructions</TableCell>
-                                <TableCell>Knowledge</TableCell>
-                                <TableCell>Private</TableCell>
-                                <TableCell>Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {gpts?.map((gpt) => (
-                                <TableRow key={gpt._id}>
-                                    <TableCell>{gpt.name}</TableCell>
-                                    <TableCell>{gpt.instructions?.slice(0, 500)}</TableCell>
-                                    <TableCell>{gpt.knowledge?.slice(0, 1500)}</TableCell>
-                                    <TableCell>
-                                        <FormControlLabel
-                                            control={
-                                                <Switch
-                                                    checked={gpt.isPrivate}
-                                                    onChange={() => handlePrivateGpt(gpt._id, !gpt.isPrivate)}
-                                                />
-                                            }
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        <IconButton onClick={() => handleDeleteGpt(gpt._id)} color="error">
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Box>
 
             <Box padding={4}>
                 <Typography variant="h4" gutterBottom align="center" color="primary">
@@ -365,6 +323,49 @@ const Admin = () => {
                         onChange={(event, page) => setCurrentPage(page)}
                     />
                 </Box>
+            </Box>
+            
+            <Box padding={4}>
+                <Typography variant="h4" gutterBottom align="center" color="primary">
+                    Custom GPT Admin
+                </Typography>
+                <TableContainer component={Paper} elevation={3}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Name</TableCell>
+                                <TableCell>Instructions</TableCell>
+                                <TableCell>Knowledge</TableCell>
+                                <TableCell>Private</TableCell>
+                                <TableCell>Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {gpts?.map((gpt) => (
+                                <TableRow key={gpt._id}>
+                                    <TableCell>{gpt.name}</TableCell>
+                                    <TableCell>{gpt.instructions?.slice(0, 500)}</TableCell>
+                                    <TableCell>{gpt.knowledge?.slice(0, 1500)}</TableCell>
+                                    <TableCell>
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    checked={gpt.isPrivate}
+                                                    onChange={() => handlePrivateGpt(gpt._id, !gpt.isPrivate)}
+                                                />
+                                            }
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <IconButton onClick={() => handleDeleteGpt(gpt._id)} color="error">
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </Box>
         </>
     );
