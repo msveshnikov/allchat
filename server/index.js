@@ -86,6 +86,9 @@ morgan.token("body", (req, res) => {
         if ("chatHistory" in clonedBody) {
             clonedBody.chatHistory = "<REDACTED>";
         }
+        if ("credential" in clonedBody) {
+            clonedBody.credential = "<REDACTED>";
+        }
         if ("instructions" in clonedBody) {
             clonedBody.instructions = "<REDACTED>";
         }
