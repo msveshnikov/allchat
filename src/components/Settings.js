@@ -24,7 +24,8 @@ export const models = {
 const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, selectedModel, onModelSelect }) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const gravatarUrl = `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
+    const gravatarUrl =
+        user?.profileUrl || `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
 
     const [customGPTNames, setCustomGPTNames] = useState([]);
     const [selectedCustomGPT, setSelectedCustomGPT] = useState("");
