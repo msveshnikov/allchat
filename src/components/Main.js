@@ -437,6 +437,7 @@ function Main({ darkMode, toggleTheme }) {
             <AppHeader
                 isAuthenticated={isAuthenticated}
                 userEmail={userEmail}
+                user={user}
                 onSignOut={handleSignOut}
                 onSettings={handleSettings}
                 onOpenAuthModal={handleOpenAuthModal}

@@ -8,6 +8,7 @@ services:
         environment:
             - NODE_ENV=production
             - GOOGLE_KEY=${GOOGLE_KEY}
+            - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
             - STABILITY_KEY=${STABILITY_KEY}
             - CLAUDE_KEY=${CLAUDE_KEY}
             - STRIPE_KEY=${STRIPE_KEY}

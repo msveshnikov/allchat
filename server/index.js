@@ -99,7 +99,7 @@ app.use(morgan(loggerFormat));
 
 const limiter = rateLimit({
     windowMs: 60 * 1000,
-    limit: 10,
+    limit: 20,
     standardHeaders: "draft-7",
     legacyHeaders: false,
 });
@@ -137,7 +137,7 @@ app.post("/interact", verifyToken, async (req, res) => {
         if (
             user?.subscriptionStatus !== "active" &&
             user?.subscriptionStatus !== "trialing" &&
-            !user?.admin 
+            !user?.admin
             // && referrer !== "android-app://online.allchat.twa/"
         ) {
             return res
@@ -257,10 +257,10 @@ app.post("/interact", verifyToken, async (req, res) => {
 
 app.post("/register", async (req, res) => {
     try {
-        const { email, password } = req.body;
-        const result = await registerUser(email.trim(), password, req);
+        const { email, password, credential } = req.body;
+        const result = await registerUser(email.trim(), password, credential, req);
         if (result.success) {
-            res.status(200).json({ message: "Registration successful" });
+            res.status(200).json({ message: "Registration successful", token: result.token });
         } else {
             res.status(400).json({ error: result.error });
         }

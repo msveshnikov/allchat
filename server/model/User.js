@@ -11,6 +11,9 @@ const userSchema = new mongoose.Schema(
         },
         userAgent: { type: String, required: false },
         country: { type: String, required: false },
+        profileUrl: { type: String, required: false },
+        firstName: { type: String, required: false },
+        lastName: { type: String, required: false },
         usageStats: {
             gemini: {
                 inputTokens: { type: Number, default: 0 },

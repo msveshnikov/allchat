@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import { API_URL } from "./Main";
 import { useTranslation } from "react-i18next";
 import ReactGA from "react-ga4";
+import { GoogleLogin } from "@react-oauth/google";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -20,10 +21,14 @@ const AuthForm = ({ onAuthentication }) => {
     const [successMessage, setSuccessMessage] = useState("");
     const { t } = useTranslation();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const googleLogin = (response) => {
+        handleSubmit(null, response.credential);
+    };
 
-        if (!emailRegex.test(email)) {
+    const handleSubmit = async (e, credential) => {
+        e?.preventDefault();
+
+        if (!credential && !emailRegex.test(email)) {
             setError(t("Please enter a valid email address."));
             return;
         }
@@ -34,18 +39,18 @@ const AuthForm = ({ onAuthentication }) => {
                 action: isLogin ? "Login" : "SignUp",
             });
             const response = await fetch(
-                `${API_URL}/${isLogin ? "login" : isPasswordReset ? "reset-password" : "register"}`,
+                `${API_URL}/${isLogin && !credential ? "login" : isPasswordReset ? "reset-password" : "register"}`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ email, password }),
+                    body: JSON.stringify({ email, password, credential }),
                 }
             );
             const data = await response.json();
             if (response.ok) {
-                if (isLogin) {
+                if (isLogin || credential || data.token) {
                     onAuthentication(data.token, email);
                 } else if (isPasswordReset) {
                     setIsPasswordReset(false);
@@ -151,6 +156,9 @@ const AuthForm = ({ onAuthentication }) => {
                     {t("Forgot Password?")}
                 </Button>
             )}
+            <Grid sx={{ mt: 2 }} container justifyContent="center">
+                <GoogleLogin size="large" onSuccess={googleLogin} />
+            </Grid>
         </Box>
     );
 };

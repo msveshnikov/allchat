@@ -10,6 +10,7 @@ import CustomGPTPage from "./components/CustomGPT";
 import Privacy from "./components/Privacy";
 import Terms from "./components/Terms";
 import ReactGA from "react-ga4";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 ReactGA.initialize("G-L4KLPWXQ75");
 
@@ -33,18 +34,20 @@ const App = () => {
 
     return (
         <ThemeProvider theme={theme(darkMode ? "dark" : "light")}>
-            <I18nextProvider>
-                <Router>
-                    <Routes>
-                        <Route path="/admin" element={<Admin />} />
-                        <Route path="/custom" element={<CustomGPTPage />} />
-                        <Route path="/privacy" element={<Privacy />} />
-                        <Route path="/terms" element={<Terms />} />
-                        <Route path="/" element={<Main darkMode={darkMode} toggleTheme={toggleTheme} />} />
-                        <Route path="/reset-password/:token" element={<PasswordReset />} />
-                    </Routes>
-                </Router>
-            </I18nextProvider>
+            <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+                <I18nextProvider>
+                    <Router>
+                        <Routes>
+                            <Route path="/admin" element={<Admin />} />
+                            <Route path="/custom" element={<CustomGPTPage />} />
+                            <Route path="/privacy" element={<Privacy />} />
+                            <Route path="/terms" element={<Terms />} />
+                            <Route path="/" element={<Main darkMode={darkMode} toggleTheme={toggleTheme} />} />
+                            <Route path="/reset-password/:token" element={<PasswordReset />} />
+                        </Routes>
+                    </Router>
+                </I18nextProvider>
+            </GoogleOAuthProvider>
         </ThemeProvider>
     );
 };

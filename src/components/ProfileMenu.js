@@ -1,11 +1,10 @@
 import React from "react";
 import { IconButton, Menu, MenuItem, Avatar } from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import md5 from "md5";
 import LaunchIcon from "@mui/icons-material/Launch";
 import { useNavigate } from "react-router-dom";
 
-export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
+export function ProfileMenu({ userEmail, user, onSettings, onSignOut }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const navigate = useNavigate();
 
@@ -45,14 +44,13 @@ export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
     return (
         <div>
             <IconButton color="inherit" onClick={handleProfileMenuOpen}>
-                {userEmail ? (
-                    <Avatar
-                        src={`https://www.gravatar.com/avatar/${md5(userEmail.trim().toLowerCase())}?d=retro`}
-                        alt="User Avatar"
-                    />
-                ) : (
-                    <AccountCircleIcon />
-                )}
+                <Avatar
+                    src={
+                        user?.profileUrl ||
+                        `https://www.gravatar.com/avatar/${md5(userEmail.trim().toLowerCase())}?d=retro`
+                    }
+                    alt="User Avatar"
+                />
             </IconButton>
             <Menu
                 anchorEl={anchorEl}

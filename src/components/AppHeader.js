@@ -10,6 +10,7 @@ import { ModelSelector } from "./ModelSelector";
 const AppHeader = ({
     isAuthenticated,
     userEmail,
+    user,
     onSignOut,
     onSettings,
     onOpenAuthModal,
@@ -40,7 +41,7 @@ const AppHeader = ({
                         {darkMode ? <NightlightIcon /> : <BrightnessHighIcon />}
                     </IconButton>
                     {isAuthenticated ? (
-                        <ProfileMenu userEmail={userEmail} onSettings={onSettings} onSignOut={onSignOut} />
+                        <ProfileMenu userEmail={userEmail} user={user} onSettings={onSettings} onSignOut={onSignOut} />
                     ) : (
                         <Box component="span" onClick={onOpenAuthModal} sx={{ cursor: "pointer" }}>
                             <Typography>{t("Login")}</Typography>

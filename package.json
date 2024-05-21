@@ -7,6 +7,7 @@
         "@loadable/component": "^5.16.4",
         "@mui/icons-material": "^5.15.18",
         "@mui/material": "^5.15.18",
+        "@react-oauth/google": "^0.12.1",
         "html-to-pdfmake": "^2.5.9",
         "i18next": "^23.11.4",
         "i18next-browser-languagedetector": "^8.0.0",
