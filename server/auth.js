@@ -87,8 +87,8 @@ export const registerUser = async (email, password, credential, req) => {
                 subscriptionStatus,
             });
             await user.save();
+            await sendWelcomeEmail(user);
         }
-        await sendWelcomeEmail(user);
         const token = jwt.sign({ userId: user._id, admin: user.admin }, process.env.JWT_TOKEN, { expiresIn: "720h" });
         return { success: true, token };
     } catch (error) {
@@ -147,6 +147,7 @@ export const createOrUpdateUser = async (profile, req, ip, country, subscription
     if (!user) {
         update.password = "external";
         user = await User.create(update);
+        await sendWelcomeEmail(user);
     } else {
         user = await User.findOneAndUpdate({ email: profile.email }, update);
     }
