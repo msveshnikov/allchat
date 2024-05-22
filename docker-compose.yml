@@ -5,6 +5,7 @@ services:
         image: extender777/allchat-backend
         ports:
             - "6001:5000"
+            - "6002:6002"
         environment:
             - NODE_ENV=production
             - GOOGLE_KEY=${GOOGLE_KEY}

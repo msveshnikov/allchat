@@ -23,6 +23,8 @@ import dotenv from "dotenv";
 import { handleIncomingEmails } from "./email.js";
 import { getImage } from "./image.js";
 import { sendWelcomeEmail } from "./utils.js";
+import cluster from "cluster";
+
 dotenv.config({ override: true });
 
 const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
@@ -718,4 +720,7 @@ process.on("uncaughtException", (err, origin) => {
     console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
 });
 
-setInterval(handleIncomingEmails, 60 * 1000);
+// Run script only on production, only on first cluster instance
+if (cluster?.worker?.id === 1 && process.env.NODE_ENV === "production") {
+    setInterval(handleIncomingEmails, 60 * 1000);
+}
