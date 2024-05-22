@@ -24,6 +24,7 @@ import { handleIncomingEmails } from "./email.js";
 import { getImage } from "./image.js";
 import { sendWelcomeEmail } from "./utils.js";
 import cluster from "cluster";
+import promClient from "prom-client";
 
 dotenv.config({ override: true });
 
@@ -49,7 +50,9 @@ Your ultimate goal is to provide an excellent user experience by leveraging the 
 promBundle.normalizePath = (req, opts) => {
     return req.route?.path ?? "No";
 };
+new promClient.AggregatorRegistry();
 const metricsMiddleware = promBundle({
+    autoregister: false,
     metricType: "summary",
     includeMethod: true,
     includePath: true,
