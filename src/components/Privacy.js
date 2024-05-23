@@ -22,7 +22,7 @@ const Privacy = () => {
                 <br />
 
                 <Typography variant="body2">
-                    Your email address is the only personal information we collect from you. Any sensitive information
+                    Your email address and profile picture are the only personal information we collect from you. Any sensitive information
                     like passwords or user files are encrypted and excluded from storage. All chat histories are saved
                     only in your browser's local storage, and the "Memory" feature may store some information you
                     provide to the assistant, so please use it with care. Cleared logs are stored only for debugging

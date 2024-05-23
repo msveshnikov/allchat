@@ -92,7 +92,7 @@ export const registerUser = async (email, password, credential, req) => {
         const token = jwt.sign({ userId: user._id, admin: user.admin }, process.env.JWT_TOKEN, { expiresIn: "720h" });
         return { success: true, token };
     } catch (error) {
-        console.error("Registration error:", error);
+        console.error("Registration error:", error.message);
         return { success: false, error: "Registration failed" };
     }
 };
@@ -110,7 +110,7 @@ export const authenticateUser = async (email, password) => {
         const token = jwt.sign({ userId: user._id, admin: user.admin }, process.env.JWT_TOKEN, { expiresIn: "720h" });
         return { success: true, token };
     } catch (error) {
-        console.error("Authentication error:", error);
+        console.error("Authentication error:", error.message);
         return { success: false, error: "Authentication failed" };
     }
 };

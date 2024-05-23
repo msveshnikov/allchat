@@ -159,6 +159,13 @@ const AuthForm = ({ onAuthentication }) => {
             <Grid sx={{ mt: 2 }} container justifyContent="center">
                 <GoogleLogin size="large" onSuccess={googleLogin} />
             </Grid>
+            <Grid container justifyContent="center" sx={{ mt: 1 }}>
+                <Typography variant="body2">
+                    <a href="/privacy" target="_blank" rel="noopener noreferrer">
+                        {t("Privacy")}
+                    </a>
+                </Typography>
+            </Grid>
         </Box>
     );
 };
