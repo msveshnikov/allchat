@@ -40,7 +40,6 @@ const userSchema = new mongoose.Schema(
         subscriptionId: { type: String, required: false },
         subscriptionStatus: {
             type: String,
-            enum: ["active", "past_due", "canceled", "none", "trialing", "incomplete"],
             default: "none",
         },
         info: { type: Map, of: String, default: new Map() },
