@@ -37,6 +37,14 @@ export async function fetchPageContent(url) {
     try {
         const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
         const response = await fetch(url, { headers: { "User-Agent": randomUserAgent } });
+
+        // Check if the response is a PDF
+        const contentType = response.headers.get("Content-Type");
+        if (contentType && contentType.includes("application/pdf")) {
+            console.log("fetchPageContent skipped (PDF)", url);
+            return null; // Skip PDF content to avoid high CPU usage
+        }
+
         const html = await response.text();
         const $ = load(html);
         $("script, style").remove();
