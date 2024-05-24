@@ -207,6 +207,17 @@ function Main({ darkMode, toggleTheme }) {
                 ];
                 setChatHistory(newChatHistory);
                 setOpenAuthModal(true);
+            } else if (response.status === 402) {
+                setSnackbarMessage("Please activate subscription");
+                setSnackbarSeverity("error");
+                setSnackbarOpen(true);
+                const data = await response.json();
+                const newChatHistory = [
+                    ...(newHistory || chatHistory),
+                    { user: input, assistant: null, error: data.error },
+                ];
+                setChatHistory(newChatHistory);
+                setOpenSettingsModal(true);
             } else {
                 const data = await response.json();
                 const newChatHistory = [
