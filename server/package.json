@@ -10,7 +10,7 @@
     "type": "module",
     "dependencies": {
         "@anthropic-ai/sdk": "^0.21.1",
-        "@google-cloud/vertexai": "^1.1.0",
+        "@google-cloud/vertexai": "^1.2.0",
         "bcrypt": "^5.1.1",
         "cheerio": "^1.0.0-rc.12",
         "cors": "^2.8.5",
@@ -32,7 +32,7 @@
         "openai": "^4.47.1",
         "pdf-parse": "1.1.1",
         "sharp": "^0.33.4",
-        "stripe": "^15.7.0",
+        "stripe": "^15.8.0",
         "xlsx": "^0.18.5",
         "youtube-transcript": "^1.2.1"
     }
