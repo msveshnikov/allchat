@@ -78,6 +78,45 @@ You have to get some of those APIs and set environment variables (or put to .env
 -   In the server folder, `npm i` then `npm run api`
 -   In the root folder, `npm i` then `npm run start`
 
+
+```mermaid
+graph LR
+   subgraph AllChat["AllChat"]
+       subgraph Application["Application Services"]
+           Backend["Backend<br>extender777/allchat-backend"]-->MongoDB
+           Frontend["Frontend<br>extender777/allchat-frontend"]-->Backend
+           PythonShell["Python Shell<br>python:3.12"]-->Backend
+       end
+
+       subgraph Data["Data Services"]
+           MongoDB["MongoDB<br>mongo:latest"]
+       end
+
+       subgraph Monitoring["Monitoring Services"]
+           Prometheus["Prometheus<br>prom/prometheus"]
+           NodeExporter["Node Exporter<br>prom/node-exporter"]
+           Grafana["Grafana<br>grafana/grafana"]-->Prometheus
+           Grafana-->Loki
+           Loki["Loki<br>grafana/loki"]
+       end
+   end
+
+   subgraph Volumes
+       MongoData["mongo-data"]
+       PrometheusVolume["prometheus"]
+       GrafanaVolume["grafana"]
+       LokiVolume["loki"]
+   end
+
+   MongoDB-->MongoData
+   Prometheus-->PrometheusVolume
+   Grafana-->GrafanaVolume
+   Loki-->LokiVolume
+
+   classDef serviceName fill:#ffc107,stroke:#ff9800,color:#212121;
+   class Backend,Frontend,PythonShell,MongoDB,Prometheus,NodeExporter,Grafana,Loki serviceName;
+```
+
 [![Stargazers repo roster for @msveshnikov/allchat](https://reporoster.com/stars/msveshnikov/allchat)](https://github.com/msveshnikov/allchat/stargazers)
 
 [![Forkers repo roster for @msveshnikov/allchat](https://reporoster.com/forks/msveshnikov/allchat)](https://github.com/msveshnikov/allchat/network/members)
