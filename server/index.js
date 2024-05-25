@@ -338,6 +338,7 @@ app.get("/stats", verifyToken, async (req, res) => {
             none: 0,
             trialing: 0,
             incomplete: 0,
+            subscription: 0,
         };
 
         const geminiStats = {
@@ -365,6 +366,9 @@ app.get("/stats", verifyToken, async (req, res) => {
         for (const user of users) {
             const { gemini, claude, together, gpt } = user.usageStats;
             subscriptionStats[user.subscriptionStatus]++;
+            if (user.subscriptionId) {
+                subscriptionStats.subscription++;
+            }
 
             geminiStats.totalInputTokens += gemini.inputTokens;
             geminiStats.totalOutputTokens += gemini.outputTokens;

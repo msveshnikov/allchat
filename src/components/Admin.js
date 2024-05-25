@@ -250,6 +250,9 @@ const Admin = () => {
                                                 <Typography variant="body1" color="text.primary">
                                                     Incomplete: <strong>{stats.subscriptionStats.incomplete}</strong>
                                                 </Typography>
+                                                <Typography variant="body1" color="text.secondary">
+                                                    Subscriptions: <strong>{stats.subscriptionStats.subscription}</strong>
+                                                </Typography>
                                             </>
                                         )}
                                     </CardContent>
