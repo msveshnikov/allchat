@@ -35,7 +35,7 @@ const AppHeader = ({
                         AllChat Premium
                     </Typography>
                 )}
-                <ModelSelector selectedModel={selectedModel} onModelSelect={onModelSelect} />
+                <ModelSelector user={user} selectedModel={selectedModel} onModelSelect={onModelSelect} />
                 <Box sx={{ ml: "auto", display: "flex", alignItems: "center" }}>
                     <IconButton aria-label="toggle dark mode" onClick={toggleTheme} color="inherit" sx={{ mr: 1 }}>
                         {darkMode ? <NightlightIcon /> : <BrightnessHighIcon />}

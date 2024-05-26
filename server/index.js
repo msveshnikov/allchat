@@ -230,7 +230,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 model,
                 tools
             );
-        } else if (model?.startsWith("gpt")) {
+        } else if (model?.startsWith("gpt") || model?.startsWith("ft")) {
             textResponse = await getTextGpt(
                 contextPrompt,
                 temperature,

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Typography, Menu, MenuItem } from "@mui/material";
 import { models } from "./Settings";
 
-export const ModelSelector = ({ selectedModel, onModelSelect }) => {
+export const ModelSelector = ({ selectedModel, onModelSelect, user }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -43,11 +43,13 @@ export const ModelSelector = ({ selectedModel, onModelSelect }) => {
                     "aria-labelledby": "model-selector-button",
                 }}
             >
-                {Object.keys(models).map((model) => (
-                    <MenuItem key={model} onClick={() => handleModelSelect(model)}>
-                        {model}
-                    </MenuItem>
-                ))}
+                {Object.keys(models)
+                    .filter((model) => user?.admin || !models[model].includes("admin"))
+                    .map((model) => (
+                        <MenuItem key={model} onClick={() => handleModelSelect(model)}>
+                            {model}
+                        </MenuItem>
+                    ))}
             </Menu>
         </div>
     );
