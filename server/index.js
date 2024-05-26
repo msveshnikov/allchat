@@ -200,7 +200,7 @@ app.post("/interact", verifyToken, async (req, res) => {
 
         const userInfo = [...user.info.entries()].map(([key, value]) => `${key}: ${value}`).join(", ");
         const contextPrompt = model?.startsWith("ft")
-            ? `${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
+            ? `System: ${instructions} ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
                     \nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH)
             : `System: ${instructions || systemPrompt} User country code: ${country} User Lang: ${lang}
                     ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
