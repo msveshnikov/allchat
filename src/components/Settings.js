@@ -14,6 +14,7 @@ export const models = {
     "claude-3-haiku-20240307": ["image", "document", "tools"],
     "claude-3-sonnet-20240229": ["image", "document", "tools"],
     "gpt-3.5-turbo": ["document", "tools"],
+    "ft:gpt-3.5-turbo-0125:maxsoft:kate:9T9qrZ1z": ["document", "tools", "admin"],
     "ft:gpt-3.5-turbo-0613:maxsoft:kate:9THBM3sf": ["document", "tools", "admin"],
     "gpt-4o": ["image", "document", "tools"],
     "databricks/dbrx-instruct": ["document"],
