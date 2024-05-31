@@ -8,7 +8,7 @@ import mammoth from "mammoth";
 import promBundle from "express-prom-bundle";
 import mongoose from "mongoose";
 import * as xlsx from "xlsx";
-import { getTextGemini } from "./gemini.js";
+import { getTextGemini, getTextGeminiFinetune } from "./gemini.js";
 import { getTextClaude } from "./claude.js";
 import { getTextTogether } from "./together.js";
 import { getTextGpt } from "./openai.js";
@@ -200,7 +200,9 @@ app.post("/interact", verifyToken, async (req, res) => {
 
         const userInfo = [...user.info.entries()].map(([key, value]) => `${key}: ${value}`).join(", ");
         const contextPrompt = model?.startsWith("ft")
-            ? `System: ${instructions} ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
+            ? `System: ${instructions} ${chatHistory
+                  .map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`)
+                  .join("\n")}
                     \nHuman: ${userInput}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH)
             : `System: ${instructions || systemPrompt} User country code: ${country} User Lang: ${lang}
                     ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
@@ -223,6 +225,8 @@ app.post("/interact", verifyToken, async (req, res) => {
                 model,
                 tools
             );
+        } else if (model?.startsWith("tunedModels")) {
+            textResponse = await getTextGeminiFinetune(contextPrompt, temperature, model);
         } else if (model?.startsWith("claude")) {
             textResponse = await getTextClaude(
                 contextPrompt,
@@ -233,7 +237,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 model,
                 tools
             );
-        } else if (model?.startsWith("gpt") || model?.startsWith("ft")) {
+        } else if (model?.startsWith("gpt") || model?.startsWith("ft:gpt")) {
             textResponse = await getTextGpt(
                 contextPrompt,
                 temperature,

@@ -23,6 +23,7 @@ services:
             - FRONTEND_URL=${FRONTEND_URL}
             - TOGETHER_KEY=${TOGETHER_KEY}
             - OPENAI_KEY=${OPENAI_KEY}
+            - GEMINI_KEY=${GEMINI_KEY}
         restart: unless-stopped
         volumes:
             - ./allchat.json:/app/allchat.json

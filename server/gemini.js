@@ -2,6 +2,7 @@ import { tools } from "./tools.js";
 import { VertexAI } from "@google-cloud/vertexai";
 import { handleToolCall } from "./tools.js";
 import dotenv from "dotenv";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 dotenv.config({ override: true });
 process.env["GOOGLE_APPLICATION_CREDENTIALS"] = "./allchat.json";
 
@@ -142,4 +143,46 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
     }
 
     return finalResponse;
+}
+
+export async function getTextGeminiFinetune(prompt, temperature, modelName) {
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY);
+    const model = genAI.getGenerativeModel({ model: modelName });
+
+    const generationConfig = {
+        temperature,
+        topK: 0,
+        topP: 1,
+        maxOutputTokens: 192,
+    };
+
+    const safetySettings = [
+        {
+            category: "HARM_CATEGORY_HARASSMENT",
+            threshold: "BLOCK_NONE",
+        },
+        {
+            category: "HARM_CATEGORY_HATE_SPEECH",
+            threshold: "BLOCK_NONE",
+        },
+        {
+            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            threshold: "BLOCK_NONE",
+        },
+        {
+            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+            threshold: "BLOCK_NONE",
+        },
+    ];
+
+    const parts = [{ text: "input: " + prompt }, { text: "output: " }];
+
+    const result = await model.generateContent({
+        contents: [{ role: "user", parts }],
+        generationConfig,
+        safetySettings,
+    });
+
+    const response = result.response;
+    return response.text();
 }
