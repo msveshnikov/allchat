@@ -52,6 +52,22 @@ function Main({ darkMode, toggleTheme }) {
     const [showClearConfirmation, setShowClearConfirmation] = useState(false);
     const [referrer, setReferrer] = useState("");
 
+    useEffect(() => {
+        const isFirstTime = !localStorage.getItem("isVisited");
+        if (isFirstTime) {
+            setTimeout(() => {
+                setDrawerOpen(true);
+                setTimeout(() => {
+                    setDrawerOpen(false);
+                    setSnackbarMessage("Click top bar to select your preferred model 🤗");
+                    setSnackbarSeverity("info");
+                    setSnackbarOpen(true);
+                }, 1000);
+            }, 500);
+            localStorage.setItem("isVisited", "true");
+        }
+    }, []);
+
     const handleAuthentication = (token, email) => {
         localStorage.setItem("token", token);
         localStorage.setItem("userEmail", email);
