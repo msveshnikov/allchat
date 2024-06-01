@@ -15,6 +15,7 @@ export const models = {
     "claude-3-sonnet-20240229": ["image", "document", "tools"],
     "gpt-3.5-turbo": ["document", "tools"],
     "ft:gpt-3.5-turbo-0125:maxsoft:kate:9T9qrZ1z": ["document",  "admin"],
+    "ft:gpt-3.5-turbo-0125:maxsoft:kate:9VGMfMmc": ["document",  "admin"],
     "ft:gpt-3.5-turbo-0613:maxsoft:kate:9THBM3sf": ["document",  "admin"],
     "tunedModels/kate-oeubyqxsbmca": ["document", "admin"],
     "gpt-4o": ["image", "document", "tools"],
