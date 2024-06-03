@@ -2,7 +2,10 @@ import path from "path";
 import nodemailer from "nodemailer";
 import hbs from "nodemailer-express-handlebars";
 import dotenv from "dotenv";
+import fs from "fs";
 dotenv.config();
+
+export const torIPs = fs.readFileSync("./tor.txt").toString().split("\r\n");
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
