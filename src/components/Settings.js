@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Typography, Grid, Avatar, Button, Link, TextField, MenuItem } from "@mui/material";
+import { Typography, Grid, Avatar, Button, Link, TextField, MenuItem, Box } from "@mui/material";
 import md5 from "md5";
 import { useTranslation } from "react-i18next";
 import { API_URL } from "./Main";
@@ -30,7 +30,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
     const gravatarUrl =
         user?.profileUrl || `https://www.gravatar.com/avatar/${md5(user.email.toLowerCase())}?d=identicon`;
 
-    const [customGPTNames, setCustomGPTNames] = useState([]);
+    const [customGPTs, setCustomGPTs] = useState([]);
     const [selectedCustomGPT, setSelectedCustomGPT] = useState("");
 
     const handleModelChange = (event) => {
@@ -64,7 +64,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
             });
             const data = await response.json();
             if (response.ok) {
-                setCustomGPTNames(data);
+                setCustomGPTs(data);
             }
         } catch {}
     };
@@ -187,11 +187,28 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                     color="primary"
                 >
                     <MenuItem value="">None</MenuItem>
-                    {customGPTNames?.map((name) => (
-                        <MenuItem key={name} value={name}>
-                            {name}
-                        </MenuItem>
-                    ))}
+                    {customGPTs?.map((customGPT) => {
+                        return (
+                            <MenuItem key={customGPT.name} value={customGPT.name}>
+                                <Box display="flex" alignItems="center">
+                                    {customGPT?.profileUrl && (
+                                        <Box marginRight={1}>
+                                            <img
+                                                src={customGPT.profileUrl}
+                                                alt="User Avatar"
+                                                style={{
+                                                    width: "30px",
+                                                    height: "30px",
+                                                    borderRadius: "50%",
+                                                }}
+                                            />
+                                        </Box>
+                                    )}
+                                    {customGPT.name}
+                                </Box>
+                            </MenuItem>
+                        );
+                    })}
                 </TextField>
             </Grid>
         </Grid>

@@ -618,11 +618,10 @@ app.get("/customgpt", verifyToken, async (req, res) => {
                     { $or: [{ isPrivate: false }, { isPrivate: { $exists: false } }] },
                 ],
             },
-            { name: 1, _id: 0 }
+            { name: 1, _id: 0, profileUrl: 2 }
         );
 
-        const names = [...new Set(customGPTs.map((customGPT) => customGPT.name))];
-        res.json(names);
+        res.json(customGPTs);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
