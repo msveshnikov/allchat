@@ -55,7 +55,7 @@ function toolsToEmojis(toolsUsed) {
     return toolsUsed.map((tool) => toolEmojis[tool] || "❓").join("");
 }
 
-const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onDelete }) => {
+const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onDelete, user }) => {
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
     const [lightboxMessageIndex, setLightboxMessageIndex] = useState(0);
@@ -142,7 +142,21 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                                 <IconButton size="small" onClick={() => handleDeleteClick(index)}>
                                     <DeleteIcon fontSize="inherit" />
                                 </IconButton>
-                                {chat.user}
+                                <Box display="flex" alignItems="center">
+                                    {user?.profileUrl && (
+                                        <img
+                                            src={user?.profileUrl}
+                                            alt="User Avatar"
+                                            style={{
+                                                width: "30px",
+                                                height: "30px",
+                                                borderRadius: "50%",
+                                                marginRight: "8px",
+                                            }}
+                                        />
+                                    )}
+                                    {chat.user}
+                                </Box>
                                 <IconButton size="small" onClick={() => handleEditClick(index, chat.user)}>
                                     <EditIcon fontSize="inherit" />
                                 </IconButton>

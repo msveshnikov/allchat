@@ -540,6 +540,7 @@ function Main({ darkMode, toggleTheme }) {
                     onRun={handleRun}
                     chatHistory={chatHistory}
                     isModelResponding={isModelResponding}
+                    user={user}
                 />
                 <ChatInput
                     input={input}
