@@ -138,12 +138,9 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                                 fullWidth
                             />
                         ) : (
-                            <>
-                                <IconButton size="small" onClick={() => handleDeleteClick(index)}>
-                                    <DeleteIcon fontSize="inherit" />
-                                </IconButton>
-                                <Box display="flex" alignItems="center">
-                                    {user?.profileUrl && (
+                            <Box display="flex" alignItems="start" width="100%">
+                                {user?.profileUrl && (
+                                    <Box marginRight={1}>
                                         <img
                                             src={user?.profileUrl}
                                             alt="User Avatar"
@@ -151,16 +148,22 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                                                 width: "30px",
                                                 height: "30px",
                                                 borderRadius: "50%",
-                                                marginRight: "8px",
                                             }}
                                         />
-                                    )}
-                                    {chat.user}
+                                    </Box>
+                                )}
+                                <Box flex={1} display="flex" justifyContent="space-between" alignItems="center">
+                                    <Box display="flex" alignItems="center">
+                                        <IconButton size="small" onClick={() => handleDeleteClick(index)}>
+                                            <DeleteIcon fontSize="inherit" />
+                                        </IconButton>
+                                        {chat.user}
+                                        <IconButton size="small" onClick={() => handleEditClick(index, chat.user)}>
+                                            <EditIcon fontSize="inherit" />
+                                        </IconButton>
+                                    </Box>
                                 </Box>
-                                <IconButton size="small" onClick={() => handleEditClick(index, chat.user)}>
-                                    <EditIcon fontSize="inherit" />
-                                </IconButton>
-                            </>
+                            </Box>
                         )}
                         {chat.fileType && getFileTypeIcon(chat.fileType) !== null && (
                             <span style={{ fontSize: "3rem" }}>{getFileTypeIcon(chat.fileType)}</span>
