@@ -98,8 +98,8 @@ morgan.token("body", (req, res) => {
         if ("instructions" in clonedBody) {
             clonedBody.instructions = "<REDACTED>";
         }
-        if ("avatarUrl" in clonedBody) {
-            clonedBody.avatarUrl = "<REDACTED>";
+        if ("profileUrl" in clonedBody) {
+            clonedBody.profileUrl = "<REDACTED>";
         }
         return JSON.stringify(clonedBody);
     }
@@ -738,7 +738,6 @@ app.post("/generate-avatar", verifyToken, async (req, res) => {
     const { userInput, outfit, hairstyle, sport, background, animal } = req.body;
 
     try {
-        // Construct the prompt based on the user input and selected options
         let prompt =
             `Pretend you are a graphic designer generating creative images for midjourney. 
             I will give you an Avatar description and you will give me a prompt that I can feed into midjourney: ` +
@@ -749,12 +748,10 @@ app.post("/generate-avatar", verifyToken, async (req, res) => {
         if (background) prompt += `, in a ${background} background`;
         if (animal) prompt += `, with a ${animal}`;
 
-        // Generate the avatar image using the Stability AI API
         const avatarBase64 = await getImage(prompt, true);
 
         if (avatarBase64) {
-            // Send the generated avatar as a Base64 string
-            res.json({ avatarUrl: `data:image/png;base64,${avatarBase64}` });
+            res.json({ profileUrl: `data:image/png;base64,${avatarBase64}` });
         } else {
             res.status(500).json({ error: "Failed to generate avatar" });
         }
@@ -766,12 +763,12 @@ app.post("/generate-avatar", verifyToken, async (req, res) => {
 
 app.put("/user", verifyToken, async (req, res) => {
     try {
-        const { avatarUrl } = req.body;
+        const { profileUrl } = req.body;
         const user = await User.findById(req.user.id);
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
-        const response = await fetch(avatarUrl);
+        const response = await fetch(profileUrl);
         const buffer = await response.arrayBuffer();
         const resizedBuffer = await sharp(Buffer.from(buffer)).resize(128, 128).toBuffer();
         user.profileUrl = "data:image/png;base64," + resizedBuffer.toString("base64");
@@ -780,6 +777,28 @@ app.put("/user", verifyToken, async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+app.put("/customgpt/:id", verifyToken, async (req, res) => {
+    try {
+        if (!req.user.admin) {
+            return res.status(401).json({ error: "This is an admin-only route" });
+        }
+        const { profileUrl } = req.body;
+        const customGPT = await CustomGPT.findById(req.params.id);
+        if (!customGPT) {
+            return res.status(404).json({ error: "Custom GPT not found" });
+        }
+        const response = await fetch(profileUrl);
+        const buffer = await response.arrayBuffer();
+        const resizedBuffer = await sharp(Buffer.from(buffer)).resize(128, 128).toBuffer();
+        customGPT.profileUrl = "data:image/png;base64," + resizedBuffer.toString("base64");
+        await customGPT.save();
+        res.json({ message: "Custom GPT profile URL updated successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
     }
 });
 

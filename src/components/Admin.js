@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Grid, Card, CardContent, styled, Switch, FormControlLabel } from "@mui/material";
+import {
+    Box,
+    Typography,
+    Grid,
+    Card,
+    CardContent,
+    styled,
+    Switch,
+    FormControlLabel,
+    CircularProgress,
+} from "@mui/material";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Pagination } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { API_URL } from "./Main";
+import Face2Icon from "@mui/icons-material/Face2";
 
 const StyledCard = styled(Card)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -20,6 +31,39 @@ const Admin = () => {
     const [users, setUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
+    const [loading, setLoading] = useState(false);
+    const [loadingGptId, setLoadingGptId] = useState(null);
+
+    const generateAvatar = async (id, instructions) => {
+        setLoading(true);
+        setLoadingGptId(id);
+        try {
+            const token = localStorage.getItem("token");
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            };
+            const response = await fetch(`${API_URL}/generate-avatar`, {
+                method: "POST",
+                headers,
+                body: JSON.stringify({ userInput: instructions }),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                const updateResponse = await fetch(`${API_URL}/customgpt/${id}`, {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify({ profileUrl: data.profileUrl }),
+                });
+                if (updateResponse.ok) {
+                    setGpts(gpts.map((gpt) => (gpt._id === id ? { ...gpt, profileUrl: data.profileUrl } : gpt)));
+                }
+            }
+        } finally {
+            setLoading(false);
+            setLoadingGptId(null);
+        }
+    };
 
     useEffect(() => {
         const fetchUsersData = async (page) => {
@@ -251,7 +295,8 @@ const Admin = () => {
                                                     Incomplete: <strong>{stats.subscriptionStats.incomplete}</strong>
                                                 </Typography>
                                                 <Typography variant="body1" color="text.secondary">
-                                                    Subscriptions: <strong>{stats.subscriptionStats.subscription}</strong>
+                                                    Subscriptions:{" "}
+                                                    <strong>{stats.subscriptionStats.subscription}</strong>
                                                 </Typography>
                                             </>
                                         )}
@@ -327,7 +372,7 @@ const Admin = () => {
                     />
                 </Box>
             </Box>
-            
+
             <Box padding={4}>
                 <Typography variant="h4" gutterBottom align="center" color="primary">
                     Custom GPT Admin
@@ -337,6 +382,7 @@ const Admin = () => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Name</TableCell>
+                                <TableCell>Avatar</TableCell>
                                 <TableCell>Instructions</TableCell>
                                 <TableCell>Knowledge</TableCell>
                                 <TableCell>Private</TableCell>
@@ -347,6 +393,21 @@ const Admin = () => {
                             {gpts?.map((gpt) => (
                                 <TableRow key={gpt._id}>
                                     <TableCell>{gpt.name}</TableCell>
+                                    <TableCell>
+                                        {gpt?.profileUrl && (
+                                            <Box marginRight={1}>
+                                                <img
+                                                    src={gpt?.profileUrl}
+                                                    alt="User Avatar"
+                                                    style={{
+                                                        width: "30px",
+                                                        height: "30px",
+                                                        borderRadius: "50%",
+                                                    }}
+                                                />
+                                            </Box>
+                                        )}
+                                    </TableCell>
                                     <TableCell>{gpt.instructions?.slice(0, 500)}</TableCell>
                                     <TableCell>{gpt.knowledge?.slice(0, 1500)}</TableCell>
                                     <TableCell>
@@ -360,9 +421,28 @@ const Admin = () => {
                                         />
                                     </TableCell>
                                     <TableCell>
-                                        <IconButton onClick={() => handleDeleteGpt(gpt._id)} color="error">
-                                            <DeleteIcon />
-                                        </IconButton>
+                                        <Box display="flex" alignItems="center">
+                                            <IconButton onClick={() => handleDeleteGpt(gpt._id)} color="error">
+                                                <DeleteIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={() =>
+                                                    generateAvatar(
+                                                        gpt._id,
+                                                        gpt.instructions + gpt.knowledge?.slice(200)
+                                                    )
+                                                }
+                                                disabled={loading && loadingGptId === gpt._id}
+                                            >
+                                                {loading && loadingGptId === gpt._id ? (
+                                                    <CircularProgress size={24} />
+                                                ) : (
+                                                    <Face2Icon />
+                                                )}
+                                            </IconButton>
+                                        </Box>
                                     </TableCell>
                                 </TableRow>
                             ))}

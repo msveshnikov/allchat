@@ -11,6 +11,7 @@ import {
     Select,
     MenuItem,
     Container,
+    useTheme,
 } from "@mui/material";
 import { API_URL } from "./Main";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +25,7 @@ const AvatarBuilder = () => {
     const [sport, setSport] = useState("");
     const [background, setBackground] = useState("");
     const [animal, setAnimal] = useState("");
+    const theme = useTheme();
     const navigate = useNavigate();
 
     const handleInputChange = (event) => {
@@ -73,7 +75,7 @@ const AvatarBuilder = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                setAvatar(data.avatarUrl);
+                setAvatar(data.profileUrl);
             }
         } finally {
             setLoading(false);
@@ -89,7 +91,7 @@ const AvatarBuilder = () => {
         const response = await fetch(API_URL + "/user", {
             method: "PUT",
             headers,
-            body: JSON.stringify({ avatarUrl: avatar }),
+            body: JSON.stringify({ profileUrl: avatar }),
         });
 
         if (response.ok) {
@@ -99,7 +101,7 @@ const AvatarBuilder = () => {
 
     return (
         <Container maxWidth="lg" sx={{ mt: 2 }}>
-            <Typography variant="h4" sx={{ mb: 3 }}>
+            <Typography variant="h4" color={theme.palette.text.primary} sx={{ mb: 3 }}>
                 AI Avatar Builder
             </Typography>
             <Grid container spacing={2}>
@@ -205,7 +207,7 @@ const AvatarBuilder = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <Button variant="contained" color="secondary" onClick={useAvatar}>
-                                    Use this
+                                    Use this Avatar
                                 </Button>
                             </Grid>
                         </Grid>
