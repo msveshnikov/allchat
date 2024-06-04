@@ -112,7 +112,7 @@ const AvatarBuilder = () => {
                         onChange={handleInputChange}
                     />
                 </Grid>
-                <Grid item xs={12} md={2}>
+                <Grid item xs={6} md={2}>
                     <FormControl fullWidth>
                         <InputLabel id="outfit-label">Outfit</InputLabel>
                         <Select labelId="outfit-label" value={outfit} onChange={handleOutfitChange} label="Outfit">
@@ -120,10 +120,12 @@ const AvatarBuilder = () => {
                             <MenuItem value="casual">Casual</MenuItem>
                             <MenuItem value="formal">Formal</MenuItem>
                             <MenuItem value="athletic">Athletic</MenuItem>
+                            <MenuItem value="business">Business</MenuItem>
+                            <MenuItem value="superhero">Superhero</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={12} md={2}>
+                <Grid item xs={6} md={2}>
                     <FormControl fullWidth>
                         <InputLabel id="hairstyle-label">Hairstyle</InputLabel>
                         <Select
@@ -136,10 +138,12 @@ const AvatarBuilder = () => {
                             <MenuItem value="short">Short</MenuItem>
                             <MenuItem value="long">Long</MenuItem>
                             <MenuItem value="curly">Curly</MenuItem>
+                            <MenuItem value="bald">Bald</MenuItem>
+                            <MenuItem value="mohawk">Mohawk</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={12} md={2}>
+                <Grid item xs={6} md={2}>
                     <FormControl fullWidth>
                         <InputLabel id="sport-label">Sport</InputLabel>
                         <Select labelId="sport-label" value={sport} onChange={handleSportChange} label="Sport">
@@ -147,10 +151,13 @@ const AvatarBuilder = () => {
                             <MenuItem value="soccer">Soccer</MenuItem>
                             <MenuItem value="basketball">Basketball</MenuItem>
                             <MenuItem value="tennis">Tennis</MenuItem>
+                            <MenuItem value="golf">Golf</MenuItem>
+                            <MenuItem value="swimming">Swimming</MenuItem>
+                            <MenuItem value="running">Running</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={12} md={2}>
+                <Grid item xs={6} md={2}>
                     <FormControl fullWidth>
                         <InputLabel id="background-label">Background</InputLabel>
                         <Select
@@ -163,10 +170,13 @@ const AvatarBuilder = () => {
                             <MenuItem value="beach">Beach</MenuItem>
                             <MenuItem value="city">City</MenuItem>
                             <MenuItem value="nature">Nature</MenuItem>
+                            <MenuItem value="space">Space</MenuItem>
+                            <MenuItem value="underwater">Underwater</MenuItem>
+                            <MenuItem value="futuristic">Futuristic</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={12} md={2}>
+                <Grid item xs={6} md={2}>
                     <FormControl fullWidth>
                         <InputLabel id="animal-label">Animal</InputLabel>
                         <Select labelId="animal-label" value={animal} onChange={handleAnimalChange} label="Animal">
@@ -174,6 +184,9 @@ const AvatarBuilder = () => {
                             <MenuItem value="dog">Dog</MenuItem>
                             <MenuItem value="cat">Cat</MenuItem>
                             <MenuItem value="bird">Bird</MenuItem>
+                            <MenuItem value="lion">Lion</MenuItem>
+                            <MenuItem value="panda">Panda</MenuItem>
+                            <MenuItem value="unicorn">Unicorn</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
