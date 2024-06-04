@@ -730,6 +730,36 @@ app.put("/users/:userId/subscription", verifyToken, async (req, res) => {
     }
 });
 
+app.post("/generate-avatar", verifyToken, async (req, res) => {
+    const { userInput, outfit, hairstyle, sport, background, animal } = req.body;
+
+    try {
+        // Construct the prompt based on the user input and selected options
+        let prompt =
+            `Pretend you are a graphic designer generating creative images for midjourney. 
+            I will give you an Avatar description and you will give me a prompt that I can feed into midjourney: ` +
+            userInput;
+        if (outfit) prompt += `, wearing a ${outfit} outfit`;
+        if (hairstyle) prompt += `, with ${hairstyle} hair`;
+        if (sport) prompt += `, playing ${sport}`;
+        if (background) prompt += `, in a ${background} background`;
+        if (animal) prompt += `, with a ${animal}`;
+
+        // Generate the avatar image using the Stability AI API
+        const avatarBase64 = await getImage(prompt, true);
+
+        if (avatarBase64) {
+            // Send the generated avatar as a Base64 string
+            res.json({ avatarUrl: `data:image/png;base64,${avatarBase64}` });
+        } else {
+            res.status(500).json({ error: "Failed to generate avatar" });
+        }
+    } catch (error) {
+        console.error("Error generating avatar:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 process.on("uncaughtException", (err, origin) => {
     console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
 });

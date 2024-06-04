@@ -11,6 +11,7 @@ import Privacy from "./components/Privacy";
 import Terms from "./components/Terms";
 import ReactGA from "react-ga4";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import AvatarBuilder from "./components/AvatarBuilder";
 
 ReactGA.initialize("G-L4KLPWXQ75");
 
@@ -41,6 +42,7 @@ const App = () => {
                             <Route path="/admin" element={<Admin />} />
                             <Route path="/custom" element={<CustomGPTPage />} />
                             <Route path="/privacy" element={<Privacy />} />
+                            <Route path="/avatar" element={<AvatarBuilder />} />
                             <Route path="/terms" element={<Terms />} />
                             <Route path="/" element={<Main darkMode={darkMode} toggleTheme={toggleTheme} />} />
                             <Route path="/reset-password/:token" element={<PasswordReset />} />
