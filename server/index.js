@@ -25,6 +25,7 @@ import { getImage } from "./image.js";
 import { sendWelcomeEmail } from "./utils.js";
 import cluster from "cluster";
 import promClient from "prom-client";
+import sharp from "sharp";
 
 dotenv.config({ override: true });
 
@@ -770,7 +771,10 @@ app.put("/user", verifyToken, async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
-        user.profileUrl = avatarUrl;
+        const response = await fetch(avatarUrl);
+        const buffer = await response.arrayBuffer();
+        const resizedBuffer = await sharp(Buffer.from(buffer)).resize(128, 128).toBuffer();
+        user.profileUrl = "data:image/png;base64," + resizedBuffer.toString("base64");
         await user.save();
         res.json({ message: "Avatar URL updated successfully" });
     } catch (error) {
