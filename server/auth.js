@@ -149,6 +149,9 @@ export const createOrUpdateUser = async (profile, req, ip, country, subscription
         user = await User.create(update);
         await sendWelcomeEmail(user);
     } else {
+        if (user.profileUrl) {
+            delete update.profileUrl;
+        }
         user = await User.findOneAndUpdate({ email: profile.email }, update);
     }
     return user;

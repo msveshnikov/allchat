@@ -97,6 +97,9 @@ morgan.token("body", (req, res) => {
         if ("instructions" in clonedBody) {
             clonedBody.instructions = "<REDACTED>";
         }
+        if ("avatarUrl" in clonedBody) {
+            clonedBody.avatarUrl = "<REDACTED>";
+        }
         return JSON.stringify(clonedBody);
     }
     return JSON.stringify(body);
@@ -756,6 +759,22 @@ app.post("/generate-avatar", verifyToken, async (req, res) => {
         }
     } catch (error) {
         console.error("Error generating avatar:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+app.put("/user", verifyToken, async (req, res) => {
+    try {
+        const { avatarUrl } = req.body;
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        user.profileUrl = avatarUrl;
+        await user.save();
+        res.json({ message: "Avatar URL updated successfully" });
+    } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Internal server error" });
     }
 });

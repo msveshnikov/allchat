@@ -13,6 +13,7 @@ import {
     Container,
 } from "@mui/material";
 import { API_URL } from "./Main";
+import { useNavigate } from "react-router-dom";
 
 const AvatarBuilder = () => {
     const [userInput, setUserInput] = useState("");
@@ -23,6 +24,7 @@ const AvatarBuilder = () => {
     const [sport, setSport] = useState("");
     const [background, setBackground] = useState("");
     const [animal, setAnimal] = useState("");
+    const navigate = useNavigate();
 
     const handleInputChange = (event) => {
         setUserInput(event.target.value);
@@ -72,15 +74,29 @@ const AvatarBuilder = () => {
             if (response.ok) {
                 const data = await response.json();
                 setAvatar(data.avatarUrl);
-            } else {
-                console.error("Error generating avatar:", response.status);
             }
-        } catch (error) {
-            console.error("Error generating avatar:", error);
         } finally {
             setLoading(false);
         }
     };
+
+    const useAvatar = async () => {
+        const token = localStorage.getItem("token");
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+        const response = await fetch(API_URL + "/user", {
+            method: "PUT",
+            headers,
+            body: JSON.stringify({ avatarUrl: avatar }),
+        });
+
+        if (response.ok) {
+            navigate("/");
+        }
+    };
+
     return (
         <Container maxWidth="lg" sx={{ mt: 2 }}>
             <Typography variant="h4" sx={{ mb: 3 }}>
@@ -170,7 +186,16 @@ const AvatarBuilder = () => {
                     {loading ? (
                         <CircularProgress />
                     ) : avatar ? (
-                        <Avatar src={avatar} alt="Generated Avatar" sx={{ width: 300, height: 300 }} />
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <Avatar src={avatar} alt="Generated Avatar" sx={{ width: 300, height: 300 }} />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button variant="contained" color="secondary" onClick={useAvatar}>
+                                    Use this
+                                </Button>
+                            </Grid>
+                        </Grid>
                     ) : (
                         <Typography variant="body1">
                             No avatar generated yet. Enter a description and click "Generate Avatar".
