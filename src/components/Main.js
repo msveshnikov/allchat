@@ -8,6 +8,8 @@ import {
     Button,
     useMediaQuery,
     useTheme,
+    DialogTitle,
+    TextField,
 } from "@mui/material";
 import AppHeader from "./AppHeader";
 import SideDrawer from "./SideDrawer";
@@ -51,6 +53,8 @@ function Main({ darkMode, toggleTheme }) {
     const [showCancelConfirmation, setShowCancelConfirmation] = useState(false);
     const [showClearConfirmation, setShowClearConfirmation] = useState(false);
     const [referrer, setReferrer] = useState("");
+    const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+    const [inviteEmail, setInviteEmail] = useState("");
 
     useEffect(() => {
         const isFirstTime = !localStorage.getItem("isVisited");
@@ -464,6 +468,42 @@ function Main({ darkMode, toggleTheme }) {
         setShowCancelConfirmation(false);
     };
 
+    const handleInviteUser = () => {
+        setInviteDialogOpen(true);
+    };
+
+    const handleInviteClose = () => {
+        setInviteDialogOpen(false);
+        setInviteEmail("");
+    };
+
+    const handleInviteSubmit = async () => {
+        const token = localStorage.getItem("token");
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+        const response = await fetch(API_URL + "/invite", {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+                email: inviteEmail,
+                model: selectedModel,
+                customGPT: localStorage.getItem("selectedCustomGPT"),
+                chatHistory,
+            }),
+        });
+
+        if (response.ok) {
+            handleInviteClose();
+            setSnackbarMessage("Invitation sent successfully!");
+            setSnackbarOpen(true);
+        } else {
+            setSnackbarMessage("Failed to send invitation.");
+            setSnackbarOpen(true);
+        }
+    };
+
     return (
         <>
             <AppHeader
@@ -478,6 +518,7 @@ function Main({ darkMode, toggleTheme }) {
                 onModelSelect={setSelectedModel}
                 darkMode={darkMode}
                 toggleTheme={toggleTheme}
+                onInviteUser={handleInviteUser}
             />
             <SideDrawer
                 isOpen={drawerOpen}
@@ -518,6 +559,25 @@ function Main({ darkMode, toggleTheme }) {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseSettingsModal}>Close</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={inviteDialogOpen} onClose={handleInviteClose} maxWidth="sm" fullWidth>
+                <DialogTitle>Invite User To This Chat</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="email"
+                        label="Email Address"
+                        type="email"
+                        fullWidth
+                        value={inviteEmail}
+                        onChange={(e) => setInviteEmail(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleInviteClose}>Cancel</Button>
+                    <Button onClick={handleInviteSubmit}>OK</Button>
                 </DialogActions>
             </Dialog>
             <ConfirmModal

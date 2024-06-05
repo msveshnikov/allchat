@@ -22,10 +22,11 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import { handleIncomingEmails } from "./email.js";
 import { getImage } from "./image.js";
-import { sendWelcomeEmail } from "./utils.js";
+import { sendInviteEmail, sendWelcomeEmail } from "./utils.js";
 import cluster from "cluster";
 import promClient from "prom-client";
 import sharp from "sharp";
+import SharedChat from "./model/SharedChat .js";
 
 dotenv.config({ override: true });
 
@@ -732,7 +733,7 @@ app.put("/users/:userId/subscription", verifyToken, async (req, res) => {
     }
 });
 
-app.post("/generate-avatar",  async (req, res) => {
+app.post("/generate-avatar", async (req, res) => {
     const { userInput, outfit, hairstyle, sport, background, animal, gender } = req.body;
     try {
         let prompt =
@@ -794,6 +795,40 @@ app.put("/customgpt/:id", verifyToken, async (req, res) => {
         customGPT.profileUrl = "data:image/png;base64," + resizedBuffer.toString("base64");
         await customGPT.save();
         res.json({ message: "Custom GPT profile URL updated successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Add chat history and send email
+app.post("/invite", verifyToken, async (req, res) => {
+    try {
+        const { email, model, customGPT, chatHistory } = req.body;
+
+        const newSharedChat = new SharedChat({
+            model,
+            customGPT,
+            chatHistory,
+        });
+
+        const savedSharedChat = await newSharedChat.save();
+
+        // Get inviter profile URL
+        const inviter = await User.findById(req.user.id);
+        const inviterProfileUrl = inviter.profileUrl || "https://allchat.online/logo192.png";
+
+        // Get custom GPT profile URL
+        let customGPTProfileUrl = null;
+        if (customGPT) {
+            const customGPTData = await CustomGPT.findOne({ name: customGPT });
+            customGPTProfileUrl = customGPTData.profileUrl || "https://allchat.online/AllChat.png";
+        }
+
+        // Send invite email
+        await sendInviteEmail(email, model, customGPT, savedSharedChat._id, inviterProfileUrl, customGPTProfileUrl);
+
+        res.status(201).json({ chatId: savedSharedChat._id });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });

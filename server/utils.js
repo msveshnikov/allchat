@@ -60,6 +60,23 @@ export const sendResetEmail = async (user, resetUrl) => {
     });
 };
 
+export const sendInviteEmail = async (email, model, customGPT, chatId, inviterProfileUrl, customGPTProfileUrl) => {
+    sendEmail({
+        to: email,
+        from: process.env.EMAIL,
+        subject: "Shared Chat History",
+        template: "invite",
+        context: {
+            model,
+            customGPT: customGPT || "N/A",
+            chatId,
+            inviterProfileUrl,
+            customGPTProfileUrl,
+            chatUrl: `https://allchat.online/chat/${chatId}`,
+        },
+    });
+};
+
 export const whiteListCountries = [
     // all paying countries so far
     "US",

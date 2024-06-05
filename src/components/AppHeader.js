@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Typography, Box, IconButton, useMediaQuery, useTheme }
 import MenuIcon from "@mui/icons-material/Menu";
 import BrightnessHighIcon from "@mui/icons-material/BrightnessHigh";
 import NightlightIcon from "@mui/icons-material/Nightlight";
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { ProfileMenu } from "./ProfileMenu";
 import { useTranslation } from "react-i18next";
 import { ModelSelector } from "./ModelSelector";
@@ -19,6 +20,7 @@ const AppHeader = ({
     onModelSelect,
     darkMode,
     toggleTheme,
+    onInviteUser,
 }) => {
     const { t } = useTranslation();
     const theme = useTheme();
@@ -37,6 +39,9 @@ const AppHeader = ({
                 )}
                 <ModelSelector user={user} selectedModel={selectedModel} onModelSelect={onModelSelect} />
                 <Box sx={{ ml: "auto", display: "flex", alignItems: "center" }}>
+                    <IconButton aria-label="invite user" onClick={onInviteUser} color="inherit" sx={{ mr: 1 }}>
+                        <PersonAddIcon />
+                    </IconButton>
                     <IconButton aria-label="toggle dark mode" onClick={toggleTheme} color="inherit" sx={{ mr: 1 }}>
                         {darkMode ? <NightlightIcon /> : <BrightnessHighIcon />}
                     </IconButton>
