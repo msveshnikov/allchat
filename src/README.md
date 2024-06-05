@@ -16,6 +16,8 @@ I'm An AI assistant app that interacts with all major models, maintains history,
 -   Video Input in Gemini
 -   Image Input (png/jpeg) 
 -   Custom GPTs
+-   Avatar AI Generator
+-   Multi-user AI RPG - invite friends, colleagues, or like-minded individuals to join your chats 
 -   Image Generation by SDXL
 -   Python Code Run
 -   Email respond (with attachments, like PDFs, Word, etc)
