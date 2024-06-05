@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     TextField,
     Button,
@@ -25,8 +25,13 @@ const AvatarBuilder = () => {
     const [sport, setSport] = useState("");
     const [background, setBackground] = useState("");
     const [animal, setAnimal] = useState("");
+    const [gender, setGender] = useState("");
     const theme = useTheme();
     const navigate = useNavigate();
+
+    const handleGenderChange = (event) => {
+        setGender(event.target.value);
+    };
 
     const handleInputChange = (event) => {
         setUserInput(event.target.value);
@@ -52,6 +57,26 @@ const AvatarBuilder = () => {
         setAnimal(event.target.value);
     };
 
+    const fetchUserData = async () => {
+        const token = localStorage.getItem("token");
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+        const response = await fetch(`${API_URL}/user`, {
+            method: "GET",
+            headers,
+        });
+        if (response.ok) {
+            const userData = await response.json();
+            setAvatar(userData.profileUrl);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserData();
+    }, []);
+
     const generateAvatar = async () => {
         setLoading(true);
         try {
@@ -70,6 +95,7 @@ const AvatarBuilder = () => {
                     sport,
                     background,
                     animal,
+                    gender,
                 }),
             });
 
@@ -192,6 +218,23 @@ const AvatarBuilder = () => {
                         </Select>
                     </FormControl>
                 </Grid>
+                <Grid item xs={6} md={2}>
+                    <FormControl fullWidth>
+                        <InputLabel id="gender-label">Gender</InputLabel>
+                        <Select labelId="gender-label" value={gender} onChange={handleGenderChange} label="Gender">
+                            <MenuItem value="">None</MenuItem>
+                            <MenuItem value="male">Male</MenuItem>
+                            <MenuItem value="female">Female</MenuItem>
+                            <MenuItem value="non-binary">Non-binary</MenuItem>
+                            <MenuItem value="genderfluid">Genderfluid</MenuItem>
+                            <MenuItem value="agender">Agender</MenuItem>
+                            <MenuItem value="bigender">Bigender</MenuItem>
+                            <MenuItem value="transgender-male">Transgender Male</MenuItem>
+                            <MenuItem value="transgender-female">Transgender Female</MenuItem>
+                            <MenuItem value="lgbtq+">LGBTQ+</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
                 <Grid item xs={12}>
                     <Button variant="contained" color="primary" onClick={generateAvatar} disabled={loading}>
                         {loading ? "Generating..." : "Generate Avatar"}
@@ -203,7 +246,7 @@ const AvatarBuilder = () => {
                     ) : avatar ? (
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
-                                <Avatar src={avatar} alt="Generated Avatar" sx={{ width: 250, height: 250 }} />
+                                <Avatar src={avatar} alt="Generated Avatar" sx={{ m: 5, width: 192, height: 192 }} />
                             </Grid>
                             <Grid item xs={12}>
                                 <Button variant="contained" color="secondary" onClick={useAvatar}>

@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from "react";
 import { Box, CircularProgress, TextField, IconButton, useTheme } from "@mui/material";
 import ReactMarkdown from "react-markdown";
+import { Link as RouterLink } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { CodeBlock } from "./CodeBlock";
@@ -165,15 +166,17 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                             <Box>
                                 {user?.profileUrl && (
                                     <Box marginLeft={1}>
-                                        <img
-                                            src={user?.profileUrl}
-                                            alt="User Avatar"
-                                            style={{
-                                                width: "30px",
-                                                height: "30px",
-                                                borderRadius: "50%",
-                                            }}
-                                        />
+                                        <RouterLink to="/avatar">
+                                            <img
+                                                src={user?.profileUrl}
+                                                alt="User Avatar"
+                                                style={{
+                                                    width: "30px",
+                                                    height: "30px",
+                                                    borderRadius: "50%",
+                                                }}
+                                            />
+                                        </RouterLink>
                                     </Box>
                                 )}
                                 <Box flex={1} display="flex" justifyContent="space-between" alignItems="center">
@@ -223,7 +226,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                                     <Box marginRight={1}>
                                         <img
                                             src={customGPTs?.find((g) => g._id === chat?.gpt)?.profileUrl}
-                                            alt="User Avatar"
+                                            alt="Custom GPT Avatar"
                                             style={{
                                                 width: "30px",
                                                 height: "30px",

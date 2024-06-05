@@ -733,8 +733,7 @@ app.put("/users/:userId/subscription", verifyToken, async (req, res) => {
 });
 
 app.post("/generate-avatar", verifyToken, async (req, res) => {
-    const { userInput, outfit, hairstyle, sport, background, animal } = req.body;
-
+    const { userInput, outfit, hairstyle, sport, background, animal, gender } = req.body;
     try {
         let prompt =
             `Pretend you are a graphic designer generating creative images for midjourney. 
@@ -745,6 +744,7 @@ app.post("/generate-avatar", verifyToken, async (req, res) => {
         if (sport) prompt += `, playing ${sport}`;
         if (background) prompt += `, in a ${background} background`;
         if (animal) prompt += `, with a ${animal}`;
+        if (gender) prompt += `, with a ${gender} gender appearance`;
 
         const avatarBase64 = await getImage(prompt, true);
 
@@ -768,7 +768,7 @@ app.put("/user", verifyToken, async (req, res) => {
         }
         const response = await fetch(profileUrl);
         const buffer = await response.arrayBuffer();
-        const resizedBuffer = await sharp(Buffer.from(buffer)).resize(128, 128).toBuffer();
+        const resizedBuffer = await sharp(Buffer.from(buffer)).resize(192, 192).toBuffer();
         user.profileUrl = "data:image/png;base64," + resizedBuffer.toString("base64");
         await user.save();
         res.json({ message: "Avatar URL updated successfully" });
