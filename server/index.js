@@ -732,7 +732,7 @@ app.put("/users/:userId/subscription", verifyToken, async (req, res) => {
     }
 });
 
-app.post("/generate-avatar", verifyToken, async (req, res) => {
+app.post("/generate-avatar",  async (req, res) => {
     const { userInput, outfit, hairstyle, sport, background, animal, gender } = req.body;
     try {
         let prompt =
