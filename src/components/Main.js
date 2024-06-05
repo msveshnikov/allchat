@@ -138,6 +138,10 @@ function Main({ darkMode, toggleTheme }) {
         setReferrer(window.document.referrer);
     }, []);
 
+    const removeFormatting = (text) => {
+        return text.replace(/\*\*|__|\[|\]|\(|\)|`/g, "");
+    };
+
     const handleSubmit = async () => {
         if (input.trim() || pastedImage || selectedFile) {
             let fileType = "";
@@ -206,7 +210,7 @@ function Main({ darkMode, toggleTheme }) {
                 ];
                 setChatHistory(newChatHistory);
                 if (sound) {
-                    const utterance = new SpeechSynthesisUtterance(data.textResponse);
+                    const utterance = new SpeechSynthesisUtterance(removeFormatting(data.textResponse));
                     window.speechSynthesis.speak(utterance);
                 }
             } else if (response.status === 403) {
