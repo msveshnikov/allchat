@@ -44,14 +44,14 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
     useEffect(() => {
         const storedCustomGPT = localStorage.getItem("selectedCustomGPT");
         if (storedCustomGPT) setSelectedCustomGPT(storedCustomGPT);
-        fetchCustomGPTNames();
+        fetchCustomGPTs();
     }, []);
 
     useEffect(() => {
         localStorage.setItem("selectedCustomGPT", selectedCustomGPT);
     }, [selectedCustomGPT]);
 
-    const fetchCustomGPTNames = async () => {
+    const fetchCustomGPTs = async () => {
         try {
             const token = localStorage.getItem("token");
             const headers = {
@@ -187,28 +187,26 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                     color="primary"
                 >
                     <MenuItem value="">None</MenuItem>
-                    {customGPTs?.map((customGPT) => {
-                        return (
-                            <MenuItem key={customGPT.name} value={customGPT.name}>
-                                <Box display="flex" alignItems="center">
-                                    {customGPT?.profileUrl && (
-                                        <Box marginRight={1}>
-                                            <img
-                                                src={customGPT.profileUrl}
-                                                alt="User Avatar"
-                                                style={{
-                                                    width: "30px",
-                                                    height: "30px",
-                                                    borderRadius: "50%",
-                                                }}
-                                            />
-                                        </Box>
-                                    )}
-                                    {customGPT.name}
-                                </Box>
-                            </MenuItem>
-                        );
-                    })}
+                    {customGPTs?.map((customGPT) => (
+                        <MenuItem key={customGPT.name} value={customGPT.name}>
+                            <Box display="flex" alignItems="center">
+                                {customGPT?.profileUrl && (
+                                    <Box marginRight={1}>
+                                        <img
+                                            src={customGPT.profileUrl}
+                                            alt="User Avatar"
+                                            style={{
+                                                width: "30px",
+                                                height: "30px",
+                                                borderRadius: "50%",
+                                            }}
+                                        />
+                                    </Box>
+                                )}
+                                {customGPT.name}
+                            </Box>
+                        </MenuItem>
+                    ))}
                 </TextField>
             </Grid>
         </Grid>

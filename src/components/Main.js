@@ -200,6 +200,7 @@ function Main({ darkMode, toggleTheme }) {
                         toolsUsed: data.toolsUsed,
                         image: data.imageResponse,
                         fileType,
+                        gpt: data.gpt,
                         userImageData: fileBytesBase64,
                     },
                 ];

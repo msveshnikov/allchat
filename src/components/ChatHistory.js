@@ -1,10 +1,11 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Box, CircularProgress, TextField, IconButton, useTheme } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { CodeBlock } from "./CodeBlock";
 import { Lightbox } from "react-modal-image";
+import { API_URL } from "./Main";
 
 const getFileTypeIcon = (mimeType) => {
     switch (mimeType) {
@@ -61,6 +62,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
     const [lightboxMessageIndex, setLightboxMessageIndex] = useState(0);
     const [editingMessageIndex, setEditingMessageIndex] = useState(-1);
     const [editingMessage, setEditingMessage] = useState("");
+    const [customGPTs, setCustomGPTs] = useState([]);
     const theme = useTheme();
 
     const linkStyle = {
@@ -102,6 +104,28 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
         }
     };
 
+    useEffect(() => {
+        fetchCustomGPTs();
+    }, []);
+
+    const fetchCustomGPTs = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            };
+
+            const response = await fetch(API_URL + "/customgpt", {
+                headers,
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setCustomGPTs(data);
+            }
+        } catch {}
+    };
+
     return (
         <Box id="chatid" flex={1} overflow="auto" padding={2} display="flex" flexDirection="column">
             {chatHistory.map((chat, index) => (
@@ -138,7 +162,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                                 fullWidth
                             />
                         ) : (
-                            <Box display="flex" alignItems="start" width="100%">
+                            <Box>
                                 {user?.profileUrl && (
                                     <Box marginRight={1}>
                                         <img
@@ -195,6 +219,19 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                             )}
                         {chat.assistant !== null && (
                             <Box>
+                                {chat?.gpt && (
+                                    <Box marginRight={1}>
+                                        <img
+                                            src={customGPTs?.find((g) => g._id === chat?.gpt)?.profileUrl}
+                                            alt="User Avatar"
+                                            style={{
+                                                width: "30px",
+                                                height: "30px",
+                                                borderRadius: "50%",
+                                            }}
+                                        />
+                                    </Box>
+                                )}
                                 <ReactMarkdown
                                     components={{
                                         code({ node, inline, className, children, ...props }) {

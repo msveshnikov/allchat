@@ -195,8 +195,9 @@ app.post("/interact", verifyToken, async (req, res) => {
         }
 
         let instructions = "";
+        let GPT;
         if (customGPT) {
-            const GPT = await CustomGPT.findOne({ name: customGPT });
+            GPT = await CustomGPT.findOne({ name: customGPT });
             if (GPT) {
                 instructions = GPT.knowledge + "\n\n" + GPT.instructions;
             }
@@ -265,7 +266,7 @@ app.post("/interact", verifyToken, async (req, res) => {
 
         storeUsageStats(req.user.id, model, inputTokens, outputTokens, imagesGenerated);
 
-        res.json({ textResponse, imageResponse, toolsUsed });
+        res.json({ textResponse, imageResponse, toolsUsed, gpt: GPT?._id });
     } catch (error) {
         console.error(error);
         res.status(500).json({
@@ -610,7 +611,6 @@ app.post("/customgpt", verifyToken, async (req, res) => {
 app.get("/customgpt", verifyToken, async (req, res) => {
     try {
         const userId = req.user.id;
-
         const customGPTs = await CustomGPT.find(
             {
                 $or: [
@@ -618,9 +618,8 @@ app.get("/customgpt", verifyToken, async (req, res) => {
                     { $or: [{ isPrivate: false }, { isPrivate: { $exists: false } }] },
                 ],
             },
-            { name: 1, _id: 0, profileUrl: 2 }
+            { _id: 1, name: 2, profileUrl: 3 }
         );
-
         res.json(customGPTs);
     } catch (error) {
         console.error(error);
@@ -739,8 +738,8 @@ app.post("/generate-avatar", verifyToken, async (req, res) => {
     try {
         let prompt =
             `Pretend you are a graphic designer generating creative images for midjourney. 
-            I will give you an Avatar description and you will give me a prompt that I can feed into midjourney: ` +
-            userInput;
+            I will give you an Avatar description and you will give me a prompt that I can feed into midjourney
+            (only prompt please, without preambula): ` + userInput;
         if (outfit) prompt += `, wearing a ${outfit} outfit`;
         if (hairstyle) prompt += `, with ${hairstyle} hair`;
         if (sport) prompt += `, playing ${sport}`;
