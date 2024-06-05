@@ -164,7 +164,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                         ) : (
                             <Box>
                                 {user?.profileUrl && (
-                                    <Box marginRight={1}>
+                                    <Box marginLeft={1}>
                                         <img
                                             src={user?.profileUrl}
                                             alt="User Avatar"
