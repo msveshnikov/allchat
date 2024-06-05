@@ -222,19 +222,21 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                             )}
                         {chat.assistant !== null && (
                             <Box>
-                                {chat?.gpt && (
-                                    <Box marginRight={1}>
-                                        <img
-                                            src={customGPTs?.find((g) => g._id === chat?.gpt)?.profileUrl}
-                                            alt="Custom GPT Avatar"
-                                            style={{
-                                                width: "30px",
-                                                height: "30px",
-                                                borderRadius: "50%",
-                                            }}
-                                        />
-                                    </Box>
-                                )}
+                                <Box marginRight={1}>
+                                    <img
+                                        src={
+                                            customGPTs?.find((g) => g._id === chat?.gpt)?.profileUrl ||
+                                            "https://allchat.online/AllChat.png"
+                                        }
+                                        alt="Custom GPT Avatar"
+                                        style={{
+                                            width: "30px",
+                                            height: "30px",
+                                            borderRadius: "50%",
+                                            objectFit: "cover",
+                                        }}
+                                    />
+                                </Box>
                                 <ReactMarkdown
                                     components={{
                                         code({ node, inline, className, children, ...props }) {
