@@ -2,83 +2,85 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>Shared Chat History</title>
+        <title>Chat Invitation</title>
         <style>
             body {
                 font-family: "Roboto", sans-serif;
-                background-color: #f4f4f4;
+                background-color: #fff8e5;
                 padding: 40px;
             }
             .container {
                 max-width: 600px;
                 margin: 0 auto;
-                background-color: #fff;
+                background-color: #ffffff;
                 padding: 30px;
-                border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                border-radius: 12px;
+                box-shadow: 0 2px 10px rgba(241, 192, 128, 0.3);
             }
             h1 {
-                color: #333;
-                font-size: 24px;
+                color: #e7278d;
+                font-size: 32px;
                 font-weight: 700;
                 margin-bottom: 20px;
+                text-align: center;
             }
             p {
-                color: #666;
-                line-height: 1.5;
-                margin-bottom: 15px;
+                color: #5c3d2e;
+                line-height: 1.6;
+                margin-bottom: 20px;
             }
             .profile-img {
-                width: 60px;
-                height: 60px;
-                /* border-radius: 50%; */
-                object-fit: cover;
-                margin-right: 15px;
-            }
-            .custom-img {
-                width: 60px;
-                height: 60px;
+                width: 80px;
+                height: 80px;
                 border-radius: 50%;
                 object-fit: cover;
-                margin-right: 15px;
+                margin-right: 20px;
+            }
+            .custom-img {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-right: 20px;
             }
             .btn {
                 display: inline-block;
-                background-color: #ea29bd;
-                color: #fff;
+                background-color: #ff9a62;
+                color: #ffffff;
                 text-decoration: none;
-                padding: 12px 24px;
-                border-radius: 6px;
-                font-size: 16px;
+                padding: 15px 30px;
+                border-radius: 8px;
+                font-size: 18px;
                 font-weight: 700;
                 transition: background-color 0.3s;
+                box-shadow: 0 2px 6px rgba(241, 192, 128, 0.4);
             }
             .btn:hover {
-                background-color: #f08c0b;
+                background-color: #ff6f3c;
             }
             .info-list {
                 list-style-type: none;
                 padding: 0;
-                margin-bottom: 20px;
+                margin-bottom: 30px;
             }
             .info-list li {
                 display: flex;
                 align-items: center;
-                margin-bottom: 10px;
+                margin-bottom: 15px;
             }
             .info-list li strong {
-                width: 120px;
+                width: 150px;
                 font-weight: 700;
-                color: #333;
+                color: #ff6f3c;
             }
         </style>
     </head>
     <body>
         <div class="container">
-            <h1>Chat Invitation</h1>
+            <h1>You're Invited!</h1>
             <p>
                 <img class="profile-img" src="{{inviterProfileUrl}}" alt="Inviter Profile" />
-                You've been invited to a chat.
+                Hey there! You've been invited to join an exciting chat. Let's get started!
             </p>
             <ul class="info-list">
                 <li>
@@ -95,8 +97,8 @@
                     {{chatId}}
                 </li>
             </ul>
-            <p>
-                <a href="{{chatUrl}}" class="btn">Open Chat</a>
+            <p style="text-align: center">
+                <a href="{{chatUrl}}" class="btn">Join the Chat</a>
             </p>
         </div>
     </body>
