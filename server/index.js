@@ -733,7 +733,7 @@ app.put("/users/:userId/subscription", verifyToken, async (req, res) => {
     }
 });
 
-app.post("/generate-avatar", async (req, res) => {
+app.post("/generate-avatar", verifyToken, async (req, res) => {
     const { userInput, outfit, hairstyle, sport, background, animal, gender } = req.body;
     try {
         let prompt =
@@ -800,35 +800,46 @@ app.put("/customgpt/:id", verifyToken, async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-
-// Add chat history and send email
 app.post("/invite", verifyToken, async (req, res) => {
     try {
         const { email, model, customGPT, chatHistory } = req.body;
-
-        const newSharedChat = new SharedChat({
+        const sharedChat = await SharedChat.create({
             model,
             customGPT,
             chatHistory,
         });
 
-        const savedSharedChat = await newSharedChat.save();
-
-        // Get inviter profile URL
         const inviter = await User.findById(req.user.id);
         const inviterProfileUrl = inviter.profileUrl || "https://allchat.online/logo192.png";
 
-        // Get custom GPT profile URL
         let customGPTProfileUrl = null;
         if (customGPT) {
             const customGPTData = await CustomGPT.findOne({ name: customGPT });
             customGPTProfileUrl = customGPTData.profileUrl || "https://allchat.online/AllChat.png";
         }
 
-        // Send invite email
-        await sendInviteEmail(email, model, customGPT, savedSharedChat._id, inviterProfileUrl, customGPTProfileUrl);
+        await sendInviteEmail(email, model, customGPT, sharedChat._id, inviterProfileUrl, customGPTProfileUrl);
+        res.status(201).json({ chatId: sharedChat._id });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
-        res.status(201).json({ chatId: savedSharedChat._id });
+app.get("/chat/:id", async (req, res) => {
+    try {
+        const sharedChatId = req.params.id;
+        const sharedChat = await SharedChat.findById(sharedChatId);
+
+        if (!sharedChat) {
+            return res.status(404).json({ error: "SharedChat not found" });
+        }
+
+        res.json({
+            model: sharedChat.model,
+            customGPT: sharedChat.customGPT,
+            chatHistory: sharedChat.chatHistory,
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });

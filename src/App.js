@@ -44,8 +44,12 @@ const App = () => {
                             <Route path="/privacy" element={<Privacy />} />
                             <Route path="/avatar" element={<AvatarBuilder />} />
                             <Route path="/terms" element={<Terms />} />
-                            <Route path="/" element={<Main darkMode={darkMode} toggleTheme={toggleTheme} />} />
+                            <Route
+                                path="/chat/:chatId"
+                                element={<Main darkMode={darkMode} toggleTheme={toggleTheme} />}
+                            />
                             <Route path="/reset-password/:token" element={<PasswordReset />} />
+                            <Route path="/" element={<Main darkMode={darkMode} toggleTheme={toggleTheme} />} />
                         </Routes>
                     </Router>
                 </I18nextProvider>

@@ -64,14 +64,14 @@ export const sendInviteEmail = async (email, model, customGPT, chatId, inviterPr
     sendEmail({
         to: email,
         from: process.env.EMAIL,
-        subject: "Shared Chat History",
+        subject: "Invite to Chat",
         template: "invite",
         context: {
             model,
             customGPT: customGPT || "N/A",
             chatId,
-            inviterProfileUrl,
-            customGPTProfileUrl,
+            // inviterProfileUrl,
+            // customGPTProfileUrl,
             chatUrl: `https://allchat.online/chat/${chatId}`,
         },
     });

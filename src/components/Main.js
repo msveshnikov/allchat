@@ -20,6 +20,7 @@ import Settings, { models } from "./Settings";
 import { animateScroll as scroll } from "react-scroll";
 import readmeContent from "../README.md";
 import { ConfirmModal } from "./ConfirmModal";
+import { useNavigate, useParams } from "react-router-dom";
 
 const MAX_CHAT_HISTORY_LENGTH = 20;
 const MAX_CHATS = 5;
@@ -55,6 +56,8 @@ function Main({ darkMode, toggleTheme }) {
     const [referrer, setReferrer] = useState("");
     const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
     const [inviteEmail, setInviteEmail] = useState("");
+    const { chatId } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const isFirstTime = !localStorage.getItem("isVisited");
@@ -96,20 +99,38 @@ function Main({ darkMode, toggleTheme }) {
         const storedHistory = localStorage.getItem("chatHistory");
         const storedChatHistories = localStorage.getItem("storedChatHistories");
 
-        if (storedHistory) {
-            setChatHistory(JSON.parse(storedHistory));
-        } else if (!storedChatHistories) {
-            fetch(readmeContent)
-                .then((res) => res.text())
-                .then((text) => {
-                    setChatHistory([{ user: "Who are you?", assistant: text }]);
-                });
+        if (!chatId) {
+            if (storedHistory) {
+                setChatHistory(JSON.parse(storedHistory));
+            } else if (!storedChatHistories) {
+                fetch(readmeContent)
+                    .then((res) => res.text())
+                    .then((text) => {
+                        setChatHistory([{ user: "Who are you?", assistant: text }]);
+                    });
+            }
         }
 
         if (storedChatHistories) {
             setStoredChatHistories(JSON.parse(storedChatHistories));
         }
-    }, []);
+    }, [chatId]);
+
+    useEffect(() => {
+        const fetchChatHistory = async () => {
+            const response = await fetch(API_URL + `/chat/${chatId}`);
+            if (response.ok) {
+                const data = await response.json();
+                setChatHistory(data.chatHistory);
+                setSelectedModel(data.model);
+                localStorage.setItem("selectedCustomGPT", data.customGPT);
+            }
+        };
+
+        if (chatId) {
+            fetchChatHistory();
+        }
+    }, [chatId]);
 
     useEffect(() => {
         try {
@@ -118,12 +139,12 @@ function Main({ darkMode, toggleTheme }) {
                 duration: 500,
                 smooth: true,
             });
-            if (chatHistory.length > 0) {
+            if (chatHistory.length > 0 && !chatId) {
                 const chatHistoryToStore = chatHistory.slice(-MAX_CHAT_HISTORY_LENGTH);
                 localStorage.setItem("chatHistory", JSON.stringify(chatHistoryToStore));
             }
         } catch {}
-    }, [chatHistory]);
+    }, [chatHistory, chatId]);
 
     useEffect(() => {
         try {
@@ -312,16 +333,19 @@ function Main({ darkMode, toggleTheme }) {
     };
 
     const handleNewChat = () => {
-        if (chatHistory.length > 0) {
-            Promise.resolve().then(async () => {
-                const summary = await generateChatSummary(chatHistory);
-                setStoredChatHistories([{ chatHistory, summary }, ...storedChatHistories.slice(0, MAX_CHATS - 1)]);
-            });
+        if (!chatId) {
+            if (chatHistory.length > 0) {
+                Promise.resolve().then(async () => {
+                    const summary = await generateChatSummary(chatHistory);
+                    setStoredChatHistories([{ chatHistory, summary }, ...storedChatHistories.slice(0, MAX_CHATS - 1)]);
+                });
+            }
         }
         setChatHistory([]);
         localStorage.removeItem("chatHistory");
         setDrawerOpen(false);
         setSelectedFile(null);
+        navigate("/");
     };
 
     const handleHistorySelection = (index) => {
