@@ -609,7 +609,7 @@ app.post("/customgpt", verifyToken, async (req, res) => {
     }
 });
 
-app.get("/customgpt", async (req, res) => {
+app.get("/customgpt", verifyToken, async (req, res) => {
     try {
         const userId = req.user.id;
         const customGPTs = await CustomGPT.find(
