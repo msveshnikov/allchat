@@ -70,8 +70,8 @@ export const sendInviteEmail = async (email, model, customGPT, chatId, inviterPr
             model,
             customGPT: customGPT || "N/A",
             chatId,
-            // inviterProfileUrl,
-            // customGPTProfileUrl,
+            inviterProfileUrl,
+            customGPTProfileUrl,
             chatUrl: `https://allchat.online/chat/${chatId}`,
         },
     });

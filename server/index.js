@@ -815,7 +815,9 @@ app.post("/invite", verifyToken, async (req, res) => {
         let customGPTProfileUrl = null;
         if (customGPT) {
             const customGPTData = await CustomGPT.findOne({ name: customGPT });
-            customGPTProfileUrl = customGPTData.profileUrl || "https://allchat.online/AllChat.png";
+            customGPTProfileUrl = customGPTData.profileUrl;
+        } else {
+            customGPTProfileUrl = "https://allchat.online/AllChat.png";
         }
 
         await sendInviteEmail(email, model, customGPT, sharedChat._id, inviterProfileUrl, customGPTProfileUrl);

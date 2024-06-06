@@ -33,13 +33,20 @@
             .profile-img {
                 width: 60px;
                 height: 60px;
+                /* border-radius: 50%; */
+                object-fit: cover;
+                margin-right: 15px;
+            }
+            .custom-img {
+                width: 60px;
+                height: 60px;
                 border-radius: 50%;
                 object-fit: cover;
                 margin-right: 15px;
             }
             .btn {
                 display: inline-block;
-                background-color: #4caf50;
+                background-color: #ea29bd;
                 color: #fff;
                 text-decoration: none;
                 padding: 12px 24px;
@@ -83,11 +90,7 @@
                 <li>
                     <strong>Custom GPT:</strong>
                     {{#if customGPT}}
-                    <img
-                        class="profile-img"
-                        src="data:image/png;base64,{{customGPTProfileUrl}}"
-                        alt="Custom GPT Profile"
-                    />
+                    <img class="custom-img" src="{{customGPTProfileUrl}}" alt="Custom GPT Profile" />
                     {{customGPT}} {{else}} N/A {{/if}}
                 </li>
                 <li>
