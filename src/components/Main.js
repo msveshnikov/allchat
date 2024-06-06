@@ -10,6 +10,9 @@ import {
     useTheme,
     DialogTitle,
     TextField,
+    Typography,
+    IconButton,
+    Box,
 } from "@mui/material";
 import AppHeader from "./AppHeader";
 import SideDrawer from "./SideDrawer";
@@ -21,6 +24,9 @@ import { animateScroll as scroll } from "react-scroll";
 import readmeContent from "../README.md";
 import { ConfirmModal } from "./ConfirmModal";
 import { useNavigate, useParams } from "react-router-dom";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
 
 const MAX_CHAT_HISTORY_LENGTH = 20;
 const MAX_CHATS = 5;
@@ -502,6 +508,10 @@ function Main({ darkMode, toggleTheme }) {
     };
 
     const handleInviteSubmit = async () => {
+        if (!inviteEmail) {
+            handleInviteClose();
+            return;
+        }
         const token = localStorage.getItem("token");
         const headers = {
             "Content-Type": "application/json",
@@ -524,6 +534,48 @@ function Main({ darkMode, toggleTheme }) {
             setSnackbarOpen(true);
         } else {
             setSnackbarMessage("Failed to send invitation.");
+            setSnackbarOpen(true);
+        }
+    };
+
+    const handleSocialShare = async (platform) => {
+        const token = localStorage.getItem("token");
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+        const response = await fetch(API_URL + "/invite", {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+                model: selectedModel,
+                customGPT: localStorage.getItem("selectedCustomGPT"),
+                chatHistory,
+            }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const shareUrl = data.shareUrl;
+
+            let shareLink;
+            switch (platform) {
+                case "facebook":
+                    shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+                    break;
+                case "twitter":
+                    shareLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareUrl)}`;
+                    break;
+                case "linkedin":
+                    shareLink = `https://www.linkedin.com/shareArticle?url=${encodeURIComponent(shareUrl)}`;
+                    break;
+                default:
+                    break;
+            }
+
+            window.open(shareLink, "_blank");
+        } else {
+            setSnackbarMessage("Failed to get share URL.");
             setSnackbarOpen(true);
         }
     };
@@ -598,6 +650,22 @@ function Main({ darkMode, toggleTheme }) {
                         value={inviteEmail}
                         onChange={(e) => setInviteEmail(e.target.value)}
                     />
+                    <Box>
+                        <Typography variant="h6" component="div" gutterBottom sx={{ mt: 5 }}>
+                            Or share chat on:
+                        </Typography>
+                        <Box display="flex" alignItems="center">
+                            <IconButton onClick={() => handleSocialShare("facebook")}>
+                                <FacebookIcon />
+                            </IconButton>
+                            <IconButton onClick={() => handleSocialShare("twitter")}>
+                                <TwitterIcon />
+                            </IconButton>
+                            <IconButton onClick={() => handleSocialShare("linkedin")}>
+                                <LinkedInIcon />
+                            </IconButton>
+                        </Box>
+                    </Box>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleInviteClose}>Cancel</Button>

@@ -821,8 +821,10 @@ app.post("/invite", verifyToken, async (req, res) => {
             customGPTProfileUrl = "https://allchat.online/AllChat.png";
         }
 
-        await sendInviteEmail(email, model, customGPT, sharedChat._id, inviterProfileUrl, customGPTProfileUrl);
-        res.status(201).json({ chatId: sharedChat._id });
+        if (email) {
+            await sendInviteEmail(email, model, customGPT, sharedChat._id, inviterProfileUrl, customGPTProfileUrl);
+        }
+        res.status(201).json({ chatId: sharedChat._id, shareUrl: `https://allchat.online/chat/${sharedChat._id}` });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
