@@ -6,6 +6,7 @@ import fs from "fs";
 dotenv.config();
 
 export const torIPs = fs.readFileSync("./tor.txt").toString().split("\r\n");
+const blacklistedCustomers = ["bramble", "jemon", "Max G", "Jeff Grimshaw"]; //trial violators
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -131,3 +132,12 @@ export const whiteListCountries = [
     "JP",
     "NO",
 ];
+
+export async function isCustomerNameBlacklisted(customerName) {
+    for (const name of blacklistedCustomers) {
+        if (customerName.toLowerCase().includes(name.toLowerCase())) {
+            return true;
+        }
+    }
+    return false;
+}
