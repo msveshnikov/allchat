@@ -27,6 +27,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import RedditIcon from "@mui/icons-material/Reddit";
 
 const MAX_CHAT_HISTORY_LENGTH = 20;
 const MAX_CHATS = 5;
@@ -569,6 +570,9 @@ function Main({ darkMode, toggleTheme }) {
                 case "linkedin":
                     shareLink = `https://www.linkedin.com/shareArticle?url=${encodeURIComponent(shareUrl)}`;
                     break;
+                case "reddit":
+                    shareLink = `https://www.reddit.com/submit?url=${encodeURIComponent(shareUrl)}`;
+                    break;
                 default:
                     break;
             }
@@ -663,6 +667,9 @@ function Main({ darkMode, toggleTheme }) {
                             </IconButton>
                             <IconButton onClick={() => handleSocialShare("linkedin")}>
                                 <LinkedInIcon />
+                            </IconButton>
+                            <IconButton onClick={() => handleSocialShare("reddit")}>
+                                <RedditIcon />
                             </IconButton>
                         </Box>
                     </Box>
