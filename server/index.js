@@ -800,6 +800,7 @@ app.put("/customgpt/:id", verifyToken, async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
 app.post("/invite", verifyToken, async (req, res) => {
     try {
         const { email, model, customGPT, chatHistory } = req.body;

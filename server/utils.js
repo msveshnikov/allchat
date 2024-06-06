@@ -61,9 +61,9 @@ export const sendResetEmail = async (user, resetUrl) => {
 };
 
 export const sendInviteEmail = async (email, model, customGPT, chatId, inviterProfileUrl, customGPTProfileUrl) => {
-    sendEmail({
-        to: email,
+    const mailOptions = {
         from: process.env.EMAIL,
+        to: email,
         subject: "Invite to Chat",
         template: "invite",
         context: {
@@ -74,7 +74,42 @@ export const sendInviteEmail = async (email, model, customGPT, chatId, inviterPr
             customGPTProfileUrl,
             chatUrl: `https://allchat.online/chat/${chatId}`,
         },
-    });
+    };
+
+    const base64ImageTags = [
+        inviterProfileUrl.match(/data:image\/(png|jpeg|gif);base64,([^"]+)/),
+        customGPTProfileUrl.match(/data:image\/(png|jpeg|gif);base64,([^"]+)/),
+    ].filter(Boolean);
+
+    if (base64ImageTags.length > 0) {
+        const attachments = await Promise.all(
+            base64ImageTags.map(async (match, index) => {
+                if (match) {
+                    const [, format, base64Data] = match;
+                    const imageByte = Buffer.from(base64Data, "base64");
+                    const imageName = `image-${index + 1}-${Date.now()}.${format}`;
+
+                    if (index === 0) {
+                        mailOptions.context.inviterProfileUrl = `cid:${imageName}`;
+                    } else {
+                        mailOptions.context.customGPTProfileUrl = `cid:${imageName}`;
+                    }
+
+                    return {
+                        filename: imageName,
+                        content: imageByte,
+                        encoding: "base64",
+                        cid: imageName,
+                    };
+                }
+                return null;
+            })
+        );
+
+        mailOptions.attachments = attachments.filter(Boolean);
+    }
+
+    sendEmail(mailOptions);
 };
 
 export const whiteListCountries = [

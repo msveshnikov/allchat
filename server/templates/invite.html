@@ -4,8 +4,6 @@
         <meta charset="utf-8" />
         <title>Shared Chat History</title>
         <style>
-            @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
-
             body {
                 font-family: "Roboto", sans-serif;
                 background-color: #f4f4f4;
@@ -89,9 +87,8 @@
                 </li>
                 <li>
                     <strong>Custom GPT:</strong>
-                    {{#if customGPT}}
                     <img class="custom-img" src="{{customGPTProfileUrl}}" alt="Custom GPT Profile" />
-                    {{customGPT}} {{else}} N/A {{/if}}
+                    {{customGPT}}
                 </li>
                 <li>
                     <strong>Chat ID:</strong>
