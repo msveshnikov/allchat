@@ -807,12 +807,22 @@ app.put("/customgpt/:id", verifyToken, async (req, res) => {
 
 app.post("/invite", verifyToken, async (req, res) => {
     try {
-        const { email, model, customGPT, chatHistory } = req.body;
-        const sharedChat = await SharedChat.create({
-            model,
-            customGPT,
-            chatHistory,
-        });
+        const { email, model, customGPT, chatHistory, chatId } = req.body;
+
+        let sharedChat;
+        if (chatId) {
+            sharedChat = await SharedChat.findOneAndUpdate(
+                { _id: chatId },
+                { model, customGPT, chatHistory },
+                { new: true, upsert: true }
+            );
+        } else {
+            sharedChat = await SharedChat.create({
+                model,
+                customGPT,
+                chatHistory,
+            });
+        }
 
         const inviter = await User.findById(req.user.id);
         const inviterProfileUrl = inviter.profileUrl || "https://allchat.online/logo192.png";

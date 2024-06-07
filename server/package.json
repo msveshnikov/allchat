@@ -30,10 +30,10 @@
         "node-telegram-bot-api": "^0.66.0",
         "nodemailer": "^6.9.13",
         "nodemailer-express-handlebars": "^6.1.2",
-        "openai": "^4.47.3",
+        "openai": "^4.49.0",
         "pdf-parse": "1.1.1",
         "sharp": "^0.33.4",
-        "stripe": "^15.8.0",
+        "stripe": "^15.10.0",
         "xlsx": "^0.18.5",
         "youtube-transcript": "^1.2.1"
     }

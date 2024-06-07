@@ -71,7 +71,7 @@ export const tools = [
     {
         name: "send_telegram_message",
         description:
-            "Send a message to a Telegram group or user. User already gave consent to recieve a message from bot. The tool expects an object with 'chatId' and 'message' properties. It returns a success message.",
+            "Send a message to a Telegram group or user. User already gave consent to receive a message from bot. The tool expects an object with 'chatId' and 'message' properties. It returns a success message.",
         input_schema: {
             type: "object",
             properties: {
@@ -104,7 +104,7 @@ export const tools = [
     {
         name: "send_email",
         description:
-            "Sends an email with the given subject, recipient, and content. If recipient is not provided, it uses user email from profile. Consent from user is already recieved. It returns a success message.",
+            "Sends an email with the given subject, recipient, and content. If recipient is not provided, it uses user email from profile. Consent from user is already received. It returns a success message.",
         input_schema: {
             type: "object",
             properties: {

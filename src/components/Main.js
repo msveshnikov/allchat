@@ -135,6 +135,7 @@ function Main({ darkMode, toggleTheme }) {
         };
 
         if (chatId) {
+            localStorage.setItem("chatId", chatId);
             fetchChatHistory();
         }
     }, [chatId]);
@@ -168,7 +169,11 @@ function Main({ darkMode, toggleTheme }) {
     useEffect(() => {
         fetchUserData();
         setReferrer(window.document.referrer);
-    }, []);
+        const chatId = localStorage.getItem("chatId");
+        if (chatId) {
+            navigate("/chat/" + chatId);
+        }
+    }, [navigate]);
 
     const removeFormatting = (text) => {
         return text.replace(/\*\*|__|\[|\]|\(|\)|`/g, "");
@@ -223,6 +228,7 @@ function Main({ darkMode, toggleTheme }) {
                     tools: models[selectedModel].includes("tools") && tools,
                     temperature,
                     chatHistory: (newHistory || chatHistory).map((h) => ({ user: h.user, assistant: h.assistant })),
+                    chatId,
                 }),
             });
 
@@ -337,19 +343,23 @@ function Main({ darkMode, toggleTheme }) {
         setDrawerOpen(false);
         setSelectedFile(null);
         setShowClearConfirmation(false);
+        localStorage.removeItem("chatId");
+        navigate("/");
     };
 
     const handleNewChat = () => {
-        if (!chatId) {
-            if (chatHistory.length > 0) {
-                Promise.resolve().then(async () => {
-                    const summary = await generateChatSummary(chatHistory);
-                    setStoredChatHistories([{ chatHistory, summary }, ...storedChatHistories.slice(0, MAX_CHATS - 1)]);
-                });
-            }
+        if (chatHistory.length > 0) {
+            Promise.resolve().then(async () => {
+                const summary = await generateChatSummary(chatHistory);
+                setStoredChatHistories([
+                    { chatHistory, summary, chatId },
+                    ...storedChatHistories.slice(0, MAX_CHATS - 1),
+                ]);
+            });
         }
         setChatHistory([]);
         localStorage.removeItem("chatHistory");
+        localStorage.removeItem("chatId");
         setDrawerOpen(false);
         setSelectedFile(null);
         navigate("/");
@@ -360,7 +370,7 @@ function Main({ darkMode, toggleTheme }) {
             Promise.resolve().then(async () => {
                 const updatedStoredChatHistories = [...storedChatHistories];
                 const summary = await generateChatSummary(chatHistory);
-                updatedStoredChatHistories[index] = { chatHistory, summary };
+                updatedStoredChatHistories[index] = { chatHistory, summary, chatId };
                 setStoredChatHistories(updatedStoredChatHistories);
             });
         } else {
@@ -368,6 +378,12 @@ function Main({ darkMode, toggleTheme }) {
             setStoredChatHistories(updatedStoredChatHistories);
         }
         setChatHistory(storedChatHistories[index].chatHistory);
+        if (storedChatHistories[index].chatId) {
+            navigate("/chat/" + storedChatHistories[index].chatId);
+        } else {
+            localStorage.removeItem("chatId");
+            navigate("/");
+        }
         setDrawerOpen(false);
     };
 
@@ -526,13 +542,16 @@ function Main({ darkMode, toggleTheme }) {
                 model: selectedModel,
                 customGPT: localStorage.getItem("selectedCustomGPT"),
                 chatHistory,
+                chatId,
             }),
         });
 
         if (response.ok) {
+            const data = await response.json();
             handleInviteClose();
             setSnackbarMessage("Invitation sent successfully!");
             setSnackbarOpen(true);
+            navigate("/chat/" + data.chatId);
         } else {
             setSnackbarMessage("Failed to send invitation.");
             setSnackbarOpen(true);
@@ -552,6 +571,7 @@ function Main({ darkMode, toggleTheme }) {
                 model: selectedModel,
                 customGPT: localStorage.getItem("selectedCustomGPT"),
                 chatHistory,
+                chatId,
             }),
         });
 
@@ -578,6 +598,7 @@ function Main({ darkMode, toggleTheme }) {
             }
 
             window.open(shareLink, "_blank");
+            navigate("/chat/" + data.chatId);
         } else {
             setSnackbarMessage("Failed to get share URL.");
             setSnackbarOpen(true);
