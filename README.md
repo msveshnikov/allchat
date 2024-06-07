@@ -27,9 +27,9 @@ https://allchat.online
 -   Gemini Pro 1.5, Claude 3 and GPT-3.5
 -   Audio Input in Gemini
 -   Video Input in Gemini
--   Custom GPTs (best to use with LlaMa-3)
+-   Custom GPTs
 -   Email respond (with attachments, like PDFs, Word, etc)
--   Memory (for Gemini & Claude) - any information about user which you agreed to persist
+-   Memory  - any information about user which you agreed to persist
 -   Scheduling any action (hourly or daily) to your email
 -   YouTube video summary
 -   Image Input (png/jpeg) in Gemini and Claude
