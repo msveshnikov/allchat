@@ -140,6 +140,7 @@ app.post("/interact", verifyToken, async (req, res) => {
         const temperature = req.body.temperature || 0.8;
         const fileBytesBase64 = req.body.fileBytesBase64;
         let fileType = req.body.fileType;
+        const chatId = req.body.chatId;
         const tools = req.body.tools;
         const lang = req.body.lang;
         const model = req.body.model || "gemini-1.5-pro-preview-0514";
@@ -266,6 +267,31 @@ app.post("/interact", verifyToken, async (req, res) => {
         }
 
         storeUsageStats(req.user.id, model, inputTokens, outputTokens, imagesGenerated);
+
+        if (chatId) {
+            const sharedChat = await SharedChat.findById(chatId);
+            if (sharedChat) {
+                const updatedChatHistory = [
+                    ...sharedChat.chatHistory,
+                    {
+                        user: userInput,
+                        assistant: textResponse,
+                        toolsUsed,
+                        image: imageResponse,
+                        fileType,
+                        gpt: GPT?._id,
+                        userImageData: fileBytesBase64,
+                    },
+                ];
+
+                const updatedSharedChat = {
+                    ...sharedChat._doc,
+                    chatHistory: updatedChatHistory,
+                };
+
+                SharedChat.findByIdAndUpdate(chatId, updatedSharedChat);
+            }
+        }
 
         res.json({ textResponse, imageResponse, toolsUsed, gpt: GPT?._id });
     } catch (error) {
@@ -738,7 +764,7 @@ app.put("/users/:userId/subscription", verifyToken, async (req, res) => {
 });
 
 app.post("/generate-avatar", verifyToken, async (req, res) => {
-    const { userInput, outfit, hairstyle, sport, background, animal, gender } = req.body;
+    const { userInput, outfit, hairstyle, sport, background, animal, gender, skinColor } = req.body;
     try {
         let prompt =
             `Pretend you are a graphic designer generating creative images for midjourney. 
@@ -750,6 +776,7 @@ app.post("/generate-avatar", verifyToken, async (req, res) => {
         if (background) prompt += `, in a ${background} background`;
         if (animal) prompt += `, with a ${animal}`;
         if (gender) prompt += `, with a ${gender} gender appearance`;
+        if (skinColor) prompt += `, with ${skinColor} skin color`;
 
         const avatarBase64 = await getImage(prompt, true);
 

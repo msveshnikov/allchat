@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { API_URL } from "./Main";
 import { useNavigate } from "react-router-dom";
+import ColorMenuItem from "./ColorMenuItem ";
 
 const AvatarBuilder = () => {
     const [userInput, setUserInput] = useState("");
@@ -26,6 +27,7 @@ const AvatarBuilder = () => {
     const [background, setBackground] = useState("");
     const [animal, setAnimal] = useState("");
     const [gender, setGender] = useState("");
+    const [skinColor, setSkinColor] = useState("");
     const theme = useTheme();
     const navigate = useNavigate();
 
@@ -55,6 +57,10 @@ const AvatarBuilder = () => {
 
     const handleAnimalChange = (event) => {
         setAnimal(event.target.value);
+    };
+
+    const handleSkinColorChange = (event) => {
+        setSkinColor(event.target.value);
     };
 
     const fetchUserData = async () => {
@@ -96,6 +102,7 @@ const AvatarBuilder = () => {
                     background,
                     animal,
                     gender,
+                    skinColor,
                 }),
             });
 
@@ -215,6 +222,7 @@ const AvatarBuilder = () => {
                             <MenuItem value="lion">Lion</MenuItem>
                             <MenuItem value="panda">Panda</MenuItem>
                             <MenuItem value="unicorn">Unicorn</MenuItem>
+                            <MenuItem value="chinchilla">Chinchilla</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
@@ -232,6 +240,37 @@ const AvatarBuilder = () => {
                             <MenuItem value="transgender-male">Transgender Male</MenuItem>
                             <MenuItem value="transgender-female">Transgender Female</MenuItem>
                             <MenuItem value="lgbtq+">LGBTQ+</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={6} md={2}>
+                    <FormControl fullWidth>
+                        <InputLabel id="skin-color-label">Skin Color</InputLabel>
+                        <Select
+                            labelId="skin-color-label"
+                            value={skinColor}
+                            onChange={handleSkinColorChange}
+                            label="Skin Color"
+                        >
+                            <MenuItem value="">None</MenuItem>
+                            <ColorMenuItem value="Light" color="#FFE0BD">
+                                Light
+                            </ColorMenuItem>
+                            <ColorMenuItem value="Medium" color="#EDB98A">
+                                Medium
+                            </ColorMenuItem>
+                            <ColorMenuItem value="Dark" color="#B47D64">
+                                Dark
+                            </ColorMenuItem>
+                            <ColorMenuItem value="Olive" color="#C2B280">
+                                Olive
+                            </ColorMenuItem>
+                            <ColorMenuItem value="Brown" color="#9A6E51">
+                                Brown
+                            </ColorMenuItem>
+                            <ColorMenuItem value="Black" color="#3C3C3C">
+                                Black
+                            </ColorMenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
