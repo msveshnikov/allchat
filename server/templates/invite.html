@@ -1,14 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <meta charset="utf-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Chat Invitation</title>
         <style>
+            /* Styles for better compatibility with Outlook */
             body {
-                font-family: "Roboto", sans-serif;
+                font-family: Arial, sans-serif;
                 background-color: #fff8e5;
-                padding: 40px;
+                padding: 20px;
+                -webkit-text-size-adjust: none;
+                -ms-text-size-adjust: none;
             }
+            table {
+                border-collapse: separate;
+                border-spacing: 0;
+            }
+            th,
+            td {
+                font-weight: normal;
+                text-align: left;
+                padding: 10px;
+            }
+            img {
+                border: 0;
+                outline: none;
+                text-decoration: none;
+                -ms-interpolation-mode: bicubic;
+            }
+
+            /* Custom styles */
             .container {
                 max-width: 600px;
                 margin: 0 auto;
@@ -76,30 +98,36 @@
         </style>
     </head>
     <body>
-        <div class="container">
-            <h1>You're Invited!</h1>
-            <p>
-                <img class="profile-img" src="{{inviterProfileUrl}}" alt="Inviter Profile" />
-                Hey there! You've been invited to join an exciting chat. Let's get started!
-            </p>
-            <ul class="info-list">
-                <li>
-                    <strong>Model:</strong>
-                    {{model}}
-                </li>
-                <li>
-                    <strong>Custom GPT:</strong>
-                    <img class="custom-img" src="{{customGPTProfileUrl}}" alt="Custom GPT Profile" />
-                    {{customGPT}}
-                </li>
-                <li>
-                    <strong>Chat ID:</strong>
-                    {{chatId}}
-                </li>
-            </ul>
-            <p style="text-align: center">
-                <a href="{{chatUrl}}" class="btn">Join the Chat</a>
-            </p>
-        </div>
+        <table class="container" cellpadding="0" cellspacing="0" border="0" align="center">
+            <tr>
+                <td>
+                    <h1>You're Invited!</h1>
+                    <p>
+                        <img class="profile-img" src="{{inviterProfileUrl}}" alt="Inviter Profile" />
+                        Hey there! You've been invited to join an exciting chat. Let's get started!
+                    </p>
+                    <table class="info-list" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td><strong>Model:</strong></td>
+                            <td>{{model}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Custom GPT:</strong></td>
+                            <td>
+                                <img class="custom-img" src="{{customGPTProfileUrl}}" alt="Custom GPT Profile" />
+                                {{customGPT}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Chat ID:</strong></td>
+                            <td>{{chatId}}</td>
+                        </tr>
+                    </table>
+                    <p style="text-align: center">
+                        <a href="{{chatUrl}}" class="btn">Join the Chat</a>
+                    </p>
+                </td>
+            </tr>
+        </table>
     </body>
 </html>
