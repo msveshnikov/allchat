@@ -31,6 +31,8 @@ const Admin = () => {
     const [users, setUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
+    const [currentGptPage, setCurrentGptPage] = useState(1);
+    const [gptItemsPerPage] = useState(10);
     const [loading, setLoading] = useState(false);
     const [loadingGptId, setLoadingGptId] = useState(null);
 
@@ -90,14 +92,20 @@ const Admin = () => {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             };
-            const response = await fetch(`${API_URL}/customgpt-details`, {
-                headers,
-            });
+            const response = await fetch(
+                `${API_URL}/customgpt-details?page=${currentGptPage}&limit=${gptItemsPerPage}`,
+                {
+                    headers,
+                }
+            );
             const data = await response.json();
-            setGpts(data);
+            setGpts({
+                gpts: data.gpts,
+                totalPages: data.totalPages,
+            });
         };
         fetchGpts();
-    }, []);
+    }, [currentGptPage, gptItemsPerPage]);
 
     const handleSubscriptionChange = async (userId, newStatus) => {
         const token = localStorage.getItem("token");
@@ -390,7 +398,7 @@ const Admin = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {gpts?.map((gpt) => (
+                            {gpts?.gpts?.map((gpt) => (
                                 <TableRow key={gpt._id}>
                                     <TableCell>{gpt.name}</TableCell>
                                     <TableCell>
@@ -449,6 +457,13 @@ const Admin = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Box display="flex" justifyContent="center" mt={2}>
+                    <Pagination
+                        count={gpts?.totalPages}
+                        page={currentGptPage}
+                        onChange={(event, page) => setCurrentGptPage(page)}
+                    />
+                </Box>
             </Box>
         </>
     );
