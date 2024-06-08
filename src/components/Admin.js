@@ -193,6 +193,41 @@ const Admin = () => {
                                 <StyledCard>
                                     <CardContent>
                                         <Typography variant="h5" gutterBottom color="primary">
+                                            Users
+                                        </Typography>
+                                        <Typography variant="body1" color="text.primary">
+                                            Total User Count: <strong>{stats.users}</strong>
+                                        </Typography>
+                                        {stats.subscriptionStats && (
+                                            <>
+                                                <Typography variant="h6" gutterBottom color="primary" mt={2}>
+                                                    Subscription Status
+                                                </Typography>
+                                                <Typography variant="body1" color="text.primary">
+                                                    Active: <strong>{stats.subscriptionStats.active}</strong>
+                                                </Typography>
+                                                <Typography variant="body1" color="text.primary">
+                                                    Past Due: <strong>{stats.subscriptionStats.past_due}</strong>
+                                                </Typography>
+                                                <Typography variant="body1" color="text.primary">
+                                                    Trialing: <strong>{stats.subscriptionStats.trialing}</strong>
+                                                </Typography>
+                                                <Typography variant="body1" color="text.primary">
+                                                    Incomplete: <strong>{stats.subscriptionStats.incomplete}</strong>
+                                                </Typography>
+                                                <Typography variant="body1" color="text.secondary">
+                                                    Subscriptions:{" "}
+                                                    <strong>{stats.subscriptionStats.subscription}</strong>
+                                                </Typography>
+                                            </>
+                                        )}
+                                    </CardContent>
+                                </StyledCard>
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={4}>
+                                <StyledCard>
+                                    <CardContent>
+                                        <Typography variant="h5" gutterBottom color="primary">
                                             Gemini Pro Usage
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">
@@ -265,41 +300,6 @@ const Admin = () => {
                                             Total Money Consumed:{" "}
                                             <strong>${stats.gpt.totalMoneyConsumed.toFixed(2)}</strong>
                                         </Typography>
-                                    </CardContent>
-                                </StyledCard>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <StyledCard>
-                                    <CardContent>
-                                        <Typography variant="h5" gutterBottom color="primary">
-                                            Users
-                                        </Typography>
-                                        <Typography variant="body1" color="text.primary">
-                                            Total User Count: <strong>{stats.users}</strong>
-                                        </Typography>
-                                        {stats.subscriptionStats && (
-                                            <>
-                                                <Typography variant="h6" gutterBottom color="primary" mt={2}>
-                                                    Subscription Status
-                                                </Typography>
-                                                <Typography variant="body1" color="text.primary">
-                                                    Active: <strong>{stats.subscriptionStats.active}</strong>
-                                                </Typography>
-                                                <Typography variant="body1" color="text.primary">
-                                                    Past Due: <strong>{stats.subscriptionStats.past_due}</strong>
-                                                </Typography>
-                                                <Typography variant="body1" color="text.primary">
-                                                    Trialing: <strong>{stats.subscriptionStats.trialing}</strong>
-                                                </Typography>
-                                                <Typography variant="body1" color="text.primary">
-                                                    Incomplete: <strong>{stats.subscriptionStats.incomplete}</strong>
-                                                </Typography>
-                                                <Typography variant="body1" color="text.secondary">
-                                                    Subscriptions:{" "}
-                                                    <strong>{stats.subscriptionStats.subscription}</strong>
-                                                </Typography>
-                                            </>
-                                        )}
                                     </CardContent>
                                 </StyledCard>
                             </Grid>

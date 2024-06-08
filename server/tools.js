@@ -391,7 +391,6 @@ export async function sendTelegramMessage(chatId, message) {
         await bot.sendMessage(chatId, message);
         return "Telegram message sent successfully.";
     } catch (error) {
-        console.error("Error sending Telegram message:", error);
         return "Error sending Telegram message:" + error.message;
     }
 }
