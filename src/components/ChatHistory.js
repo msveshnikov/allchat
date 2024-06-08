@@ -200,7 +200,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                             <img
                                 src={`data:image/${chat.fileType.split("/")[1]};base64,${chat.userImageData}`}
                                 alt="User input"
-                                style={{ maxWidth: "100%" }}
+                                style={{ maxWidth: "90%" }}
                             />
                         )}
                     </Box>

@@ -17,6 +17,7 @@ I'm An AI assistant app that interacts with all major models, maintains history,
 -   Image Input (png/jpeg) 
 -   Custom GPTs
 -   Avatar AI Generator
+-   Achievments
 -   Multi-user AI RPG - invite friends, colleagues, or like-minded individuals to join your chats 
 -   Image Generation by SDXL
 -   Python Code Run

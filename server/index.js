@@ -764,7 +764,7 @@ app.put("/users/:userId/subscription", verifyToken, async (req, res) => {
 });
 
 app.post("/generate-avatar", verifyToken, async (req, res) => {
-    const { userInput, outfit, hairstyle, sport, background, animal, gender, skinColor } = req.body;
+    const { userInput, outfit, hairstyle, sport, background, animal, gender, skinColor, drawingStyle } = req.body;
     try {
         let prompt =
             `Pretend you are a graphic designer generating creative images for midjourney. 
@@ -777,6 +777,7 @@ app.post("/generate-avatar", verifyToken, async (req, res) => {
         if (animal) prompt += `, with a ${animal}`;
         if (gender) prompt += `, with a ${gender} gender appearance`;
         if (skinColor) prompt += `, with ${skinColor} skin color`;
+        if (drawingStyle) prompt += `, ${drawingStyle} style`;
 
         const avatarBase64 = await getImage(prompt, true);
 

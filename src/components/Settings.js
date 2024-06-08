@@ -252,13 +252,13 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                 >
                     {selectedAchievement && (
                         <>
-                            <Typography variant="h6" gutterBottom>
+                            <Typography color="primary" variant="h6" gutterBottom>
                                 Achievement
                             </Typography>
-                            <Typography variant="body1" gutterBottom>
+                            <Typography color="primary" variant="body1" gutterBottom>
                                 {selectedAchievement.description}
                             </Typography>
-                            <Typography variant="h4" gutterBottom>
+                            <Typography color="primary" variant="h4" gutterBottom>
                                 {selectedAchievement.emoji}
                             </Typography>
                         </>

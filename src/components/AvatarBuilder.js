@@ -28,6 +28,7 @@ const AvatarBuilder = () => {
     const [animal, setAnimal] = useState("");
     const [gender, setGender] = useState("");
     const [skinColor, setSkinColor] = useState("");
+    const [drawingStyle, setDrawingStyle] = useState("");
     const theme = useTheme();
     const navigate = useNavigate();
 
@@ -61,6 +62,10 @@ const AvatarBuilder = () => {
 
     const handleSkinColorChange = (event) => {
         setSkinColor(event.target.value);
+    };
+
+    const handleDrawingStyleChange = (event) => {
+        setDrawingStyle(event.target.value);
     };
 
     const fetchUserData = async () => {
@@ -103,6 +108,7 @@ const AvatarBuilder = () => {
                     animal,
                     gender,
                     skinColor,
+                    drawingStyle,
                 }),
             });
 
@@ -271,6 +277,24 @@ const AvatarBuilder = () => {
                             <ColorMenuItem value="Black" color="#3C3C3C">
                                 Black
                             </ColorMenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={6} md={2}>
+                    <FormControl fullWidth>
+                        <InputLabel id="drawing-style-label">Drawing Style</InputLabel>
+                        <Select
+                            labelId="drawing-style-label"
+                            value={drawingStyle}
+                            onChange={handleDrawingStyleChange}
+                            label="Drawing Style"
+                        >
+                            <MenuItem value="">None</MenuItem>
+                            <MenuItem value="realistic">Realistic</MenuItem>
+                            <MenuItem value="cartoon">Cartoon</MenuItem>
+                            <MenuItem value="anime">Anime</MenuItem>
+                            <MenuItem value="sketch">Sketch</MenuItem>
+                            <MenuItem value="pixel-art">Pixel Art</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
