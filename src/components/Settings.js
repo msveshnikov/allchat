@@ -167,9 +167,6 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
             </Grid>
 
             <Grid item xs={12} md={6}>
-                <Typography variant="h6" gutterBottom color="primary">
-                    {t("Achievements")}
-                </Typography>
                 <Box display="flex" flexWrap="wrap">
                     {user.achievements.map((achievement, index) => (
                         <Tooltip key={index} title={achievement.description}>
