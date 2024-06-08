@@ -289,7 +289,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                     chatHistory: updatedChatHistory,
                 };
 
-                SharedChat.findByIdAndUpdate(chatId, updatedSharedChat);
+                await SharedChat.findByIdAndUpdate(chatId, updatedSharedChat);
             }
         }
 
