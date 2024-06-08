@@ -620,6 +620,7 @@ function Main({ darkMode, toggleTheme }) {
                 darkMode={darkMode}
                 toggleTheme={toggleTheme}
                 onInviteUser={handleInviteUser}
+                chatId={chatId}
             />
             <SideDrawer
                 isOpen={drawerOpen}
@@ -663,7 +664,7 @@ function Main({ darkMode, toggleTheme }) {
                 </DialogActions>
             </Dialog>
             <Dialog open={inviteDialogOpen} onClose={handleInviteClose} maxWidth="sm" fullWidth>
-                <DialogTitle>Invite User To This Chat</DialogTitle>
+                <DialogTitle>{`Invite User To This ${chatId ? "Shared" : ""} Chat`}</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
