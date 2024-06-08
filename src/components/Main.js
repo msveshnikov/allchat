@@ -70,14 +70,10 @@ function Main({ darkMode, toggleTheme }) {
         const isFirstTime = !localStorage.getItem("isVisited");
         if (isFirstTime) {
             setTimeout(() => {
-                setDrawerOpen(true);
-                setTimeout(() => {
-                    setDrawerOpen(false);
-                    setSnackbarMessage("Click top bar to select your preferred model 🤗");
-                    setSnackbarSeverity("info");
-                    setSnackbarOpen(true);
-                }, 1000);
-            }, 500);
+                setSnackbarMessage("Click top bar to select your preferred model 🤗");
+                setSnackbarSeverity("info");
+                setSnackbarOpen(true);
+            }, 1000);
             localStorage.setItem("isVisited", "true");
         }
     }, []);
