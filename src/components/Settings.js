@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Typography, Grid, Avatar, Button, Link, TextField, MenuItem, Box, Tooltip } from "@mui/material";
+import { Typography, Grid, Avatar, Button, Link, TextField, MenuItem, Box, Tooltip, Modal } from "@mui/material";
 import md5 from "md5";
 import { useTranslation } from "react-i18next";
 import { API_URL } from "./Main";
@@ -32,6 +32,8 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
 
     const [customGPTs, setCustomGPTs] = useState([]);
     const [selectedCustomGPT, setSelectedCustomGPT] = useState("");
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedAchievement, setSelectedAchievement] = useState(null);
 
     const handleModelChange = (event) => {
         onModelSelect(event.target.value);
@@ -71,6 +73,16 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
 
     const handleTermsClick = () => {
         navigate("/terms");
+    };
+
+    const handleAchievementClick = (achievement) => {
+        setSelectedAchievement(achievement);
+        setOpenModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+        setSelectedAchievement(null);
     };
 
     return (
@@ -154,11 +166,20 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                 <MenuItem onClick={handleTermsClick}>Terms</MenuItem>
             </Grid>
 
-            <Grid item xs={12} md={12}>
+            <Grid item xs={12} md={6}>
+                <Typography variant="h6" gutterBottom color="primary">
+                    {t("Achievements")}
+                </Typography>
                 <Box display="flex" flexWrap="wrap">
                     {user.achievements.map((achievement, index) => (
                         <Tooltip key={index} title={achievement.description}>
-                            <span style={{ fontSize: "1.5rem", marginRight: "0.5rem" }}>{achievement.emoji}</span>
+                            <span
+                                key={index}
+                                style={{ fontSize: "1.5rem", marginRight: "0.5rem", cursor: "pointer" }}
+                                onClick={() => handleAchievementClick(achievement)}
+                            >
+                                {achievement.emoji}
+                            </span>
                         </Tooltip>
                     ))}
                 </Box>
@@ -220,6 +241,33 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                     ))}
                 </TextField>
             </Grid>
+            <Modal open={openModal} onClose={handleCloseModal}>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        bgcolor: "background.paper",
+                        boxShadow: 24,
+                        p: 4,
+                    }}
+                >
+                    {selectedAchievement && (
+                        <>
+                            <Typography variant="h6" gutterBottom>
+                                Achievement
+                            </Typography>
+                            <Typography variant="body1" gutterBottom>
+                                {selectedAchievement.description}
+                            </Typography>
+                            <Typography variant="h4" gutterBottom>
+                                {selectedAchievement.emoji}
+                            </Typography>
+                        </>
+                    )}
+                </Box>
+            </Modal>
         </Grid>
     );
 };
