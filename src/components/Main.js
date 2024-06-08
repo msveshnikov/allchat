@@ -143,7 +143,7 @@ function Main({ darkMode, toggleTheme }) {
                 duration: 500,
                 smooth: true,
             });
-            if (chatHistory.length > 0 && !chatId) {
+            if (chatHistory.length > 0) {
                 const chatHistoryToStore = chatHistory.slice(-MAX_CHAT_HISTORY_LENGTH);
                 localStorage.setItem("chatHistory", JSON.stringify(chatHistoryToStore));
             }

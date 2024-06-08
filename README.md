@@ -238,3 +238,8 @@ graph LR
 [![Stargazers repo roster for @msveshnikov/allchat](https://reporoster.com/stars/msveshnikov/allchat)](https://github.com/msveshnikov/allchat/stargazers)
 
 [![Forkers repo roster for @msveshnikov/allchat](https://reporoster.com/forks/msveshnikov/allchat)](https://github.com/msveshnikov/allchat/network/members)
+
+# TDOD
+
+( ) broadcast update of shared chat (or poll 1 minute)
+( ) other user avatars, not always mine
