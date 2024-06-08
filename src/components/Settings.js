@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Typography, Grid, Avatar, Button, Link, TextField, MenuItem, Box } from "@mui/material";
+import { Typography, Grid, Avatar, Button, Link, TextField, MenuItem, Box, Tooltip } from "@mui/material";
 import md5 from "md5";
 import { useTranslation } from "react-i18next";
 import { API_URL } from "./Main";
@@ -96,6 +96,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                     />
                 </RouterLink>
             </Grid>
+
             <Grid item xs={12} md={6}>
                 <Typography variant="h6" gutterBottom color="primary">
                     {t("Subscription Status")}
@@ -151,6 +152,16 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                     </Link>
                 )}
                 <MenuItem onClick={handleTermsClick}>Terms</MenuItem>
+            </Grid>
+
+            <Grid item xs={12} md={12}>
+                <Box display="flex" flexWrap="wrap">
+                    {user.achievements.map((achievement, index) => (
+                        <Tooltip key={index} title={achievement.description}>
+                            <span style={{ fontSize: "1.5rem", marginRight: "0.5rem" }}>{achievement.emoji}</span>
+                        </Tooltip>
+                    ))}
+                </Box>
             </Grid>
 
             <Grid item xs={12} md={6}>

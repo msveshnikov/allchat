@@ -28,6 +28,9 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import RedditIcon from "@mui/icons-material/Reddit";
+import { useReward } from "react-rewards";
+
+const achievementSounds = ["/ach1.mp3", "/ach2.mp3", "/ach3.mp3", "/ach4.mp3"];
 
 const MAX_CHAT_HISTORY_LENGTH = 20;
 const MAX_CHATS = 5;
@@ -63,6 +66,7 @@ function Main({ darkMode, toggleTheme }) {
     const [referrer, setReferrer] = useState("");
     const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
     const [inviteEmail, setInviteEmail] = useState("");
+    const { reward } = useReward("rewardId", "emoji");
     const { chatId } = useParams();
     const navigate = useNavigate();
 
@@ -243,6 +247,14 @@ function Main({ darkMode, toggleTheme }) {
                     },
                 ];
                 setChatHistory(newChatHistory);
+                if (data.toolsUsed.includes("award_achievement")) {
+                    const randomSoundIndex = Math.floor(Math.random() * achievementSounds.length);
+                    const audio = new Audio(achievementSounds[randomSoundIndex]);
+                    audio.play();
+                    reward();
+                    setSnackbarMessage("Achievement unlocked! Check your profile!");
+                    setSnackbarOpen(true);
+                }
                 if (sound) {
                     const utterance = new SpeechSynthesisUtterance(removeFormatting(data.textResponse));
                     window.speechSynthesis.speak(utterance);

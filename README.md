@@ -241,5 +241,6 @@ graph LR
 
 # TDOD
 
-( ) broadcast update of shared chat (or poll 1 minute)
-( ) other user avatars, not always mine
+[ ] broadcast update of shared chat (or poll 1 minute) - WebSockets
+[ ] other user avatars, not always mine
+[x] achievments

@@ -51,6 +51,7 @@ const toolEmojis = {
     stop_scheduled_action: "⏹️",
     summarize_youtube_video: "📺",
     add_calendar_event: "📅",
+    award_achievement: "👑"
 };
 
 function toolsToEmojis(toolsUsed) {

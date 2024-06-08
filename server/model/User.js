@@ -44,6 +44,12 @@ const userSchema = new mongoose.Schema(
         },
         info: { type: Map, of: String, default: new Map() },
         scheduling: { type: Map, of: String, default: new Map() },
+        achievements: [
+            {
+                emoji: { type: String, required: true },
+                description: { type: String, required: true },
+            },
+        ],
     },
     { timestamps: true }
 );

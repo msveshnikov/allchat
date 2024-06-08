@@ -269,6 +269,25 @@ export const tools = [
             required: [],
         },
     },
+    {
+        name: "award_achievement",
+        description:
+            "Award the user with an achievement (a nice emoji and a short description) for any outstanding result. The achievement will be persisted in the user's profile. Example emojis: 🏆, ⭐, 🎉, 🚀, 👑. Example achievement: '🏆 Mastered Python Programming'",
+        input_schema: {
+            type: "object",
+            properties: {
+                emoji: {
+                    type: "string",
+                    description: "The emoji to represent the achievement, e.g., 🏆, ⭐, 🎉, 🚀, 👑",
+                },
+                description: {
+                    type: "string",
+                    description: "A short description of the achievement, e.g., 'Mastered Python Programming'",
+                },
+            },
+            required: ["emoji", "description"],
+        },
+    },
 ];
 
 export const handleToolCall = async (name, args, userId) => {
@@ -308,6 +327,8 @@ export const handleToolCall = async (name, args, userId) => {
             return addCalendarEvent(args.title, args.description, args.startTime, args.endTime, userId);
         case "get_user_subscription_info":
             return getUserSubscriptionInfo(userId);
+        case "award_achievement":
+            return awardAchievement(args.emoji, args.description, userId);
         default:
             console.error(`Unsupported function call: ${name}`);
     }
@@ -554,5 +575,25 @@ async function getUserSubscriptionInfo(userId) {
     } catch (error) {
         console.error("Error getting user subscription information:", error);
         return "Error getting user subscription information: " + error.message;
+    }
+}
+
+async function awardAchievement(emoji, description, userId) {
+    try {
+        const user = await User.findById(userId);
+
+        const existingAchievement = user.achievements.find((a) => a.emoji === emoji);
+
+        if (existingAchievement) {
+            return `Achievement already awarded: ${emoji} ${existingAchievement.description}`;
+        }
+
+        const achievement = { emoji, description };
+        user.achievements.push(achievement);
+        await user.save();
+        return `Achievement awarded: ${emoji} ${description}`;
+    } catch (error) {
+        console.error("Error awarding achievement:", error);
+        return "Error awarding achievement: " + error.message;
     }
 }
