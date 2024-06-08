@@ -663,22 +663,8 @@ app.get("/customgpt-details", verifyToken, async (req, res) => {
         if (!req.user.admin) {
             return res.status(401).json({ error: "This is admin only route" });
         }
-
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-        const startIndex = (page - 1) * limit;
-
-        const totalCount = await CustomGPT.countDocuments();
-        const customGPTs = await CustomGPT.find({}).skip(startIndex).limit(limit).sort({ createdAt: -1 });
-
-        const totalPages = Math.ceil(totalCount / limit);
-
-        res.json({
-            gpts: customGPTs,
-            currentPage: page,
-            totalPages,
-            totalCount,
-        });
+        const customGPTs = await CustomGPT.find({});
+        res.json(customGPTs);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
