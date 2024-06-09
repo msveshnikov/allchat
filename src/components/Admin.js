@@ -29,6 +29,7 @@ const Admin = () => {
     const [stats, setStats] = useState(null);
     const [gpts, setGpts] = useState([]);
     const [users, setUsers] = useState([]);
+    const [sharedChats, setSharedChats] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(false);
@@ -99,6 +100,40 @@ const Admin = () => {
         fetchGpts();
     }, []);
 
+    useEffect(() => {
+        const fetchSharedChats = async () => {
+            const token = localStorage.getItem("token");
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            };
+
+            const response = await fetch(API_URL + "/sharedChats", {
+                headers,
+            });
+            const data = await response.json();
+            setSharedChats(data);
+        };
+        fetchSharedChats();
+    }, []);
+
+    const handleDeleteChat = async (chatId) => {
+        const token = localStorage.getItem("token");
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+
+        const response = await fetch(`${API_URL}/sharedChats/${chatId}`, {
+            method: "DELETE",
+            headers,
+        });
+
+        if (response.ok) {
+            setSharedChats(sharedChats.filter((chat) => chat._id !== chatId));
+        }
+    };
+
     const handleSubscriptionChange = async (userId, newStatus) => {
         const token = localStorage.getItem("token");
         const headers = {
@@ -110,16 +145,15 @@ const Admin = () => {
             headers,
             body: JSON.stringify({ status: newStatus }),
         });
-        const data = await response.json();
+        await response.json();
         if (response.ok) {
             const updatedUsers = users.users.map((user) =>
                 user._id === userId ? { ...user, subscriptionStatus: newStatus } : user
             );
             setUsers({ ...users, users: updatedUsers });
-        } else {
-            console.error(data.error);
         }
     };
+
     const handleDeleteGpt = async (id) => {
         const token = localStorage.getItem("token");
         const headers = {
@@ -443,6 +477,41 @@ const Admin = () => {
                                                 )}
                                             </IconButton>
                                         </Box>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Box>
+            <Box padding={4}>
+                <Typography variant="h4" gutterBottom align="center" color="primary">
+                    Shared Chats Admin
+                </Typography>
+                <TableContainer component={Paper} elevation={3}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>User</TableCell>
+                                <TableCell>Model</TableCell>
+                                <TableCell>Custom GPT</TableCell>
+                                <TableCell>Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {sharedChats?.map((chat) => (
+                                <TableRow key={chat._id}>
+                                    <TableCell>{chat.user}</TableCell>
+                                    <TableCell>{chat.model}</TableCell>
+                                    <TableCell>{chat.customGPT}</TableCell>
+                                    <TableCell>
+                                        <IconButton
+                                            onClick={() => handleDeleteChat(chat._id)}
+                                            color="error"
+                                            disabled={loading}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
                                     </TableCell>
                                 </TableRow>
                             ))}

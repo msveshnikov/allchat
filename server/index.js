@@ -931,6 +931,35 @@ app.post("/users/avatars", async (req, res) => {
     }
 });
 
+app.get("/sharedChats", verifyToken, async (req, res) => {
+    try {
+        if (!req.user.admin) {
+            return res.status(401).json({ error: "This is an admin-only route" });
+        }
+        const sharedChats = await SharedChat.find().select("-chatHistory");
+        res.json(sharedChats);
+    } catch (err) {
+        console.error("Error fetching shared chats:", err);
+        res.status(500).json({ message: err.message });
+    }
+});
+
+app.delete("/sharedChats/:id", verifyToken, async (req, res) => {
+    try {
+        if (!req.user.admin) {
+            return res.status(401).json({ error: "This is an admin-only route" });
+        }
+        const deletedChat = await SharedChat.findByIdAndDelete(req.params.id);
+        if (!deletedChat) {
+            return res.status(404).json({ message: "Chat not found" });
+        }
+        res.json({ message: "Chat deleted successfully" });
+    } catch (err) {
+        console.error("Error deleting shared chats:", err);
+        res.status(500).json({ message: err.message });
+    }
+});
+
 process.on("uncaughtException", (err, origin) => {
     console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
 });
