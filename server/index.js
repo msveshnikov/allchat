@@ -226,7 +226,7 @@ app.post("/interact", verifyToken, async (req, res) => {
         }
 
         const userInfo = [...user.info.entries()].map(([key, value]) => `${key}: ${value}`).join(", ");
-        const contextPrompt = model?.startsWith("ft")
+        let contextPrompt = model?.startsWith("ft")
             ? `System: ${instructions} ${chatHistory
                   .map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`)
                   .join("\n")}
@@ -235,7 +235,9 @@ app.post("/interact", verifyToken, async (req, res) => {
                     ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
                     \nUser information: ${userInfo}
                     \nHuman: ${userInput || "what's this"}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
-
+        if (userInput?.startsWith("Extract main topic")) {
+            contextPrompt = userInput;
+        }
         let textResponse;
         let inputTokens = 0;
         let outputTokens = 0;
