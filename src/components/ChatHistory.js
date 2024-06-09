@@ -51,7 +51,7 @@ const toolEmojis = {
     stop_scheduled_action: "⏹️",
     summarize_youtube_video: "📺",
     add_calendar_event: "📅",
-    award_achievement: "👑"
+    award_achievement: "👑",
 };
 
 function toolsToEmojis(toolsUsed) {
@@ -65,6 +65,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
     const [editingMessageIndex, setEditingMessageIndex] = useState(-1);
     const [editingMessage, setEditingMessage] = useState("");
     const [customGPTs, setCustomGPTs] = useState([]);
+    const [userAvatars, setUserAvatars] = useState([]);
     const theme = useTheme();
 
     const linkStyle = {
@@ -110,6 +111,23 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
         fetchCustomGPTs();
     }, []);
 
+    useEffect(() => {
+        const extractUserIds = (chatHistory) => {
+            const userIds = new Set();
+            chatHistory.forEach((chat) => {
+                if (chat.userId) {
+                    userIds.add(chat.userId);
+                }
+            });
+            return Array.from(userIds);
+        };
+
+        if (userAvatars?.length === 0) {
+            const userIds = extractUserIds(chatHistory);
+            fetchUserAvatars(userIds);
+        }
+    }, [chatHistory, userAvatars]);
+
     const fetchCustomGPTs = async () => {
         try {
             const token = localStorage.getItem("token");
@@ -117,15 +135,31 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             };
-
             const response = await fetch(API_URL + "/customgpt", {
                 headers,
             });
-            const data = await response.json();
             if (response.ok) {
-                setCustomGPTs(data);
+                setCustomGPTs(await response.json());
             }
         } catch {}
+    };
+
+    const fetchUserAvatars = async (userIds) => {
+        if (userIds.length > 0) {
+            try {
+                const response = await fetch(`${API_URL}/users/avatars`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ userIds }),
+                });
+
+                if (response.ok) {
+                    setUserAvatars(await response.json());
+                }
+            } catch (error) {}
+        }
     };
 
     return (
@@ -169,7 +203,10 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                                     <Box marginLeft={1}>
                                         <RouterLink to="/avatar">
                                             <img
-                                                src={user?.profileUrl}
+                                                src={
+                                                    userAvatars?.find((u) => u._id === chat?.userId)?.profileUrl ||
+                                                    user?.profileUrl
+                                                }
                                                 alt="User Avatar"
                                                 style={{
                                                     width: "30px",

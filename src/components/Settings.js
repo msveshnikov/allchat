@@ -179,13 +179,29 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                             </span>
                         </Tooltip>
                     ))}
-                    <Typography variant="h6" style={{ marginRight: "0.5rem" }}>
-                        🪙
-                    </Typography>
-                    <Typography variant="h6">{user.coins}</Typography>
+                    <Box position="relative" display="inline-flex">
+                        <img src="/gold-coin.png" alt="Gold Coin" style={{ width: "46px", height: "46px" }} />
+                        <Box
+                            position="absolute"
+                            top={0}
+                            left={0}
+                            right={0}
+                            bottom={0}
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            style={{
+                                color: "#ffffff",
+                                fontWeight: "bold",
+                                fontSize: "1.2rem",
+                                textShadow: "-1px -1px 0 #00f, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000",
+                            }}
+                        >
+                            {user.coins}
+                        </Box>
+                    </Box>
                 </Box>
             </Grid>
-
             <Grid item xs={12} md={6}>
                 <Typography variant="h6" gutterBottom color="primary">
                     {t("Select Model")}

@@ -242,6 +242,6 @@ graph LR
 # TDOD
 
 [x] achievments
-[ ] other user avatars, not always mine
-[ ] coins display
+[x] other user avatars, not always mine
+[x] coins display
 [ ] broadcast update of shared chat (or poll 1 minute) - WebSockets

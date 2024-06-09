@@ -900,6 +900,18 @@ app.get("/chat/:id", async (req, res) => {
     }
 });
 
+app.post("/users/avatars", async (req, res) => {
+    const { userIds } = req.body;
+
+    try {
+        const userAvatars = await User.find({ _id: { $in: userIds } }, { _id: 1, profileUrl: 1 });
+        res.json(userAvatars);
+    } catch (error) {
+        console.error("Error fetching user avatars:", error);
+        res.status(500).json({ error: "Failed to fetch user avatars" });
+    }
+});
+
 process.on("uncaughtException", (err, origin) => {
     console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
 });
