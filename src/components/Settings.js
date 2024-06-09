@@ -177,17 +177,6 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
 
             <Grid item xs={12} md={12}>
                 <Box display="flex" flexWrap="wrap">
-                    {user.achievements.map((achievement, index) => (
-                        <Tooltip key={index} title={achievement.description}>
-                            <span
-                                key={index}
-                                style={{ fontSize: "1.5rem", marginRight: "0.5rem", cursor: "pointer" }}
-                                onClick={() => handleAchievementClick(achievement)}
-                            >
-                                {achievement?.emoji?.slice(0, 2)}
-                            </span>
-                        </Tooltip>
-                    ))}
                     <Box
                         position="relative"
                         display="inline-flex"
@@ -214,6 +203,17 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                             {user.coins}
                         </Box>
                     </Box>
+                    {user.achievements.map((achievement, index) => (
+                        <Tooltip key={index} title={achievement.description}>
+                            <span
+                                key={index}
+                                style={{ fontSize: "1.5rem", marginRight: "0.5rem", cursor: "pointer" }}
+                                onClick={() => handleAchievementClick(achievement)}
+                            >
+                                {achievement?.emoji?.slice(0, 2)}
+                            </span>
+                        </Tooltip>
+                    ))}
                 </Box>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -317,7 +317,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                     <Typography color="primary" variant="body1" gutterBottom>
                         Coins are earned for activities such as sharing chats, creating custom GPTs, and achievements.
                     </Typography>
-                    <Typography color="primary" variant="body1" gutterBottom>
+                    <Typography color="secondary" variant="body1" gutterBottom>
                         Spending coins is coming soon!
                     </Typography>
                 </Box>

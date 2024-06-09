@@ -7,6 +7,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { CodeBlock } from "./CodeBlock";
 import { Lightbox } from "react-modal-image";
 import { API_URL } from "./Main";
+import md5 from "md5";
 
 const getFileTypeIcon = (mimeType) => {
     switch (mimeType) {
@@ -205,7 +206,10 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                                             <img
                                                 src={
                                                     userAvatars?.find((u) => u._id === chat?.userId)?.profileUrl ||
-                                                    user?.profileUrl
+                                                    user?.profileUrl ||
+                                                    `https://www.gravatar.com/avatar/${md5(
+                                                        user.email.toLowerCase()
+                                                    )}?d=identicon`
                                                 }
                                                 alt="User Avatar"
                                                 style={{
