@@ -166,7 +166,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                 <MenuItem onClick={handleTermsClick}>Terms</MenuItem>
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={12}>
                 <Box display="flex" flexWrap="wrap">
                     {user.achievements.map((achievement, index) => (
                         <Tooltip key={index} title={achievement.description}>

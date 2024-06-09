@@ -836,6 +836,7 @@ app.put("/customgpt/:id", verifyToken, async (req, res) => {
 app.post("/invite", verifyToken, async (req, res) => {
     try {
         const { email, model, customGPT, chatHistory, chatId } = req.body;
+        const user = req.user.id;
 
         let sharedChat;
         if (chatId) {
@@ -846,6 +847,7 @@ app.post("/invite", verifyToken, async (req, res) => {
             );
         } else {
             sharedChat = await SharedChat.create({
+                user,
                 model,
                 customGPT,
                 chatHistory,
