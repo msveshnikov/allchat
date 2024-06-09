@@ -936,8 +936,23 @@ app.get("/sharedChats", verifyToken, async (req, res) => {
         if (!req.user.admin) {
             return res.status(401).json({ error: "This is an admin-only route" });
         }
+
         const sharedChats = await SharedChat.find().select("-chatHistory");
-        res.json(sharedChats);
+
+        const userIds = sharedChats.map((chat) => chat.user);
+        const users = await User.find({ _id: { $in: userIds } }, { email: 1 });
+
+        const usersMap = users.reduce((acc, user) => {
+            acc[user._id] = user.email;
+            return acc;
+        }, {});
+
+        const sharedChatsWithEmail = sharedChats.map((chat) => ({
+            ...chat._doc,
+            userEmail: usersMap[chat.user] || "N/A",
+        }));
+
+        res.json(sharedChatsWithEmail);
     } catch (err) {
         console.error("Error fetching shared chats:", err);
         res.status(500).json({ message: err.message });

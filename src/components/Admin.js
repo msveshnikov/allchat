@@ -484,6 +484,7 @@ const Admin = () => {
                     </Table>
                 </TableContainer>
             </Box>
+
             <Box padding={4}>
                 <Typography variant="h4" gutterBottom align="center" color="primary">
                     Shared Chats Admin
@@ -492,7 +493,8 @@ const Admin = () => {
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>User</TableCell>
+                                <TableCell>Chat ID</TableCell>
+                                <TableCell>Owner User Email</TableCell>
                                 <TableCell>Model</TableCell>
                                 <TableCell>Custom GPT</TableCell>
                                 <TableCell>Created At</TableCell>
@@ -502,7 +504,8 @@ const Admin = () => {
                         <TableBody>
                             {sharedChats?.map((chat) => (
                                 <TableRow key={chat._id}>
-                                    <TableCell>{chat.user}</TableCell>
+                                    <TableCell>{chat._id}</TableCell>
+                                    <TableCell>{chat.userEmail}</TableCell>
                                     <TableCell>{chat.model}</TableCell>
                                     <TableCell>{chat.customGPT}</TableCell>
                                     <TableCell>{new Date(chat.createdAt).toLocaleString()}</TableCell>
