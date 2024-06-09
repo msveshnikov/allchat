@@ -34,6 +34,15 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
     const [selectedCustomGPT, setSelectedCustomGPT] = useState("");
     const [openModal, setOpenModal] = useState(false);
     const [selectedAchievement, setSelectedAchievement] = useState(null);
+    const [openCoinModal, setOpenCoinModal] = useState(false);
+
+    const handleOpenCoinModal = () => {
+        setOpenCoinModal(true);
+    };
+
+    const handleCloseCoinModal = () => {
+        setOpenCoinModal(false);
+    };
 
     const handleModelChange = (event) => {
         onModelSelect(event.target.value);
@@ -179,7 +188,12 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                             </span>
                         </Tooltip>
                     ))}
-                    <Box position="relative" display="inline-flex">
+                    <Box
+                        position="relative"
+                        display="inline-flex"
+                        onClick={handleOpenCoinModal}
+                        style={{ cursor: "pointer" }}
+                    >
                         <img src="/gold-coin.png" alt="Gold Coin" style={{ width: "46px", height: "46px" }} />
                         <Box
                             position="absolute"
@@ -283,6 +297,29 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                             </Typography>
                         </>
                     )}
+                </Box>
+            </Modal>
+            <Modal open={openCoinModal} onClose={handleCloseCoinModal}>
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        bgcolor: "background.paper",
+                        boxShadow: 24,
+                        p: 4,
+                    }}
+                >
+                    <Typography color="primary" variant="h6" gutterBottom>
+                        About Coins
+                    </Typography>
+                    <Typography color="primary" variant="body1" gutterBottom>
+                        Coins are earned for activities such as sharing chats, creating custom GPTs, and achievements.
+                    </Typography>
+                    <Typography color="primary" variant="body1" gutterBottom>
+                        Spending coins is coming soon!
+                    </Typography>
                 </Box>
             </Modal>
         </Grid>
