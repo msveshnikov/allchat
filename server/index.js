@@ -142,6 +142,7 @@ wss.on("connection", (ws) => {
 function broadcastMessage(message) {
     clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
+            console.log("Send message to client", message);
             client.send(message);
         }
     });
@@ -314,6 +315,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 };
 
                 await SharedChat.findByIdAndUpdate(chatId, updatedSharedChat);
+                console.log("Broadcasting", chatId);
                 broadcastMessage(JSON.stringify({ chatId, message }));
             }
         }
