@@ -9,6 +9,7 @@ import {
     Switch,
     FormControlLabel,
     CircularProgress,
+    Link,
 } from "@mui/material";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -504,7 +505,15 @@ const Admin = () => {
                         <TableBody>
                             {sharedChats?.map((chat) => (
                                 <TableRow key={chat._id}>
-                                    <TableCell>{chat._id}</TableCell>
+                                    <TableCell>
+                                        <Link
+                                            href={`https://allchat.online/chat/${chat._id}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            {chat._id}
+                                        </Link>
+                                    </TableCell>
                                     <TableCell>{chat.userEmail}</TableCell>
                                     <TableCell>{chat.model}</TableCell>
                                     <TableCell>{chat.customGPT}</TableCell>
