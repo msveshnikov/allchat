@@ -175,10 +175,14 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                                 style={{ fontSize: "1.5rem", marginRight: "0.5rem", cursor: "pointer" }}
                                 onClick={() => handleAchievementClick(achievement)}
                             >
-                                {achievement.emoji}
+                                {achievement?.emoji?.slice(0, 2)}
                             </span>
                         </Tooltip>
                     ))}
+                    <Typography variant="h6" style={{ marginRight: "0.5rem" }}>
+                        🪙
+                    </Typography>
+                    <Typography variant="h6">{user.coins}</Typography>
                 </Box>
             </Grid>
 
@@ -259,7 +263,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                                 {selectedAchievement.description}
                             </Typography>
                             <Typography color="primary" variant="h4" gutterBottom>
-                                {selectedAchievement.emoji}
+                                {selectedAchievement?.emoji?.slice(0, 2)}
                             </Typography>
                         </>
                     )}

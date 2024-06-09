@@ -238,6 +238,7 @@ function Main({ darkMode, toggleTheme }) {
                     ...(newHistory || chatHistory),
                     {
                         user: input,
+                        userId: user._id,
                         assistant: data.textResponse,
                         toolsUsed: data.toolsUsed,
                         image: data.imageResponse,
@@ -252,7 +253,7 @@ function Main({ darkMode, toggleTheme }) {
                     const audio = new Audio(achievementSounds[randomSoundIndex]);
                     audio.play();
                     reward();
-                    setSnackbarMessage("Achievement unlocked! Check your profile!");
+                    setSnackbarMessage("Achievement unlocked! Check your Account!");
                     setSnackbarOpen(true);
                 }
                 if (sound) {

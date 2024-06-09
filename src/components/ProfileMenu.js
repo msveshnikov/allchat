@@ -65,7 +65,7 @@ export function ProfileMenu({ userEmail, user, onSettings, onSignOut }) {
                     horizontal: "right",
                 }}
             >
-                <MenuItem onClick={handleSettingsClick}>Settings</MenuItem>
+                <MenuItem onClick={handleSettingsClick}>Account</MenuItem>
                 <MenuItem onClick={handleSignOutClick}>Sign Out</MenuItem>
                 <MenuItem onClick={handlePrivacyClick}>Privacy</MenuItem>
                 <MenuItem onClick={handleTermsClick}>Terms</MenuItem>

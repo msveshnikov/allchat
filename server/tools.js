@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import fs from "fs";
 import path from "path";
 import { fetchPageContent, fetchSearchResults, googleNews } from "./search.js";
-import { User } from "./model/User.js";
+import { User, addUserCoins } from "./model/User.js";
 import { scheduleAction, stopScheduledAction } from "./scheduler.js";
 import { MAX_SEARCH_RESULT_LENGTH, contentFolder, toolsUsed } from "./index.js";
 import { summarizeYouTubeVideo } from "./youtube.js";
@@ -278,7 +278,7 @@ export const tools = [
             properties: {
                 emoji: {
                     type: "string",
-                    description: "The emoji to represent the achievement, e.g., 🏆, ⭐, 🎉, 🚀, 👑",
+                    description: "The one and only emoji to represent the achievement, e.g., 🏆, ⭐, 🎉, 🚀, 👑",
                 },
                 description: {
                     type: "string",
@@ -581,9 +581,9 @@ async function getUserSubscriptionInfo(userId) {
 async function awardAchievement(emoji, description, userId) {
     try {
         const user = await User.findById(userId);
+        emoji = emoji?.slice(0, 2);
 
         const existingAchievement = user.achievements.find((a) => a.emoji === emoji);
-
         if (existingAchievement) {
             return `Achievement already awarded: ${emoji} ${existingAchievement.description}`;
         }
@@ -591,6 +591,7 @@ async function awardAchievement(emoji, description, userId) {
         const achievement = { emoji, description };
         user.achievements.push(achievement);
         await user.save();
+        addUserCoins(userId, 30);
         return `Achievement awarded: ${emoji} ${description}`;
     } catch (error) {
         console.error("Error awarding achievement:", error);

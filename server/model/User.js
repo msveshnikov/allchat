@@ -50,6 +50,7 @@ const userSchema = new mongoose.Schema(
                 description: { type: String, required: true },
             },
         ],
+        coins: { type: Number, default: 0 },
     },
     { timestamps: true }
 );
@@ -131,3 +132,11 @@ export function storeUsageStats(userId, model, inputTokens, outputTokens, images
         .then(() => {})
         .catch((err) => console.error("Error updating usage stats:", err));
 }
+
+export const addUserCoins = async (userId, coins) => {
+    try {
+        await User.findByIdAndUpdate(userId, { $inc: { coins } }, { new: true });
+    } catch (err) {
+        console.error("Error updating user coins:", err);
+    }
+};

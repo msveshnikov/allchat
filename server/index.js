@@ -14,7 +14,7 @@ import { getTextTogether } from "./together.js";
 import { getTextGpt } from "./openai.js";
 import { authenticateUser, completePasswordReset, registerUser, resetPassword, verifyToken } from "./auth.js";
 import { fetchPageContent } from "./search.js";
-import { User, countTokens, storeUsageStats } from "./model/User.js";
+import { User, addUserCoins, countTokens, storeUsageStats } from "./model/User.js";
 import CustomGPT from "./model/CustomGPT.js";
 import fs from "fs";
 import path from "path";
@@ -145,14 +145,14 @@ app.post("/interact", verifyToken, async (req, res) => {
         const lang = req.body.lang;
         const model = req.body.model || "gemini-1.5-pro-preview-0514";
         const customGPT = req.body.customGPT;
-        // const referrer = req.body.referrer;
+        const referrer = req.body.referrer;
         const country = req.headers["geoip_country_code"];
         const user = await User.findById(req.user.id);
         if (
             user?.subscriptionStatus !== "active" &&
             user?.subscriptionStatus !== "trialing" &&
-            !user?.admin
-            // && referrer !== "android-app://online.allchat.twa/"
+            !user?.admin &&
+            referrer !== "android-app://online.allchat.twa/"
         ) {
             return res
                 .status(402)
@@ -275,6 +275,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                     ...sharedChat.chatHistory,
                     {
                         user: userInput,
+                        userId: user._id,
                         assistant: textResponse,
                         toolsUsed,
                         image: imageResponse,
@@ -294,6 +295,7 @@ app.post("/interact", verifyToken, async (req, res) => {
         }
 
         res.json({ textResponse, imageResponse, toolsUsed, gpt: GPT?._id });
+        addUserCoins(req.user.id, 1);
     } catch (error) {
         console.error(error);
         res.status(500).json({
@@ -633,6 +635,7 @@ app.post("/customgpt", verifyToken, async (req, res) => {
                 currentSize: knowledge?.length,
             });
         }
+        addUserCoins(req.user.id, 200);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
@@ -786,6 +789,7 @@ app.post("/generate-avatar", verifyToken, async (req, res) => {
         } else {
             res.status(500).json({ error: "Failed to generate avatar" });
         }
+        addUserCoins(req.user.id, 50);
     } catch (error) {
         console.error("Error generating avatar:", error);
         res.status(500).json({ error: "Internal server error" });
@@ -868,6 +872,7 @@ app.post("/invite", verifyToken, async (req, res) => {
         if (email) {
             await sendInviteEmail(email, model, customGPT, sharedChat._id, inviterProfileUrl, customGPTProfileUrl);
         }
+        addUserCoins(req.user.id, 100);
         res.status(201).json({ chatId: sharedChat._id, shareUrl: `https://allchat.online/chat/${sharedChat._id}` });
     } catch (error) {
         console.error(error);
