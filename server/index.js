@@ -113,7 +113,7 @@ app.use(morgan(loggerFormat));
 
 const limiter = rateLimit({
     windowMs: 60 * 1000,
-    limit: 20,
+    limit: 30,
     standardHeaders: "draft-7",
     legacyHeaders: false,
 });

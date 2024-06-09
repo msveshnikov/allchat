@@ -495,6 +495,7 @@ const Admin = () => {
                                 <TableCell>User</TableCell>
                                 <TableCell>Model</TableCell>
                                 <TableCell>Custom GPT</TableCell>
+                                <TableCell>Created At</TableCell>
                                 <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
@@ -504,6 +505,7 @@ const Admin = () => {
                                     <TableCell>{chat.user}</TableCell>
                                     <TableCell>{chat.model}</TableCell>
                                     <TableCell>{chat.customGPT}</TableCell>
+                                    <TableCell>{new Date(chat.createdAt).toLocaleString()}</TableCell>
                                     <TableCell>
                                         <IconButton
                                             onClick={() => handleDeleteChat(chat._id)}
