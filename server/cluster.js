@@ -2,10 +2,12 @@ import cluster from "cluster";
 import express from "express";
 import promBundle from "express-prom-bundle";
 
+const MAX_CPU = 1;
+
 if (cluster.isPrimary) {
     console.log(`Master ${process.pid} is running`);
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < MAX_CPU; i++) {
         cluster.fork();
     }
     const metricsApp = express();

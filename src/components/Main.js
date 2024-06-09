@@ -138,24 +138,13 @@ function Main({ darkMode, toggleTheme }) {
         if (chatId) {
             localStorage.setItem("chatId", chatId);
             fetchChatHistory();
-            const socket = new WebSocket(`${WS_URL}/chat/${chatId}/subscribe`);
-
-            socket.addEventListener("open", () => {
-                console.log("WebSocket connection established");
-            });
-
+            const socket = new WebSocket(`${WS_URL}/subscribe`);
             socket.addEventListener("message", (event) => {
-                console.log("Message recieved ", event);
                 const data = JSON.parse(event.data);
                 if (data.chatId === chatId) {
                     setChatHistory((prevChatHistory) => [...prevChatHistory, data.message]);
                 }
             });
-
-            socket.addEventListener("close", () => {
-                console.log("WebSocket connection closed");
-            });
-
             return () => {
                 socket.close();
             };
