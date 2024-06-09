@@ -120,86 +120,32 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-// Set to store connected clients
-const clients = new Map();
-
-// Create a new WebSocket server
-const wss = new WebSocketServer({
-    noServer: true,
-    // path: "/chat/:chatId/subscribe",
-});
-
-// Handle WebSocket upgrade requests
-wss.on("upgrade", (request, socket, head) => {
-    console.log("On upgrade");
-    const { pathname } = new URL(`http://localhost${request.url}`);
-
-    // Check if the requested path matches the subscribe endpoint
-    const match = pathname.match(/^\/chat\/([^/]+)\/subscribe$/);
-    if (match) {
-        const chatId = match[1];
-
-        // Accept the WebSocket connection
-        wss.handleUpgrade(request, socket, head, (ws) => {
-            wss.emit("connection", ws, request, { chatId });
-        });
-    } else {
-        // Reject other requests
-        socket.destroy();
-        console.log("Rejected request for path:", pathname);
-    }
-});
-
-// Handle new WebSocket connections
-wss.on("connection", (ws, request, requestData) => {
-    console.log(`On connection ${requestData}`);
-    const chatId = requestData ? requestData.chatId : null;
-
-    if (chatId) {
-        console.log(`New client subscribed to chat ${chatId}`);
-
-        // Add the new client to the Map
-        let clientsForChat = clients.get(chatId) || new Set();
-        clientsForChat.add(ws);
-        clients.set(chatId, clientsForChat);
-
-        // Handle incoming messages
-        ws.on("message", (message) => {
-            console.log(`Received message: ${message}`);
-        });
-
-        // Handle client disconnection
-        ws.on("close", () => {
-            console.log("Client disconnected");
-            clientsForChat.delete(ws);
-        });
-    } else {
-        console.log("Invalid WebSocket connection request");
-        ws.terminate();
-    }
-});
-
-// Broadcast a message to clients subscribed to a specific chat
-function broadcastMessageToChat(chatId, message) {
-    const clientsForChat = clients.get(chatId);
-    if (clientsForChat) {
-        clientsForChat.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(message);
-            }
-        });
-    }
-}
-
 const server = app.listen(5000, () => {
     console.log(`🚀 Server started on port 5000`);
 });
 
-server.on("upgrade", (request, socket, head) => {
-    wss.handleUpgrade(request, socket, head, (ws) => {
-        wss.emit("connection", ws, request);
+const wss = new WebSocketServer({ server });
+const clients = new Set();
+
+wss.on("connection", (ws) => {
+    console.log("New client connected");
+    clients.add(ws);
+    ws.on("message", (message) => {
+        console.log(`Received message: ${message}`);
+    });
+    ws.on("close", () => {
+        console.log("Client disconnected");
+        clients.delete(ws);
     });
 });
+
+function broadcastMessage(message) {
+    clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(message);
+        }
+    });
+}
 
 export const MONGODB_URI =
     process.env.NODE_ENV === "production" ? "mongodb://mongodb:27017/allchat" : "mongodb://localhost:27017/allchat";
@@ -368,14 +314,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 };
 
                 await SharedChat.findByIdAndUpdate(chatId, updatedSharedChat);
-                // Broadcast the new chat message to connected WebSocket clients
-                broadcastMessageToChat(
-                    chatId,
-                    JSON.stringify({
-                        chatId,
-                        message,
-                    })
-                );
+                broadcastMessage(JSON.stringify({ chatId, message }));
             }
         }
 
