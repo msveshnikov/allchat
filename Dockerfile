@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 ENV REACT_APP_API_URL https://allchat.online/api
-ENV REACT_APP_WS_URL wss://allchat.online/api
+ENV REACT_APP_WS_URL wss://allchat.online/ws
 ENV REACT_APP_GOOGLE_CLIENT_ID 740039779548-p80d07b56mk31vgaht4rlh74je8oku28.apps.googleusercontent.com
 
 # Build the React app for production
