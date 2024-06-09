@@ -36,6 +36,7 @@ const MAX_CHAT_HISTORY_LENGTH = 20;
 const MAX_CHATS = 5;
 
 export const API_URL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_API_URL : "http://localhost:5000";
+export const WS_URL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_WS_URL : "ws://localhost:5000";
 
 function Main({ darkMode, toggleTheme }) {
     const [input, setInput] = useState("");
@@ -137,6 +138,27 @@ function Main({ darkMode, toggleTheme }) {
         if (chatId) {
             localStorage.setItem("chatId", chatId);
             fetchChatHistory();
+            const socket = new WebSocket(`${WS_URL}/chat/${chatId}/subscribe`);
+
+            socket.addEventListener("open", () => {
+                console.log("WebSocket connection established");
+            });
+
+            socket.addEventListener("message", (event) => {
+                console.log("Message recieved ", event);
+                const data = JSON.parse(event.data);
+                if (data.chatId === chatId) {
+                    setChatHistory((prevChatHistory) => [...prevChatHistory, data.message]);
+                }
+            });
+
+            socket.addEventListener("close", () => {
+                console.log("WebSocket connection closed");
+            });
+
+            return () => {
+                socket.close();
+            };
         }
     }, [chatId]);
 

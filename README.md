@@ -244,4 +244,4 @@ graph LR
 [x] achievments
 [x] other user avatars, not always mine
 [x] coins display
-[ ] broadcast update of shared chat (or poll 1 minute) - WebSockets
+[x] broadcast update of shared chat - WebSockets

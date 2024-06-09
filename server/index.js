@@ -27,6 +27,7 @@ import cluster from "cluster";
 import promClient from "prom-client";
 import sharp from "sharp";
 import SharedChat from "./model/SharedChat .js";
+import { WebSocket, WebSocketServer } from "ws";
 
 dotenv.config({ override: true });
 
@@ -118,9 +119,33 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
-app.listen(5000, () => {
+
+const server = app.listen(5000, () => {
     console.log(`🚀 Server started on port 5000`);
 });
+
+const wss = new WebSocketServer({ server });
+const clients = new Set();
+
+wss.on("connection", (ws) => {
+    console.log("New client connected");
+    clients.add(ws);
+    ws.on("message", (message) => {
+        console.log(`Received message: ${message}`);
+    });
+    ws.on("close", () => {
+        console.log("Client disconnected");
+        clients.delete(ws);
+    });
+});
+
+function broadcastMessage(message) {
+    clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(message);
+        }
+    });
+}
 
 export const MONGODB_URI =
     process.env.NODE_ENV === "production" ? "mongodb://mongodb:27017/allchat" : "mongodb://localhost:27017/allchat";
@@ -271,19 +296,17 @@ app.post("/interact", verifyToken, async (req, res) => {
         if (chatId) {
             const sharedChat = await SharedChat.findById(chatId);
             if (sharedChat) {
-                const updatedChatHistory = [
-                    ...sharedChat.chatHistory,
-                    {
-                        user: userInput,
-                        userId: user._id,
-                        assistant: textResponse,
-                        toolsUsed,
-                        image: imageResponse,
-                        fileType,
-                        gpt: GPT?._id,
-                        userImageData: fileBytesBase64,
-                    },
-                ];
+                const message = {
+                    user: userInput,
+                    userId: user._id,
+                    assistant: textResponse,
+                    toolsUsed,
+                    image: imageResponse,
+                    fileType,
+                    gpt: GPT?._id,
+                    userImageData: fileBytesBase64,
+                };
+                const updatedChatHistory = [...sharedChat.chatHistory, message];
 
                 const updatedSharedChat = {
                     ...sharedChat._doc,
@@ -291,6 +314,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 };
 
                 await SharedChat.findByIdAndUpdate(chatId, updatedSharedChat);
+                broadcastMessage(JSON.stringify({ chatId, message }));
             }
         }
 
