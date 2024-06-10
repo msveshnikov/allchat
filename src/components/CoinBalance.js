@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Box } from "@mui/material";
 import CountUp from "react-countup";
 
 const CoinBalance = ({ coins, onClick }) => {
     const [prevCoins, setPrevCoins] = useState(0);
+    const prevCoinsRef = useRef(0);
 
     useEffect(() => {
+        prevCoinsRef.current = prevCoins;
         setPrevCoins(coins);
-    }, [coins]);
+    }, [coins, prevCoins]);
 
     return (
         <Box position="relative" display="inline-flex" alignItems="center" style={{ cursor: "pointer" }}>
@@ -29,7 +31,7 @@ const CoinBalance = ({ coins, onClick }) => {
                     textShadow: "-1px -1px 0 #00f, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000",
                 }}
             >
-                <CountUp start={prevCoins} end={coins} duration={1.5} separator="," />
+                <CountUp start={prevCoinsRef.current} end={coins} duration={1.5} separator="," />
             </Box>
         </Box>
     );
