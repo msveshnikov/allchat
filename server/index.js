@@ -14,7 +14,7 @@ import { getTextTogether } from "./together.js";
 import { getTextGpt } from "./openai.js";
 import { authenticateUser, completePasswordReset, registerUser, resetPassword, verifyToken } from "./auth.js";
 import { fetchPageContent } from "./search.js";
-import { User, addUserCoins, countTokens, storeUsageStats } from "./model/User.js";
+import { User, addUserCoins, countTokens, storeUsageStats, substractUserCoins } from "./model/User.js";
 import CustomGPT from "./model/CustomGPT.js";
 import fs from "fs";
 import path from "path";
@@ -790,6 +790,7 @@ app.put("/users/:userId/subscription", verifyToken, async (req, res) => {
 app.post("/generate-avatar", verifyToken, async (req, res) => {
     const { userInput, outfit, hairstyle, sport, background, animal, gender, skinColor, drawingStyle } = req.body;
     try {
+        substractUserCoins(req.user.id, 50);
         let prompt =
             `Pretend you are a graphic designer generating creative images for midjourney. 
             I will give you an Avatar description and you will give me a prompt that I can feed into midjourney
@@ -810,10 +811,9 @@ app.post("/generate-avatar", verifyToken, async (req, res) => {
         } else {
             res.status(500).json({ error: "Failed to generate avatar" });
         }
-        addUserCoins(req.user.id, 50);
     } catch (error) {
         console.error("Error generating avatar:", error);
-        res.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: error.message });
     }
 });
 

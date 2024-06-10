@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { API_URL } from "./Main";
 import { useNavigate } from "react-router-dom";
 import ReactGA from "react-ga4";
+import CoinBalance from "./CoinBalance";
 
 export const models = {
     "gemini-1.5-pro-preview-0514": ["image", "audio", "video", "document", "tools"],
@@ -177,32 +178,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
 
             <Grid item xs={12} md={12}>
                 <Box display="flex" flexWrap="wrap">
-                    <Box
-                        position="relative"
-                        display="inline-flex"
-                        onClick={handleOpenCoinModal}
-                        style={{ cursor: "pointer" }}
-                    >
-                        <img src="/gold-coin.png" alt="Gold Coin" style={{ width: "46px", height: "46px" }} />
-                        <Box
-                            position="absolute"
-                            top={0}
-                            left={0}
-                            right={0}
-                            bottom={0}
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                            style={{
-                                color: "#ffffff",
-                                fontWeight: "bold",
-                                fontSize: "1.2rem",
-                                textShadow: "-1px -1px 0 #00f, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000",
-                            }}
-                        >
-                            {user.coins}
-                        </Box>
-                    </Box>
+                    <CoinBalance  onClick={handleOpenCoinModal} coins={user?.coins} />
                     {user.achievements.map((achievement, index) => (
                         <Tooltip key={index} title={achievement.description}>
                             <span

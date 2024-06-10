@@ -140,3 +140,13 @@ export const addUserCoins = async (userId, coins) => {
         console.error("Error updating user coins:", err);
     }
 };
+
+export const substractUserCoins = async (userId, coins) => {
+    const user = await User.findById(userId);
+
+    if (user.coins < coins) {
+        throw new Error("Insufficient coins");
+    }
+
+    await User.findByIdAndUpdate(userId, { $inc: { coins: -coins } }, { new: true });
+};

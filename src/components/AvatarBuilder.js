@@ -12,13 +12,21 @@ import {
     MenuItem,
     Container,
     useTheme,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions,
+    Box,
 } from "@mui/material";
 import { API_URL } from "./Main";
 import { useNavigate } from "react-router-dom";
-import ColorMenuItem from "./ColorMenuItem ";
+import ColorMenuItem from "./ColorMenuItem";
+import CoinBalance from "./CoinBalance";
 
 const AvatarBuilder = () => {
     const [userInput, setUserInput] = useState("");
+    const [user, setUser] = useState();
     const [avatar, setAvatar] = useState(null);
     const [loading, setLoading] = useState(false);
     const [outfit, setOutfit] = useState("");
@@ -29,6 +37,7 @@ const AvatarBuilder = () => {
     const [gender, setGender] = useState("");
     const [skinColor, setSkinColor] = useState("");
     const [drawingStyle, setDrawingStyle] = useState("");
+    const [openCoinModal, setOpenCoinModal] = useState(false);
     const theme = useTheme();
     const navigate = useNavigate();
 
@@ -68,6 +77,14 @@ const AvatarBuilder = () => {
         setDrawingStyle(event.target.value);
     };
 
+    const handleOpenCoinModal = () => {
+        setOpenCoinModal(true);
+    };
+
+    const handleCloseCoinModal = () => {
+        setOpenCoinModal(false);
+    };
+
     const fetchUserData = async () => {
         const token = localStorage.getItem("token");
         const headers = {
@@ -81,6 +98,7 @@ const AvatarBuilder = () => {
         if (response.ok) {
             const userData = await response.json();
             setAvatar(userData.profileUrl);
+            setUser(userData);
         }
     };
 
@@ -89,6 +107,14 @@ const AvatarBuilder = () => {
     }, []);
 
     const generateAvatar = async () => {
+        if (user?.coins < 50) {
+            handleOpenCoinModal();
+            return;
+        }
+        // Deduct 50 coins from the user's balance
+        setUser({ ...user, coins: user.coins - 50 });
+        const audio = new Audio("/coin_clink.mp3");
+        audio.play();
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
@@ -143,6 +169,7 @@ const AvatarBuilder = () => {
             <Typography variant="h4" color={theme.palette.text.primary} sx={{ mb: 3 }}>
                 AI Avatar Builder
             </Typography>
+
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <TextField
@@ -299,9 +326,18 @@ const AvatarBuilder = () => {
                     </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                    <Button variant="contained" color="primary" onClick={generateAvatar} disabled={loading}>
-                        {loading ? "Generating..." : "Generate Avatar"}
-                    </Button>
+                    <Box display="flex" alignItems="center">
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={generateAvatar}
+                            disabled={loading}
+                            sx={{ mr: 2 }}
+                        >
+                            {loading ? "Generating..." : "Generate Avatar"}
+                        </Button>
+                        <CoinBalance coins={user?.coins} />
+                    </Box>
                 </Grid>
                 <Grid item xs={12}>
                     {loading ? (
@@ -324,6 +360,17 @@ const AvatarBuilder = () => {
                     )}
                 </Grid>
             </Grid>
+            <Dialog open={openCoinModal} onClose={handleCloseCoinModal}>
+                <DialogTitle>Not Enough Coins</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        You need at least 50 coins to generate an avatar. Please earn more coins and try again.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseCoinModal}>Close</Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 };
