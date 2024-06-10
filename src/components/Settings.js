@@ -318,7 +318,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
                         Coins are earned for activities such as sharing chats, creating custom GPTs, and achievements.
                     </Typography>
                     <Typography color="secondary" variant="body1" gutterBottom>
-                        Spending coins is coming soon!
+                        Coins unlock amazing AI Avatars and beyond!
                     </Typography>
                 </Box>
             </Modal>

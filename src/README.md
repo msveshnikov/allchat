@@ -19,6 +19,7 @@ I'm An AI assistant app that interacts with all major models, maintains history,
 -   Avatar AI Generator
 -   Achievments
 -   Multi-user AI RPG - invite friends, colleagues, or like-minded individuals to join your chats 
+-   RealTime Multi-user + AI chats
 -   Image Generation by SDXL
 -   Python Code Run
 -   Email respond (with attachments, like PDFs, Word, etc)
