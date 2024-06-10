@@ -111,7 +111,6 @@ const AvatarBuilder = () => {
             handleOpenCoinModal();
             return;
         }
-        // Deduct 50 coins from the user's balance
         setUser({ ...user, coins: user.coins - 50 });
         const audio = new Audio("/coin_clink.mp3");
         audio.play();

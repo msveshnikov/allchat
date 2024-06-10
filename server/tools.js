@@ -583,10 +583,10 @@ async function awardAchievement(emoji, description, userId) {
         const user = await User.findById(userId);
         emoji = emoji?.slice(0, 2);
 
-        const existingAchievement = user.achievements.find((a) => a.emoji === emoji);
-        if (existingAchievement) {
-            return `Achievement already awarded: ${emoji} ${existingAchievement.description}`;
-        }
+        // const existingAchievement = user.achievements.find((a) => a.emoji === emoji);
+        // if (existingAchievement) {
+        //     return `Achievement already awarded: ${emoji} ${existingAchievement.description}`;
+        // }
 
         const achievement = { emoji, description };
         user.achievements.push(achievement);
