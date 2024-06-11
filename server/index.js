@@ -28,12 +28,13 @@ import promClient from "prom-client";
 import sharp from "sharp";
 import SharedChat from "./model/SharedChat .js";
 import { WebSocket, WebSocketServer } from "ws";
-
 dotenv.config({ override: true });
 
 const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
 export const MAX_SEARCH_RESULT_LENGTH = 7000;
 export const MAX_CONTEXT_LENGTH = 10000;
+export const MAX_CHAT_HISTORY_LENGTH = 30;
+
 const stripe = new Stripe(process.env.STRIPE_KEY);
 const systemPrompt = `You are an AI assistant that interacts with the Gemini Pro 1.5 and Claude language models. Your capabilities include:
 
@@ -165,14 +166,14 @@ app.post("/interact", verifyToken, async (req, res) => {
         const lang = req.body.lang;
         const model = req.body.model || "gemini-1.5-pro-preview-0514";
         const customGPT = req.body.customGPT;
-        const referrer = req.body.referrer;
+        // const referrer = req.body.referrer;
         const country = req.headers["geoip_country_code"];
         const user = await User.findById(req.user.id);
         if (
             user?.subscriptionStatus !== "active" &&
             user?.subscriptionStatus !== "trialing" &&
-            !user?.admin &&
-            referrer !== "android-app://online.allchat.twa/"
+            !user?.admin
+            // &&  referrer !== "android-app://online.allchat.twa/"
         ) {
             return res
                 .status(402)
@@ -303,14 +304,16 @@ app.post("/interact", verifyToken, async (req, res) => {
                     gpt: GPT?._id,
                     userImageData: fileBytesBase64,
                 };
-                const updatedChatHistory = [...sharedChat.chatHistory, message];
-
+                const updatedChatHistory = [...sharedChat.chatHistory.slice(-MAX_CHAT_HISTORY_LENGTH), message];
                 const updatedSharedChat = {
                     ...sharedChat._doc,
                     chatHistory: updatedChatHistory,
                 };
-
-                await SharedChat.findByIdAndUpdate(chatId, updatedSharedChat);
+                try {
+                    await SharedChat.findByIdAndUpdate(chatId, updatedSharedChat);
+                } catch (error) {
+                    console.error(error);
+                }
                 broadcastMessage(JSON.stringify({ chatId, message }));
             }
         }

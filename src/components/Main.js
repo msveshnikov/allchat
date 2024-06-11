@@ -32,7 +32,7 @@ import { useReward } from "react-rewards";
 
 const achievementSounds = ["/ach1.mp3", "/ach2.mp3", "/ach3.mp3", "/ach4.mp3"];
 
-const MAX_CHAT_HISTORY_LENGTH = 20;
+const MAX_CHAT_HISTORY_LENGTH = 30;
 const MAX_CHATS = 5;
 
 export const API_URL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_API_URL : "http://localhost:5000";
@@ -141,15 +141,15 @@ function Main({ darkMode, toggleTheme }) {
             const socket = new WebSocket(`${WS_URL}/subscribe`);
             socket.addEventListener("message", (event) => {
                 const data = JSON.parse(event.data);
-                if (data.chatId === chatId) {
-                    setChatHistory((prevChatHistory) => [...prevChatHistory, data.message]);
+                if (data?.chatId === chatId && data?.message?.userId !== user?._id) {
+                    setChatHistory((prevChatHistory) => [...prevChatHistory, data?.message]);
                 }
             });
             return () => {
                 socket.close();
             };
         }
-    }, [chatId]);
+    }, [chatId, user?._id]);
 
     useEffect(() => {
         try {
