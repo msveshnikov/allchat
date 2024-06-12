@@ -1,6 +1,4 @@
 import { SitemapStream, streamToPromise } from "sitemap";
-import { createGzip } from "zlib";
-import { join } from "path";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
@@ -1004,13 +1002,8 @@ app.get("/sitemap.xml", async (req, res) => {
 
         const smStreamPromise = streamToPromise(smStream);
         smStreamPromise.then((smContent) => {
-            const smGzip = createGzip();
-            const smGzipPromise = streamToPromise(smGzip.end(smContent));
-            smGzipPromise.then((smGzipContent) => {
-                res.setHeader("Content-Encoding", "gzip");
-                res.setHeader("Content-Type", "application/x-gzip");
-                res.send(smGzipContent);
-            });
+            res.setHeader("Content-Type", "text/xml");
+            res.send(smContent.toString());
         });
     } catch (err) {
         console.error("Error generating sitemap.xml:", err);
