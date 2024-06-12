@@ -1,3 +1,6 @@
+import { SitemapStream, streamToPromise } from "sitemap";
+import { createGzip } from "zlib";
+import { join } from "path";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
@@ -982,6 +985,37 @@ app.delete("/sharedChats/:id", verifyToken, async (req, res) => {
 
 process.on("uncaughtException", (err, origin) => {
     console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
+});
+
+app.get("/sitemap.xml", async (req, res) => {
+    try {
+        const smStream = new SitemapStream({
+            hostname: "https://allchat.online",
+            cacheTime: 600000, // 600 sec (10 min) cache period
+        });
+
+        const sharedChats = await SharedChat.find({}, { _id: 1 });
+
+        sharedChats.forEach((chat) => {
+            smStream.write({ url: `/chat/${chat._id}` });
+        });
+
+        smStream.end();
+
+        const smStreamPromise = streamToPromise(smStream);
+        smStreamPromise.then((smContent) => {
+            const smGzip = createGzip();
+            const smGzipPromise = streamToPromise(smGzip.end(smContent));
+            smGzipPromise.then((smGzipContent) => {
+                res.setHeader("Content-Encoding", "gzip");
+                res.setHeader("Content-Type", "application/x-gzip");
+                res.send(smGzipContent);
+            });
+        });
+    } catch (err) {
+        console.error("Error generating sitemap.xml:", err);
+        res.status(500).json({ message: err.message });
+    }
 });
 
 // Run script only on production, only on first cluster instance
