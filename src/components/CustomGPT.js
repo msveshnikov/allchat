@@ -77,6 +77,21 @@ const CustomGPTPage = () => {
             setError("");
             setSuccessMessage(data.message);
             setCurrentSize(data.currentSize);
+
+            const avatarResponse = await fetch(`${API_URL}/generate-avatar`, {
+                method: "POST",
+                headers,
+                body: JSON.stringify({ userInput: instructions }),
+            });
+
+            if (avatarResponse.ok) {
+                const avatarData = await avatarResponse.json();
+                fetch(`${API_URL}/customgpt/${data._id}`, {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify({ profileUrl: avatarData.profileUrl }),
+                });
+            }
         } else {
             setError(data.error);
             setSuccessMessage("");

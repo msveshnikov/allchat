@@ -167,14 +167,14 @@ app.post("/interact", verifyToken, async (req, res) => {
         const lang = req.body.lang;
         const model = req.body.model || "gemini-1.5-pro-preview-0514";
         const customGPT = req.body.customGPT;
-        const referrer = req.body.referrer;
+        // const referrer = req.body.referrer;
         const country = req.headers["geoip_country_code"];
         const user = await User.findById(req.user.id);
         if (
             user?.subscriptionStatus !== "active" &&
             user?.subscriptionStatus !== "trialing" &&
             !user?.admin
-            && referrer !== "android-app://online.allchat.twa/"
+            // && referrer !== "android-app://online.allchat.twa/"
         ) {
             return res
                 .status(402)
@@ -637,15 +637,16 @@ app.post("/customgpt", verifyToken, async (req, res) => {
             }
         }
 
+        let customGPT;
         const existingCustomGPT = await CustomGPT.findOne({ name });
-
         if (existingCustomGPT) {
             existingCustomGPT.instructions = instructions;
             existingCustomGPT.knowledge = knowledge;
-            await existingCustomGPT.save();
+            customGPT = await existingCustomGPT.save();
             res.json({
                 message: "CustomGPT updated successfully. You can select it in the Settings.",
                 currentSize: knowledge?.length,
+                _id: customGPT._id,
             });
         } else {
             const newCustomGPT = new CustomGPT({
@@ -654,10 +655,11 @@ app.post("/customgpt", verifyToken, async (req, res) => {
                 instructions,
                 knowledge,
             });
-            await newCustomGPT.save();
+            customGPT = await newCustomGPT.save();
             res.json({
                 message: "CustomGPT saved successfully. You can select it in the Settings.",
                 currentSize: knowledge?.length,
+                _id: customGPT._id,
             });
         }
         addUserCoins(req.user.id, 200);
