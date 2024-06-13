@@ -241,7 +241,9 @@ graph LR
 
 # TDOD
 
-[x] achievments
+[x] achievements
 [x] other user avatars, not always mine
 [x] coins display
 [x] broadcast update of shared chat - WebSockets
+[ ] shared chat manager for owners
+[ ] custom GPT avatar auto create
