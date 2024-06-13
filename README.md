@@ -246,4 +246,4 @@ graph LR
 [x] coins display
 [x] broadcast update of shared chat - WebSockets
 [x] custom GPT avatar auto create
-[ ] shared chat manager for owners
+[x] shared chat manager for owners

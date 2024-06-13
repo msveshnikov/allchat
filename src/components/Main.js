@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
     Container,
     Snackbar,
@@ -625,6 +626,32 @@ function Main({ darkMode, toggleTheme }) {
         }
     };
 
+    const handleDeleteSharedChat = async () => {
+        const token = localStorage.getItem("token");
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+        const response = await fetch(`${API_URL}/sharedChats/${chatId}`, {
+            method: "DELETE",
+            headers,
+        });
+
+        if (response.ok) {
+            setSnackbarMessage("Shared chat deleted successfully!");
+            setSnackbarSeverity("success");
+            setSnackbarOpen(true);
+            handleInviteClose();
+            localStorage.removeItem("chatId");
+            navigate("/");
+        } else {
+            const data = await response.json();
+            setSnackbarMessage("Failed to delete shared chat. " + data.error);
+            setSnackbarSeverity("error");
+            setSnackbarOpen(true);
+        }
+    };
+
     return (
         <>
             <AppHeader
@@ -715,6 +742,18 @@ function Main({ darkMode, toggleTheme }) {
                             </IconButton>
                         </Box>
                     </Box>
+                    {chatId && user?._id === chatHistory[0]?.userId && (
+                        <Box mt={3}>
+                            <Button
+                                variant="contained"
+                                color="error"
+                                onClick={handleDeleteSharedChat}
+                                startIcon={<DeleteIcon />}
+                            >
+                                Delete Shared Chat
+                            </Button>
+                        </Box>
+                    )}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleInviteClose}>Cancel</Button>

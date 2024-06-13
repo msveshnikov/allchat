@@ -963,28 +963,25 @@ app.get("/sharedChats", verifyToken, async (req, res) => {
         res.json(sharedChatsWithEmail);
     } catch (err) {
         console.error("Error fetching shared chats:", err);
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ error: err.message });
     }
 });
 
 app.delete("/sharedChats/:id", verifyToken, async (req, res) => {
     try {
-        if (!req.user.admin) {
-            return res.status(401).json({ error: "This is an admin-only route" });
+        const chat = await SharedChat.findById(req.params.id);
+        if (!chat) {
+            return res.status(404).json({ error: "Chat not found" });
         }
-        const deletedChat = await SharedChat.findByIdAndDelete(req.params.id);
-        if (!deletedChat) {
-            return res.status(404).json({ message: "Chat not found" });
+        if (!req.user.admin && chat.user !== req.user.email) {
+            return res.status(401).json({ error: "You don't have permission to delete this chat" });
         }
+        await SharedChat.findByIdAndDelete(req.params.id);
         res.json({ message: "Chat deleted successfully" });
     } catch (err) {
-        console.error("Error deleting shared chats:", err);
-        res.status(500).json({ message: err.message });
+        console.error("Error deleting shared chat:", err);
+        res.status(500).json({ error: err.message });
     }
-});
-
-process.on("uncaughtException", (err, origin) => {
-    console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
 });
 
 app.get("/sitemap.xml", async (req, res) => {
@@ -1009,8 +1006,12 @@ app.get("/sitemap.xml", async (req, res) => {
         });
     } catch (err) {
         console.error("Error generating sitemap.xml:", err);
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ error: err.message });
     }
+});
+
+process.on("uncaughtException", (err, origin) => {
+    console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
 });
 
 // Run script only on production, only on first cluster instance
