@@ -35,7 +35,6 @@ const getFileTypeIcon = (mimeType) => {
             return "📁";
     }
 };
-
 const toolEmojis = {
     get_weather: "☀️",
     get_stock_price: "📈",
@@ -52,7 +51,9 @@ const toolEmojis = {
     stop_scheduled_action: "⏹️",
     summarize_youtube_video: "📺",
     add_calendar_event: "📅",
-    award_achievement: "👑",
+    get_user_subscription_info: "💳",
+    award_achievement: "🏆",
+    send_user_feedback: "📝",
 };
 
 function toolsToEmojis(toolsUsed) {
