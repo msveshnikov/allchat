@@ -288,6 +288,21 @@ export const tools = [
             required: ["emoji", "description"],
         },
     },
+    {
+        name: "send_user_feedback",
+        description:
+            "Send user feedback to AllChat developers. Any AllChat problems/suggestions/questions are appreciated",
+        input_schema: {
+            type: "object",
+            properties: {
+                feedback: {
+                    type: "string",
+                    description: "The user's feedback message",
+                },
+            },
+            required: ["feedback"],
+        },
+    },
 ];
 
 export const handleToolCall = async (name, args, userId) => {
@@ -329,6 +344,8 @@ export const handleToolCall = async (name, args, userId) => {
             return getUserSubscriptionInfo(userId);
         case "award_achievement":
             return awardAchievement(args.emoji, args.description, userId);
+        case "send_user_feedback":
+            return sendUserFeedback(args.feedback);
         default:
             console.error(`Unsupported function call: ${name}`);
     }
@@ -583,11 +600,6 @@ async function awardAchievement(emoji, description, userId) {
         const user = await User.findById(userId);
         emoji = emoji?.slice(0, 2);
 
-        // const existingAchievement = user.achievements.find((a) => a.emoji === emoji);
-        // if (existingAchievement) {
-        //     return `Achievement already awarded: ${emoji} ${existingAchievement.description}`;
-        // }
-
         const achievement = { emoji, description };
         user.achievements.push(achievement);
         await user.save();
@@ -596,5 +608,16 @@ async function awardAchievement(emoji, description, userId) {
     } catch (error) {
         console.error("Error awarding achievement:", error);
         return "Error awarding achievement: " + error.message;
+    }
+}
+
+export async function sendUserFeedback(feedback) {
+    const developerChatId = "1049277315";
+    try {
+        await bot.sendMessage(developerChatId, `User Feedback: ${feedback}`);
+        return "Feedback sent successfully to AllChat developers.";
+    } catch (error) {
+        console.error("Error sending user feedback:", error);
+        return "Error sending user feedback: " + error.message;
     }
 }
