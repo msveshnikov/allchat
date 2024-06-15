@@ -39,7 +39,7 @@ const MAX_CHATS = 5;
 export const API_URL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_API_URL : "http://localhost:5000";
 export const WS_URL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_WS_URL : "ws://localhost:5000";
 
-function Main({ darkMode, toggleTheme }) {
+function Main({ themeMode, toggleTheme }) {
     const [input, setInput] = useState("");
     const [pastedImage, setPastedImage] = useState(null);
     const [chatHistory, setChatHistory] = useState([]);
@@ -664,7 +664,7 @@ function Main({ darkMode, toggleTheme }) {
                 onToggle={toggleDrawer}
                 selectedModel={selectedModel}
                 onModelSelect={setSelectedModel}
-                darkMode={darkMode}
+                themeMode={themeMode}
                 toggleTheme={toggleTheme}
                 onInviteUser={handleInviteUser}
                 chatId={chatId}

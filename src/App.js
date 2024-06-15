@@ -16,25 +16,26 @@ import AvatarBuilder from "./components/AvatarBuilder";
 ReactGA.initialize("G-L4KLPWXQ75");
 
 const App = () => {
-    const [darkMode, setDarkMode] = useState(localStorage.getItem("darkMode") === "true" || false);
+    const [themeMode, setThemeMode] = useState(localStorage.getItem("themeMode") || "light");
 
     useEffect(() => {
-        localStorage.setItem("darkMode", darkMode);
-    }, [darkMode]);
+        localStorage.setItem("themeMode", themeMode);
+    }, [themeMode]);
 
     const toggleTheme = () => {
-        setDarkMode(!darkMode);
+        setThemeMode((prevMode) => {
+            if (prevMode === "light") return "dark";
+            if (prevMode === "dark") return "third";
+            return "light";
+        });
     };
 
     const element = document.body;
-    if (darkMode) {
-        element.classList.add("dark-mode");
-    } else {
-        element.classList.remove("dark-mode");
-    }
+    element.classList.remove("light-mode", "dark-mode", "third-mode");
+    element.classList.add(`${themeMode}-mode`);
 
     return (
-        <ThemeProvider theme={theme(darkMode ? "dark" : "light")}>
+        <ThemeProvider theme={theme(themeMode)}>
             <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
                 <I18nextProvider>
                     <Router>
@@ -46,10 +47,10 @@ const App = () => {
                             <Route path="/terms" element={<Terms />} />
                             <Route
                                 path="/chat/:chatId"
-                                element={<Main darkMode={darkMode} toggleTheme={toggleTheme} />}
+                                element={<Main themeMode={themeMode} toggleTheme={toggleTheme} />}
                             />
                             <Route path="/reset-password/:token" element={<PasswordReset />} />
-                            <Route path="/" element={<Main darkMode={darkMode} toggleTheme={toggleTheme} />} />
+                            <Route path="/" element={<Main themeMode={themeMode} toggleTheme={toggleTheme} />} />
                         </Routes>
                     </Router>
                 </I18nextProvider>

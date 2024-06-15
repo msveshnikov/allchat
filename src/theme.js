@@ -4,14 +4,22 @@ import { red } from "@mui/material/colors";
 const theme = (mode) =>
     createTheme({
         palette:
-            mode !== "dark"
+            mode === "light"
                 ? {
-                      mode: mode,
+                      mode: "light",
                       primary: {
                           main: "#1976D2",
                       },
                       secondary: {
                           main: "#f55077",
+                      },
+                      background: {
+                          default: "#f5f5f5",
+                          paper: "#ffffff",
+                      },
+                      text: {
+                          primary: "#333333",
+                          secondary: "#666666",
                       },
                       chatBubble: {
                           userBg: "#d4edda",
@@ -23,8 +31,9 @@ const theme = (mode) =>
                           editBg: "#f5f5a5",
                       },
                   }
-                : {
-                      mode: mode,
+                : mode === "dark"
+                ? {
+                      mode: "dark",
                       primary: {
                           main: "#F50057",
                       },
@@ -50,6 +59,33 @@ const theme = (mode) =>
                           errorBg: "#4d1a1e",
                           errorColor: "#f8d7da",
                           editBg: "#484848",
+                      },
+                  }
+                : {
+                      // Third theme (Sunset theme)
+                      mode: "light",
+                      primary: {
+                          main: "#FF6B6B",
+                      },
+                      secondary: {
+                          main: "#4ECDC4",
+                      },
+                      background: {
+                          default: "#FFF3E0",
+                          paper: "#FFFFFF",
+                      },
+                      text: {
+                          primary: "#2C3E50",
+                          secondary: "#34495E",
+                      },
+                      chatBubble: {
+                          userBg: "#FFD3B6",
+                          userColor: "#D35400",
+                          assistantBg: "#A8E6CF",
+                          assistantColor: "#1ABC9C",
+                          errorBg: "#FFAAA5",
+                          errorColor: "#C0392B",
+                          editBg: "#DCEDC1",
                       },
                   },
         typography: {
