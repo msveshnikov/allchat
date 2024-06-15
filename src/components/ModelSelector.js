@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Typography, Menu, MenuItem } from "@mui/material";
+import { Typography, Menu, MenuItem, useTheme } from "@mui/material";
 import { models } from "./Settings";
 
 export const ModelSelector = ({ selectedModel, onModelSelect, user }) => {
     const [anchorEl, setAnchorEl] = useState(null);
+    const theme = useTheme();
     const open = Boolean(anchorEl);
 
     const handleClick = (event) => {
@@ -27,7 +28,7 @@ export const ModelSelector = ({ selectedModel, onModelSelect, user }) => {
                 onClick={handleClick}
                 style={{
                     fontSize: "0.9rem",
-                    color: "#c5c5c5",
+                    color: theme.palette.modelName,
                     marginLeft: "0.5rem",
                     cursor: "pointer",
                 }}

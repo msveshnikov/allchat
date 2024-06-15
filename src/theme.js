@@ -6,6 +6,7 @@ const theme = (mode) =>
         palette:
             mode === "light"
                 ? {
+                      // Light theme (unchanged)
                       mode: "light",
                       primary: {
                           main: "#1976D2",
@@ -21,6 +22,7 @@ const theme = (mode) =>
                           primary: "#333333",
                           secondary: "#666666",
                       },
+                      modelName: "#c5c5c5", 
                       chatBubble: {
                           userBg: "#d4edda",
                           userColor: "#155724",
@@ -33,6 +35,7 @@ const theme = (mode) =>
                   }
                 : mode === "dark"
                 ? {
+                      // Dark theme (unchanged)
                       mode: "dark",
                       primary: {
                           main: "#F50057",
@@ -51,6 +54,7 @@ const theme = (mode) =>
                       error: {
                           main: red.A400,
                       },
+                      modelName: "#c5c5c5", 
                       chatBubble: {
                           userBg: "#333333",
                           userColor: "#cccccc",
@@ -62,7 +66,7 @@ const theme = (mode) =>
                       },
                   }
                 : {
-                      // Third theme (Sunset theme)
+                      // Third theme (Sunset theme with increased contrast)
                       mode: "light",
                       primary: {
                           main: "#FF6B6B",
@@ -78,13 +82,14 @@ const theme = (mode) =>
                           primary: "#2C3E50",
                           secondary: "#34495E",
                       },
+                      modelName: "#2C3E50", // Dark blue-grey for third theme
                       chatBubble: {
                           userBg: "#FFD3B6",
-                          userColor: "#D35400",
+                          userColor: "#B7400E", // Darkened for better contrast
                           assistantBg: "#A8E6CF",
-                          assistantColor: "#1ABC9C",
+                          assistantColor: "#00574B", // Darkened for better contrast
                           errorBg: "#FFAAA5",
-                          errorColor: "#C0392B",
+                          errorColor: "#9B2C23", // Slightly darkened for consistency
                           editBg: "#DCEDC1",
                       },
                   },
