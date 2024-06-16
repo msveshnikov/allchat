@@ -983,7 +983,6 @@ app.delete("/sharedChats/:id", verifyToken, async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-
 app.get("/sitemap.xml", async (req, res) => {
     try {
         const smStream = new SitemapStream({
@@ -991,17 +990,37 @@ app.get("/sitemap.xml", async (req, res) => {
             cacheTime: 600000, // 600 sec (10 min) cache period
         });
 
+        // Add static pages with additional parameters
+        const staticPages = [
+            { url: "/", changefreq: "daily", priority: 1.0 },
+            { url: "/custom", changefreq: "weekly", priority: 0.9 },
+            { url: "/avatar", changefreq: "weekly", priority: 0.9 },
+            { url: "/about", changefreq: "monthly", priority: 0.8 },
+            { url: "/contact", changefreq: "monthly", priority: 0.8 },
+            { url: "/privacy", changefreq: "monthly", priority: 0.8 },
+            { url: "/terms", changefreq: "monthly", priority: 0.8 },
+        ];
+
+        staticPages.forEach((page) => {
+            smStream.write(page);
+        });
+
+        // Add dynamic shared chat pages
         const sharedChats = await SharedChat.find({}, { _id: 1 });
 
         sharedChats.forEach((chat) => {
-            smStream.write({ url: `/chat/${chat._id}` });
+            smStream.write({
+                url: `/chat/${chat._id}`,
+                changefreq: "weekly",
+                priority: 0.7,
+            });
         });
 
         smStream.end();
 
         const smStreamPromise = streamToPromise(smStream);
         smStreamPromise.then((smContent) => {
-            res.setHeader("Content-Type", "text/xml");
+            res.setHeader("Content-Type", "application/xml");
             res.send(smContent.toString());
         });
     } catch (err) {
