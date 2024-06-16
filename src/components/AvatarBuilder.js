@@ -291,9 +291,6 @@ const AvatarBuilder = () => {
                             <ColorMenuItem value="Medium" color="#EDB98A">
                                 Medium
                             </ColorMenuItem>
-                            <ColorMenuItem value="Dark" color="#B47D64">
-                                Dark
-                            </ColorMenuItem>
                             <ColorMenuItem value="Olive" color="#C2B280">
                                 Olive
                             </ColorMenuItem>
