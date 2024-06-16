@@ -522,7 +522,6 @@ const Admin = () => {
                                         <IconButton
                                             onClick={() => handleDeleteChat(chat._id)}
                                             color="error"
-                                            disabled={loading}
                                         >
                                             <DeleteIcon />
                                         </IconButton>

@@ -247,3 +247,4 @@ graph LR
 [x] broadcast update of shared chat - WebSockets
 [x] custom GPT avatar auto create
 [x] shared chat manager for owners
+[ ] bio in profile?
