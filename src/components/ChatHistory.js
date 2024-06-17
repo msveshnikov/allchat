@@ -8,6 +8,7 @@ import { CodeBlock } from "./CodeBlock";
 import { Lightbox } from "react-modal-image";
 import { API_URL } from "./Main";
 import md5 from "md5";
+import zIndex from "@mui/material/styles/zIndex";
 
 const getFileTypeIcon = (mimeType) => {
     switch (mimeType) {
@@ -167,13 +168,14 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
     return (
         <Box id="chatid" flex={1} overflow="auto" padding={2} display="flex" flexDirection="column">
             {chatHistory.map((chat, index) => (
-                <Box
+                <Box 
                     key={index}
                     display="flex"
                     flexDirection="column"
                     marginBottom={2}
                     style={{
                         fontFamily: "PT Sans",
+                        zIndex:-10
                     }}
                 >
                     <Box
