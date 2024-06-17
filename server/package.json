@@ -9,7 +9,7 @@
     "author": "Max Sveshnikov",
     "type": "module",
     "dependencies": {
-        "@anthropic-ai/sdk": "^0.22.0",
+        "@anthropic-ai/sdk": "^0.23.0",
         "@google-cloud/vertexai": "^1.2.0",
         "@google/generative-ai": "^0.12.0",
         "bcrypt": "^5.1.1",
@@ -23,7 +23,7 @@
         "imap": "^0.8.19",
         "jsonwebtoken": "^9.0.2",
         "mailparser": "^3.7.1",
-        "mammoth": "^1.7.2",
+        "mammoth": "^1.8.0",
         "mongoose": "^8.4.1",
         "morgan": "^1.10.0",
         "node-cron": "^3.0.3",
@@ -34,8 +34,8 @@
         "pdf-parse": "1.1.1",
         "sharp": "^0.33.4",
         "sitemap": "^8.0.0",
-        "stripe": "^15.10.0",
-        "ws": "^8.17.0",
+        "stripe": "^15.12.0",
+        "ws": "^8.17.1",
         "xlsx": "^0.18.5",
         "youtube-transcript": "^1.2.1"
     }
