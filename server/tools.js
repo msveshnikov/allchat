@@ -660,7 +660,7 @@ export async function saveArtifact(artifactName, content, type, userId) {
             artifact.updatedAt = new Date();
         } else {
             artifact = new Artifact({
-                userId,
+                user: userId,
                 name: artifactName,
                 content,
                 type,

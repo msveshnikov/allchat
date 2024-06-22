@@ -233,9 +233,7 @@ app.post("/interact", verifyToken, async (req, res) => {
             userInfo = "";
         }
 
-        // Fetch recent artifacts for this user
-        const recentArtifacts = await Artifact.find({ userId: req.user.id }).sort({ updatedAt: -1 }).limit(5);
-        // Add artifacts to the context
+        const recentArtifacts = await Artifact.find({ user: req.user.id }).sort({ updatedAt: -1 }).limit(1);
         const artifactsContext = recentArtifacts
             .map((artifact) => `Artifact "${artifact.name}": ${artifact.content}`)
             .join("\n\n");
@@ -334,7 +332,7 @@ app.post("/interact", verifyToken, async (req, res) => {
             imageResponse,
             toolsUsed,
             gpt: GPT?._id,
-            artifact: await Artifact.find({ userId: req.user.id }).sort({ updatedAt: -1 }).limit(1),
+            artifact: await Artifact.find({ user: req.user.id }).sort({ updatedAt: -1 }).limit(1),
         });
         addUserCoins(req.user.id, 1);
     } catch (error) {

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const artifactSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    user: { type: String, required: true },
     name: { type: String, required: true },
     content: { type: String, required: true },
     type: { 
