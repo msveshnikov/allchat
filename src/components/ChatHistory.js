@@ -327,7 +327,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                                 {chat.error}
                             </Box>
                         )}
-                        {chat.artifact && (
+                        {chat.artifact && chat.toolsUsed.includes("save_artifact") && (
                             <Box mt={2}>
                                 <Button
                                     variant="contained"

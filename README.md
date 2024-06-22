@@ -300,5 +300,5 @@ classDiagram
 [x] broadcast update of shared chat - WebSockets
 [x] custom GPT avatar auto create
 [x] shared chat manager for owners
-[ ] Artifacts
+[x] Artifacts
 [ ] bio in profile?
