@@ -37,7 +37,7 @@ const ArtifactViewer = ({ type, content }) => {
         case "mermaid":
             return (
                 <Box width="100%">
-                    <MermaidChart chart={content.slice(11, -3)} />
+                    <MermaidChart chart={content} />
                 </Box>
             );
         case "code":
