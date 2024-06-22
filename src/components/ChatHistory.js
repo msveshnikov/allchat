@@ -54,6 +54,7 @@ const toolEmojis = {
     get_user_subscription_info: "💳",
     award_achievement: "🏆",
     send_user_feedback: "📝",
+    save_artifact: "🏺",
 };
 
 function toolsToEmojis(toolsUsed) {

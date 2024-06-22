@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import mermaid from "mermaid";
 
-// Custom hook for Mermaid rendering
 const useMermaid = () => {
     useEffect(() => {
         mermaid.initialize({
@@ -35,7 +34,7 @@ const MermaidChart = ({ chart }) => {
         }
     }, [chart, id, render]);
 
-    return <div id={id} ref={mermaidRef} />;
+    return <div id={id} ref={mermaidRef} style={{ border: "1px solid red", minHeight: "100px" }} />;
 };
 
 const ArtifactViewer = ({ type, content }) => {
@@ -53,7 +52,7 @@ const ArtifactViewer = ({ type, content }) => {
         case "mermaid":
             return (
                 <Box width="100%">
-                    <MermaidChart chart={content} />
+                    <MermaidChart chart={content.slice(10, -3)} />
                 </Box>
             );
         case "code":
