@@ -87,7 +87,7 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
         model: model,
         generation_config: {
             maxOutputTokens: 8192,
-            temperature: temperature || 0.5,
+            temperature: temperature || 0.7,
         },
         safetySettings: [
             { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_ONLY_HIGH" },

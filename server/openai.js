@@ -37,7 +37,7 @@ export const getTextGpt = async (prompt, temperature, fileBytesBase64, fileType,
             model: model || "gpt-3.5-turbo",
             max_tokens: 2048,
             messages,
-            temperature: temperature || 0.5,
+            temperature: temperature || 0.7,
             tools: webTools ? openAiTools : null,
         });
         return completion?.choices?.[0]?.message;

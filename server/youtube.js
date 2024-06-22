@@ -8,7 +8,7 @@ export const summarizeYouTubeVideo = async (videoId) => {
         console.log(captionText);
         const summary = await getTextClaude(
             `Summarize the following in 100 words:\n\n${captionText}`,
-            0.5,
+            0.7,
             null,
             null,
             null,

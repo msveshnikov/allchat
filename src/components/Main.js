@@ -49,7 +49,7 @@ function Main({ themeMode, toggleTheme }) {
     const [selectedFile, setSelectedFile] = useState(null);
     const [sound, setSound] = useState(localStorage.getItem("sound") === "true");
     const [tools, setTools] = useState((localStorage.getItem("tools") ?? "true") === "true");
-    const [temperature, setTemperature] = useState(Number(localStorage.getItem("temperature") || "0.5"));
+    const [temperature, setTemperature] = useState(Number(localStorage.getItem("temperature") || "0.7"));
     const [selectedModel, setSelectedModel] = useState(
         localStorage.getItem("selectedModel") || "gemini-1.5-pro-preview-0514"
     );

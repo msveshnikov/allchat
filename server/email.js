@@ -91,7 +91,7 @@ export async function handleIncomingEmails() {
                                             `Subject: ${emailFrom.subject} User information: ${userInfo} Human: ${emailBody} Assistant:`.slice(
                                                 -MAX_CONTEXT_LENGTH
                                             ),
-                                            0.5,
+                                            0.7,
                                             null,
                                             null,
                                             user._id,
