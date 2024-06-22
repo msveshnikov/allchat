@@ -13,6 +13,7 @@
         "i18next-browser-languagedetector": "^8.0.0",
         "markdown-it": "^14.1.0",
         "md5": "^2.3.0",
+        "mermaid": "^10.9.1",
         "pdfmake": "^0.2.10",
         "react": "^18.3.1",
         "react-countup": "^6.5.3",

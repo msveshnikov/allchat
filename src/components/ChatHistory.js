@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
-import { Box, CircularProgress, TextField, IconButton, useTheme } from "@mui/material";
+import { Box, CircularProgress, TextField, IconButton, Button, useTheme } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import { Link as RouterLink } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -164,6 +164,11 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
         }
     };
 
+    const handleOpenArtifact = (artifact) => {
+        localStorage.setItem("currentArtifact", JSON.stringify(artifact?.[0]));
+        window.open("/artifact", "_blank");
+    };
+
     return (
         <Box id="chatid" flex={1} overflow="auto" padding={2} display="flex" flexDirection="column">
             {chatHistory.map((chat, index) => (
@@ -319,6 +324,17 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                                 }}
                             >
                                 {chat.error}
+                            </Box>
+                        )}
+                        {chat.artifact && (
+                            <Box mt={2}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => handleOpenArtifact(chat.artifact)}
+                                >
+                                    Open Artifact
+                                </Button>
                             </Box>
                         )}
                         {chat.image && (

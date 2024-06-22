@@ -235,11 +235,64 @@ graph LR
    class Backend,Frontend,PythonShell,MongoDB,Prometheus,NodeExporter,Grafana,Loki serviceName;
 ```
 
+```mermaid
+classDiagram
+    Animal <|-- Mammal
+    Animal <|-- Bird
+    Animal <|-- Fish
+    Animal <|-- Reptile
+    Animal <|-- Amphibian
+    Animal <|-- Invertebrate
+
+    class Animal {
+        -name: string
+        -kingdom: string
+        +eat()
+        +move()
+        +breathe()
+        +reproduce()
+    }
+
+    class Mammal {
+        -warmBlooded: boolean
+        -hasFur: boolean
+        -feedYoungWithMilk: boolean
+    }
+
+    class Bird {
+        -feathers: boolean
+        -layEggs: boolean
+        -fly: boolean
+    }
+
+    class Fish {
+        -gills: boolean
+        -liveInWater: boolean
+        -coldblooded: boolean
+    }
+
+    class Reptile {
+        -scatyLimbs: boolean
+        -coldblooded: boolean
+        -laysEggs: boolean
+    }
+
+    class Amphibian {
+        -liveBothInWaterAndLand: boolean
+        -coldblooded: boolean
+        -laysEggs: boolean
+    }
+
+    class Invertebrate {
+        -noBackbone: boolean
+    }
+```
+
 [![Stargazers repo roster for @msveshnikov/allchat](https://reporoster.com/stars/msveshnikov/allchat)](https://github.com/msveshnikov/allchat/stargazers)
 
 [![Forkers repo roster for @msveshnikov/allchat](https://reporoster.com/forks/msveshnikov/allchat)](https://github.com/msveshnikov/allchat/network/members)
 
-# TDOD
+# TODO
 
 [x] achievements
 [x] other user avatars, not always mine
@@ -247,4 +300,5 @@ graph LR
 [x] broadcast update of shared chat - WebSockets
 [x] custom GPT avatar auto create
 [x] shared chat manager for owners
+[ ] Artifacts
 [ ] bio in profile?

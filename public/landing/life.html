@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Colorful Life Game - Infinite Lifecycle</title>
+        <style>
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                background-color: #f0f0f0;
+                font-family: Arial, sans-serif;
+            }
+            #gameContainer {
+                text-align: center;
+            }
+            canvas {
+                border: 1px solid #000;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="gameContainer">
+            <h1>Colorful Life Game - Infinite Lifecycle</h1>
+            <canvas id="gameCanvas" width="1000" height="600"></canvas>
+            <br />
+            <button id="startStop">Start/Stop</button>
+            <button id="reset">Reset</button>
+        </div>
+
+        <script>
+            const canvas = document.getElementById("gameCanvas");
+            const ctx = canvas.getContext("2d");
+            const cellSize = 4;
+            const cols = canvas.width / cellSize;
+            const rows = canvas.height / cellSize;
+            let grid = [];
+            let isRunning = false;
+            let generation = 0;
+
+            const colors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF"];
+
+            function createGrid() {
+                for (let i = 0; i < rows; i++) {
+                    grid[i] = [];
+                    for (let j = 0; j < cols; j++) {
+                        grid[i][j] = {
+                            alive: Math.random() < 0.2,
+                            color: colors[Math.floor(Math.random() * colors.length)],
+                            age: 0,
+                        };
+                    }
+                }
+                generation = 0;
+            }
+
+            function drawGrid() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let i = 0; i < rows; i++) {
+                    for (let j = 0; j < cols; j++) {
+                        if (grid[i][j].alive) {
+                            ctx.fillStyle = grid[i][j].color;
+                            ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize);
+                        }
+                    }
+                }
+            }
+
+            function countNeighbors(x, y) {
+                let count = 0;
+                let colorCounts = {};
+                for (let i = -1; i <= 1; i++) {
+                    for (let j = -1; j <= 1; j++) {
+                        if (i === 0 && j === 0) continue;
+                        let col = (x + i + cols) % cols;
+                        let row = (y + j + rows) % rows;
+                        if (grid[row][col].alive) {
+                            count++;
+                            colorCounts[grid[row][col].color] = (colorCounts[grid[row][col].color] || 0) + 1;
+                        }
+                    }
+                }
+                return { count, colorCounts };
+            }
+
+            function updateGrid() {
+                let newGrid = JSON.parse(JSON.stringify(grid));
+                let totalAlive = 0;
+                for (let i = 0; i < rows; i++) {
+                    for (let j = 0; j < cols; j++) {
+                        let { count, colorCounts } = countNeighbors(j, i);
+                        if (grid[i][j].alive) {
+                            if (count < 2 || count > 3) {
+                                newGrid[i][j].alive = false;
+                                newGrid[i][j].age = 0;
+                            } else {
+                                newGrid[i][j].age++;
+                                totalAlive++;
+                                // Cells have a chance to change color randomly
+                                if (Math.random() < 0.01) {
+                                    newGrid[i][j].color = colors[Math.floor(Math.random() * colors.length)];
+                                }
+                                // Old cells have a chance to die
+                                if (newGrid[i][j].age > 100 && Math.random() < 0.1) {
+                                    newGrid[i][j].alive = false;
+                                    newGrid[i][j].age = 0;
+                                }
+                            }
+                        } else {
+                            if (count === 3 || (count === 2 && Math.random() < 0.01)) {
+                                // Small chance for birth with 2 neighbors
+                                newGrid[i][j].alive = true;
+                                newGrid[i][j].age = 0;
+                                totalAlive++;
+                                let dominantColor = Object.keys(colorCounts).reduce((a, b) =>
+                                    colorCounts[a] > colorCounts[b] ? a : b
+                                );
+                                newGrid[i][j].color = dominantColor;
+                            }
+                        }
+                    }
+                }
+
+                // Introduce random life if the population is too low
+                if (totalAlive < rows * cols * 0.1) {
+                    for (let i = 0; i < rows; i++) {
+                        for (let j = 0; j < cols; j++) {
+                            if (!newGrid[i][j].alive && Math.random() < 0.01) {
+                                newGrid[i][j].alive = true;
+                                newGrid[i][j].color = colors[Math.floor(Math.random() * colors.length)];
+                                newGrid[i][j].age = 0;
+                            }
+                        }
+                    }
+                }
+
+                grid = newGrid;
+                generation++;
+            }
+
+            function gameLoop() {
+                if (isRunning) {
+                    updateGrid();
+                    drawGrid();
+                    requestAnimationFrame(gameLoop);
+                }
+            }
+
+            document.getElementById("startStop").addEventListener("click", () => {
+                isRunning = !isRunning;
+                if (isRunning) {
+                    gameLoop();
+                }
+            });
+
+            document.getElementById("reset").addEventListener("click", () => {
+                isRunning = false;
+                createGrid();
+                drawGrid();
+            });
+
+            createGrid();
+            drawGrid();
+        </script>
+    </body>
+</html>

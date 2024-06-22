@@ -12,6 +12,7 @@ import Terms from "./components/Terms";
 import ReactGA from "react-ga4";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import AvatarBuilder from "./components/AvatarBuilder";
+import Artifact from "./components/Artifact";
 
 ReactGA.initialize("G-L4KLPWXQ75");
 
@@ -51,6 +52,7 @@ const App = () => {
                             />
                             <Route path="/reset-password/:token" element={<PasswordReset />} />
                             <Route path="/" element={<Main themeMode={themeMode} toggleTheme={toggleTheme} />} />
+                            <Route path="/artifact" element={<Artifact />} />
                         </Routes>
                     </Router>
                 </I18nextProvider>

@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { fetchPageContent, fetchSearchResults, googleNews } from "./search.js";
 import { User, addUserCoins } from "./model/User.js";
+import { Artifact } from "./model/Artifact.js";
 import { scheduleAction, stopScheduledAction } from "./scheduler.js";
 import { MAX_SEARCH_RESULT_LENGTH, contentFolder, toolsUsed } from "./index.js";
 import { summarizeYouTubeVideo } from "./youtube.js";
@@ -303,6 +304,31 @@ export const tools = [
             required: ["feedback"],
         },
     },
+    {
+        name: "save_artifact",
+        description:
+            "Saves the current state of a working artifact to the database for later use or editing. Call this tool when you've created or significantly updated content that should be preserved, such as HTML pages, Mermaid diagrams, code snippets, or text documents. These artifacts will be displayed in a side window in the UI for easy access.",
+        input_schema: {
+            type: "object",
+            properties: {
+                artifactName: {
+                    type: "string",
+                    description:
+                        "A descriptive name for the artifact (e.g., 'Login Page HTML', 'User Flow Diagram', 'Python Data Analysis Script')",
+                },
+                content: {
+                    type: "string",
+                    description: "The full content of the artifact",
+                },
+                type: {
+                    type: "string",
+                    description: "The type of artifact. Choose from: 'html', 'mermaid', 'code', 'text', or 'other'",
+                    enum: ["html", "mermaid", "code", "text", "other"],
+                },
+            },
+            required: ["artifactName", "content", "type"],
+        },
+    },
 ];
 
 export const handleToolCall = async (name, args, userId) => {
@@ -346,6 +372,8 @@ export const handleToolCall = async (name, args, userId) => {
             return awardAchievement(args.emoji, args.description, userId);
         case "send_user_feedback":
             return sendUserFeedback(args.feedback);
+        case "save_artifact":
+            return saveArtifact(args.artifactName, args.content, args.type, userId);
         default:
             console.error(`Unsupported function call: ${name}`);
     }
@@ -619,5 +647,31 @@ export async function sendUserFeedback(feedback) {
     } catch (error) {
         console.error("Error sending user feedback:", error);
         return "Error sending user feedback: " + error.message;
+    }
+}
+
+export async function saveArtifact(artifactName, content, type, userId) {
+    try {
+        let artifact = await Artifact.findOne({ userId, name: artifactName });
+
+        if (artifact) {
+            artifact.content = content;
+            artifact.type = type;
+            artifact.updatedAt = new Date();
+        } else {
+            artifact = new Artifact({
+                userId,
+                name: artifactName,
+                content,
+                type,
+            });
+        }
+
+        await artifact.save();
+
+        return `Artifact "${artifactName}" of type "${type}" saved successfully.`;
+    } catch (error) {
+        console.error("Error saving artifact:", error);
+        return "Error saving artifact: " + error.message;
     }
 }

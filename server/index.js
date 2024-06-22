@@ -16,6 +16,7 @@ import { getTextGpt } from "./openai.js";
 import { authenticateUser, completePasswordReset, registerUser, resetPassword, verifyToken } from "./auth.js";
 import { fetchPageContent } from "./search.js";
 import { User, addUserCoins, countTokens, storeUsageStats, substractUserCoins } from "./model/User.js";
+import { Artifact } from "./model/Artifact.js";
 import CustomGPT from "./model/CustomGPT.js";
 import fs from "fs";
 import path from "path";
@@ -231,6 +232,14 @@ app.post("/interact", verifyToken, async (req, res) => {
         if (userInput?.startsWith("Extract main topic")) {
             userInfo = "";
         }
+
+        // Fetch recent artifacts for this user
+        const recentArtifacts = await Artifact.find({ userId: req.user.id }).sort({ updatedAt: -1 }).limit(5);
+        // Add artifacts to the context
+        const artifactsContext = recentArtifacts
+            .map((artifact) => `Artifact "${artifact.name}": ${artifact.content}`)
+            .join("\n\n");
+
         const contextPrompt = model?.startsWith("ft")
             ? `System: ${instructions} ${chatHistory
                   .map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`)
@@ -239,6 +248,7 @@ app.post("/interact", verifyToken, async (req, res) => {
             : `System: ${instructions || systemPrompt} User country code: ${country} User Lang: ${lang}
                     ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
                     \nUser information: ${userInfo}
+                    \nRecent Artifacts:\n${artifactsContext}
                     \nHuman: ${userInput || "what's this"}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
         let textResponse;
         let inputTokens = 0;
@@ -319,7 +329,13 @@ app.post("/interact", verifyToken, async (req, res) => {
             }
         }
 
-        res.json({ textResponse, imageResponse, toolsUsed, gpt: GPT?._id });
+        res.json({
+            textResponse,
+            imageResponse,
+            toolsUsed,
+            gpt: GPT?._id,
+            artifact: await Artifact.find({ userId: req.user.id }).sort({ updatedAt: -1 }).limit(1),
+        });
         addUserCoins(req.user.id, 1);
     } catch (error) {
         console.error(error);
