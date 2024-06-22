@@ -294,11 +294,11 @@ classDiagram
 
 # TODO
 
-[x] achievements
 [x] other user avatars, not always mine
-[x] coins display
-[x] broadcast update of shared chat - WebSockets
 [x] custom GPT avatar auto create
 [x] shared chat manager for owners
+[x] broadcast update of shared chat - WebSockets
+[x] Coins and Achievments
 [x] Artifacts
+[x] Sonnet 3.5
 [ ] bio in profile?
