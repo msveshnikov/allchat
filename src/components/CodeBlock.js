@@ -3,7 +3,7 @@ import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import style from "react-syntax-highlighter/dist/esm/styles/hljs/monokai";
 import { IconButton, Tooltip } from "@mui/material";
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow"; // Import the PlayArrow icon
+import PlayArrowIcon from "@mui/icons-material/PlayArrow"; 
 import js from "react-syntax-highlighter/dist/esm/languages/hljs/javascript";
 import java from "react-syntax-highlighter/dist/esm/languages/hljs/java";
 import python from "react-syntax-highlighter/dist/esm/languages/hljs/python";

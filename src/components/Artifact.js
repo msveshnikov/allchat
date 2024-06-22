@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import mermaid from "mermaid";
+import ReactMarkdown from "react-markdown";
+import { CodeBlock } from "./CodeBlock";
 
 const MermaidChart = ({ chart }) => {
     useEffect(() => {
@@ -16,6 +18,11 @@ const MermaidChart = ({ chart }) => {
 };
 
 const ArtifactViewer = ({ type, content }) => {
+    const handleRunCode = (language, code) => {
+        // Implement the code execution logic here
+        console.log(`Running ${language} code:`, code);
+    };
+
     switch (type) {
         case "html":
             return (
@@ -34,15 +41,27 @@ const ArtifactViewer = ({ type, content }) => {
                 </Box>
             );
         case "code":
+            return (
+                <Box width="100%" overflow="auto">
+                    <CodeBlock language={detectLanguage(content)} value={content} onRun={handleRunCode} />
+                </Box>
+            );
         case "text":
         case "other":
         default:
             return (
-                <Box component="pre" width="100%" overflow="auto" p={2}>
-                    <code>{content}</code>
+                <Box width="100%" overflow="auto">
+                    <ReactMarkdown>{content}</ReactMarkdown>
                 </Box>
             );
     }
+};
+
+const detectLanguage = (code) => {
+    if (code.includes("def ") || code.includes("import ")) return "python";
+    if (code.includes("function ") || code.includes("const ")) return "js";
+    if (code.includes("public class ") || code.includes("System.out.println")) return "java";
+    return "python";
 };
 
 const Artifact = () => {
