@@ -10,7 +10,6 @@ const MermaidChart = ({ chart }) => {
 
     return (
         <div>
-            <h1>Weather Decision Chart</h1>
             <div className="mermaid">{chart}</div>
         </div>
     );

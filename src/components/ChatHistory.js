@@ -331,7 +331,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                             <Box mt={2}>
                                 <Button
                                     variant="contained"
-                                    color="primary"
+                                    color="secondary"
                                     onClick={() => handleOpenArtifact(chat.artifact)}
                                 >
                                     Open Artifact

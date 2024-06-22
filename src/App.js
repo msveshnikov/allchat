@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "@mui/material";
 import theme from "./theme";
@@ -12,7 +12,7 @@ import Terms from "./components/Terms";
 import ReactGA from "react-ga4";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import AvatarBuilder from "./components/AvatarBuilder";
-import Artifact from "./components/Artifact";
+const Artifact = lazy(() => import("./components/Artifact"));
 
 ReactGA.initialize("G-L4KLPWXQ75");
 
@@ -52,7 +52,14 @@ const App = () => {
                             />
                             <Route path="/reset-password/:token" element={<PasswordReset />} />
                             <Route path="/" element={<Main themeMode={themeMode} toggleTheme={toggleTheme} />} />
-                            <Route path="/artifact" element={<Artifact />} />
+                            <Route
+                                path="/artifact"
+                                element={
+                                    <Suspense fallback={<div>Loading...</div>}>
+                                        <Artifact />
+                                    </Suspense>
+                                }
+                            />
                         </Routes>
                     </Router>
                 </I18nextProvider>
