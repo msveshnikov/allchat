@@ -1,40 +1,19 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import mermaid from "mermaid";
 
-const useMermaid = () => {
+const MermaidChart = ({ chart }) => {
     useEffect(() => {
-        mermaid.initialize({
-            startOnLoad: true,
-            theme: "default",
-            securityLevel: "loose",
-        });
+        mermaid.initialize({ startOnLoad: true });
+        mermaid.contentLoaded();
     }, []);
 
-    return {
-        render: (id, definition) => {
-            mermaid.render(id, definition).then(({ svg }) => {
-                const output = document.getElementById(id);
-                if (output) {
-                    output.innerHTML = svg;
-                }
-            });
-        },
-    };
-};
-
-const MermaidChart = ({ chart }) => {
-    const mermaidRef = useRef(null);
-    const { render } = useMermaid();
-    const [id] = useState(`mermaid-${Math.random().toString(36).substr(2, 9)}`);
-
-    useEffect(() => {
-        if (mermaidRef.current) {
-            render(id, chart);
-        }
-    }, [chart, id, render]);
-
-    return <div id={id} ref={mermaidRef} style={{ border: "1px solid red", minHeight: "100px" }} />;
+    return (
+        <div>
+            <h1>Weather Decision Chart</h1>
+            <div className="mermaid">{chart}</div>
+        </div>
+    );
 };
 
 const ArtifactViewer = ({ type, content }) => {
@@ -52,7 +31,7 @@ const ArtifactViewer = ({ type, content }) => {
         case "mermaid":
             return (
                 <Box width="100%">
-                    <MermaidChart chart={content.slice(10, -3)} />
+                    <MermaidChart chart={content.slice(11, -3)} />
                 </Box>
             );
         case "code":
