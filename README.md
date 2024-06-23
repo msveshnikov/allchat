@@ -301,4 +301,4 @@ classDiagram
 [x] Coins and Achievments
 [x] Artifacts
 [x] Sonnet 3.5
-[ ] bio in profile?
+[x] OpenSCAD models
