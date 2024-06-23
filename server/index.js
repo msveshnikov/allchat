@@ -901,7 +901,7 @@ app.post("/invite", verifyToken, async (req, res) => {
         }
 
         const inviter = await User.findById(req.user.id);
-        const inviterProfileUrl = inviter.profileUrl || "https://allchat.online/logo192.png";
+        const inviterProfileUrl = inviter?.profileUrl || "https://allchat.online/logo192.png";
 
         let customGPTProfileUrl = null;
         if (customGPT) {

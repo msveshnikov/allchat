@@ -552,10 +552,14 @@ export async function removeUserInfo(userId) {
         const user = await User.findById(userId);
         user.info = {}; // Clear the user's info object
         await user.save();
-        return `User information removed successfully for user ${userId}.`;
+
+        // Delete all artifacts associated with the user
+        await Artifact.deleteMany({ user: userId });
+
+        return `User information and all associated artifacts removed successfully for user ${userId}.`;
     } catch (error) {
-        console.error("Error removing user information:", error);
-        return "Error removing user information: " + error.message;
+        console.error("Error removing user information and artifacts:", error);
+        return "Error removing user information and artifacts: " + error.message;
     }
 }
 
