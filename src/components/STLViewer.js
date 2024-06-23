@@ -11,7 +11,7 @@ const STLViewer = ({ fileContent }) => {
         const height = 300;
 
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(90, width / height, 0.1, 2000);
+        const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 2000);
         const renderer = new THREE.WebGLRenderer({ antialias: true });
 
         renderer.setSize(width, height);
@@ -49,7 +49,6 @@ const STLViewer = ({ fileContent }) => {
         const backgroundMesh = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
         scene.add(backgroundMesh);
 
-        // Improved lighting setup
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
 
@@ -75,10 +74,9 @@ const STLViewer = ({ fileContent }) => {
         const loader = new STLLoader();
         const geometry = loader.parse(fileContent);
 
-        // Generate a random pleasant color
         const hue = Math.random();
-        const saturation = 0.5 + Math.random() * 0.5; // 0.5 to 1.0
-        const lightness = 0.4 + Math.random() * 0.2; // 0.4 to 0.6
+        const saturation = 0.5 + Math.random() * 0.5;
+        const lightness = 0.4 + Math.random() * 0.2;
         const color = new THREE.Color().setHSL(hue, saturation, lightness);
 
         const material = new THREE.MeshStandardMaterial({
@@ -98,6 +96,7 @@ const STLViewer = ({ fileContent }) => {
         const maxDim = Math.max(size.x, size.y, size.z);
         const fov = camera.fov * (Math.PI / 180);
         let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
+        // Reduce this multiplier to bring the object closer to the camera
         cameraZ *= 1.5;
         camera.position.set(cameraZ, cameraZ, cameraZ);
         camera.lookAt(0, 0, 0);
