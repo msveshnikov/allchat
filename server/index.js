@@ -313,6 +313,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                     fileType,
                     gpt: GPT?._id,
                     userImageData: fileBytesBase64,
+                    artifact: await Artifact.find({ user: req.user.id }).sort({ updatedAt: -1 }).limit(1),
                 };
                 const updatedChatHistory = [...sharedChat.chatHistory.slice(-MAX_CHAT_HISTORY_LENGTH), message];
                 const updatedSharedChat = {
