@@ -1,0 +1,7 @@
+###
+POST http://localhost:5000/convert-to-stl   HTTP/1.1  
+Content-Type: application/json
+
+{
+  "inputScad": "cube([10, 10, 10]);"
+}

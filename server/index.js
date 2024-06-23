@@ -20,6 +20,8 @@ import { Artifact } from "./model/Artifact.js";
 import CustomGPT from "./model/CustomGPT.js";
 import fs from "fs";
 import path from "path";
+import crypto from "crypto";
+import { exec } from "child_process";
 import Stripe from "stripe";
 import dotenv from "dotenv";
 import { handleIncomingEmails } from "./email.js";
@@ -1085,6 +1087,61 @@ app.delete("/artifacts/:id", verifyToken, async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 });
+
+app.post("/convert-to-stl", async (req, res) => {
+    try {
+        const { inputScad } = req.body;
+
+        if (!inputScad) {
+            return res.status(400).json({ error: "Missing inputScad in request body" });
+        }
+
+        // Generate unique temporary file names
+        const tempId = crypto.randomBytes(16).toString("hex");
+        const inputFile = `input_${tempId}.scad`;
+        const outputFile = `output_${tempId}.stl`;
+
+        // Write the SCAD content to a temporary file
+        fs.writeFileSync(inputFile, inputScad);
+
+        // Command to run OpenSCAD in WSL
+        const command =
+            (process.env.NODE_ENV === "production" ? "" : "wsl ") + `openscad -o ${outputFile} ${inputFile}`;
+
+        // Execute the command
+        const { stdout, stderr } = await execAsync(command);
+
+        if (stderr) {
+            console.error(`stderr: ${stderr}`);
+        }
+        console.log(`stdout: ${stdout}`);
+
+        // Read the converted STL file
+        const stlContent = fs.readFileSync(outputFile, "utf8");
+
+        // Clean up temporary files
+        fs.unlinkSync(inputFile);
+        fs.unlinkSync(outputFile);
+
+        // Send the converted file content in the response
+        res.json({ stlContent });
+    } catch (error) {
+        console.error(`error`, error);
+        res.status(500).json({ error: "Error converting file" });
+    }
+});
+
+function execAsync(command) {
+    return new Promise((resolve, reject) => {
+        exec(command, (error, stdout, stderr) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve({ stdout, stderr });
+            }
+        });
+    });
+}
 
 process.on("uncaughtException", (err, origin) => {
     console.error(`Caught exception: ${err}`, `Exception origin: ${origin}`);
