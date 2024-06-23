@@ -7,10 +7,9 @@ const STLViewer = ({ fileContent }) => {
     const mountRef = useRef(null);
 
     useEffect(() => {
-        const width = Math.min(400, window.innerWidth - 80); // Adjust for mobile
+        const width = Math.min(400, window.innerWidth - 80);
         const height = 300;
 
-        // Scene setup
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -20,7 +19,6 @@ const STLViewer = ({ fileContent }) => {
         renderer.toneMappingExposure = 1.0;
         mountRef.current.appendChild(renderer.domElement);
 
-        // Gradient background
         const vertexShader = `
             varying vec3 vPosition;
             void main() {
@@ -51,7 +49,6 @@ const STLViewer = ({ fileContent }) => {
         const backgroundMesh = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
         scene.add(backgroundMesh);
 
-        // Lights
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
 
@@ -63,17 +60,14 @@ const STLViewer = ({ fileContent }) => {
         directionalLight2.position.set(-1, -1, -1);
         scene.add(directionalLight2);
 
-        // Add point light for specular highlights
         const pointLight = new THREE.PointLight(0xffffff, 1);
         pointLight.position.set(0, 5, 0);
         scene.add(pointLight);
 
-        // Controls
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
 
-        // Load the model
         const loader = new STLLoader();
         const geometry = loader.parse(fileContent);
 
@@ -89,12 +83,10 @@ const STLViewer = ({ fileContent }) => {
         const mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
 
-        // Center the model
         const box = new THREE.Box3().setFromObject(mesh);
         const center = box.getCenter(new THREE.Vector3());
         mesh.position.sub(center);
 
-        // Adjust camera
         const size = box.getSize(new THREE.Vector3());
         const maxDim = Math.max(size.x, size.y, size.z);
         const fov = camera.fov * (Math.PI / 180);
@@ -103,18 +95,14 @@ const STLViewer = ({ fileContent }) => {
         camera.position.set(cameraZ, cameraZ, cameraZ);
         camera.lookAt(0, 0, 0);
 
-        // Update the camera's near and far planes
         camera.near = cameraZ / 100;
         camera.far = cameraZ * 100;
         camera.updateProjectionMatrix();
-
-        // Update controls
 
         controls.maxDistance = cameraZ * 2;
         controls.target.set(0, 0, 0);
         controls.update();
 
-        // Render loop
         const animate = () => {
             requestAnimationFrame(animate);
             controls.update();
@@ -122,7 +110,6 @@ const STLViewer = ({ fileContent }) => {
         };
         animate();
 
-        // Handle window resizing
         const handleResize = () => {
             const width = Math.min(400, window.innerWidth - 40);
             const height = 300;
@@ -135,7 +122,6 @@ const STLViewer = ({ fileContent }) => {
 
         return () => {
             window.removeEventListener("resize", handleResize);
-            mountRef.current.removeChild(renderer.domElement);
         };
     }, [fileContent]);
 

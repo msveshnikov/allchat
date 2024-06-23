@@ -1,22 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Paper } from "@mui/material";
-import mermaid from "mermaid";
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "./CodeBlock";
 import { OpenSCADViewer } from "./OpenSCADViewer";
-
-const MermaidChart = ({ chart }) => {
-    useEffect(() => {
-        mermaid.initialize({ startOnLoad: true });
-        mermaid.contentLoaded();
-    }, []);
-
-    return (
-        <div>
-            <div className="mermaid">{chart}</div>
-        </div>
-    );
-};
+import { MermaidChart } from "./MermaidChart";
 
 const ArtifactViewer = ({ type, content }) => {
     const handleRunCode = (language, code) => {
