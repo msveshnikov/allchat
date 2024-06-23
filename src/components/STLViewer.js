@@ -11,7 +11,7 @@ const STLViewer = ({ fileContent }) => {
         const height = 300;
 
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(90, width / height, 0.1, 2000);
         const renderer = new THREE.WebGLRenderer({ antialias: true });
 
         renderer.setSize(width, height);
@@ -49,18 +49,18 @@ const STLViewer = ({ fileContent }) => {
         const backgroundMesh = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
         scene.add(backgroundMesh);
 
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
         scene.add(ambientLight);
 
-        const directionalLight1 = new THREE.DirectionalLight(0xffffff, 1);
+        const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.7);
         directionalLight1.position.set(1, 1, 1);
         scene.add(directionalLight1);
 
-        const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
+        const directionalLight2 = new THREE.DirectionalLight(0xffffcc, 0.5);
         directionalLight2.position.set(-1, -1, -1);
         scene.add(directionalLight2);
 
-        const pointLight = new THREE.PointLight(0xffffff, 1);
+        const pointLight = new THREE.PointLight(0xccffff, 0.8);
         pointLight.position.set(0, 5, 0);
         scene.add(pointLight);
 
@@ -71,12 +71,11 @@ const STLViewer = ({ fileContent }) => {
         const loader = new STLLoader();
         const geometry = loader.parse(fileContent);
 
-        const material = new THREE.MeshStandardMaterial({
+        const material = new THREE.MeshPhongMaterial({
             color: new THREE.Color(1, 1, 0).convertSRGBToLinear(),
-            roughness: 0.1,
-            metalness: 0,
-            envMapIntensity: 1,
-            emissive: new THREE.Color(1, 0.7, 0.2).convertSRGBToLinear(),
+            specular: 0x111111,
+            shininess: 200,
+            emissive: new THREE.Color(0.5, 0.3, 0.1).convertSRGBToLinear(),
             emissiveIntensity: 0.2,
         });
 
@@ -91,7 +90,7 @@ const STLViewer = ({ fileContent }) => {
         const maxDim = Math.max(size.x, size.y, size.z);
         const fov = camera.fov * (Math.PI / 180);
         let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
-        cameraZ *= 1.1; // Zoom in a bit more
+        cameraZ *= 1.5;
         camera.position.set(cameraZ, cameraZ, cameraZ);
         camera.lookAt(0, 0, 0);
 
@@ -99,7 +98,7 @@ const STLViewer = ({ fileContent }) => {
         camera.far = cameraZ * 100;
         camera.updateProjectionMatrix();
 
-        controls.maxDistance = cameraZ * 2;
+        controls.maxDistance = cameraZ * 4;
         controls.target.set(0, 0, 0);
         controls.update();
 
