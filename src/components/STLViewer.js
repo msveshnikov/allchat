@@ -49,20 +49,24 @@ const STLViewer = ({ fileContent }) => {
         const backgroundMesh = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
         scene.add(backgroundMesh);
 
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+        // Improved lighting setup
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
 
-        const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.7);
-        directionalLight1.position.set(1, 1, 1);
-        scene.add(directionalLight1);
+        const hemisphereLight = new THREE.HemisphereLight(0xddeeff, 0x0f0e0d, 0.5);
+        scene.add(hemisphereLight);
 
-        const directionalLight2 = new THREE.DirectionalLight(0xffffcc, 0.5);
-        directionalLight2.position.set(-1, -1, -1);
-        scene.add(directionalLight2);
+        const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        mainLight.position.set(5, 5, 5);
+        scene.add(mainLight);
 
-        const pointLight = new THREE.PointLight(0xccffff, 0.8);
-        pointLight.position.set(0, 5, 0);
-        scene.add(pointLight);
+        const fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
+        fillLight.position.set(-5, 0, -5);
+        scene.add(fillLight);
+
+        const rimLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        rimLight.position.set(0, -5, 0);
+        scene.add(rimLight);
 
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
@@ -71,12 +75,16 @@ const STLViewer = ({ fileContent }) => {
         const loader = new STLLoader();
         const geometry = loader.parse(fileContent);
 
-        const material = new THREE.MeshPhongMaterial({
-            color: new THREE.Color(1, 1, 0).convertSRGBToLinear(),
-            specular: 0x111111,
-            shininess: 200,
-            emissive: new THREE.Color(0.5, 0.3, 0.1).convertSRGBToLinear(),
-            emissiveIntensity: 0.2,
+        // Generate a random pleasant color
+        const hue = Math.random();
+        const saturation = 0.5 + Math.random() * 0.5; // 0.5 to 1.0
+        const lightness = 0.4 + Math.random() * 0.2; // 0.4 to 0.6
+        const color = new THREE.Color().setHSL(hue, saturation, lightness);
+
+        const material = new THREE.MeshStandardMaterial({
+            color: color,
+            roughness: 0.7,
+            metalness: 0.2,
         });
 
         const mesh = new THREE.Mesh(geometry, material);
