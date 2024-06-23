@@ -7,8 +7,8 @@ const STLViewer = ({ fileContent }) => {
     const mountRef = useRef(null);
 
     useEffect(() => {
-        const width = mountRef.current.clientWidth;
-        const height = mountRef.current.clientHeight;
+        const width = Math.min(400, window.innerWidth - 80); // Adjust for mobile
+        const height = 300;
 
         // Scene setup
         const scene = new THREE.Scene();
@@ -16,7 +16,6 @@ const STLViewer = ({ fileContent }) => {
         const renderer = new THREE.WebGLRenderer({ antialias: true });
 
         renderer.setSize(width, height);
-        // renderer.outputEncoding = THREE.sRGBEncoding;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1.0;
         mountRef.current.appendChild(renderer.domElement);
@@ -76,7 +75,6 @@ const STLViewer = ({ fileContent }) => {
 
         // Load the model
         const loader = new STLLoader();
-
         const geometry = loader.parse(fileContent);
 
         const material = new THREE.MeshStandardMaterial({
@@ -101,7 +99,7 @@ const STLViewer = ({ fileContent }) => {
         const maxDim = Math.max(size.x, size.y, size.z);
         const fov = camera.fov * (Math.PI / 180);
         let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
-        cameraZ *= 1.5; // Zoom out a bit
+        cameraZ *= 1.1; // Zoom in a bit more
         camera.position.set(cameraZ, cameraZ, cameraZ);
         camera.lookAt(0, 0, 0);
 
@@ -111,6 +109,7 @@ const STLViewer = ({ fileContent }) => {
         camera.updateProjectionMatrix();
 
         // Update controls
+
         controls.maxDistance = cameraZ * 2;
         controls.target.set(0, 0, 0);
         controls.update();
@@ -125,8 +124,8 @@ const STLViewer = ({ fileContent }) => {
 
         // Handle window resizing
         const handleResize = () => {
-            const width = mountRef.current.clientWidth;
-            const height = mountRef.current.clientHeight;
+            const width = Math.min(400, window.innerWidth - 40);
+            const height = 300;
             camera.aspect = width / height;
             camera.updateProjectionMatrix();
             renderer.setSize(width, height);
@@ -136,10 +135,11 @@ const STLViewer = ({ fileContent }) => {
 
         return () => {
             window.removeEventListener("resize", handleResize);
+            mountRef.current.removeChild(renderer.domElement);
         };
     }, [fileContent]);
 
-    return <div ref={mountRef} style={{ width: "600px", height: "400px" }} />;
+    return <div ref={mountRef} />;
 };
 
 export default STLViewer;
