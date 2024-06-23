@@ -1049,11 +1049,20 @@ app.get("/sitemap.xml", async (req, res) => {
 // Get all artifacts
 app.get("/artifacts", verifyToken, async (req, res) => {
     try {
-        if (!req.user.admin) {
-            return res.status(401).json({ error: "This is an admin-only route" });
-        }
-        const artifacts = await Artifact.find().populate("user", "email");
-        res.json(artifacts);
+        const artifacts = await Artifact.find();
+        const userIds = [...new Set(artifacts.map((artifact) => artifact.user))];
+        const users = await User.find({ _id: { $in: userIds } }, { email: 1 });
+        const userEmailMap = users.reduce((acc, user) => {
+            acc[user._id.toString()] = user.email;
+            return acc;
+        }, {});
+
+        const artifactsWithEmail = artifacts.map((artifact) => ({
+            ...artifact._doc,
+            userEmail: userEmailMap[artifact.user.toString()] || "N/A",
+        }));
+
+        res.json(artifactsWithEmail);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Server error" });

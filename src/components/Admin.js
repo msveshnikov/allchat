@@ -28,8 +28,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Pagination } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { API_URL } from "./Main";
 import Face2Icon from "@mui/icons-material/Face2";
+import LaunchIcon from '@mui/icons-material/Launch';
+import { API_URL } from "./Main";
 
 const StyledCard = styled(Card)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -91,6 +92,11 @@ const Admin = () => {
     const handleCloseArtifactDialog = () => {
         setOpenArtifactDialog(false);
         setSelectedArtifact(null);
+    };
+
+    const handleOpenArtifact = (artifact) => {
+        localStorage.setItem("currentArtifact", JSON.stringify(artifact));
+        window.open("/artifact", "_blank");
     };
 
     const generateAvatar = async (id, instructions) => {
@@ -607,11 +613,14 @@ const Admin = () => {
                                 <TableRow key={artifact._id}>
                                     <TableCell>{artifact.name}</TableCell>
                                     <TableCell>{artifact.type}</TableCell>
-                                    <TableCell>{artifact.user?.email}</TableCell>
+                                    <TableCell>{artifact.userEmail}</TableCell>
                                     <TableCell>{new Date(artifact.createdAt).toLocaleString()}</TableCell>
                                     <TableCell>
                                         <IconButton onClick={() => handleViewArtifact(artifact)} color="primary">
                                             <VisibilityIcon />
+                                        </IconButton>
+                                        <IconButton onClick={() => handleOpenArtifact(artifact)} color="secondary">
+                                            <LaunchIcon />
                                         </IconButton>
                                         <IconButton onClick={() => handleDeleteArtifact(artifact._id)} color="error">
                                             <DeleteIcon />
