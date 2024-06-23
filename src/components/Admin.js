@@ -10,11 +10,24 @@ import {
     FormControlLabel,
     CircularProgress,
     Link,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    IconButton,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
 } from "@mui/material";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Pagination } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { API_URL } from "./Main";
 import Face2Icon from "@mui/icons-material/Face2";
 
@@ -35,6 +48,50 @@ const Admin = () => {
     const [itemsPerPage] = useState(10);
     const [loading, setLoading] = useState(false);
     const [loadingGptId, setLoadingGptId] = useState(null);
+    const [artifacts, setArtifacts] = useState([]);
+    const [selectedArtifact, setSelectedArtifact] = useState(null);
+    const [openArtifactDialog, setOpenArtifactDialog] = useState(false);
+
+    useEffect(() => {
+        const fetchArtifacts = async () => {
+            const token = localStorage.getItem("token");
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            };
+            const response = await fetch(`${API_URL}/artifacts`, {
+                headers,
+            });
+            const data = await response.json();
+            setArtifacts(data);
+        };
+        fetchArtifacts();
+    }, []);
+
+    const handleDeleteArtifact = async (id) => {
+        const token = localStorage.getItem("token");
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+        const response = await fetch(`${API_URL}/artifacts/${id}`, {
+            method: "DELETE",
+            headers,
+        });
+        if (response.ok) {
+            setArtifacts(artifacts.filter((artifact) => artifact._id !== id));
+        }
+    };
+
+    const handleViewArtifact = (artifact) => {
+        setSelectedArtifact(artifact);
+        setOpenArtifactDialog(true);
+    };
+
+    const handleCloseArtifactDialog = () => {
+        setOpenArtifactDialog(false);
+        setSelectedArtifact(null);
+    };
 
     const generateAvatar = async (id, instructions) => {
         setLoading(true);
@@ -519,10 +576,7 @@ const Admin = () => {
                                     <TableCell>{chat.customGPT}</TableCell>
                                     <TableCell>{new Date(chat.createdAt).toLocaleString()}</TableCell>
                                     <TableCell>
-                                        <IconButton
-                                            onClick={() => handleDeleteChat(chat._id)}
-                                            color="error"
-                                        >
+                                        <IconButton onClick={() => handleDeleteChat(chat._id)} color="error">
                                             <DeleteIcon />
                                         </IconButton>
                                     </TableCell>
@@ -532,6 +586,63 @@ const Admin = () => {
                     </Table>
                 </TableContainer>
             </Box>
+
+            <Box padding={4}>
+                <Typography variant="h4" gutterBottom align="center" color="primary">
+                    Artifacts Admin
+                </Typography>
+                <TableContainer component={Paper} elevation={3}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Name</TableCell>
+                                <TableCell>Type</TableCell>
+                                <TableCell>User Email</TableCell>
+                                <TableCell>Created At</TableCell>
+                                <TableCell>Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {artifacts.map((artifact) => (
+                                <TableRow key={artifact._id}>
+                                    <TableCell>{artifact.name}</TableCell>
+                                    <TableCell>{artifact.type}</TableCell>
+                                    <TableCell>{artifact.user?.email}</TableCell>
+                                    <TableCell>{new Date(artifact.createdAt).toLocaleString()}</TableCell>
+                                    <TableCell>
+                                        <IconButton onClick={() => handleViewArtifact(artifact)} color="primary">
+                                            <VisibilityIcon />
+                                        </IconButton>
+                                        <IconButton onClick={() => handleDeleteArtifact(artifact._id)} color="error">
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Box>
+
+            <Dialog open={openArtifactDialog} onClose={handleCloseArtifactDialog} maxWidth="md" fullWidth>
+                <DialogTitle>{selectedArtifact?.name}</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body2" color="textSecondary" gutterBottom>
+                        Type: {selectedArtifact?.type}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" gutterBottom>
+                        Created: {selectedArtifact && new Date(selectedArtifact.createdAt).toLocaleString()}
+                    </Typography>
+                    <Typography variant="body1" style={{ whiteSpace: "pre-wrap" }}>
+                        {selectedArtifact?.content}
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseArtifactDialog} color="primary">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 };

@@ -999,6 +999,7 @@ app.delete("/sharedChats/:id", verifyToken, async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 app.get("/sitemap.xml", async (req, res) => {
     try {
         const smStream = new SitemapStream({
@@ -1042,6 +1043,37 @@ app.get("/sitemap.xml", async (req, res) => {
     } catch (err) {
         console.error("Error generating sitemap.xml:", err);
         res.status(500).json({ error: err.message });
+    }
+});
+
+// Get all artifacts
+app.get("/artifacts", verifyToken, async (req, res) => {
+    try {
+        if (!req.user.admin) {
+            return res.status(401).json({ error: "This is an admin-only route" });
+        }
+        const artifacts = await Artifact.find().populate("user", "email");
+        res.json(artifacts);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// Delete an artifact
+app.delete("/artifacts/:id", verifyToken, async (req, res) => {
+    try {
+        if (!req.user.admin) {
+            return res.status(401).json({ error: "This is an admin-only route" });
+        }
+        const artifact = await Artifact.findByIdAndDelete(req.params.id);
+        if (!artifact) {
+            return res.status(404).json({ error: "Artifact not found" });
+        }
+        res.json({ message: "Artifact deleted successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Server error" });
     }
 });
 
