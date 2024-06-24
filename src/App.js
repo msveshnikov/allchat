@@ -60,6 +60,14 @@ const App = () => {
                                     </Suspense>
                                 }
                             />
+                            <Route
+                                path="/artifact/:id"
+                                element={
+                                    <Suspense fallback={<div>Loading...</div>}>
+                                        <Artifact />
+                                    </Suspense>
+                                }
+                            />
                         </Routes>
                     </Router>
                 </I18nextProvider>

@@ -1051,6 +1051,9 @@ app.get("/sitemap.xml", async (req, res) => {
 // Get all artifacts
 app.get("/artifacts", verifyToken, async (req, res) => {
     try {
+        if (!req.user.admin) {
+            return res.status(401).json({ error: "This is an admin-only route" });
+        }
         const artifacts = await Artifact.find();
         const userIds = [...new Set(artifacts.map((artifact) => artifact.user))];
         const users = await User.find({ _id: { $in: userIds } }, { email: 1 });
@@ -1065,6 +1068,21 @@ app.get("/artifacts", verifyToken, async (req, res) => {
         }));
 
         res.json(artifactsWithEmail);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// Get a specific artifact by ID
+app.get("/artifacts/:id", async (req, res) => {
+    try {
+        const artifact = await Artifact.findById(req.params.id);
+        if (!artifact) {
+            return res.status(404).json({ error: "Artifact not found" });
+        }
+
+        res.json(artifact);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Server error" });

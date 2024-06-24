@@ -29,7 +29,7 @@ import { Pagination } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Face2Icon from "@mui/icons-material/Face2";
-import LaunchIcon from '@mui/icons-material/Launch';
+import LaunchIcon from "@mui/icons-material/Launch";
 import { API_URL } from "./Main";
 
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -601,6 +601,7 @@ const Admin = () => {
                     <Table>
                         <TableHead>
                             <TableRow>
+                                <TableCell>Artifact ID</TableCell>
                                 <TableCell>Name</TableCell>
                                 <TableCell>Type</TableCell>
                                 <TableCell>User Email</TableCell>
@@ -611,6 +612,15 @@ const Admin = () => {
                         <TableBody>
                             {artifacts.map((artifact) => (
                                 <TableRow key={artifact._id}>
+                                    <TableCell>
+                                        <Link
+                                            href={`/artifact/${artifact._id}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            {artifact._id}
+                                        </Link>
+                                    </TableCell>
                                     <TableCell>{artifact.name}</TableCell>
                                     <TableCell>{artifact.type}</TableCell>
                                     <TableCell>{artifact.userEmail}</TableCell>

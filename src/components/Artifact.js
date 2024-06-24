@@ -1,96 +1,50 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Paper, ToggleButton, ToggleButtonGroup } from "@mui/material";
-import ReactMarkdown from "react-markdown";
-import { CodeBlock } from "./CodeBlock";
-import { OpenScad } from "./OpenScad";
-import { MermaidChart } from "./MermaidChart";
-
-const ArtifactViewer = ({ type, content, modelName }) => {
-    const [htmlView, setHtmlView] = useState("preview");
-
-    const handleHtmlViewChange = (event, value) => {
-        if (value !== null) {
-            setHtmlView(value);
-        }
-    };
-
-    switch (type) {
-        case "html":
-            return (
-                <Box width="100%">
-                    <ToggleButtonGroup
-                        value={htmlView}
-                        exclusive
-                        onChange={handleHtmlViewChange}
-                        aria-label="HTML view"
-                        size="small"
-                        sx={{ mb: 2, mt: -3 }}
-                    >
-                        <ToggleButton value="preview" aria-label="preview">
-                            Preview
-                        </ToggleButton>
-                        <ToggleButton value="code" aria-label="code">
-                            Code
-                        </ToggleButton>
-                    </ToggleButtonGroup>
-                    {htmlView === "preview" ? (
-                        <Box width="100%" height="600px">
-                            <iframe
-                                srcDoc={content}
-                                style={{ width: "100%", height: "100%", border: "none" }}
-                                title="HTML Artifact"
-                            />
-                        </Box>
-                    ) : (
-                        <Box width="100%" overflow="auto">
-                            <CodeBlock language="html" value={content} />
-                        </Box>
-                    )}
-                </Box>
-            );
-        case "mermaid":
-            const mermaidContent =
-                content.startsWith("```mermaid") && content.endsWith("```") ? content.slice(10, -3).trim() : content;
-            return (
-                <Box width="100%">
-                    <MermaidChart chart={mermaidContent} />
-                </Box>
-            );
-        case "code":
-            return (
-                <Box width="100%" overflow="auto">
-                    <CodeBlock language={detectLanguage(content)} value={content} />
-                </Box>
-            );
-        case "openscad":
-            return <OpenScad content={content} modelName={modelName} />;
-        case "text":
-        case "other":
-        default:
-            return (
-                <Box width="100%" overflow="auto">
-                    <ReactMarkdown>{content}</ReactMarkdown>
-                </Box>
-            );
-    }
-};
-
-const detectLanguage = (code) => {
-    if (code.includes("def ") || code.includes("import ")) return "python";
-    if (code.includes("function ") || code.includes("const ")) return "js";
-    if (code.includes("public class ") || code.includes("System.out.println")) return "java";
-    return "python";
-};
+import { useParams } from "react-router-dom";
+import { Box, Typography, Paper } from "@mui/material";
+import { ArtifactViewer } from "./ArtifactViewer";
+import { API_URL } from "./Main";
 
 const Artifact = () => {
     const [artifact, setArtifact] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const { id } = useParams();
 
     useEffect(() => {
-        const storedArtifact = localStorage.getItem("currentArtifact");
-        if (storedArtifact) {
-            setArtifact(JSON.parse(storedArtifact));
-        }
-    }, []);
+        const fetchArtifact = async () => {
+            try {
+                if (id) {
+                    const response = await fetch(API_URL + `/artifacts/${id}`);
+                    if (!response.ok) {
+                        throw new Error("Failed to load artifact");
+                    }
+                    const data = await response.json();
+                    setArtifact(data);
+                } else {
+                    const storedArtifact = localStorage.getItem("currentArtifact");
+                    if (storedArtifact) {
+                        setArtifact(JSON.parse(storedArtifact));
+                    } else {
+                        throw new Error("No artifact found in local storage");
+                    }
+                }
+                setLoading(false);
+            } catch (err) {
+                setError(err.message);
+                setLoading(false);
+            }
+        };
+
+        fetchArtifact();
+    }, [id]);
+
+    if (loading) {
+        return <Typography>Loading...</Typography>;
+    }
+
+    if (error) {
+        return <Typography color="error">{error}</Typography>;
+    }
 
     if (!artifact) {
         return <Typography>No artifact found.</Typography>;
