@@ -237,9 +237,9 @@ app.post("/interact", verifyToken, async (req, res) => {
         }
 
         const recentArtifacts = await Artifact.find({ user: req.user.id }).sort({ updatedAt: -1 }).limit(1);
-        const artifactsContext = recentArtifacts
-            .map((artifact) => `Artifact "${artifact.name}": ${artifact.content}`)
-            .join("\n\n");
+        const artifactsContext = tools
+            ? recentArtifacts.map((artifact) => `Artifact "${artifact.name}": ${artifact.content}`).join("\n\n")
+            : "";
 
         const contextPrompt = model?.startsWith("ft")
             ? `System: ${instructions} ${chatHistory
