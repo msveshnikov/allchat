@@ -13,6 +13,6 @@ const artifactSchema = new mongoose.Schema({
     updatedAt: { type: Date, default: Date.now },
 });
 
-artifactSchema.index({ userId: 1, name: 1 }, { unique: true });
+artifactSchema.index({ userId: 1, name: 1 }, { unique: false });
 
 export const Artifact = mongoose.model('Artifact', artifactSchema);
