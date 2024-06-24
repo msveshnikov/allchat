@@ -18,9 +18,11 @@ const ArtifactViewer = ({ type, content, modelName }) => {
                 </Box>
             );
         case "mermaid":
+            const mermaidContent =
+                content.startsWith("```mermaid") && content.endsWith("```") ? content.slice(10, -3).trim() : content;
             return (
                 <Box width="100%">
-                    <MermaidChart chart={content} />
+                    <MermaidChart chart={mermaidContent} />
                 </Box>
             );
         case "code":
