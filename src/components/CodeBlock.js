@@ -3,7 +3,7 @@ import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import style from "react-syntax-highlighter/dist/esm/styles/hljs/monokai";
 import { IconButton, Tooltip } from "@mui/material";
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow"; 
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import js from "react-syntax-highlighter/dist/esm/languages/hljs/javascript";
 import java from "react-syntax-highlighter/dist/esm/languages/hljs/java";
 import python from "react-syntax-highlighter/dist/esm/languages/hljs/python";
@@ -41,22 +41,24 @@ export const CodeBlock = ({ language, value, onRun }) => {
                     <FileCopyOutlinedIcon fontSize="small" />
                 </IconButton>
             </Tooltip>
-            <Tooltip title="Run" placement="top">
-                <IconButton
-                    aria-label="Run code"
-                    onClick={() => onRun(language, value)}
-                    style={{
-                        position: "absolute",
-                        top: -5,
-                        right: 8,
-                        zIndex: 1,
-                        color: "green",
-                    }}
-                    size="small"
-                >
-                    <PlayArrowIcon fontSize="small" />
-                </IconButton>
-            </Tooltip>
+            {onRun && (
+                <Tooltip title="Run" placement="top">
+                    <IconButton
+                        aria-label="Run code"
+                        onClick={() => onRun(language, value)}
+                        style={{
+                            position: "absolute",
+                            top: -5,
+                            right: 8,
+                            zIndex: 1,
+                            color: "green",
+                        }}
+                        size="small"
+                    >
+                        <PlayArrowIcon fontSize="small" />
+                    </IconButton>
+                </Tooltip>
+            )}
             <SyntaxHighlighter
                 language={language}
                 style={style}

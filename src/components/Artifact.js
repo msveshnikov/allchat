@@ -5,11 +5,7 @@ import { CodeBlock } from "./CodeBlock";
 import { OpenScad } from "./OpenScad";
 import { MermaidChart } from "./MermaidChart";
 
-const ArtifactViewer = ({ type, content }) => {
-    const handleRunCode = (language, code) => {
-        // Implement the code execution logic here
-    };
-
+const ArtifactViewer = ({ type, content, modelName }) => {
     switch (type) {
         case "html":
             return (
@@ -30,11 +26,11 @@ const ArtifactViewer = ({ type, content }) => {
         case "code":
             return (
                 <Box width="100%" overflow="auto">
-                    <CodeBlock language={detectLanguage(content)} value={content} onRun={handleRunCode} />
+                    <CodeBlock language={detectLanguage(content)} value={content} />
                 </Box>
             );
         case "openscad":
-            return <OpenScad content={content} />;
+            return <OpenScad content={content} modelName={modelName} />;
         case "text":
         case "other":
         default:
@@ -85,7 +81,7 @@ const Artifact = () => {
                     </Typography>
                 </Box>
                 <Box p={2}>
-                    <ArtifactViewer type={artifact.type} content={artifact.content} />
+                    <ArtifactViewer type={artifact.type} content={artifact.content} modelName={artifact.name} />
                 </Box>
             </Paper>
         </Box>
