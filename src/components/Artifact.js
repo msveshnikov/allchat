@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "./CodeBlock";
-import { OpenSCADViewer } from "./OpenSCADViewer";
+import { OpenScad } from "./OpenScad";
 import { MermaidChart } from "./MermaidChart";
 
 const ArtifactViewer = ({ type, content }) => {
@@ -34,7 +34,7 @@ const ArtifactViewer = ({ type, content }) => {
                 </Box>
             );
         case "openscad":
-            return <OpenSCADViewer content={content} />;
+            return <OpenScad content={content} />;
         case "text":
         case "other":
         default:

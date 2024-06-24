@@ -4,7 +4,7 @@ import { CodeBlock } from "./CodeBlock";
 import STLViewer from "./STLViewer";
 import { API_URL } from "./Main";
 
-export const OpenSCADViewer = ({ content }) => {
+export const OpenScad = ({ content, modelName = "model" }) => {
     const [stlContent, setStlContent] = useState(null);
     const [error, setError] = useState(null);
     const [isConverted, setIsConverted] = useState(false);
@@ -36,6 +36,18 @@ export const OpenSCADViewer = ({ content }) => {
         }
     };
 
+    const handleDownload = () => {
+        const blob = new Blob([stlContent], { type: 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${modelName}.stl`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
     return (
         <Box>
             {!isConverted && (
@@ -51,7 +63,14 @@ export const OpenSCADViewer = ({ content }) => {
                 </Button>
             )}
             {error && <Typography color="error">{error}</Typography>}
-            {stlContent && <STLViewer fileContent={stlContent} />}
+            {stlContent && (
+                <>
+                    <STLViewer fileContent={stlContent} />
+                    <Button onClick={handleDownload} variant="contained" color="secondary" style={{ marginTop: 10 }}>
+                        Download STL
+                    </Button>
+                </>
+            )}
             <CodeBlock language="openscad" value={content} />
         </Box>
     );
