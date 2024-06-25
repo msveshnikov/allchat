@@ -117,7 +117,12 @@ export const ArtifactViewer = ({ type, content, name }) => {
             <div>
                 <h4>Execution Result:</h4>
                 <pre>{executionResult.output}</pre>
-                {executionResult.image && <img src={executionResult.image} alt="Execution result" />}
+                {executionResult.image.length > 0 && (
+                    <img
+                        src={`data:image/png;base64,${executionResult.image[0].toString("base64")}`}
+                        alt="Execution result"
+                    />
+                )}
             </div>
         );
     };
