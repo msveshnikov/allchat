@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
 use("allchat");
-db.getCollection("users").updateOne({ email: "msveshnikov@gmail.com" }, { $set: { admin: true } });
+db.getCollection("artifacts").updateOne({ _id: ObjectId("667a616d2dd6e3de331498ad") }, { $set: { type: "react" } });
 db.getCollection("users").updateOne({ email: "4@gmail.com" }, { $set: { subscriptionStatus: "active" } });
 db.getCollection("users").deleteOne({ email: "michaelbramble22003@gmail.com" });
 db.getCollection("users").deleteOne({ email: "michaelbramble22003@outlook.com" });

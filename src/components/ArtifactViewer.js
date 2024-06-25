@@ -13,34 +13,38 @@ export const detectLanguage = (code) => {
 };
 
 export const ArtifactViewer = ({ type, content, name }) => {
-    const [htmlView, setHtmlView] = useState("preview");
+    const [view, setView] = useState("preview");
 
-    const handleHtmlViewChange = (event, value) => {
+    const handleViewChange = (event, value) => {
         if (value !== null) {
-            setHtmlView(value);
+            setView(value);
         }
     };
+
+    const ViewToggle = () => (
+        <ToggleButtonGroup
+            value={view}
+            exclusive
+            onChange={handleViewChange}
+            aria-label="view"
+            size="small"
+            sx={{ mb: 2, mt: -3 }}
+        >
+            <ToggleButton value="preview" aria-label="preview">
+                Preview
+            </ToggleButton>
+            <ToggleButton value="code" aria-label="code">
+                Code
+            </ToggleButton>
+        </ToggleButtonGroup>
+    );
 
     switch (type) {
         case "html":
             return (
                 <Box width="100%">
-                    <ToggleButtonGroup
-                        value={htmlView}
-                        exclusive
-                        onChange={handleHtmlViewChange}
-                        aria-label="HTML view"
-                        size="small"
-                        sx={{ mb: 2, mt: -3 }}
-                    >
-                        <ToggleButton value="preview" aria-label="preview">
-                            Preview
-                        </ToggleButton>
-                        <ToggleButton value="code" aria-label="code">
-                            Code
-                        </ToggleButton>
-                    </ToggleButtonGroup>
-                    {htmlView === "preview" ? (
+                    <ViewToggle />
+                    {view === "preview" ? (
                         <Box width="100%" height="600px">
                             <iframe
                                 srcDoc={content}
@@ -51,6 +55,30 @@ export const ArtifactViewer = ({ type, content, name }) => {
                     ) : (
                         <Box width="100%" overflow="auto">
                             <CodeBlock language="html" value={content} />
+                        </Box>
+                    )}
+                </Box>
+            );
+        case "react":
+            return (
+                <Box width="100%">
+                    <ViewToggle />
+                    {view === "preview" ? (
+                        <Box width="100%">
+                            {(() => {
+                                try {
+                                    const Component = eval(`(${content})`);
+                                    return <Component />;
+                                } catch (error) {
+                                    return (
+                                        <p style={{ color: "red" }}>Error rendering React component: {error.message}</p>
+                                    );
+                                }
+                            })()}
+                        </Box>
+                    ) : (
+                        <Box width="100%" overflow="auto">
+                            <CodeBlock language="jsx" value={content} />
                         </Box>
                     )}
                 </Box>
