@@ -7,7 +7,7 @@ const artifactSchema = new mongoose.Schema({
     type: { 
         type: String, 
         required: true,
-        enum: ['html', 'mermaid', 'code', 'text', 'other', 'openscad', 'react']
+        enum: ['html', 'mermaid', 'code', 'text', 'other', 'openscad', 'react', "svg", "python"]
     },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },

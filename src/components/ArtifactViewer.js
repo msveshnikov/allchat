@@ -1,11 +1,12 @@
 /* eslint-disable no-new-func */
 import React, { useState, useEffect, useContext } from "react";
-import { Box, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import { Box, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "./CodeBlock";
 import { OpenScad } from "./OpenScad";
 import { MermaidChart } from "./MermaidChart";
 import * as Babel from "@babel/standalone";
+import { API_URL } from "./Main";
 
 export const detectLanguage = (code) => {
     if (code.includes("def ") || code.includes("import ")) return "python";
@@ -16,6 +17,7 @@ export const detectLanguage = (code) => {
 
 export const ArtifactViewer = ({ type, content, name }) => {
     const [view, setView] = useState("preview");
+    const [executionResult, setExecutionResult] = useState(null);
 
     const handleViewChange = (event, value) => {
         if (value !== null) {
@@ -43,21 +45,15 @@ export const ArtifactViewer = ({ type, content, name }) => {
 
     const renderReactComponent = (code) => {
         try {
-            // Remove import and export statements
             const codeWithoutImportExport = code
                 .replace(/import\s+.*?from\s+['"].*?['"];?/g, "")
                 .replace(/export\s+default\s+.*?;?/g, "");
-
-            // Extract the component name
             const componentNameMatch = codeWithoutImportExport.match(/(?:function|class|const)\s+(\w+)/);
             const componentName = componentNameMatch ? componentNameMatch[1] : "Component";
-
-            // Transform JSX to JavaScript
             const transformedCode = Babel.transform(codeWithoutImportExport, {
                 presets: ["react"],
             }).code;
 
-            // Create a new function from the transformed code
             const ComponentFunction = new Function(
                 "React",
                 "useState",
@@ -68,19 +64,67 @@ export const ArtifactViewer = ({ type, content, name }) => {
                 return ${componentName};
             `
             );
-
-            // Execute the function to get the component
             const DynamicComponent = ComponentFunction(React, useState, useEffect, useContext);
-
-            // Render the component
             return React.createElement(DynamicComponent);
         } catch (error) {
             return <p style={{ color: "red" }}>Error rendering React component: {error.message}</p>;
         }
     };
 
+    const handleRun = async (language, program) => {
+        if (language !== "python") {
+            return;
+        }
+        try {
+            const token = localStorage.getItem("token");
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            };
+
+            setExecutionResult({ loading: true });
+
+            const response = await fetch(API_URL + "/run", {
+                method: "POST",
+                headers,
+                body: JSON.stringify({ program }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                setExecutionResult({
+                    output: data.output,
+                    image: data.imageResponse,
+                });
+            } else {
+                setExecutionResult({
+                    error: data.error,
+                });
+            }
+        } catch (error) {
+            setExecutionResult({
+                error: "Failed to connect to the server or server timeout",
+            });
+        }
+    };
+
+    const renderExecutionResult = () => {
+        if (!executionResult) return null;
+        if (executionResult.loading) return <Typography>Running code...</Typography>;
+        if (executionResult.error)
+            return <Typography style={{ color: "red" }}>Error: {executionResult.error}</Typography>;
+        return (
+            <div>
+                <h4>Execution Result:</h4>
+                <pre>{executionResult.output}</pre>
+                {executionResult.image && <img src={executionResult.image} alt="Execution result" />}
+            </div>
+        );
+    };
+
     switch (type) {
         case "html":
+        case "svg":
             return (
                 <Box width="100%">
                     <ViewToggle />
@@ -121,9 +165,11 @@ export const ArtifactViewer = ({ type, content, name }) => {
                 </Box>
             );
         case "code":
+        case "python":
             return (
                 <Box width="100%" overflow="auto">
-                    <CodeBlock language={detectLanguage(content)} value={content} />
+                    <CodeBlock language={detectLanguage(content)} value={content} onRun={handleRun} />
+                    {renderExecutionResult()}
                 </Box>
             );
         case "openscad":

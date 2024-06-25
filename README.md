@@ -235,59 +235,6 @@ graph LR
    class Backend,Frontend,PythonShell,MongoDB,Prometheus,NodeExporter,Grafana,Loki serviceName;
 ```
 
-```mermaid
-classDiagram
-    Animal <|-- Mammal
-    Animal <|-- Bird
-    Animal <|-- Fish
-    Animal <|-- Reptile
-    Animal <|-- Amphibian
-    Animal <|-- Invertebrate
-
-    class Animal {
-        -name: string
-        -kingdom: string
-        +eat()
-        +move()
-        +breathe()
-        +reproduce()
-    }
-
-    class Mammal {
-        -warmBlooded: boolean
-        -hasFur: boolean
-        -feedYoungWithMilk: boolean
-    }
-
-    class Bird {
-        -feathers: boolean
-        -layEggs: boolean
-        -fly: boolean
-    }
-
-    class Fish {
-        -gills: boolean
-        -liveInWater: boolean
-        -coldblooded: boolean
-    }
-
-    class Reptile {
-        -scatyLimbs: boolean
-        -coldblooded: boolean
-        -laysEggs: boolean
-    }
-
-    class Amphibian {
-        -liveBothInWaterAndLand: boolean
-        -coldblooded: boolean
-        -laysEggs: boolean
-    }
-
-    class Invertebrate {
-        -noBackbone: boolean
-    }
-```
-
 [![Stargazers repo roster for @msveshnikov/allchat](https://reporoster.com/stars/msveshnikov/allchat)](https://github.com/msveshnikov/allchat/stargazers)
 
 [![Forkers repo roster for @msveshnikov/allchat](https://reporoster.com/forks/msveshnikov/allchat)](https://github.com/msveshnikov/allchat/network/members)
@@ -301,5 +248,6 @@ classDiagram
 [x] Coins and Achievments
 [x] Artifacts
 [x] Sonnet 3.5
+
 [x] OpenSCAD models
 [x] React type artifacts
