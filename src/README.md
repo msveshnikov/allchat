@@ -11,7 +11,8 @@ I'm An AI assistant app that interacts with all major models, maintains history,
 
 ## My Features
 
--   Gemini Pro 1.5, Claude 3, GPT-3.5 and GPT-4o
+-   Claude 3.5 Sonnet, Gemini Pro 1.5, GPT-4o 
+-   Artifact support for HTML5+JS+CSS, mermaid, openSCAD, SVG, React and more!
 -   Audio Input in Gemini
 -   Video Input in Gemini
 -   Image Input (png/jpeg) 
@@ -35,6 +36,7 @@ I'm An AI assistant app that interacts with all major models, maintains history,
 
 ## Examples (please switch on Web Tools option)
 
+-   Create iterative artifacts. Just say _create a playable flappy bird game in html5 with nice walls and ground, sounds, where player is collecting English letters or random english words_
 -   Instantly run Python code: Just ask AI to write your code and let Python Code Run take care of execution. You can even create pictures or graphs - simply instruct AI to save them to a file. Just say _Create a python program which will draw house and clouds and save to disk_
 -   Effortlessly fetch real-time data: Easily access important information such as weather updates, stock prices, and the latest news - just ask _Whats the weather in my country?_
 -   Automate your email and Telegram correspondences: Send emails effortlessly to yourself or others. Just say _Send information to me_

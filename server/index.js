@@ -1009,7 +1009,6 @@ app.get("/sitemap.xml", async (req, res) => {
             cacheTime: 600000, // 600 sec (10 min) cache period
         });
 
-        // Add static pages with additional parameters
         const staticPages = [
             { url: "/", changefreq: "daily", priority: 1.0 },
             { url: "/custom", changefreq: "weekly", priority: 0.9 },
@@ -1024,9 +1023,7 @@ app.get("/sitemap.xml", async (req, res) => {
             smStream.write(page);
         });
 
-        // Add dynamic shared chat pages
         const sharedChats = await SharedChat.find({}, { _id: 1 });
-
         sharedChats.forEach((chat) => {
             smStream.write({
                 url: `/chat/${chat._id}`,
@@ -1036,7 +1033,6 @@ app.get("/sitemap.xml", async (req, res) => {
         });
 
         smStream.end();
-
         const smStreamPromise = streamToPromise(smStream);
         smStreamPromise.then((smContent) => {
             res.setHeader("Content-Type", "application/xml");
@@ -1048,7 +1044,6 @@ app.get("/sitemap.xml", async (req, res) => {
     }
 });
 
-// Get all artifacts
 app.get("/artifacts", verifyToken, async (req, res) => {
     try {
         if (!req.user.admin) {
@@ -1074,7 +1069,6 @@ app.get("/artifacts", verifyToken, async (req, res) => {
     }
 });
 
-// Get a specific artifact by ID
 app.get("/artifacts/:id", async (req, res) => {
     try {
         const artifact = await Artifact.findById(req.params.id);
@@ -1089,7 +1083,6 @@ app.get("/artifacts/:id", async (req, res) => {
     }
 });
 
-// Delete an artifact
 app.delete("/artifacts/:id", verifyToken, async (req, res) => {
     try {
         if (!req.user.admin) {
@@ -1109,39 +1102,23 @@ app.delete("/artifacts/:id", verifyToken, async (req, res) => {
 app.post("/convert-to-stl", async (req, res) => {
     try {
         const { inputScad } = req.body;
-
         if (!inputScad) {
             return res.status(400).json({ error: "Missing inputScad in request body" });
         }
-
-        // Generate unique temporary file names
         const tempId = crypto.randomBytes(16).toString("hex");
         const inputFile = `input_${tempId}.scad`;
         const outputFile = `output_${tempId}.stl`;
-
-        // Write the SCAD content to a temporary file
         fs.writeFileSync(inputFile, inputScad);
-
-        // Command to run OpenSCAD in WSL
         const command =
             (process.env.NODE_ENV === "production" ? "" : "wsl ") + `openscad -o ${outputFile} ${inputFile}`;
-
-        // Execute the command
         const { stdout, stderr } = await execAsync(command);
-
         if (stderr) {
             console.error(`stderr: ${stderr}`);
         }
         console.log(`stdout: ${stdout}`);
-
-        // Read the converted STL file
         const stlContent = fs.readFileSync(outputFile, "utf8");
-
-        // Clean up temporary files
         fs.unlinkSync(inputFile);
         fs.unlinkSync(outputFile);
-
-        // Send the converted file content in the response
         res.json({ stlContent });
     } catch (error) {
         console.error(`error`, error);
