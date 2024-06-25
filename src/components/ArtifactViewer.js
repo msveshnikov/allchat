@@ -1,5 +1,5 @@
 /* eslint-disable no-new-func */
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Box, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "./CodeBlock";
@@ -61,14 +61,16 @@ export const ArtifactViewer = ({ type, content, name }) => {
             const ComponentFunction = new Function(
                 "React",
                 "useState",
+                "useEffect",
+                "useContext",
                 `
-            ${transformedCode}
-            return ${componentName};
-        `
+                ${transformedCode}
+                return ${componentName};
+            `
             );
 
             // Execute the function to get the component
-            const DynamicComponent = ComponentFunction(React, useState);
+            const DynamicComponent = ComponentFunction(React, useState, useEffect, useContext);
 
             // Render the component
             return React.createElement(DynamicComponent);
