@@ -7,6 +7,7 @@ import { OpenScad } from "./OpenScad";
 import { MermaidChart } from "./MermaidChart";
 import * as Babel from "@babel/standalone";
 import { API_URL } from "./Main";
+import { animateScroll as scroll } from "react-scroll";
 
 export const detectLanguage = (code) => {
     if (code.includes("def ") || code.includes("import ")) return "python";
@@ -95,6 +96,11 @@ export const ArtifactViewer = ({ type, content, name }) => {
                 setExecutionResult({
                     output: data.output,
                     image: data.imageResponse,
+                });
+                scroll.scrollToBottom({
+                    containerId: "artifact",
+                    duration: 500,
+                    smooth: true,
                 });
             } else {
                 setExecutionResult({

@@ -51,7 +51,7 @@ const Artifact = () => {
     }
 
     return (
-        <Box p={3}>
+        <Box id="artifact" p={3}>
             <Paper elevation={3}>
                 <Box p={2}>
                     <Typography variant="h4" gutterBottom>
