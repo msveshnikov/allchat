@@ -12,7 +12,7 @@ export const detectLanguage = (code) => {
     return "python";
 };
 
-export const ArtifactViewer = ({ type, content, modelName }) => {
+export const ArtifactViewer = ({ type, content, name }) => {
     const [htmlView, setHtmlView] = useState("preview");
 
     const handleHtmlViewChange = (event, value) => {
@@ -70,7 +70,7 @@ export const ArtifactViewer = ({ type, content, modelName }) => {
                 </Box>
             );
         case "openscad":
-            return <OpenScad content={content} modelName={modelName} />;
+            return <OpenScad content={content} name={name} />;
         case "text":
         case "other":
         default:
