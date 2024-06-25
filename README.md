@@ -302,3 +302,4 @@ classDiagram
 [x] Artifacts
 [x] Sonnet 3.5
 [x] OpenSCAD models
+[x] React type artifacts
