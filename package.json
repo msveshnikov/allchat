@@ -2,6 +2,7 @@
     "name": "allchat",
     "version": "2.0",
     "dependencies": {
+        "@babel/standalone": "^7.24.7",
         "@emotion/react": "^11.11.4",
         "@emotion/styled": "^11.11.5",
         "@loadable/component": "^5.16.4",
