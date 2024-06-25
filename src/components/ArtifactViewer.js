@@ -1,3 +1,4 @@
+/* eslint-disable no-new-func */
 import React, { useState } from "react";
 import { Box, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import ReactMarkdown from "react-markdown";
@@ -42,26 +43,34 @@ export const ArtifactViewer = ({ type, content, name }) => {
 
     const renderReactComponent = (code) => {
         try {
+            // Remove import and export statements
             const codeWithoutImportExport = code
                 .replace(/import\s+.*?from\s+['"].*?['"];?/g, "")
                 .replace(/export\s+default\s+.*?;?/g, "");
 
+            // Extract the component name
             const componentNameMatch = codeWithoutImportExport.match(/(?:function|class|const)\s+(\w+)/);
             const componentName = componentNameMatch ? componentNameMatch[1] : "Component";
 
+            // Transform JSX to JavaScript
             const transformedCode = Babel.transform(codeWithoutImportExport, {
                 presets: ["react"],
             }).code;
 
-            // eslint-disable-next-line no-new-func
+            // Create a new function from the transformed code
             const ComponentFunction = new Function(
                 "React",
+                "useState",
                 `
-               ${transformedCode}
-               return ${componentName};`
+            ${transformedCode}
+            return ${componentName};
+        `
             );
 
-            const DynamicComponent = ComponentFunction(React);
+            // Execute the function to get the component
+            const DynamicComponent = ComponentFunction(React, useState);
+
+            // Render the component
             return React.createElement(DynamicComponent);
         } catch (error) {
             return <p style={{ color: "red" }}>Error rendering React component: {error.message}</p>;
