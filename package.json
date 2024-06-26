@@ -30,7 +30,7 @@
         "three": "^0.165.0"
     },
     "scripts": {
-        "start": "react-scripts start",
+        "start": "craco start",
         "build": "react-scripts build",
         "copy": "copy.cmd"
     },
@@ -53,6 +53,7 @@
     },
     "devDependencies": {
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+        "@craco/craco": "^7.1.0",
         "react-scripts": "5.0.1"
     }
 }
