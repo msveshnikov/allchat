@@ -1,6 +1,6 @@
 /* eslint-disable no-new-func */
 import React, { useState, useEffect, useContext } from "react";
-import { Box, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "./CodeBlock";
 import { OpenScad } from "./OpenScad";
@@ -8,6 +8,7 @@ import { MermaidChart } from "./MermaidChart";
 import * as Babel from "@babel/standalone";
 import { API_URL } from "./Main";
 import { animateScroll as scroll } from "react-scroll";
+import { ViewToggle } from "./ViewToggle";
 
 export const detectLanguage = (code) => {
     if (code.includes("def ") || code.includes("import ")) return "python";
@@ -25,24 +26,6 @@ export const ArtifactViewer = ({ type, content, name }) => {
             setView(value);
         }
     };
-
-    const ViewToggle = () => (
-        <ToggleButtonGroup
-            value={view}
-            exclusive
-            onChange={handleViewChange}
-            aria-label="view"
-            size="small"
-            sx={{ mb: 2, mt: -3 }}
-        >
-            <ToggleButton value="preview" aria-label="preview">
-                Preview
-            </ToggleButton>
-            <ToggleButton value="code" aria-label="code">
-                Code
-            </ToggleButton>
-        </ToggleButtonGroup>
-    );
 
     const renderReactComponent = (code) => {
         try {
@@ -138,7 +121,7 @@ export const ArtifactViewer = ({ type, content, name }) => {
         case "svg":
             return (
                 <Box width="100%">
-                    <ViewToggle />
+                    <ViewToggle view={view} handleViewChange={handleViewChange} />
                     {view === "preview" ? (
                         <Box width="100%" height="600px">
                             <iframe
@@ -157,7 +140,7 @@ export const ArtifactViewer = ({ type, content, name }) => {
         case "react":
             return (
                 <Box width="100%">
-                    <ViewToggle />
+                    <ViewToggle view={view} handleViewChange={handleViewChange} />
                     {view === "preview" ? (
                         <Box width="100%">{renderReactComponent(content)}</Box>
                     ) : (
