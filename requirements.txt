@@ -8,3 +8,4 @@ pillow
 yfinance
 prettytable
 python-pptx
+pinecoin

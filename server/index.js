@@ -213,15 +213,21 @@ app.post("/interact", verifyToken, async (req, res) => {
         }
 
         const urlRegex = /https?:\/\/[^\s]+/;
+        const skipExtensions = [".mp3", ".mp4", ".wav", ".avi", ".mov"];
+
         const match = userInput?.match(urlRegex);
         if (match) {
             const url = match[0];
-            const urlContent = await fetchPageContent(url);
-            if (urlContent) {
-                userInput = userInput.replace(url, `\n${urlContent.slice(0, MAX_SEARCH_RESULT_LENGTH)}\n`);
+            const fileExtension = url.split(".").pop().toLowerCase();
+
+            if (!skipExtensions.includes(`.${fileExtension}`)) {
+                const urlContent = await fetchPageContent(url);
+                if (urlContent) {
+                    userInput = userInput.replace(url, `\n${urlContent.slice(0, MAX_SEARCH_RESULT_LENGTH)}\n`);
+                }
             }
         }
-
+        
         let instructions = "";
         let GPT;
         if (customGPT) {
