@@ -33,16 +33,40 @@ export async function fetchSearchResults(query) {
     }
 }
 
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+const TIMEOUT = 10000; // 10 seconds
+
 export async function fetchPageContent(url) {
     try {
         const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
-        const response = await fetch(url, { headers: { "User-Agent": randomUserAgent } });
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
 
-        // Check if the response is a PDF
+        const response = await fetch(url, {
+            headers: { "User-Agent": randomUserAgent },
+            signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        // Check content type
         const contentType = response.headers.get("Content-Type");
-        if (contentType && contentType.includes("application/pdf")) {
-            console.log("fetchPageContent skipped (PDF)", url);
-            return null; // Skip PDF content to avoid high CPU usage
+        if (
+            contentType &&
+            (contentType.includes("application/pdf") ||
+                contentType.includes("audio") ||
+                contentType.includes("video") ||
+                contentType.includes("image"))
+        ) {
+            console.log(`fetchPageContent skipped (${contentType})`, url);
+            return null;
+        }
+
+        // Check file size
+        const contentLength = response.headers.get("Content-Length");
+        if (contentLength && parseInt(contentLength) > MAX_FILE_SIZE) {
+            console.log("fetchPageContent skipped (file too large)", url);
+            return null;
         }
 
         const html = await response.text();
@@ -54,6 +78,11 @@ export async function fetchPageContent(url) {
             .join(" ");
         return content?.slice(0, MAX_SEARCH_RESULT_LENGTH);
     } catch (error) {
+        if (error.name === "AbortError") {
+            console.log("fetchPageContent timed out", url);
+        } else {
+            console.error("fetchPageContent error", error);
+        }
         return null;
     }
 }

@@ -2,7 +2,7 @@ import cluster from "cluster";
 import express from "express";
 import promBundle from "express-prom-bundle";
 
-const MAX_CPU = 1;
+const MAX_CPU = 4;
 
 if (cluster.isPrimary) {
     console.log(`Master ${process.pid} is running`);
