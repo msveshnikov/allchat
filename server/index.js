@@ -227,7 +227,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 }
             }
         }
-        
+
         let instructions = "";
         let GPT;
         if (customGPT) {
@@ -1035,6 +1035,15 @@ app.get("/sitemap.xml", async (req, res) => {
                 url: `/chat/${chat._id}`,
                 changefreq: "weekly",
                 priority: 0.7,
+            });
+        });
+
+        const artifacts = await Artifact.find({}, { _id: 1 });
+        artifacts.forEach((artifact) => {
+            smStream.write({
+                url: `/artifact/${artifact._id}`,
+                changefreq: "weekly",
+                priority: 0.6,
             });
         });
 
