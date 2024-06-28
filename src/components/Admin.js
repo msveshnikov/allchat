@@ -24,6 +24,8 @@ import {
     DialogContent,
     DialogActions,
     Button,
+    Tabs,
+    Tab,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Pagination } from "@mui/material";
@@ -53,9 +55,9 @@ const Admin = () => {
     const [artifacts, setArtifacts] = useState([]);
     const [selectedArtifact, setSelectedArtifact] = useState(null);
     const [openArtifactDialog, setOpenArtifactDialog] = useState(false);
-
     const [filteredArtifacts, setFilteredArtifacts] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [currentTab, setCurrentTab] = useState(0);
 
     useEffect(() => {
         const fetchArtifacts = async () => {
@@ -290,6 +292,10 @@ const Admin = () => {
         fetchStats();
     }, []);
 
+    const handleTabChange = (event, newValue) => {
+        setCurrentTab(newValue);
+    };
+
     return (
         <>
             <Box display="flex" justifyContent="center" alignItems="center">
@@ -422,247 +428,269 @@ const Admin = () => {
                 </Box>
             </Box>
 
-            <Box padding={4}>
-                <Typography variant="h4" gutterBottom align="center" color="primary">
-                    User Admin
-                </Typography>
-                <TableContainer component={Paper} elevation={3}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Email</TableCell>
-                                <TableCell>IP</TableCell>
-                                <TableCell>Country</TableCell>
-                                <TableCell>Subscription ID</TableCell>
-                                <TableCell>Money</TableCell>
-                                <TableCell>Subscription Status</TableCell>
-                                <TableCell>Actions</TableCell>
-                                <TableCell>Created At</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {users?.users?.map((user) => (
-                                <TableRow key={user._id}>
-                                    <TableCell>{user.email}</TableCell>
-                                    <TableCell>{user.ip}</TableCell>
-                                    <TableCell>{user.country}</TableCell>
-                                    <TableCell>{user.subscriptionId}</TableCell>
-                                    <TableCell>
-                                        {(
-                                            user.usageStats.gemini.moneyConsumed +
-                                            user.usageStats.claude.moneyConsumed +
-                                            user.usageStats.together.moneyConsumed +
-                                            user.usageStats.gpt.moneyConsumed
-                                        ).toFixed(2)}
-                                    </TableCell>
-                                    <TableCell>{user.subscriptionStatus}</TableCell>
-                                    <TableCell>
-                                        <IconButton
-                                            onClick={() =>
-                                                handleSubscriptionChange(
-                                                    user._id,
-                                                    user.subscriptionStatus === "active" ? "past_due" : "active"
-                                                )
-                                            }
-                                        >
-                                            <EditIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                    <TableCell>{user.createdAt && new Date(user.createdAt).toLocaleString()}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <Box display="flex" justifyContent="center" mt={2}>
-                    <Pagination
-                        count={users.totalPages}
-                        page={currentPage}
-                        onChange={(event, page) => setCurrentPage(page)}
-                    />
-                </Box>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs value={currentTab} onChange={handleTabChange} centered>
+                    <Tab label="Users" />
+                    <Tab label="Custom GPTs" />
+                    <Tab label="Shared Chats" />
+                    <Tab label="Artifacts" />
+                </Tabs>
             </Box>
 
-            <Box padding={4}>
-                <Typography variant="h4" gutterBottom align="center" color="primary">
-                    Custom GPT Admin
-                </Typography>
-                <TableContainer component={Paper} elevation={3}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Avatar</TableCell>
-                                <TableCell>Instructions</TableCell>
-                                <TableCell>Knowledge</TableCell>
-                                <TableCell>Private</TableCell>
-                                <TableCell>Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {gpts?.map((gpt) => (
-                                <TableRow key={gpt._id}>
-                                    <TableCell>{gpt.name}</TableCell>
-                                    <TableCell>
-                                        {gpt?.profileUrl && (
-                                            <Box marginRight={1}>
-                                                <img
-                                                    src={gpt?.profileUrl}
-                                                    alt="User Avatar"
-                                                    style={{
-                                                        width: "30px",
-                                                        height: "30px",
-                                                        borderRadius: "50%",
-                                                    }}
-                                                />
-                                            </Box>
-                                        )}
-                                    </TableCell>
-                                    <TableCell>{gpt.instructions?.slice(0, 500)}</TableCell>
-                                    <TableCell>{gpt.knowledge?.slice(0, 1500)}</TableCell>
-                                    <TableCell>
-                                        <FormControlLabel
-                                            control={
-                                                <Switch
-                                                    checked={gpt.isPrivate}
-                                                    onChange={() => handlePrivateGpt(gpt._id, !gpt.isPrivate)}
-                                                />
-                                            }
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Box display="flex" alignItems="center">
-                                            <IconButton onClick={() => handleDeleteGpt(gpt._id)} color="error">
-                                                <DeleteIcon />
-                                            </IconButton>
+            {currentTab === 0 && (
+                <Box padding={4}>
+                    <Typography variant="h4" gutterBottom align="center" color="primary">
+                        User Admin
+                    </Typography>
+                    <TableContainer component={Paper} elevation={3}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Email</TableCell>
+                                    <TableCell>IP</TableCell>
+                                    <TableCell>Country</TableCell>
+                                    <TableCell>Subscription ID</TableCell>
+                                    <TableCell>Money</TableCell>
+                                    <TableCell>Subscription Status</TableCell>
+                                    <TableCell>Actions</TableCell>
+                                    <TableCell>Created At</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {users?.users?.map((user) => (
+                                    <TableRow key={user._id}>
+                                        <TableCell>{user.email}</TableCell>
+                                        <TableCell>{user.ip}</TableCell>
+                                        <TableCell>{user.country}</TableCell>
+                                        <TableCell>{user.subscriptionId}</TableCell>
+                                        <TableCell>
+                                            {(
+                                                user.usageStats.gemini.moneyConsumed +
+                                                user.usageStats.claude.moneyConsumed +
+                                                user.usageStats.together.moneyConsumed +
+                                                user.usageStats.gpt.moneyConsumed
+                                            ).toFixed(2)}
+                                        </TableCell>
+                                        <TableCell>{user.subscriptionStatus}</TableCell>
+                                        <TableCell>
                                             <IconButton
-                                                variant="contained"
-                                                color="primary"
                                                 onClick={() =>
-                                                    generateAvatar(
-                                                        gpt._id,
-                                                        gpt.instructions + gpt.knowledge?.slice(200)
+                                                    handleSubscriptionChange(
+                                                        user._id,
+                                                        user.subscriptionStatus === "active" ? "past_due" : "active"
                                                     )
                                                 }
-                                                disabled={loading && loadingGptId === gpt._id}
                                             >
-                                                {loading && loadingGptId === gpt._id ? (
-                                                    <CircularProgress size={24} />
-                                                ) : (
-                                                    <Face2Icon />
-                                                )}
+                                                <EditIcon />
                                             </IconButton>
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Box>
-
-            <Box padding={4}>
-                <Typography variant="h4" gutterBottom align="center" color="primary">
-                    Shared Chats Admin
-                </Typography>
-                <TableContainer component={Paper} elevation={3}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Chat ID</TableCell>
-                                <TableCell>Owner User Email</TableCell>
-                                <TableCell>Model</TableCell>
-                                <TableCell>Custom GPT</TableCell>
-                                <TableCell>Created At</TableCell>
-                                <TableCell>Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {sharedChats?.map((chat) => (
-                                <TableRow key={chat._id}>
-                                    <TableCell>
-                                        <Link
-                                            href={`https://allchat.online/chat/${chat._id}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            {chat._id}
-                                        </Link>
-                                    </TableCell>
-                                    <TableCell>{chat.userEmail}</TableCell>
-                                    <TableCell>{chat.model}</TableCell>
-                                    <TableCell>{chat.customGPT}</TableCell>
-                                    <TableCell>{new Date(chat.createdAt).toLocaleString()}</TableCell>
-                                    <TableCell>
-                                        <IconButton onClick={() => handleDeleteChat(chat._id)} color="error">
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Box>
-
-            <Box padding={4}>
-                <Typography variant="h4" gutterBottom align="center" color="primary">
-                    Artifacts Admin
-                </Typography>
-                <Box mb={2}>
-                    <TextField
-                        fullWidth
-                        label="Search artifacts by name"
-                        variant="outlined"
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                    />
+                                        </TableCell>
+                                        <TableCell>
+                                            {user.createdAt && new Date(user.createdAt).toLocaleString()}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <Box display="flex" justifyContent="center" mt={2}>
+                        <Pagination
+                            count={users.totalPages}
+                            page={currentPage}
+                            onChange={(event, page) => setCurrentPage(page)}
+                        />
+                    </Box>
                 </Box>
-                <TableContainer component={Paper} elevation={3}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Artifact ID</TableCell>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Type</TableCell>
-                                <TableCell>User Email</TableCell>
-                                <TableCell>Created At</TableCell>
-                                <TableCell>Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {filteredArtifacts.map((artifact) => (
-                                <TableRow key={artifact._id}>
-                                    <TableCell>
-                                        <Link
-                                            href={`/artifact/${artifact._id}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            {artifact._id}
-                                        </Link>
-                                    </TableCell>
-                                    <TableCell>{artifact.name}</TableCell>
-                                    <TableCell>{artifact.type}</TableCell>
-                                    <TableCell>{artifact.userEmail}</TableCell>
-                                    <TableCell>{new Date(artifact.createdAt).toLocaleString()}</TableCell>
-                                    <TableCell>
-                                        <IconButton onClick={() => handleViewArtifact(artifact)} color="primary">
-                                            <VisibilityIcon />
-                                        </IconButton>
-                                        <IconButton onClick={() => handleOpenArtifact(artifact)} color="secondary">
-                                            <LaunchIcon />
-                                        </IconButton>
-                                        <IconButton onClick={() => handleDeleteArtifact(artifact._id)} color="error">
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </TableCell>
+            )}
+
+            {currentTab === 1 && (
+                <Box padding={4}>
+                    <Typography variant="h4" gutterBottom align="center" color="primary">
+                        Custom GPT Admin
+                    </Typography>
+                    <TableContainer component={Paper} elevation={3}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Name</TableCell>
+                                    <TableCell>Avatar</TableCell>
+                                    <TableCell>Instructions</TableCell>
+                                    <TableCell>Knowledge</TableCell>
+                                    <TableCell>Private</TableCell>
+                                    <TableCell>Actions</TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Box>
+                            </TableHead>
+                            <TableBody>
+                                {gpts?.map((gpt) => (
+                                    <TableRow key={gpt._id}>
+                                        <TableCell>{gpt.name}</TableCell>
+                                        <TableCell>
+                                            {gpt?.profileUrl && (
+                                                <Box marginRight={1}>
+                                                    <img
+                                                        src={gpt?.profileUrl}
+                                                        alt="User Avatar"
+                                                        style={{
+                                                            width: "30px",
+                                                            height: "30px",
+                                                            borderRadius: "50%",
+                                                        }}
+                                                    />
+                                                </Box>
+                                            )}
+                                        </TableCell>
+                                        <TableCell>{gpt.instructions?.slice(0, 500)}</TableCell>
+                                        <TableCell>{gpt.knowledge?.slice(0, 1500)}</TableCell>
+                                        <TableCell>
+                                            <FormControlLabel
+                                                control={
+                                                    <Switch
+                                                        checked={gpt.isPrivate}
+                                                        onChange={() => handlePrivateGpt(gpt._id, !gpt.isPrivate)}
+                                                    />
+                                                }
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Box display="flex" alignItems="center">
+                                                <IconButton onClick={() => handleDeleteGpt(gpt._id)} color="error">
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                                <IconButton
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={() =>
+                                                        generateAvatar(
+                                                            gpt._id,
+                                                            gpt.instructions + gpt.knowledge?.slice(200)
+                                                        )
+                                                    }
+                                                    disabled={loading && loadingGptId === gpt._id}
+                                                >
+                                                    {loading && loadingGptId === gpt._id ? (
+                                                        <CircularProgress size={24} />
+                                                    ) : (
+                                                        <Face2Icon />
+                                                    )}
+                                                </IconButton>
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Box>
+            )}
+
+            {currentTab === 2 && (
+                <Box padding={4}>
+                    <Typography variant="h4" gutterBottom align="center" color="primary">
+                        Shared Chats Admin
+                    </Typography>
+                    <TableContainer component={Paper} elevation={3}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Chat ID</TableCell>
+                                    <TableCell>Owner User Email</TableCell>
+                                    <TableCell>Model</TableCell>
+                                    <TableCell>Custom GPT</TableCell>
+                                    <TableCell>Created At</TableCell>
+                                    <TableCell>Actions</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {sharedChats?.map((chat) => (
+                                    <TableRow key={chat._id}>
+                                        <TableCell>
+                                            <Link
+                                                href={`https://allchat.online/chat/${chat._id}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                {chat._id}
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell>{chat.userEmail}</TableCell>
+                                        <TableCell>{chat.model}</TableCell>
+                                        <TableCell>{chat.customGPT}</TableCell>
+                                        <TableCell>{new Date(chat.createdAt).toLocaleString()}</TableCell>
+                                        <TableCell>
+                                            <IconButton onClick={() => handleDeleteChat(chat._id)} color="error">
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Box>
+            )}
+
+            {currentTab === 3 && (
+                <Box padding={4}>
+                    <Typography variant="h4" gutterBottom align="center" color="primary">
+                        Artifacts Admin
+                    </Typography>
+                    <Box mb={2}>
+                        <TextField
+                            fullWidth
+                            label="Search artifacts by name"
+                            variant="outlined"
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                        />
+                    </Box>
+                    <TableContainer component={Paper} elevation={3}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Artifact ID</TableCell>
+                                    <TableCell>Name</TableCell>
+                                    <TableCell>Type</TableCell>
+                                    <TableCell>User Email</TableCell>
+                                    <TableCell>Created At</TableCell>
+                                    <TableCell>Actions</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {filteredArtifacts.map((artifact) => (
+                                    <TableRow key={artifact._id}>
+                                        <TableCell>
+                                            <Link
+                                                href={`/artifact/${artifact._id}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                {artifact._id}
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell>{artifact.name}</TableCell>
+                                        <TableCell>{artifact.type}</TableCell>
+                                        <TableCell>{artifact.userEmail}</TableCell>
+                                        <TableCell>{new Date(artifact.createdAt).toLocaleString()}</TableCell>
+                                        <TableCell>
+                                            <IconButton onClick={() => handleViewArtifact(artifact)} color="primary">
+                                                <VisibilityIcon />
+                                            </IconButton>
+                                            <IconButton onClick={() => handleOpenArtifact(artifact)} color="secondary">
+                                                <LaunchIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                onClick={() => handleDeleteArtifact(artifact._id)}
+                                                color="error"
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Box>
+            )}
 
             <Dialog open={openArtifactDialog} onClose={handleCloseArtifactDialog} maxWidth="md" fullWidth>
                 <DialogTitle>{selectedArtifact?.name}</DialogTitle>
