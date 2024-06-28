@@ -33,8 +33,8 @@ import { useReward } from "react-rewards";
 
 const achievementSounds = ["/ach1.mp3", "/ach2.mp3", "/ach3.mp3", "/ach4.mp3"];
 
-const MAX_CHAT_HISTORY_LENGTH = 30;
-const MAX_CHATS = 5;
+const MAX_CHAT_HISTORY_LENGTH = 40;
+const MAX_CHATS = 6;
 
 export const API_URL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_API_URL : "http://localhost:5000";
 export const WS_URL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_WS_URL : "ws://localhost:5000";
