@@ -14,6 +14,7 @@ import {
     TableBody,
     TableCell,
     TableContainer,
+    TextField,
     TableHead,
     TableRow,
     Paper,
@@ -53,6 +54,9 @@ const Admin = () => {
     const [selectedArtifact, setSelectedArtifact] = useState(null);
     const [openArtifactDialog, setOpenArtifactDialog] = useState(false);
 
+    const [filteredArtifacts, setFilteredArtifacts] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+
     useEffect(() => {
         const fetchArtifacts = async () => {
             const token = localStorage.getItem("token");
@@ -65,9 +69,17 @@ const Admin = () => {
             });
             const data = await response.json();
             setArtifacts(data);
+            setFilteredArtifacts(data);
         };
         fetchArtifacts();
     }, []);
+
+    const handleSearchChange = (event) => {
+        const term = event.target.value.toLowerCase();
+        setSearchTerm(term);
+        const filtered = artifacts.filter((artifact) => artifact.name.toLowerCase().includes(term));
+        setFilteredArtifacts(filtered);
+    };
 
     const handleDeleteArtifact = async (id) => {
         const token = localStorage.getItem("token");
@@ -597,6 +609,15 @@ const Admin = () => {
                 <Typography variant="h4" gutterBottom align="center" color="primary">
                     Artifacts Admin
                 </Typography>
+                <Box mb={2}>
+                    <TextField
+                        fullWidth
+                        label="Search artifacts by name"
+                        variant="outlined"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                    />
+                </Box>
                 <TableContainer component={Paper} elevation={3}>
                     <Table>
                         <TableHead>
@@ -610,7 +631,7 @@ const Admin = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {artifacts.map((artifact) => (
+                            {filteredArtifacts.map((artifact) => (
                                 <TableRow key={artifact._id}>
                                     <TableCell>
                                         <Link
