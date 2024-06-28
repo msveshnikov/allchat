@@ -305,7 +305,7 @@ const Admin = () => {
                     </Typography>
                     {stats ? (
                         <Grid container spacing={2} justifyContent="center">
-                            <Grid item xs={12} md={6} lg={4}>
+                            <Grid item xs={12} md={6} lg={3}>
                                 <StyledCard>
                                     <CardContent>
                                         <Typography variant="h5" gutterBottom color="primary">
@@ -340,17 +340,11 @@ const Admin = () => {
                                     </CardContent>
                                 </StyledCard>
                             </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
+                            <Grid item xs={12} md={6} lg={3}>
                                 <StyledCard>
                                     <CardContent>
                                         <Typography variant="h5" gutterBottom color="primary">
                                             Gemini Pro Usage
-                                        </Typography>
-                                        <Typography variant="body1" color="text.primary">
-                                            Total Input Tokens: <strong>{stats.gemini.totalInputTokens}</strong>
-                                        </Typography>
-                                        <Typography variant="body1" color="text.primary">
-                                            Total Output Tokens: <strong>{stats.gemini.totalOutputTokens}</strong>
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">
                                             Total Images Generated: <strong>{stats.gemini.totalImagesGenerated}</strong>
@@ -361,18 +355,12 @@ const Admin = () => {
                                         </Typography>
                                     </CardContent>
                                 </StyledCard>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
+                            {/* </Grid>
+                            <Grid item xs={12} md={6} lg={3}> */}
                                 <StyledCard>
                                     <CardContent>
                                         <Typography variant="h5" gutterBottom color="primary">
                                             Claude 3 Usage
-                                        </Typography>
-                                        <Typography variant="body1" color="text.primary">
-                                            Total Input Tokens: <strong>{stats.claude.totalInputTokens}</strong>
-                                        </Typography>
-                                        <Typography variant="body1" color="text.primary">
-                                            Total Output Tokens: <strong>{stats.claude.totalOutputTokens}</strong>
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">
                                             Total Money Consumed:{" "}
@@ -381,17 +369,11 @@ const Admin = () => {
                                     </CardContent>
                                 </StyledCard>
                             </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
+                            <Grid item xs={12} md={6} lg={3}>
                                 <StyledCard>
                                     <CardContent>
                                         <Typography variant="h5" gutterBottom color="primary">
                                             Together Usage
-                                        </Typography>
-                                        <Typography variant="body1" color="text.primary">
-                                            Total Input Tokens: <strong>{stats.together.totalInputTokens}</strong>
-                                        </Typography>
-                                        <Typography variant="body1" color="text.primary">
-                                            Total Output Tokens: <strong>{stats.together.totalOutputTokens}</strong>
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">
                                             Total Money Consumed:{" "}
@@ -399,18 +381,12 @@ const Admin = () => {
                                         </Typography>
                                     </CardContent>
                                 </StyledCard>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
+                            {/* </Grid>
+                            <Grid item xs={12} md={6} lg={3}> */}
                                 <StyledCard>
                                     <CardContent>
                                         <Typography variant="h5" gutterBottom color="primary">
                                             GPT Usage
-                                        </Typography>
-                                        <Typography variant="body1" color="text.primary">
-                                            Total Input Tokens: <strong>{stats.gpt.totalInputTokens}</strong>
-                                        </Typography>
-                                        <Typography variant="body1" color="text.primary">
-                                            Total Output Tokens: <strong>{stats.gpt.totalOutputTokens}</strong>
                                         </Typography>
                                         <Typography variant="body1" color="text.primary">
                                             Total Money Consumed:{" "}
