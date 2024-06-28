@@ -6,8 +6,8 @@
         "@emotion/react": "^11.11.4",
         "@emotion/styled": "^11.11.5",
         "@loadable/component": "^5.16.4",
-        "@mui/icons-material": "^5.15.20",
-        "@mui/material": "^5.15.20",
+        "@mui/icons-material": "^5.15.21",
+        "@mui/material": "^5.15.21",
         "@react-oauth/google": "^0.12.1",
         "html-to-pdfmake": "^2.5.10",
         "i18next": "^23.11.5",
@@ -27,7 +27,7 @@
         "react-router-dom": "^6.24.0",
         "react-scroll": "^1.9.0",
         "react-syntax-highlighter": "^15.5.0",
-        "three": "^0.165.0"
+        "three": "^0.166.0"
     },
     "scripts": {
         "start": "craco start",

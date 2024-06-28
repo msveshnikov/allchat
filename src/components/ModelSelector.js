@@ -27,7 +27,7 @@ export const ModelSelector = ({ selectedModel, onModelSelect, user }) => {
                 component="span"
                 onClick={handleClick}
                 style={{
-                    fontSize: "0.9rem",
+                    fontSize: "0.8rem",
                     color: theme.palette.modelName,
                     marginLeft: "0.5rem",
                     cursor: "pointer",
