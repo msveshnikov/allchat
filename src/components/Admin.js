@@ -299,12 +299,12 @@ const Admin = () => {
     return (
         <>
             <Box display="flex" justifyContent="center" alignItems="center">
-                <Box maxWidth="1200px" width="100%" padding={4}>
+                <Box maxWidth="1200px" width="100%" padding={2}>
                     <Typography variant="h3" gutterBottom align="center" color="primary">
                         Admin Statistics
                     </Typography>
                     {stats ? (
-                        <Grid container spacing={4} justifyContent="center">
+                        <Grid container spacing={2} justifyContent="center">
                             <Grid item xs={12} md={6} lg={4}>
                                 <StyledCard>
                                     <CardContent>
