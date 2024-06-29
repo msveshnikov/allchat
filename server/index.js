@@ -1037,8 +1037,7 @@ app.get("/sitemap.xml", async (req, res) => {
             { url: "/", changefreq: "daily", priority: 1.0 },
             { url: "/custom", changefreq: "weekly", priority: 0.9 },
             { url: "/avatar", changefreq: "weekly", priority: 0.9 },
-            { url: "/about", changefreq: "monthly", priority: 0.8 },
-            { url: "/contact", changefreq: "monthly", priority: 0.8 },
+            { url: "/shop", changefreq: "daily", priority: 0.8 },
             { url: "/privacy", changefreq: "monthly", priority: 0.8 },
             { url: "/terms", changefreq: "monthly", priority: 0.8 },
         ];

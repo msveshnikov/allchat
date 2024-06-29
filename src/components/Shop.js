@@ -1,10 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { Container, Grid, Card, CardMedia, CardContent, Typography, CircularProgress } from "@mui/material";
+import {
+    Container,
+    Grid,
+    Card,
+    CardMedia,
+    CardContent,
+    CardActions,
+    Typography,
+    CircularProgress,
+    Button,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { API_URL } from "./Main";
 
 const Shop = () => {
     const [customGPTs, setCustomGPTs] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCustomGPTs = async () => {
@@ -31,6 +43,11 @@ const Shop = () => {
 
         fetchCustomGPTs();
     }, []);
+
+    const handleTryMe = (gptName) => {
+        localStorage.setItem("selectedCustomGPT", gptName);
+        navigate("/");
+    };
 
     if (loading) {
         return (
@@ -64,6 +81,11 @@ const Shop = () => {
                                 </Typography>
                                 <Typography>{gpt.instructions}</Typography>
                             </CardContent>
+                            <CardActions>
+                                <Button size="small" color="primary" onClick={() => handleTryMe(gpt.name)}>
+                                    Try me
+                                </Button>
+                            </CardActions>
                         </Card>
                     </Grid>
                 ))}

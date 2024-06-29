@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Typography, TextField, Box, Button, IconButton, useTheme } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import { Link } from "react-router-dom";
 import { API_URL } from "./Main";
 
 const CustomGPTPage = () => {
@@ -120,8 +121,20 @@ const CustomGPTPage = () => {
                 padding: 4,
             }}
         >
+            <Button
+                component={Link}
+                to="/shop"
+                variant="contained"
+                color="secondary"
+                sx={{
+                    marginBottom: 3,
+                    fontWeight: "bold",
+                }}
+            >
+                Custom GPT Shop
+            </Button>
             <Typography variant="h4" gutterBottom color={theme.palette.text.primary}>
-                Custom GPT
+               Create New
             </Typography>
             <TextField
                 label="Name"
