@@ -268,6 +268,9 @@ function Main({ themeMode, toggleTheme }) {
                     reward();
                     setSnackbarMessage("Achievement unlocked! Check your Account!");
                     setSnackbarOpen(true);
+                } else {
+                    const audio = new Audio("message.mp3");
+                    audio.play();
                 }
                 if (sound) {
                     const utterance = new SpeechSynthesisUtterance(removeFormatting(data.textResponse));
