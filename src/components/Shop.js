@@ -80,7 +80,7 @@ const Shop = () => {
                                 <Typography gutterBottom variant="h5" component="h2">
                                     {gpt.name}
                                 </Typography>
-                                <Typography>{gpt.instructions}</Typography>
+                                <Typography>{gpt.instructions.split(" ").slice(0, 20).join(" ")}...</Typography>
                             </CardContent>
                             <CardActions>
                                 <Button size="small" color="primary" onClick={() => handleTryMe(gpt.name)}>

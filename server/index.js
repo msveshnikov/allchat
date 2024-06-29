@@ -696,34 +696,15 @@ app.post("/customgpt", verifyToken, async (req, res) => {
 app.get("/customgpt", verifyToken, async (req, res) => {
     try {
         const userId = req.user.id;
-        const customGPTs = await CustomGPT.aggregate([
+        const customGPTs = await CustomGPT.find(
             {
-                $match: {
-                    $or: [
-                        { user: userId, isPrivate: true },
-                        { $or: [{ isPrivate: false }, { isPrivate: { $exists: false } }] },
-                    ],
-                },
+                $or: [
+                    { user: userId, isPrivate: true },
+                    { $or: [{ isPrivate: false }, { isPrivate: { $exists: false } }] },
+                ],
             },
-            {
-                $project: {
-                    _id: 1,
-                    name: 1,
-                    profileUrl: 1,
-                    createdAt: 1,
-                    instructions: {
-                        $substr: [
-                            "$instructions",
-                            0,
-                            {
-                                $indexOfArray: [{ $split: ["$instructions", " "] }, "", 20],
-                            },
-                        ],
-                    },
-                },
-            },
-        ]);
-
+            { _id: 1, name: 2, profileUrl: 3, createdAt: 4, instructions: { $substr: ["$instructions", 0, 100] } }
+        );
         res.json(customGPTs);
     } catch (error) {
         console.error(error);
