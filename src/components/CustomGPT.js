@@ -128,7 +128,7 @@ const CustomGPTPage = () => {
                 color="secondary"
                 sx={{
                     marginBottom: 3,
-                    fontWeight: "bold",
+                    // fontWeight: "bold",
                 }}
             >
                 Custom GPT Shop

@@ -33,7 +33,8 @@ const Shop = () => {
                     throw new Error("Network response was not ok");
                 }
                 const data = await response.json();
-                setCustomGPTs(data);
+                const sortedGPTs = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                setCustomGPTs(sortedGPTs);
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching custom GPTs:", error);

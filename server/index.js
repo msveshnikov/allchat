@@ -710,6 +710,7 @@ app.get("/customgpt", verifyToken, async (req, res) => {
                     _id: 1,
                     name: 1,
                     profileUrl: 1,
+                    createdAt: 1,
                     instructions: {
                         $substr: [
                             "$instructions",
