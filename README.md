@@ -251,5 +251,5 @@ graph LR
 
 [x] OpenSCAD models
 [x] React type artifacts
-[ ] 4 CPU or websockets!
+[ ] 4 CPU or websockets! also bugs with arti wit 4 CPUs
 [ ] openSCAD colors

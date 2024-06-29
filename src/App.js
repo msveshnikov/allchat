@@ -12,6 +12,7 @@ import Terms from "./components/Terms";
 import ReactGA from "react-ga4";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import AvatarBuilder from "./components/AvatarBuilder";
+import Shop from "./components/Shop";
 const Artifact = lazy(() => import("./components/Artifact"));
 
 ReactGA.initialize("G-L4KLPWXQ75");
@@ -42,6 +43,7 @@ const App = () => {
                     <Router>
                         <Routes>
                             <Route path="/admin" element={<Admin />} />
+                            <Route path="/shop" element={<Shop />} />
                             <Route path="/custom" element={<CustomGPTPage />} />
                             <Route path="/privacy" element={<Privacy />} />
                             <Route path="/avatar" element={<AvatarBuilder />} />
