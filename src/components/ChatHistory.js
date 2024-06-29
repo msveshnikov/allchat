@@ -176,7 +176,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                 await navigator.share({
                     title: "Shared Artifact",
                     text: "Check out this artifact!",
-                    url: `${window.location.origin}/artifact?id=${artifact?.[0]?._id}`,
+                    url: `${window.location.origin}/artifact/${artifact?.[0]?._id}`,
                 });
             } catch (error) {
                 console.error("Error sharing artifact:", error);
