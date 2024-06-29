@@ -94,7 +94,11 @@ const Admin = () => {
             headers,
         });
         if (response.ok) {
-            setArtifacts(artifacts.filter((artifact) => artifact._id !== id));
+            const updatedArtifacts = artifacts.filter((artifact) => artifact._id !== id);
+            setArtifacts(updatedArtifacts);
+
+            const updatedFilteredArtifacts = filteredArtifacts.filter((artifact) => artifact._id !== id);
+            setFilteredArtifacts(updatedFilteredArtifacts);
         }
     };
 
