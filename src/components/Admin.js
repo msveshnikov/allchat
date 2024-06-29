@@ -355,8 +355,6 @@ const Admin = () => {
                                         </Typography>
                                     </CardContent>
                                 </StyledCard>
-                            {/* </Grid>
-                            <Grid item xs={12} md={6} lg={3}> */}
                                 <StyledCard>
                                     <CardContent>
                                         <Typography variant="h5" gutterBottom color="primary">
@@ -381,8 +379,6 @@ const Admin = () => {
                                         </Typography>
                                     </CardContent>
                                 </StyledCard>
-                            {/* </Grid>
-                            <Grid item xs={12} md={6} lg={3}> */}
                                 <StyledCard>
                                     <CardContent>
                                         <Typography variant="h5" gutterBottom color="primary">
