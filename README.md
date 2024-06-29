@@ -24,7 +24,7 @@ https://allchat.online
 
 ## Features
 
--   Gemini Pro 1.5, Claude 3 and GPT-3.5
+-   Gemini Pro 1.5, Claude 3.5 and GPT-4o
 -   Audio Input in Gemini
 -   Video Input in Gemini
 -   Custom GPTs
