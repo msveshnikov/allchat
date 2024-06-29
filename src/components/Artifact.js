@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Box, Typography, Paper } from "@mui/material";
+import { useParams, Link } from "react-router-dom";
+import { Box, Typography, Paper, IconButton } from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
 import { ArtifactViewer } from "./ArtifactViewer";
 import { API_URL } from "./Main";
 
@@ -54,9 +55,12 @@ const Artifact = () => {
         <Box id="artifact" p={3}>
             <Paper elevation={3}>
                 <Box p={2}>
-                    <Typography variant="h4" gutterBottom>
-                        {artifact.name}
-                    </Typography>
+                    <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+                        <Typography variant="h4">{artifact.name}</Typography>
+                        <IconButton component={Link} to="/shop" color="primary" aria-label="home">
+                            <HomeIcon />
+                        </IconButton>
+                    </Box>
                     <Typography variant="body2" color="textSecondary" gutterBottom>
                         Type: {artifact.type}
                     </Typography>

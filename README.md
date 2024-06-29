@@ -251,5 +251,6 @@ graph LR
 
 [x] OpenSCAD models
 [x] React type artifacts
+[x] Custom GPT Shop
 [ ] 4 CPU or websockets! also bugs with arti wit 4 CPUs
 [ ] openSCAD colors
