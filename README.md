@@ -13,7 +13,7 @@ An AI assistant app that interacts with all major models, maintains history, gen
     -   [Environment variables](#environment-variables)
     -   [Run](#run)
 
-## PROD (with $4.99 subscription and Premium features: Avatar Builder, Shared Chats, Achievements and more)
+## PROD (with $4.99 subscription and Premium features: Avatar Builder, Shared Chats, Achievements, Artifacts and more)
 
 https://allchat.online
 
