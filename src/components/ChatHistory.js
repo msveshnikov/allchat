@@ -170,6 +170,22 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
         window.open("/artifact", "_blank");
     };
 
+    const handleShareArtifact = async (artifact) => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: "Shared Artifact",
+                    text: "Check out this artifact!",
+                    url: `${window.location.origin}/artifact?id=${artifact?.[0]?._id}`,
+                });
+            } catch (error) {
+                console.error("Error sharing artifact:", error);
+            }
+        } else {
+            alert("Web Share API is not supported in your browser. You can copy the artifact URL manually.");
+        }
+    };
+
     return (
         <Box id="chatid" flex={1} overflow="auto" padding={2} display="flex" flexDirection="column">
             {chatHistory.map((chat, index) => (
@@ -328,13 +344,20 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                             </Box>
                         )}
                         {chat.artifact && chat.toolsUsed.includes("save_artifact") && (
-                            <Box mt={2}>
+                            <Box mt={2} display="flex" gap={2}>
                                 <Button
                                     variant="contained"
                                     color="secondary"
                                     onClick={() => handleOpenArtifact(chat.artifact)}
                                 >
                                     Open Artifact
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => handleShareArtifact(chat.artifact)}
+                                >
+                                    Share Artifact
                                 </Button>
                             </Box>
                         )}
