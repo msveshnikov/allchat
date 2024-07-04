@@ -136,7 +136,7 @@ export const createOrUpdateUser = async (profile, req, ip, country, subscription
         userAgent: req.headers["user-agent"],
         ip,
         country,
-        subscriptionStatus,
+      //  subscriptionStatus,
     };
     let user = await User.findOne({
         email: {
