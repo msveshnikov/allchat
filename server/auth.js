@@ -63,9 +63,9 @@ export const registerUser = async (email, password, credential, req) => {
         const ip = getIpFromRequest(req);
         const existingUser = await User.findOne({ ip });
         let subscriptionStatus = "none";
-        if (existingUser || !whiteListCountries.includes(country) || torIPs.includes(ip)) {
-            subscriptionStatus = "canceled";
-        }
+ //       if (existingUser || !whiteListCountries.includes(country) || torIPs.includes(ip)) {
+//            subscriptionStatus = "canceled";
+ //       }
         let user;
         if (credential) {
             const verificationResponse = await verifyGoogleToken(req.body.credential);
