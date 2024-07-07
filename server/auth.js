@@ -63,9 +63,9 @@ export const registerUser = async (email, password, credential, req) => {
         const ip = getIpFromRequest(req);
         const existingUser = await User.findOne({ ip });
         let subscriptionStatus = "none";
- //       if (existingUser || !whiteListCountries.includes(country) || torIPs.includes(ip)) {
-//            subscriptionStatus = "canceled";
- //       }
+        if (existingUser || !whiteListCountries.includes(country) || torIPs.includes(ip)) {
+            subscriptionStatus = "canceled";
+        }
         let user;
         if (credential) {
             const verificationResponse = await verifyGoogleToken(req.body.credential);
@@ -74,7 +74,7 @@ export const registerUser = async (email, password, credential, req) => {
             if (verificationResponse.error || !profile) {
                 return { success: false, error: verificationResponse.error };
             }
-            user = await createOrUpdateUser(profile, req, ip, country, subscriptionStatus);
+            user = await createOrUpdateUser(profile, req, ip, country);
         } else {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
@@ -127,7 +127,7 @@ export const verifyGoogleToken = async (token) => {
     }
 };
 
-export const createOrUpdateUser = async (profile, req, ip, country, subscriptionStatus) => {
+export const createOrUpdateUser = async (profile, req, ip, country) => {
     const update = {
         email: profile.email,
         firstName: profile.given_name,
@@ -136,7 +136,6 @@ export const createOrUpdateUser = async (profile, req, ip, country, subscription
         userAgent: req.headers["user-agent"],
         ip,
         country,
-      //  subscriptionStatus,
     };
     let user = await User.findOne({
         email: {
