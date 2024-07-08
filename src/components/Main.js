@@ -123,7 +123,8 @@ function Main({ themeMode, toggleTheme }) {
         if (storedChatHistories) {
             setStoredChatHistories(JSON.parse(storedChatHistories));
         }
-    }, [chatId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         const fetchChatHistory = async () => {
