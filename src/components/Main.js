@@ -158,7 +158,7 @@ function Main({ themeMode, toggleTheme }) {
             scroll.scrollToBottom({
                 containerId: "chatid",
                 duration: 500,
-                smooth: true,
+                smooth: false,
             });
             if (chatHistory.length > 0) {
                 const chatHistoryToStore = chatHistory.slice(-MAX_CHAT_HISTORY_LENGTH);
