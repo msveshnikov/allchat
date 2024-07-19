@@ -123,7 +123,7 @@ function Main({ themeMode, toggleTheme }) {
         if (storedChatHistories) {
             setStoredChatHistories(JSON.parse(storedChatHistories));
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -269,9 +269,6 @@ function Main({ themeMode, toggleTheme }) {
                     reward();
                     setSnackbarMessage("Achievement unlocked! Check your Account!");
                     setSnackbarOpen(true);
-                } else {
-                    const audio = new Audio("message.mp3");
-                    audio.play();
                 }
                 if (sound) {
                     const utterance = new SpeechSynthesisUtterance(removeFormatting(data.textResponse));
