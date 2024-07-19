@@ -79,12 +79,15 @@ export const getTextClaude = async (prompt, temperature, fileBytesBase64, fileTy
     return response?.content?.[0]?.text;
 
     async function getResponse() {
-        return anthropic.messages.create({
-            model,
-            max_tokens: 4096,
-            temperature: temperature || 0.7,
-            tools: webTools ? tools : [],
-            messages,
-        });
+        return anthropic.messages.create(
+            {
+                model,
+                max_tokens: model.includes("sonnet") ? 8192 : 4096,
+                temperature: temperature || 0.7,
+                tools: webTools ? tools : [],
+                messages,
+            },
+            { headers: { "anthropic-beta": "max-tokens-3-5-sonnet-2024-07-15" } }
+        );
     }
 };
