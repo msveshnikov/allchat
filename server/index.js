@@ -721,7 +721,7 @@ app.get("/customgpt", verifyToken, async (req, res) => {
 app.get("/customgpt-all", async (req, res) => {
     try {
         const customGPTs = await CustomGPT.find(
-            { isPrivate: true },
+            { isPrivate: false },
             { _id: 1, name: 1, profileUrl: 1, createdAt: 1, instructions: 1 }
         );
 
