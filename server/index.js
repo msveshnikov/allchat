@@ -712,6 +712,19 @@ app.get("/customgpt", verifyToken, async (req, res) => {
     }
 });
 
+app.get("/customgpt-all", async (req, res) => {
+    try {
+        const customGPTs = await CustomGPT.find(
+            { isPrivate: true },
+            { _id: 1, name: 2, profileUrl: 3, createdAt: 4, instructions: { $substr: ["$instructions", 0, 100] } }
+        );
+        res.json(customGPTs);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.get("/customgpt-details", verifyToken, async (req, res) => {
     try {
         if (!req.user.admin) {

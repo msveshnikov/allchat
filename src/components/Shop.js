@@ -26,7 +26,7 @@ const Shop = () => {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 };
-                const response = await fetch(`${API_URL}/customgpt`, {
+                const response = await fetch(`${API_URL}/customgpt-all`, {
                     headers,
                 });
                 if (!response.ok) {
