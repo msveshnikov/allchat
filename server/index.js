@@ -703,9 +703,15 @@ app.get("/customgpt", verifyToken, async (req, res) => {
                     { $or: [{ isPrivate: false }, { isPrivate: { $exists: false } }] },
                 ],
             },
-            { _id: 1, name: 2, profileUrl: 3, createdAt: 4, instructions: { $substr: ["$instructions", 0, 100] } }
+            { _id: 1, name: 1, profileUrl: 1, createdAt: 1, instructions: 1 }
         );
-        res.json(customGPTs);
+
+        const modifiedCustomGPTs = customGPTs.map((gpt) => ({
+            ...gpt.toObject(),
+            instructions: gpt.instructions.substring(0, 100),
+        }));
+
+        res.json(modifiedCustomGPTs);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
@@ -716,9 +722,15 @@ app.get("/customgpt-all", async (req, res) => {
     try {
         const customGPTs = await CustomGPT.find(
             { isPrivate: true },
-            { _id: 1, name: 2, profileUrl: 3, createdAt: 4, instructions: { $substr: ["$instructions", 0, 100] } }
+            { _id: 1, name: 1, profileUrl: 1, createdAt: 1, instructions: 1 }
         );
-        res.json(customGPTs);
+
+        const modifiedCustomGPTs = customGPTs.map((gpt) => ({
+            ...gpt.toObject(),
+            instructions: gpt.instructions.substring(0, 100),
+        }));
+
+        res.json(modifiedCustomGPTs);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
