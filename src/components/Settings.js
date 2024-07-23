@@ -16,13 +16,14 @@ export const models = {
     "claude-3-haiku-20240307": ["image", "document", "tools"],
     "claude-3-5-sonnet-20240620": ["image", "document", "tools"],
     "gpt-3.5-turbo": ["document", "tools"],
-    "ft:gpt-3.5-turbo-0125:maxsoft:kate:9VGMfMmc": ["document", "admin"],
+    // "ft:gpt-3.5-turbo-0125:maxsoft:kate:9VGMfMmc": ["document", "admin"],
     "gpt-4o": ["image", "document", "tools"],
     "gpt-4o-mini": ["image", "document", "tools"],
     "databricks/dbrx-instruct": ["document"],
     "mistralai/Mixtral-8x22B-Instruct-v0.1": ["document"],
     "mistralai/Mixtral-8x7B-Instruct-v0.1": ["document", "tools"],
     "meta-llama/Llama-3-70b-chat-hf": ["document"],
+    "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo": ["document"],
 };
 
 const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, selectedModel, onModelSelect }) => {

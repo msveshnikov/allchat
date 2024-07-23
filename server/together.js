@@ -22,7 +22,7 @@ export const getTextTogether = async (prompt, temperature, userId, model, webToo
     const getResponse = async () => {
         const completion = await openai.chat.completions.create({
             model: model,
-            max_tokens: 4096,
+            max_tokens: 2048,
             messages,
             temperature: webTools ? 0 : temperature || 0.5,
             tools: webTools ? openAiTools : null,
