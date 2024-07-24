@@ -297,13 +297,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 tools
             );
         } else if (model?.startsWith("mistral-large")) {
-            textResponse = await getTextMistralLarge(
-                contextPrompt,
-                temperature,
-                req.user.id,
-                model,
-                tools
-            );
+            textResponse = await getTextMistralLarge(contextPrompt, temperature, req.user.id, model, tools);
         } else {
             textResponse = await getTextTogether(contextPrompt, temperature, req.user.id, model, tools);
         }
