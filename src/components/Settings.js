@@ -22,6 +22,7 @@ export const models = {
     "databricks/dbrx-instruct": ["document"],
     "mistralai/Mixtral-8x22B-Instruct-v0.1": ["document"],
     "mistralai/Mixtral-8x7B-Instruct-v0.1": ["document", "tools"],
+    "mistral-large-latest": ["document", "tools", "admin"],
     "meta-llama/Llama-3-70b-chat-hf": ["document"],
     "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo": ["document"],
 };
@@ -179,7 +180,7 @@ const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, se
 
             <Grid item xs={12} md={12}>
                 <Box display="flex" flexWrap="wrap">
-                    <CoinBalance  onClick={handleOpenCoinModal} coins={user?.coins} />
+                    <CoinBalance onClick={handleOpenCoinModal} coins={user?.coins} />
                     {user.achievements.map((achievement, index) => (
                         <Tooltip key={index} title={achievement.description}>
                             <span
