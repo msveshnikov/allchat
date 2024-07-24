@@ -9,14 +9,7 @@ const client = new MistralClient(apiKey);
 
 export const getTextMistralLarge = async (prompt, temperature, userId, model, webTools) => {
     const openAiTools = tools.map(renameProperty).map((f) => ({ type: "function", function: f }));
-    const messages = [
-        // {
-        //     role: "system",
-        //     content:
-        //         "You are a helpful assistant that can access external functions. The responses from these function calls will be appended to this dialogue. Please provide responses based on the information from these function calls.",
-        // },
-        { role: "user", content: prompt },
-    ];
+    const messages = [{ role: "user", content: prompt }];
 
     const getResponse = async () => {
         const completion = await client.chat({
