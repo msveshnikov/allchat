@@ -13,13 +13,32 @@ const COLORS = [
     "#8dd1e1",
     "#a4de6c",
     "#d0ed57",
+    "#EF9A9A",
+    "#F48FB1",
+    "#CE93D8",
+    "#B39DDB",
+    "#9FA8DA",
+    "#90CAF9",
+    "#81D4FA",
+    "#80DEEA",
+    "#80CBC4",
+    "#A5D6A7",
 ];
 
 const UserCountriesPieChart = ({ usersByCountry }) => {
-    const pieData = Object.entries(usersByCountry)
+    const sortedData = Object.entries(usersByCountry)
         .sort(([, a], [, b]) => b - a)
-        .slice(0, 10)
+        .slice(0, 20)
         .map(([country, count]) => ({ name: country, value: count }));
+
+    const otherCount = Object.values(usersByCountry).reduce((sum, count, index) => {
+        if (index >= 20) {
+            return sum + count;
+        }
+        return sum;
+    }, 0);
+
+    const pieData = [...sortedData, { name: "Others", value: otherCount }];
 
     const totalUsers = pieData.reduce((sum, entry) => sum + entry.value, 0);
 
@@ -39,7 +58,7 @@ const UserCountriesPieChart = ({ usersByCountry }) => {
     return (
         <Box sx={{ mt: 4, height: 400 }}>
             <Typography variant="h5" gutterBottom align="center" color="primary">
-                Top 10 Countries by User Count
+                Top 20 Countries by User Count
             </Typography>
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -48,7 +67,7 @@ const UserCountriesPieChart = ({ usersByCountry }) => {
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        outerRadius={150}
+                        outerRadius={130}
                         fill="#8884d8"
                         dataKey="value"
                         label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}

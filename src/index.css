@@ -27,3 +27,7 @@ body {
 .recharts-text {
     font-family: "PT Sans" !important;
 }
+
+.recharts-legend-item-text {
+    font-family: "PT Sans" !important;
+}
