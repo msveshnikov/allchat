@@ -30,6 +30,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Pagination } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import UserCountriesPieChart from "./UserCountriesPieChart";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Face2Icon from "@mui/icons-material/Face2";
 import LaunchIcon from "@mui/icons-material/Launch";
@@ -58,6 +59,7 @@ const Admin = () => {
     const [filteredArtifacts, setFilteredArtifacts] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentTab, setCurrentTab] = useState(0);
+    const [usersByCountry, setUsersByCountry] = useState({});
 
     useEffect(() => {
         const fetchArtifacts = async () => {
@@ -290,6 +292,7 @@ const Admin = () => {
             if (response.ok) {
                 const statsData = await response.json();
                 setStats(statsData);
+                setUsersByCountry(statsData.usersByCountry || {}); // Add this line
             }
         };
 
@@ -475,6 +478,7 @@ const Admin = () => {
                             onChange={(event, page) => setCurrentPage(page)}
                         />
                     </Box>
+                    <UserCountriesPieChart usersByCountry={usersByCountry} />
                 </Box>
             )}
 

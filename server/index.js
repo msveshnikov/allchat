@@ -456,6 +456,8 @@ app.get("/stats", verifyToken, async (req, res) => {
             totalMoneyConsumed: 0,
         };
 
+        const usersByCountry = {};
+
         for (const user of users) {
             const { gemini, claude, together, gpt } = user.usageStats;
             subscriptionStats[user.subscriptionStatus]++;
@@ -479,6 +481,13 @@ app.get("/stats", verifyToken, async (req, res) => {
             gptStats.totalInputTokens += gpt.inputTokens;
             gptStats.totalOutputTokens += gpt.outputTokens;
             gptStats.totalMoneyConsumed += gpt.moneyConsumed;
+
+            // Aggregate users by country
+            if (user.country) {
+                usersByCountry[user.country] = (usersByCountry[user.country] || 0) + 1;
+            } else {
+                usersByCountry["Unknown"] = (usersByCountry["Unknown"] || 0) + 1;
+            }
         }
 
         res.json({
@@ -488,6 +497,7 @@ app.get("/stats", verifyToken, async (req, res) => {
             claude: claudeStats,
             together: togetherStats,
             gpt: gptStats,
+            usersByCountry,
         });
     } catch (error) {
         console.error("Error fetching stats:", error);

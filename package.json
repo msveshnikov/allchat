@@ -27,6 +27,7 @@
         "react-router-dom": "^6.25.1",
         "react-scroll": "^1.9.0",
         "react-syntax-highlighter": "^15.5.0",
+        "recharts": "^2.12.7",
         "three": "^0.166.1"
     },
     "scripts": {
