@@ -158,6 +158,12 @@ B --> F[External Services]
     H --> H2[Cron Jobs]
     H --> H3[Image Processing]
 ```
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=msveshnikov/allchat&type=Date)](https://star-history.com/#msveshnikov/allchat&Date)
+
+
 [![Stargazers repo roster for @msveshnikov/allchat](https://reporoster.com/stars/msveshnikov/allchat)](https://github.com/msveshnikov/allchat/stargazers)
 
 [![Forkers repo roster for @msveshnikov/allchat](https://reporoster.com/forks/msveshnikov/allchat)](https://github.com/msveshnikov/allchat/network/members)
