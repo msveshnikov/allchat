@@ -3,6 +3,8 @@ import { AppBar, Toolbar, Typography, Box, IconButton, useMediaQuery, useTheme }
 import MenuIcon from "@mui/icons-material/Menu";
 import BrightnessHighIcon from "@mui/icons-material/BrightnessHigh";
 import NightlightIcon from "@mui/icons-material/Nightlight";
+import ColorLensIcon from "@mui/icons-material/ColorLens";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { ProfileMenu } from "./ProfileMenu";
 import { useTranslation } from "react-i18next";
 import { ModelSelector } from "./ModelSelector";
@@ -10,18 +12,34 @@ import { ModelSelector } from "./ModelSelector";
 const AppHeader = ({
     isAuthenticated,
     userEmail,
+    user,
     onSignOut,
     onSettings,
     onOpenAuthModal,
     onToggle,
     selectedModel,
     onModelSelect,
-    darkMode,
+    themeMode,
     toggleTheme,
+    onInviteUser,
+    chatId,
 }) => {
     const { t } = useTranslation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+    const renderThemeIcon = () => {
+        switch (themeMode) {
+            case "light":
+                return <BrightnessHighIcon />;
+            case "dark":
+                return <NightlightIcon />;
+            case "third":
+                return <ColorLensIcon />;
+            default:
+                return <BrightnessHighIcon />;
+        }
+    };
 
     return (
         <AppBar position="static">
@@ -31,16 +49,24 @@ const AppHeader = ({
                 </IconButton>
                 {!isMobile && (
                     <Typography sx={{ ml: 2 }} variant="h6" noWrap>
-                        AllChat
+                        AllChat Premium
                     </Typography>
                 )}
-                <ModelSelector selectedModel={selectedModel} onModelSelect={onModelSelect} />
+                <ModelSelector user={user} selectedModel={selectedModel} onModelSelect={onModelSelect} />
                 <Box sx={{ ml: "auto", display: "flex", alignItems: "center" }}>
-                    <IconButton aria-label="toggle dark mode" onClick={toggleTheme} color="inherit" sx={{ mr: 1 }}>
-                        {darkMode ? <NightlightIcon /> : <BrightnessHighIcon />}
+                    <IconButton
+                        aria-label="invite user"
+                        onClick={onInviteUser}
+                        color={chatId ? "secondary" : "inherit"}
+                        sx={{ mr: 1 }}
+                    >
+                        <PersonAddIcon />
+                    </IconButton>
+                    <IconButton aria-label="toggle theme" onClick={toggleTheme} color="inherit" sx={{ mr: 1 }}>
+                        {renderThemeIcon()}
                     </IconButton>
                     {isAuthenticated ? (
-                        <ProfileMenu userEmail={userEmail} onSettings={onSettings} onSignOut={onSignOut} />
+                        <ProfileMenu userEmail={userEmail} user={user} onSettings={onSettings} onSignOut={onSignOut} />
                     ) : (
                         <Box component="span" onClick={onOpenAuthModal} sx={{ cursor: "pointer" }}>
                             <Typography>{t("Login")}</Typography>

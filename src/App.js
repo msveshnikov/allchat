@@ -1,47 +1,74 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "@mui/material";
 import theme from "./theme";
 import { I18nextProvider } from "react-i18next";
 import Main from "./components/Main";
-import Admin from "./components/Admin";
 import PasswordReset from "./components/PasswordReset";
 import CustomGPTPage from "./components/CustomGPT";
 import Privacy from "./components/Privacy";
 import Terms from "./components/Terms";
+import ReactGA from "react-ga4";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import AvatarBuilder from "./components/AvatarBuilder";
+import Shop from "./components/Shop";
+const Admin = lazy(() => import("./components/Admin"));
+const Artifact = lazy(() => import("./components/Artifact"));
+
+ReactGA.initialize("G-L4KLPWXQ75");
 
 const App = () => {
-    const [darkMode, setDarkMode] = useState(localStorage.getItem("darkMode") === "true" || false);
+    const [themeMode, setThemeMode] = useState(localStorage.getItem("themeMode") || "light");
 
     useEffect(() => {
-        localStorage.setItem("darkMode", darkMode);
-    }, [darkMode]);
+        localStorage.setItem("themeMode", themeMode);
+    }, [themeMode]);
 
     const toggleTheme = () => {
-        setDarkMode(!darkMode);
+        setThemeMode((prevMode) => {
+            if (prevMode === "light") return "dark";
+            if (prevMode === "dark") return "third";
+            return "light";
+        });
     };
 
     const element = document.body;
-    if (darkMode) {
-        element.classList.add("dark-mode");
-    } else {
-        element.classList.remove("dark-mode");
-    }
+    element.classList.remove("light-mode", "dark-mode", "third-mode");
+    element.classList.add(`${themeMode}-mode`);
 
     return (
-        <ThemeProvider theme={theme(darkMode ? "dark" : "light")}>
-            <I18nextProvider>
-                <Router>
-                    <Routes>
-                        <Route path="/admin" element={<Admin />} />
-                        <Route path="/custom" element={<CustomGPTPage />} />
-                        <Route path="/privacy" element={<Privacy />} />
-                        <Route path="/terms" element={<Terms />} />
-                        <Route path="/" element={<Main darkMode={darkMode} toggleTheme={toggleTheme} />} />
-                        <Route path="/reset-password/:token" element={<PasswordReset />} />
-                    </Routes>
-                </Router>
-            </I18nextProvider>
+        <ThemeProvider theme={theme(themeMode)}>
+            <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+                <I18nextProvider>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <Router>
+                            <Routes>
+                                <Route path="/admin" element={<Admin />} />
+                                <Route path="/shop" element={<Shop />} />
+                                <Route path="/custom" element={<CustomGPTPage />} />
+                                <Route path="/privacy" element={<Privacy />} />
+                                <Route path="/avatar" element={<AvatarBuilder />} />
+                                <Route path="/terms" element={<Terms />} />
+                                <Route
+                                    path="/chat/:chatId"
+                                    element={<Main themeMode={themeMode} toggleTheme={toggleTheme} />}
+                                />
+                                <Route path="/reset-password/:token" element={<PasswordReset />} />
+                                <Route path="/" element={<Main themeMode={themeMode} toggleTheme={toggleTheme} />} />
+                                <Route
+                                    path="/artifact"
+                                    element={
+                                        <Suspense fallback={<div>Loading...</div>}>
+                                            <Artifact />
+                                        </Suspense>
+                                    }
+                                />
+                                <Route path="/artifact/:id" element={<Artifact />} />
+                            </Routes>
+                        </Router>
+                    </Suspense>
+                </I18nextProvider>
+            </GoogleOAuthProvider>
         </ThemeProvider>
     );
 };

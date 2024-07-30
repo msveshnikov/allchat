@@ -19,9 +19,11 @@ const SideDrawer = ({
     onSoundChange,
     tools,
     onToolsChange,
+    toolsEnabled,
     onClearAll,
     temperature,
     onTemperatureChange,
+    admin,
 }) => {
     const { t } = useTranslation();
 
@@ -55,7 +57,7 @@ const SideDrawer = ({
                     </ListItem>
                     {storedChatHistories.map((history, index) => (
                         <ListItem button key={index} onClick={() => onHistorySelection(index)}>
-                            <ListItemText primary={history.summary} />
+                            <ListItemText primary={history.summary?.replace(/[^a-zA-Z ]/g, "").slice(0, 40)} />
                         </ListItem>
                     ))}
                 </List>
@@ -76,12 +78,19 @@ const SideDrawer = ({
                         <SoundSwitch sound={sound} onSoundChange={onSoundChange} />
                     </ListItem>
                     <ListItem>
-                        <ToolsSwitch tools={tools} onToolsChange={onToolsChange} />
-                    </ListItem>
-                    <ListItem button style={{ color: "white", backgroundColor: "#3057A5" }} onClick={handleExportPDF}>
-                        <ListItemText primary={t("Export history PDF")} />
+                        <ToolsSwitch toolsEnabled={toolsEnabled} tools={tools} onToolsChange={onToolsChange} />
                     </ListItem>
                 </div>
+                {admin && (
+                    <Link to="/admin" style={{ color: "white", backgroundColor: "purple", textDecoration: "none" }}>
+                        <ListItem button>
+                            <ListItemText primary={t("Admin")} />
+                        </ListItem>
+                    </Link>
+                )}
+                <ListItem button style={{ color: "black", backgroundColor: "orange" }} onClick={handleExportPDF}>
+                    <ListItemText primary={t("Export history PDF")} />
+                </ListItem>
                 <Link to="/custom" style={{ color: "white", backgroundColor: "#30A557", textDecoration: "none" }}>
                     <ListItem button>
                         <ListItemText primary={t("Custom GPT")} />

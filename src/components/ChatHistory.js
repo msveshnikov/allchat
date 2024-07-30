@@ -1,10 +1,13 @@
-import React, { memo, useState } from "react";
-import { Box, CircularProgress, TextField, IconButton, useTheme } from "@mui/material";
+import React, { memo, useEffect, useState } from "react";
+import { Box, CircularProgress, TextField, IconButton, Button, useTheme } from "@mui/material";
 import ReactMarkdown from "react-markdown";
+import { Link as RouterLink } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { CodeBlock } from "./CodeBlock";
 import { Lightbox } from "react-modal-image";
+import { API_URL } from "./Main";
+import md5 from "md5";
 
 const getFileTypeIcon = (mimeType) => {
     switch (mimeType) {
@@ -32,7 +35,6 @@ const getFileTypeIcon = (mimeType) => {
             return "📁";
     }
 };
-
 const toolEmojis = {
     get_weather: "☀️",
     get_stock_price: "📈",
@@ -44,27 +46,37 @@ const toolEmojis = {
     execute_python: "🐍",
     get_latest_news: "📰",
     persist_user_info: "🗄️",
+    remove_user_info: "🗑️",
     schedule_action: "🗓️",
+    stop_scheduled_action: "⏹️",
     summarize_youtube_video: "📺",
+    add_calendar_event: "📅",
+    get_user_subscription_info: "💳",
+    award_achievement: "🏆",
+    send_user_feedback: "📝",
+    save_artifact: "🏺",
 };
 
 function toolsToEmojis(toolsUsed) {
     return toolsUsed.map((tool) => toolEmojis[tool] || "❓").join("");
 }
 
-const linkStyle = {
-    maxWidth: "100%",
-    overflowWrap: "break-word",
-    wordBreak: "break-all",
-};
-
-const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onDelete }) => {
+const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onDelete, user }) => {
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
     const [lightboxMessageIndex, setLightboxMessageIndex] = useState(0);
     const [editingMessageIndex, setEditingMessageIndex] = useState(-1);
     const [editingMessage, setEditingMessage] = useState("");
+    const [customGPTs, setCustomGPTs] = useState([]);
+    const [userAvatars, setUserAvatars] = useState([]);
     const theme = useTheme();
+
+    const linkStyle = {
+        maxWidth: "100%",
+        overflowWrap: "break-word",
+        wordBreak: "break-all",
+        color: theme.palette.mode === "dark" ? "#8ab4f8" : "blue",
+    };
 
     const handleImageClick = (index, message) => {
         setLightboxImageIndex(index);
@@ -98,11 +110,89 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
         }
     };
 
+    useEffect(() => {
+        fetchCustomGPTs();
+    }, []);
+
+    useEffect(() => {
+        const extractUserIds = (chatHistory) => {
+            const userIds = new Set();
+            chatHistory.forEach((chat) => {
+                if (chat.userId) {
+                    userIds.add(chat.userId);
+                }
+            });
+            return Array.from(userIds);
+        };
+
+        if (userAvatars?.length === 0) {
+            const userIds = extractUserIds(chatHistory);
+            fetchUserAvatars(userIds);
+        }
+    }, [chatHistory, userAvatars]);
+
+    const fetchCustomGPTs = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                return;
+            }
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            };
+            const response = await fetch(API_URL + "/customgpt", {
+                headers,
+            });
+            if (response.ok) {
+                setCustomGPTs(await response.json());
+            }
+        } catch {}
+    };
+
+    const fetchUserAvatars = async (userIds) => {
+        if (userIds.length > 0) {
+            try {
+                const response = await fetch(`${API_URL}/users/avatars`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ userIds }),
+                });
+
+                if (response.ok) {
+                    setUserAvatars(await response.json());
+                }
+            } catch (error) {}
+        }
+    };
+
+    const handleOpenArtifact = (artifact) => {
+        localStorage.setItem("currentArtifact", JSON.stringify(artifact?.[0]));
+        window.open("/artifact", "_blank");
+    };
+
+    const handleShareArtifact = async (artifact) => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: "Shared Artifact",
+                    text: "Check out this artifact!",
+                    url: `${window.location.origin}/artifact/${artifact?.[0]?._id}`,
+                });
+            } catch (error) {
+                console.error("Error sharing artifact:", error);
+            }
+        } else {
+            alert("Web Share API is not supported in your browser. You can copy the artifact URL manually.");
+        }
+    };
+
     return (
         <Box id="chatid" flex={1} overflow="auto" padding={2} display="flex" flexDirection="column">
             {chatHistory.map((chat, index) => (
                 <Box
-                    data-testid="chat-item"
                     key={index}
                     display="flex"
                     flexDirection="column"
@@ -135,15 +225,40 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                                 fullWidth
                             />
                         ) : (
-                            <>
-                                <IconButton size="small" onClick={() => handleDeleteClick(index)}>
-                                    <DeleteIcon fontSize="inherit" />
-                                </IconButton>
-                                {chat.user}
-                                <IconButton size="small" onClick={() => handleEditClick(index, chat.user)}>
-                                    <EditIcon fontSize="inherit" />
-                                </IconButton>
-                            </>
+                            <Box>
+                                {user?.profileUrl && (
+                                    <Box marginLeft={1}>
+                                        <RouterLink to="/avatar">
+                                            <img
+                                                src={
+                                                    userAvatars?.find((u) => u._id === chat?.userId)?.profileUrl ||
+                                                    user?.profileUrl ||
+                                                    `https://www.gravatar.com/avatar/${md5(
+                                                        user.email.toLowerCase()
+                                                    )}?d=identicon`
+                                                }
+                                                alt="User Avatar"
+                                                style={{
+                                                    width: "30px",
+                                                    height: "30px",
+                                                    borderRadius: "50%",
+                                                }}
+                                            />
+                                        </RouterLink>
+                                    </Box>
+                                )}
+                                <Box flex={1} display="flex" justifyContent="space-between" alignItems="center">
+                                    <Box display="flex" alignItems="center">
+                                        <IconButton size="small" onClick={() => handleDeleteClick(index)}>
+                                            <DeleteIcon fontSize="inherit" />
+                                        </IconButton>
+                                        {chat.user}
+                                        <IconButton size="small" onClick={() => handleEditClick(index, chat.user)}>
+                                            <EditIcon fontSize="inherit" />
+                                        </IconButton>
+                                    </Box>
+                                </Box>
+                            </Box>
                         )}
                         {chat.fileType && getFileTypeIcon(chat.fileType) !== null && (
                             <span style={{ fontSize: "3rem" }}>{getFileTypeIcon(chat.fileType)}</span>
@@ -152,7 +267,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                             <img
                                 src={`data:image/${chat.fileType.split("/")[1]};base64,${chat.userImageData}`}
                                 alt="User input"
-                                style={{ maxWidth: "100%" }}
+                                style={{ maxWidth: "90%" }}
                             />
                         )}
                     </Box>
@@ -175,6 +290,21 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                             )}
                         {chat.assistant !== null && (
                             <Box>
+                                <Box marginRight={1}>
+                                    <img
+                                        src={
+                                            customGPTs?.find((g) => g._id === chat?.gpt)?.profileUrl ||
+                                            "https://allchat.online/AllChat.png"
+                                        }
+                                        alt="Custom GPT Avatar"
+                                        style={{
+                                            width: "30px",
+                                            height: "30px",
+                                            borderRadius: "50%",
+                                            objectFit: "cover",
+                                        }}
+                                    />
+                                </Box>
                                 <ReactMarkdown
                                     components={{
                                         code({ node, inline, className, children, ...props }) {
@@ -214,6 +344,24 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                                 }}
                             >
                                 {chat.error}
+                            </Box>
+                        )}
+                        {chat.artifact && chat.toolsUsed.includes("save_artifact") && (
+                            <Box mt={2} display="flex" gap={2}>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={() => handleOpenArtifact(chat.artifact)}
+                                >
+                                    Open Artifact
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => handleShareArtifact(chat.artifact)}
+                                >
+                                    Share Artifact
+                                </Button>
                             </Box>
                         )}
                         {chat.image && (

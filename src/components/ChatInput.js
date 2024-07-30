@@ -29,8 +29,8 @@ const ChatInput = ({
     return (
         <Box display="flex" padding={2}>
             <Box display="flex" flexDirection="column" width="100%">
+                <span id="rewardId" />
                 <TextField
-                    data-testid="input-field"
                     fullWidth
                     label={t("Enter your question")}
                     value={input}
@@ -45,6 +45,7 @@ const ChatInput = ({
                     maxRows={6}
                     onPaste={handlePaste}
                 />
+
                 {pastedImage && (
                     <Box mt={2}>
                         <Typography variant="subtitle2">Pasted Image:</Typography>

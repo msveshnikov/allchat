@@ -1,7 +1,10 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "./model/User.js";
-import { sendEmail, sendWelcomeEmail } from "./utils.js";
+import { sendResetEmail, sendWelcomeEmail } from "./utils.js";
+import { OAuth2Client } from "google-auth-library";
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export const resetPassword = async (email) => {
     try {
@@ -20,17 +23,7 @@ export const resetPassword = async (email) => {
         );
 
         const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${token}`;
-        const mailOptions = {
-            to: user.email,
-            from: process.env.EMAIL,
-            subject: "Password Reset Request",
-            template: "reset",
-            context: {
-                resetUrl,
-            },
-        };
-
-        await sendEmail(mailOptions);
+        await sendResetEmail(user, resetUrl);
         return { success: true };
     } catch (error) {
         console.error("Password reset error:", error);
@@ -64,21 +57,38 @@ export const getIpFromRequest = (req) => {
     return ips[0].trim();
 };
 
-export const registerUser = async (email, password, req) => {
+export const registerUser = async (email, password, credential, req) => {
     try {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-        const user = new User({
-            email,
-            password: hashedPassword,
-            userAgent: req.headers["user-agent"],
-            ip: getIpFromRequest(req),
-        });
-        await user.save();
-        sendWelcomeEmail(user);
-        return { success: true };
+        const country = req.headers["geoip_country_code"];
+        const ip = getIpFromRequest(req);
+        let subscriptionStatus = "none";
+        let user;
+        if (credential) {
+            const verificationResponse = await verifyGoogleToken(req.body.credential);
+            const profile = verificationResponse?.payload;
+            console.log("email", profile?.email);
+            if (verificationResponse.error || !profile) {
+                return { success: false, error: verificationResponse.error };
+            }
+            user = await createOrUpdateUser(profile, req, ip, country);
+        } else {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            user = new User({
+                email,
+                password: hashedPassword,
+                userAgent: req.headers["user-agent"],
+                ip,
+                country,
+                subscriptionStatus,
+            });
+            await user.save();
+            await sendWelcomeEmail(user);
+        }
+        const token = jwt.sign({ userId: user._id, admin: user.admin }, process.env.JWT_TOKEN, { expiresIn: "720h" });
+        return { success: true, token };
     } catch (error) {
-        console.error("Registration error:", error);
+        console.error("Registration error:", error.message);
         return { success: false, error: "Registration failed" };
     }
 };
@@ -96,17 +106,58 @@ export const authenticateUser = async (email, password) => {
         const token = jwt.sign({ userId: user._id, admin: user.admin }, process.env.JWT_TOKEN, { expiresIn: "720h" });
         return { success: true, token };
     } catch (error) {
-        console.error("Authentication error:", error);
+        console.error("Authentication error:", error.message);
         return { success: false, error: "Authentication failed" };
     }
 };
 
-export const verifyToken = (req, res, next) => {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-        return res.status(401).json({ error: "Unauthorized" });
-    }
+export const verifyGoogleToken = async (token) => {
     try {
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        return { payload: ticket.getPayload() };
+    } catch (error) {
+        return { error: "Invalid user detected. Please try again" };
+    }
+};
+
+export const createOrUpdateUser = async (profile, req, ip, country) => {
+    const update = {
+        email: profile.email,
+        firstName: profile.given_name,
+        lastName: profile.family_name,
+        profileUrl: profile.picture,
+        userAgent: req.headers["user-agent"],
+        ip,
+        country,
+    };
+    let user = await User.findOne({
+        email: {
+            $regex: profile.email,
+            $options: "i",
+        },
+    });
+    if (!user) {
+        update.password = "external";
+        user = await User.create(update);
+        await sendWelcomeEmail(user);
+    } else {
+        if (user?.profileUrl) {
+            delete update.profileUrl;
+        }
+        user = await User.findOneAndUpdate({ email: profile.email }, update);
+    }
+    return user;
+};
+
+export const verifyToken = (req, res, next) => {
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
         const decoded = jwt.verify(token, process.env.JWT_TOKEN);
         req.user = {
             id: decoded.userId,

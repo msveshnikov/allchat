@@ -23,25 +23,21 @@ const resizeImage = async (imageBase64, maxSize = 2 * 1024 * 1024) => {
     }
 };
 
-export const getTextClaude = async (prompt, temperature, imageBase64, fileType, userId, model, webTools) => {
+export const getTextClaude = async (prompt, temperature, fileBytesBase64, fileType, userId, model, webTools) => {
     const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_KEY });
-    if (model?.includes("opus") || !model) {
-        model = "claude-3-haiku-20240307";
-    }
-
     const messages = [
         {
             role: "user",
             content: [
                 { type: "text", text: prompt },
-                ...(fileType && imageBase64
+                ...(fileType && fileBytesBase64
                     ? [
                           {
                               type: "image",
                               source: {
                                   type: "base64",
                                   media_type: fileType === "png" ? "image/png" : "image/jpeg",
-                                  data: await resizeImage(imageBase64),
+                                  data: await resizeImage(fileBytesBase64),
                               },
                           },
                       ]
@@ -52,8 +48,9 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
 
     let response = await getResponse();
     let toolUses, toolResults;
+    let iterationCount = 0;
 
-    while (response?.stop_reason === "tool_use") {
+    while (response?.stop_reason === "tool_use" && iterationCount < 5) {
         toolUses = response.content.filter((block) => block.type === "tool_use");
         if (!toolUses.length) {
             return response?.content?.[0]?.text;
@@ -72,17 +69,21 @@ export const getTextClaude = async (prompt, temperature, imageBase64, fileType, 
             content: toolResults.map((toolResult) => ({ type: "tool_result", ...toolResult })),
         });
         response = await getResponse();
+        iterationCount++;
     }
 
     return response?.content?.[0]?.text;
 
     async function getResponse() {
-        return anthropic.beta.tools.messages.create({
-            model,
-            max_tokens: 4096,
-            temperature: temperature || 0.5,
-            tools: webTools ? tools : [],
-            messages,
-        });
+        return anthropic.messages.create(
+            {
+                model,
+                max_tokens: model.includes("sonnet") ? 8192 : 4096,
+                temperature: temperature || 0.7,
+                tools: webTools ? tools : [],
+                messages,
+            },
+            { headers: { "anthropic-beta": "max-tokens-3-5-sonnet-2024-07-15" } }
+        );
     }
 };

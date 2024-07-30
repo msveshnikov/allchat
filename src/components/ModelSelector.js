@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Typography, Menu, MenuItem } from "@mui/material";
+import { Typography, Menu, MenuItem, useTheme } from "@mui/material";
 import { models } from "./Settings";
 
-export const ModelSelector = ({ selectedModel, onModelSelect }) => {
+export const ModelSelector = ({ selectedModel, onModelSelect, user }) => {
     const [anchorEl, setAnchorEl] = useState(null);
+    const theme = useTheme();
     const open = Boolean(anchorEl);
 
     const handleClick = (event) => {
@@ -26,8 +27,8 @@ export const ModelSelector = ({ selectedModel, onModelSelect }) => {
                 component="span"
                 onClick={handleClick}
                 style={{
-                    fontSize: "0.9rem",
-                    color: "#c5c5c5",
+                    fontSize: "0.8rem",
+                    color: theme.palette.modelName,
                     marginLeft: "0.5rem",
                     cursor: "pointer",
                 }}
@@ -43,11 +44,13 @@ export const ModelSelector = ({ selectedModel, onModelSelect }) => {
                     "aria-labelledby": "model-selector-button",
                 }}
             >
-                {Object.keys(models).map((model) => (
-                    <MenuItem key={model} onClick={() => handleModelSelect(model)}>
-                        {model}
-                    </MenuItem>
-                ))}
+                {Object.keys(models)
+                    .filter((model) => user?.admin || !models[model].includes("admin"))
+                    .map((model) => (
+                        <MenuItem key={model} onClick={() => handleModelSelect(model)}>
+                            {model}
+                        </MenuItem>
+                    ))}
             </Menu>
         </div>
     );

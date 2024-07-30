@@ -1,5 +1,5 @@
 # Use the official Node.js image as the base image
-FROM node:20-slim
+FROM --platform=$BUILDPLATFORM node:20-slim AS build
 
 # Set the working directory in the container
 WORKDIR /app
@@ -8,13 +8,14 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install the dependencies
-ENV PUPPETEER_SKIP_DOWNLOAD 1 
 RUN npm install
 
 # Copy the rest of the application code
 COPY . .
 
 ENV REACT_APP_API_URL https://allchat.online/api
+ENV REACT_APP_WS_URL wss://allchat.online/ws
+ENV REACT_APP_GOOGLE_CLIENT_ID 740039779548-p80d07b56mk31vgaht4rlh74je8oku28.apps.googleusercontent.com
 
 # Build the React app for production
 RUN npm run build

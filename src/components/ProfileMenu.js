@@ -1,11 +1,10 @@
 import React from "react";
 import { IconButton, Menu, MenuItem, Avatar } from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import md5 from "md5";
 import LaunchIcon from "@mui/icons-material/Launch";
 import { useNavigate } from "react-router-dom";
 
-export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
+export function ProfileMenu({ userEmail, user, onSettings, onSignOut }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const navigate = useNavigate();
 
@@ -21,19 +20,9 @@ export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
         onSettings();
         handleProfileMenuClose();
     };
- 
+
     const handleSignOutClick = () => {
         onSignOut();
-        handleProfileMenuClose();
-    };
-
-    const handleMangaTVClick = () => {
-        window.open("https://mangatv.shop/", "_blank");
-        handleProfileMenuClose();
-    };
-
-    const handleGitHubClick = () => {
-        window.open("https://github.com/msveshnikov/allchat", "_blank");
         handleProfileMenuClose();
     };
 
@@ -54,15 +43,14 @@ export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
 
     return (
         <div>
-            <IconButton data-testid="profile" color="inherit" onClick={handleProfileMenuOpen}>
-                {userEmail ? (
-                    <Avatar
-                        src={`https://www.gravatar.com/avatar/${md5(userEmail.trim().toLowerCase())}?d=retro`}
-                        alt="User Avatar"
-                    />
-                ) : (
-                    <AccountCircleIcon />
-                )}
+            <IconButton color="inherit" onClick={handleProfileMenuOpen}>
+                <Avatar
+                    src={
+                        user?.profileUrl ||
+                        `https://www.gravatar.com/avatar/${md5(userEmail.trim().toLowerCase())}?d=retro`
+                    }
+                    alt="User Avatar"
+                />
             </IconButton>
             <Menu
                 anchorEl={anchorEl}
@@ -77,18 +65,12 @@ export function ProfileMenu({ userEmail, onSettings, onSignOut }) {
                     horizontal: "right",
                 }}
             >
-                <MenuItem onClick={handleSettingsClick}>Settings</MenuItem>
+                <MenuItem onClick={handleSettingsClick}>Account</MenuItem>
                 <MenuItem onClick={handleSignOutClick}>Sign Out</MenuItem>
                 <MenuItem onClick={handlePrivacyClick}>Privacy</MenuItem>
                 <MenuItem onClick={handleTermsClick}>Terms</MenuItem>
                 <MenuItem onClick={handleAndroidClick}>
                     Android App &nbsp; <LaunchIcon fontSize="small" />
-                </MenuItem>
-                <MenuItem onClick={handleMangaTVClick}>
-                    Manga TV &nbsp; <LaunchIcon fontSize="small" />
-                </MenuItem>
-                <MenuItem onClick={handleGitHubClick}>
-                    GitHub &nbsp; <LaunchIcon fontSize="small" />
                 </MenuItem>
             </Menu>
         </div>

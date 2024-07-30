@@ -7,7 +7,10 @@ import dotenv from "dotenv";
 import pdfParser from "pdf-parse/lib/pdf-parse.js";
 import mammoth from "mammoth";
 import xlsx from "xlsx";
+import { MAX_CONTEXT_LENGTH } from "./index.js";
 dotenv.config({ override: true });
+
+export const emailSignature = `\n\n---\nBest regards,\nAllChat`;
 
 export async function handleIncomingEmails() {
     try {
@@ -85,17 +88,17 @@ export async function handleIncomingEmails() {
                                             .join(", ");
 
                                         const response = await getTextClaude(
-                                            `Subject: ${emailFrom.subject} User information: ${userInfo} Human: ${emailBody} Assistant:`,
-                                            0.5,
+                                            `Subject: ${emailFrom.subject} User information: ${userInfo} Human: ${emailBody} Assistant:`.slice(
+                                                -MAX_CONTEXT_LENGTH
+                                            ),
+                                            0.7,
                                             null,
                                             null,
                                             user._id,
-                                            "claude-3-haiku-20240307", //Maybe more creative model?
-                                            null,
+                                            "claude-3-haiku-20240307",
                                             true
                                         );
                                         if (response) {
-                                            const emailSignature = `\n\n---\nBest regards,\nAllChat`;
                                             await sendEmail(
                                                 emailFrom.from.value[0].address,
                                                 "RE: " + emailFrom.subject,

@@ -1,5 +1,5 @@
 import { load } from "cheerio";
-import fetch from "node-fetch";
+import { MAX_SEARCH_RESULT_LENGTH } from "./index.js";
 
 const userAgents = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36",
@@ -32,12 +32,43 @@ export async function fetchSearchResults(query) {
         return null;
     }
 }
-//console.log(await fetchSearchResults("Java"));
+
+const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+const TIMEOUT = 10000; // 10 seconds
 
 export async function fetchPageContent(url) {
     try {
         const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
-        const response = await fetch(url, { headers: { "User-Agent": randomUserAgent } });
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
+
+        const response = await fetch(url, {
+            headers: { "User-Agent": randomUserAgent },
+            signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        // Check content type
+        const contentType = response.headers.get("Content-Type");
+        if (
+            contentType &&
+            (contentType.includes("application/pdf") ||
+                contentType.includes("audio") ||
+                contentType.includes("video") ||
+                contentType.includes("image"))
+        ) {
+            console.log(`fetchPageContent skipped (${contentType})`, url);
+            return null;
+        }
+
+        // Check file size
+        const contentLength = response.headers.get("Content-Length");
+        if (contentLength && parseInt(contentLength) > MAX_FILE_SIZE) {
+            console.log("fetchPageContent skipped (file too large)", url);
+            return null;
+        }
+
         const html = await response.text();
         const $ = load(html);
         $("script, style").remove();
@@ -45,63 +76,16 @@ export async function fetchPageContent(url) {
             .map((_, el) => $(el).text().trim())
             .get()
             .join(" ");
-        return content?.slice(0, 20000);
+        return content?.slice(0, MAX_SEARCH_RESULT_LENGTH);
     } catch (error) {
+        if (error.name === "AbortError") {
+            console.log("fetchPageContent timed out", url);
+        } else {
+            console.error("fetchPageContent error", error);
+        }
         return null;
     }
 }
-
-// console.log(await fetchPageContent("https://www.java.com/"));
-
-export const google = async (term, lang) => {
-    const fetchData = async (term, lang) => {
-        const result = await fetch(`https://google.com/search?q=${encodeURIComponent(term)}&hl=${lang}`, {
-            headers: { "User-Agent": userAgents[Math.floor(Math.random() * userAgents.length)] },
-        });
-        return load(await result.text());
-    };
-    const $ = await fetchData(term, lang);
-    return (
-        $(".PZPZlf span")
-            .map((i, element) => $(element).text())
-            .get()
-            .join(" ")
-            .replaceAll("Описание", "")
-            .replaceAll("ЕЩЁ", "") + $(".LGOjhe span").text()
-    );
-};
-
-// console.log(await google("Java", "en"));
-
-export const googleImages = async (term, lang) => {
-    const fetchData = async (term, lang) => {
-        const result = await fetch(
-            `https://www.google.com/search?q=${encodeURIComponent(term)}&oq=${encodeURIComponent(term)}&hl=${lang}` +
-                `&tbm=isch&asearch=ichunk&async=_id:rg_s,_pms:s,_fmt:pc&sourceid=chrome&ie=UTF-8`,
-            {
-                headers: { "User-Agent": userAgents[Math.floor(Math.random() * userAgents.length)] },
-            }
-        );
-        return load(await result.text());
-    };
-    const $ = await fetchData(term, lang);
-    let images_results = [];
-    $("div.rg_bx").each((i, el) => {
-        let json_string = $(el).find(".rg_meta").text();
-        images_results.push({
-            title: $(el).find(".iKjWAf .mVDMnf").text(),
-            source: $(el).find(".iKjWAf .FnqxG").text(),
-            link: JSON.parse(json_string).ru,
-            original: JSON.parse(json_string).ou,
-            thumbnail: $(el).find(".rg_l img").attr("src")
-                ? $(el).find(".rg_l img").attr("src")
-                : $(el).find(".rg_l img").attr("data-src"),
-        });
-    });
-    return images_results.filter((image) => !image?.original?.includes("x-raw-image://"));
-};
-
-//  console.log(await googleImages("cat", "en"));
 
 export const googleNews = async (lang) => {
     const fetchData = async (lang) => {
@@ -128,5 +112,3 @@ export const googleNews = async (lang) => {
 
     return articles;
 };
-
-// console.log(await googleNews("en"));

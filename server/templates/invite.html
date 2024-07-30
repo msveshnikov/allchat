@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Chat Invitation</title>
+        <style>
+            /* Styles for better compatibility with Outlook */
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #fff8e5;
+                padding: 20px;
+                -webkit-text-size-adjust: none;
+                -ms-text-size-adjust: none;
+            }
+            table {
+                border-collapse: separate;
+                border-spacing: 0;
+            }
+            th,
+            td {
+                font-weight: normal;
+                text-align: left;
+                padding: 10px;
+            }
+            img {
+                border: 0;
+                outline: none;
+                text-decoration: none;
+                -ms-interpolation-mode: bicubic;
+            }
+
+            /* Custom styles */
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #ffffff;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 2px 10px rgba(241, 192, 128, 0.3);
+            }
+            h1 {
+                color: #e7278d;
+                font-size: 32px;
+                font-weight: 700;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+            p {
+                color: #5c3d2e;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .profile-img {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-right: 20px;
+            }
+            .custom-img {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-right: 20px;
+            }
+            .btn {
+                display: inline-block;
+                background-color: #ff9a62;
+                color: #ffffff;
+                text-decoration: none;
+                padding: 15px 30px;
+                border-radius: 8px;
+                font-size: 18px;
+                font-weight: 700;
+                transition: background-color 0.3s;
+                box-shadow: 0 2px 6px rgba(241, 192, 128, 0.4);
+            }
+            .btn:hover {
+                background-color: #ff6f3c;
+            }
+            .info-list {
+                list-style-type: none;
+                padding: 0;
+                margin-bottom: 30px;
+            }
+            .info-list li {
+                display: flex;
+                align-items: center;
+                margin-bottom: 15px;
+            }
+            .info-list li strong {
+                width: 150px;
+                font-weight: 700;
+                color: #ff6f3c;
+            }
+        </style>
+    </head>
+    <body>
+        <table class="container" cellpadding="0" cellspacing="0" border="0" align="center">
+            <tr>
+                <td>
+                    <h1>You're Invited!</h1>
+                    <p>
+                        <img class="profile-img" src="{{inviterProfileUrl}}" alt="Inviter Profile" />
+                        Hey there! You've been invited to join an exciting chat. Let's get started!
+                    </p>
+                    <table class="info-list" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td><strong>Model:</strong></td>
+                            <td>{{model}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Custom GPT:</strong></td>
+                            <td>
+                                <img class="custom-img" src="{{customGPTProfileUrl}}" alt="Custom GPT Profile" />
+                                {{customGPT}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Chat ID:</strong></td>
+                            <td>{{chatId}}</td>
+                        </tr>
+                    </table>
+                    <p style="text-align: center">
+                        <a href="{{chatUrl}}" class="btn">Join the Chat</a>
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

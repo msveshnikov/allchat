@@ -2,11 +2,14 @@ import nodemailer from "nodemailer";
 import fs from "fs";
 import path from "path";
 import { fetchPageContent, fetchSearchResults, googleNews } from "./search.js";
-import { User } from "./model/User.js";
+import { User, addUserCoins } from "./model/User.js";
+import { Artifact } from "./model/Artifact.js";
 import { scheduleAction, stopScheduledAction } from "./scheduler.js";
-import { contentFolder, toolsUsed } from "./index.js";
+import { MAX_SEARCH_RESULT_LENGTH, contentFolder, toolsUsed } from "./index.js";
 import { summarizeYouTubeVideo } from "./youtube.js";
 import TelegramBot from "node-telegram-bot-api";
+import ical from "ical-generator";
+import { emailSignature } from "./email.js";
 
 const bot = new TelegramBot(process.env.TELEGRAM_KEY);
 const transporter = nodemailer.createTransport({
@@ -231,6 +234,102 @@ export const tools = [
             required: ["videoId"],
         },
     },
+    {
+        name: "add_calendar_event",
+        description:
+            "Adds an event to the user's calendar and sends an ICS file via email. The tool expects an object with 'title', 'description', 'startTime', and 'endTime' properties. It returns a success message.",
+        input_schema: {
+            type: "object",
+            properties: {
+                title: {
+                    type: "string",
+                    description: "The title of the calendar event",
+                },
+                description: {
+                    type: "string",
+                    description: "The description of the calendar event",
+                },
+                startTime: {
+                    type: "string",
+                    description: "The start time of the event in ISO format (e.g., '2023-05-15T10:00:00')",
+                },
+                endTime: {
+                    type: "string",
+                    description: "The end time of the event in ISO format (e.g., '2023-05-15T11:30:00')",
+                },
+            },
+            required: ["title", "description", "startTime", "endTime"],
+        },
+    },
+    {
+        name: "get_user_subscription_info",
+        description: "Get information about the user's subscription status, usage statistics, and API consumption.",
+        input_schema: {
+            type: "object",
+            properties: {},
+            required: [],
+        },
+    },
+    {
+        name: "award_achievement",
+        description:
+            "Award the user with an achievement (a nice emoji and a short description) for any outstanding result. The achievement will be persisted in the user's profile. Example emojis: 🏆, ⭐, 🎉, 🚀, 👑. Example achievement: '🏆 Mastered Python Programming'",
+        input_schema: {
+            type: "object",
+            properties: {
+                emoji: {
+                    type: "string",
+                    description: "The one and only emoji to represent the achievement, e.g., 🏆, ⭐, 🎉, 🚀, 👑",
+                },
+                description: {
+                    type: "string",
+                    description: "A short description of the achievement, e.g., 'Mastered Python Programming'",
+                },
+            },
+            required: ["emoji", "description"],
+        },
+    },
+    {
+        name: "send_user_feedback",
+        description:
+            "Send user feedback to AllChat developers. Any AllChat problems/suggestions/questions are appreciated",
+        input_schema: {
+            type: "object",
+            properties: {
+                feedback: {
+                    type: "string",
+                    description: "The user's feedback message",
+                },
+            },
+            required: ["feedback"],
+        },
+    },
+    {
+        name: "save_artifact",
+        description:
+            "Saves the current state of a working artifact to the database for later use or editing. Call this tool when you've created or significantly updated content that should be preserved, such as HTML pages, Mermaid diagrams, code snippets, OpenSCAD models, React components, Python scripts, SVG images, or text documents. These artifacts will be displayed in a side window in the UI for easy access.",
+        input_schema: {
+            type: "object",
+            properties: {
+                artifactName: {
+                    type: "string",
+                    description:
+                        "A descriptive name for the artifact (e.g., 'Login Page HTML', 'User Flow Diagram', 'Python Data Analysis Script', 'OpenSCAD Model', 'React Button Component', 'SVG Logo')",
+                },
+                content: {
+                    type: "string",
+                    description: "The full content of the artifact",
+                },
+                type: {
+                    type: "string",
+                    description:
+                        "The type of artifact. Choose from: 'html', 'mermaid', 'code', 'text', 'openscad', 'react', 'python', 'svg', or 'other'",
+                    enum: ["html", "mermaid", "code", "text", "openscad", "react", "python", "svg", "other"],
+                },
+            },
+            required: ["artifactName", "content", "type"],
+        },
+    },
 ];
 
 export const handleToolCall = async (name, args, userId) => {
@@ -249,7 +348,7 @@ export const handleToolCall = async (name, args, userId) => {
         case "search_web_content":
             return searchWebContent(args.query);
         case "send_email":
-            return sendEmail(args.to, args.subject, args.content, userId);
+            return sendEmail(args.to, args.subject, args.content + emailSignature, userId);
         case "get_current_time_utc":
             return getCurrentTimeUTC();
         case "execute_python":
@@ -266,6 +365,16 @@ export const handleToolCall = async (name, args, userId) => {
             return stopScheduledAction(userId);
         case "summarize_youtube_video":
             return summarizeYouTubeVideo(args.videoId);
+        case "add_calendar_event":
+            return addCalendarEvent(args.title, args.description, args.startTime, args.endTime, userId);
+        case "get_user_subscription_info":
+            return getUserSubscriptionInfo(userId);
+        case "award_achievement":
+            return awardAchievement(args.emoji, args.description, userId);
+        case "send_user_feedback":
+            return sendUserFeedback(args.feedback);
+        case "save_artifact":
+            return saveArtifact(args.artifactName, args.content, args.type, userId);
         default:
             console.error(`Unsupported function call: ${name}`);
     }
@@ -285,7 +394,7 @@ export async function getWeather(location) {
         } with a temperature of ${Math.round(main?.temp - 273)}°C`;
 
         const fiveDayForecast = list
-            ?.filter((_, index) => index % 8 === 4) //noon
+            ?.filter((item) => item.dt_txt.includes("12:00:00"))
             ?.map((item) => {
                 const date = new Date(item.dt * 1000).toLocaleDateString();
                 const temperature = Math.round(item.main.temp - 273);
@@ -349,12 +458,11 @@ export async function sendTelegramMessage(chatId, message) {
         await bot.sendMessage(chatId, message);
         return "Telegram message sent successfully.";
     } catch (error) {
-        console.error("Error sending Telegram message:", error);
         return "Error sending Telegram message:" + error.message;
     }
 }
 
-export async function sendEmail(to, subject, content, userId) {
+export async function sendEmail(to, subject, content, userId, attachments = []) {
     let recipient;
 
     if (to && !to?.endsWith("@example.com")) {
@@ -366,12 +474,15 @@ export async function sendEmail(to, subject, content, userId) {
         }
         recipient = user.email;
     }
+
     const mailOptions = {
         to: recipient,
         from: process.env.EMAIL,
         subject,
         text: content,
+        attachments,
     };
+
     const info = await transporter.sendMail(mailOptions);
     return `Email sent: ${info.response}`;
 }
@@ -422,7 +533,7 @@ export async function searchWebContent(query) {
             return await fetchPageContent(result.link);
         })
     );
-    return pageContents?.join("\n");
+    return pageContents?.join("\n").slice(0, MAX_SEARCH_RESULT_LENGTH * 2);
 }
 
 export async function persistUserInfo(key, value, userId) {
@@ -442,9 +553,130 @@ export async function removeUserInfo(userId) {
         const user = await User.findById(userId);
         user.info = {}; // Clear the user's info object
         await user.save();
-        return `User information removed successfully for user ${userId}.`;
+
+        // Delete all artifacts associated with the user
+        await Artifact.deleteMany({ user: userId });
+
+        return `User information and all associated artifacts removed successfully for user ${userId}.`;
     } catch (error) {
-        console.error("Error removing user information:", error);
-        return "Error removing user information: " + error.message;
+        console.error("Error removing user information and artifacts:", error);
+        return "Error removing user information and artifacts: " + error.message;
+    }
+}
+
+export async function addCalendarEvent(title, description, startTime, endTime, userId) {
+    try {
+        const user = await User.findById(userId);
+        const cal = ical({ domain: "allchat.online" });
+        cal.createEvent({
+            start: new Date(startTime),
+            end: new Date(endTime),
+            summary: title,
+            description,
+        });
+
+        const icsContent = cal.toString();
+
+        const subject = `Calendar Event: ${title}`;
+        const emailContent = `Please find the attached ICS file for the event: ${title}`;
+
+        const attachmentName = `${title}.ics`;
+        const attachments = [{ filename: attachmentName, content: icsContent, contentType: "text/calendar" }];
+
+        await sendEmail(user.email, subject, emailContent + emailSignature, userId, attachments);
+
+        return `Calendar event '${title}' added successfully and ICS file sent to ${user.email}.`;
+    } catch (error) {
+        console.error("Error adding calendar event:", error);
+        return "Error adding calendar event: " + error.message;
+    }
+}
+
+async function getUserSubscriptionInfo(userId) {
+    try {
+        const user = await User.findById(userId);
+
+        const { subscriptionStatus, subscriptionId, usageStats, info } = user;
+
+        let output = `Subscription Status: ${subscriptionStatus}\n`;
+        output += `Subscription ID: ${subscriptionId || "N/A"}\n\n`;
+
+        output += "Usage Statistics:\n";
+        for (const [model, stats] of Object.entries(usageStats)) {
+            output += `${model}:\n`;
+            output += `  Input Tokens: ${stats.inputTokens}\n`;
+            output += `  Output Tokens: ${stats.outputTokens}\n`;
+            output += `  Money Consumed: $${stats.moneyConsumed.toFixed(2)}\n`;
+            if (model === "gemini") {
+                output += `  Images Generated: ${stats.imagesGenerated}\n`;
+            }
+            output += "\n";
+        }
+
+        output += "User Information:\n";
+        for (const [key, value] of info.entries()) {
+            output += `${key}: ${value}\n`;
+        }
+        output += "\nTerms of Use:\n";
+        output +=
+            "7. The AllChat.online service is available to users with subscription only. Users can subscribe to the service for $4.99 per month, which includes a free trial period. The subscription provides access to the full suite of AI models and capabilities offered by AllChat.online. The subscription automatically renews on a monthly basis unless cancelled by the user. Cancellation can be done at any time, but there are no refunds for partially used subscription periods. If users exceed $4.99/month in API consumption, the subscription automatically terminates.\n";
+
+        return output;
+    } catch (error) {
+        console.error("Error getting user subscription information:", error);
+        return "Error getting user subscription information: " + error.message;
+    }
+}
+
+async function awardAchievement(emoji, description, userId) {
+    try {
+        const user = await User.findById(userId);
+        emoji = emoji?.slice(0, 2);
+
+        const achievement = { emoji, description };
+        user.achievements.push(achievement);
+        await user.save();
+        addUserCoins(userId, 30);
+        return `Achievement awarded: ${emoji} ${description}`;
+    } catch (error) {
+        console.error("Error awarding achievement:", error);
+        return "Error awarding achievement: " + error.message;
+    }
+}
+
+export async function sendUserFeedback(feedback) {
+    const developerChatId = "1049277315";
+    try {
+        await bot.sendMessage(developerChatId, `User Feedback: ${feedback}`);
+        return "Feedback sent successfully to AllChat developers.";
+    } catch (error) {
+        console.error("Error sending user feedback:", error);
+        return "Error sending user feedback: " + error.message;
+    }
+}
+
+export async function saveArtifact(artifactName, content, type, userId) {
+    try {
+        let artifact = await Artifact.findOne({ userId, name: artifactName });
+
+        if (artifact) {
+            artifact.content = content;
+            artifact.type = type;
+            artifact.updatedAt = new Date();
+        } else {
+            artifact = new Artifact({
+                user: userId,
+                name: artifactName,
+                content,
+                type,
+            });
+        }
+
+        await artifact.save();
+
+        return `Artifact "${artifactName}" of type "${type}" saved successfully.`;
+    } catch (error) {
+        console.error("Error saving artifact:", error);
+        return "Error saving artifact: " + error.message;
     }
 }

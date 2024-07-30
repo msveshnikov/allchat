@@ -32,7 +32,6 @@ const FileSelector = ({ onFileSelect, selectedFile, allowedFileTypes }) => {
             <div style={{ position: "relative", display: "inline-block" }}>
                 <IconButton component="label" color="primary" style={{ position: "relative" }}>
                     <input
-                        data-testid="file-input"
                         accept={acceptedFileTypes}
                         type="file"
                         onChange={handleFileChange}
@@ -41,7 +40,6 @@ const FileSelector = ({ onFileSelect, selectedFile, allowedFileTypes }) => {
                     <AttachFileIcon />
                     {selectedFile && (
                         <CircleIcon
-                            data-testid="circle-icon"
                             style={{
                                 position: "absolute",
                                 top: 0,

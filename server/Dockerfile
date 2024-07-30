@@ -1,5 +1,7 @@
 FROM node:20-slim
 
+RUN apt-get update && apt-get install -y openscad
+
 # Set the working directory in the container
 WORKDIR /app
 
@@ -17,4 +19,4 @@ COPY . .
 EXPOSE 5000
 
 # Start the backend application
-CMD [ "node", "index.js" ]
+CMD [ "node", "cluster.js" ]

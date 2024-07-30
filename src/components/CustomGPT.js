@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Typography, TextField, Box, Button, IconButton, useTheme } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import { Link } from "react-router-dom";
 import { API_URL } from "./Main";
 
 const CustomGPTPage = () => {
@@ -77,6 +78,21 @@ const CustomGPTPage = () => {
             setError("");
             setSuccessMessage(data.message);
             setCurrentSize(data.currentSize);
+
+            const avatarResponse = await fetch(`${API_URL}/generate-avatar`, {
+                method: "POST",
+                headers,
+                body: JSON.stringify({ userInput: instructions }),
+            });
+
+            if (avatarResponse.ok) {
+                const avatarData = await avatarResponse.json();
+                fetch(`${API_URL}/customgpt/${data._id}`, {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify({ profileUrl: avatarData.profileUrl }),
+                });
+            }
         } else {
             setError(data.error);
             setSuccessMessage("");
@@ -105,8 +121,20 @@ const CustomGPTPage = () => {
                 padding: 4,
             }}
         >
+            <Button
+                component={Link}
+                to="/shop"
+                variant="contained"
+                color="secondary"
+                sx={{
+                    marginBottom: 3,
+                    // fontWeight: "bold",
+                }}
+            >
+                Custom GPT Shop
+            </Button>
             <Typography variant="h4" gutterBottom color={theme.palette.text.primary}>
-                Custom GPT
+               Create New
             </Typography>
             <TextField
                 label="Name"
@@ -160,10 +188,9 @@ const CustomGPTPage = () => {
                     multiple
                     hidden
                     onChange={handleFileUpload}
-                    data-testid="file-upload-input"
                 />
                 <Typography variant="body2" color={theme.palette.text.secondary}>
-                    Drag and drop files here or click to upload
+                    Drag and drop knowledge files here or click to upload
                 </Typography>
                 {files.map((file, index) => (
                     <Typography key={index} variant="body2" color={theme.palette.text.primary}>

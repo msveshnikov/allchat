@@ -1,30 +1,27 @@
 import { getTextClaude } from "./claude.js";
-import { googleImages } from "./search.js";
 import dotenv from "dotenv";
 dotenv.config({ override: true });
 
-export const getImage = async (prompt, imageModel) => {
-    prompt = prompt.substring(0, 500);
-    const translated = await getTextClaude("Translate sentences in brackets [] into English:\n[" + prompt + "]\n");
+export const getImage = async (prompt, avatar) => {
+    prompt = prompt.substring(0, 700);
+    const translated = await getTextClaude(
+        avatar ? prompt : "Translate sentences in brackets [] into English:\n[" + prompt + "]\n"
+    );
     if (translated) {
         prompt = translated;
     }
-    if (imageModel === "google-images") {
-        prompt = prompt.substring(0, 80);
-        return await getGoogleImage(prompt);
-    }
 
     console.log("Image Prompt: " + prompt);
-    return getStabilityImage(prompt, imageModel);
+    return getStabilityImage(prompt, avatar);
 };
 
-export const getStabilityImage = async (prompt, imageModel) => {
-    const json = await getRawImageJson(prompt, imageModel);
+export const getStabilityImage = async (prompt, avatar) => {
+    const json = await getRawImageJson(prompt, avatar);
     return json?.artifacts?.[0]?.base64;
 };
 
-export const getRawImageJson = async (prompt, imageModel) => {
-    imageModel = "stable-diffusion-xl-1024-v1-0";
+export const getRawImageJson = async (prompt, avatar) => {
+    const imageModel = "stable-diffusion-xl-1024-v1-0";
     const response = await fetch(`https://api.stability.ai/v1/generation/${imageModel}/text-to-image`, {
         method: "POST",
         headers: {
@@ -34,8 +31,8 @@ export const getRawImageJson = async (prompt, imageModel) => {
         },
         body: JSON.stringify({
             cfg_scale: 7,
-            height: 64 * 12,
-            width: 64 * 21,
+            height: avatar ? 1024 : 64 * 12,
+            width: avatar ? 1024 : 64 * 21,
             samples: 1,
             steps: 30,
             text_prompts: [
@@ -52,22 +49,4 @@ export const getRawImageJson = async (prompt, imageModel) => {
         return null;
     }
     return response.json();
-};
-
-export const getGoogleImage = async (prompt) => {
-    try {
-        const images = await googleImages(prompt, "en");
-        const randomImage = images[Math.floor(Math.random() * images.length)];
-        const response = await fetch(randomImage.original);
-
-        if (!response.ok) {
-            return null;
-        }
-
-        const buffer = Buffer.from(await response.arrayBuffer());
-        return buffer.toString("base64");
-    } catch (error) {
-        console.error("Error fetching Google image:", error);
-        return null;
-    }
 };

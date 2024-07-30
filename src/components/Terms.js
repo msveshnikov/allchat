@@ -72,10 +72,11 @@ const Terms = () => {
                     the service for $4.99 per month, which includes a free trial period. The subscription provides
                     access to the full suite of AI models and capabilities offered by AllChat.online. The subscription
                     automatically renews on a monthly basis unless cancelled by the user. Cancellation can be done at
-                    any time, but there are no refunds for partially used subscription periods. The use of the
-                    AllChat.online service is subject to the terms of service and privacy policy, which may be updated
-                    from time to time. Use of the service constitutes acceptance of the applicable terms and policies in
-                    effect at that time.
+                    any time, but there are no refunds for partially used subscription periods. If users exceed
+                    $4.99/month in API consumption subscription automatically terminates. The use of the AllChat.online
+                    service is subject to the terms of service and privacy policy, which may be updated from time to
+                    time. Use of the service constitutes acceptance of the applicable terms and policies in effect at
+                    that time.
                 </Typography>
                 <br />
             </Container>

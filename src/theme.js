@@ -4,15 +4,25 @@ import { red } from "@mui/material/colors";
 const theme = (mode) =>
     createTheme({
         palette:
-            mode !== "dark"
+            mode === "light"
                 ? {
-                      mode: mode,
+                      // Light theme (unchanged)
+                      mode: "light",
                       primary: {
                           main: "#1976D2",
                       },
                       secondary: {
                           main: "#f55077",
                       },
+                      background: {
+                          default: "#f5f5f5",
+                          paper: "#ffffff",
+                      },
+                      text: {
+                          primary: "#333333",
+                          secondary: "#666666",
+                      },
+                      modelName: "#c5c5c5", 
                       chatBubble: {
                           userBg: "#d4edda",
                           userColor: "#155724",
@@ -23,8 +33,10 @@ const theme = (mode) =>
                           editBg: "#f5f5a5",
                       },
                   }
-                : {
-                      mode: mode,
+                : mode === "dark"
+                ? {
+                      // Dark theme (unchanged)
+                      mode: "dark",
                       primary: {
                           main: "#F50057",
                       },
@@ -42,6 +54,7 @@ const theme = (mode) =>
                       error: {
                           main: red.A400,
                       },
+                      modelName: "#c5c5c5", 
                       chatBubble: {
                           userBg: "#333333",
                           userColor: "#cccccc",
@@ -50,6 +63,34 @@ const theme = (mode) =>
                           errorBg: "#4d1a1e",
                           errorColor: "#f8d7da",
                           editBg: "#484848",
+                      },
+                  }
+                : {
+                      // Third theme (Sunset theme with increased contrast)
+                      mode: "light",
+                      primary: {
+                          main: "#FF6B6B",
+                      },
+                      secondary: {
+                          main: "#4ECDC4",
+                      },
+                      background: {
+                          default: "#FFF3E0",
+                          paper: "#FFFFFF",
+                      },
+                      text: {
+                          primary: "#2C3E50",
+                          secondary: "#34495E",
+                      },
+                      modelName: "#2C3E50", // Dark blue-grey for third theme
+                      chatBubble: {
+                          userBg: "#FFD3B6",
+                          userColor: "#B7400E", // Darkened for better contrast
+                          assistantBg: "#A8E6CF",
+                          assistantColor: "#00574B", // Darkened for better contrast
+                          errorBg: "#FFAAA5",
+                          errorColor: "#9B2C23", // Slightly darkened for consistency
+                          editBg: "#DCEDC1",
                       },
                   },
         typography: {

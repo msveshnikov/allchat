@@ -2,31 +2,38 @@
     "name": "allchat",
     "version": "2.0",
     "dependencies": {
-        "@emotion/react": "^11.11.4",
-        "@emotion/styled": "^11.11.5",
-        "@mui/icons-material": "^5.15.15",
-        "@mui/material": "^5.15.15",
-        "html-to-pdfmake": "^2.5.7",
-        "i18next": "^23.11.3",
-        "i18next-browser-languagedetector": "^7.2.1",
+        "@babel/standalone": "^7.25.0",
+        "@emotion/react": "^11.13.0",
+        "@emotion/styled": "^11.13.0",
+        "@loadable/component": "^5.16.4",
+        "@mui/icons-material": "^5.16.5",
+        "@mui/material": "^5.16.5",
+        "@react-oauth/google": "^0.12.1",
+        "html-to-pdfmake": "^2.5.12",
+        "i18next": "^23.12.2",
+        "i18next-browser-languagedetector": "^8.0.0",
         "markdown-it": "^14.1.0",
         "md5": "^2.3.0",
+        "mermaid": "^10.9.1",
         "pdfmake": "^0.2.10",
         "react": "^18.3.1",
+        "react-countup": "^6.5.3",
         "react-dom": "^18.3.1",
-        "react-i18next": "^14.1.1",
-        "react-markdown": "^8.0.0",
+        "react-ga4": "^2.1.0",
+        "react-i18next": "^15.0.0",
+        "react-markdown": "^9.0.1",
         "react-modal-image": "^2.6.0",
-        "react-router-dom": "^6.23.0",
+        "react-rewards": "^2.0.4",
+        "react-router-dom": "^6.25.1",
         "react-scroll": "^1.9.0",
-        "react-syntax-highlighter": "^15.5.0"
+        "react-syntax-highlighter": "^15.5.0",
+        "recharts": "^2.12.7",
+        "three": "^0.167.0"
     },
     "scripts": {
-        "start": "react-scripts start",
+        "start": "craco start",
         "build": "react-scripts build",
-        "copy": "copy.cmd",
-        "test": "react-scripts test",
-        "test:coverage": "react-scripts test --env=jsdom --watchAll=false --coverage"
+        "copy": "copy.cmd"
     },
     "eslintConfig": {
         "extends": [
@@ -46,26 +53,8 @@
         ]
     },
     "devDependencies": {
-        "@babel/core": "^7.24.5",
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-        "@babel/preset-env": "^7.24.5",
-        "@babel/preset-react": "^7.24.1",
-        "@testing-library/jest-dom": "^6.4.2",
-        "@testing-library/react": "^15.0.5",
-        "@testing-library/user-event": "^14.5.2",
-        "babel-jest": "^29.7.0",
+        "@craco/craco": "^7.1.0",
         "react-scripts": "5.0.1"
-    },
-    "jest": {
-        "transform": {
-            "^.+\\.(js|jsx)$": "babel-jest"
-        },
-        "moduleNameMapper": {
-            "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
-            "react-markdown": "<rootDir>/node_modules/react-markdown/react-markdown.min.js"
-        },
-        "transformIgnorePatterns": [
-            "/node_modules/(?!react-syntax-highlighter)"
-        ]
     }
 }

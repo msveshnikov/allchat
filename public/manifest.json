@@ -1,6 +1,6 @@
 {
     "short_name": "AllChat",
-    "name": "Chat with Gemini Pro 1.5",
+    "name": "AllChat AI Assistant",
     "icons": [
         {
             "src": "favicon.ico",
@@ -26,5 +26,5 @@
     "dir": "auto",
     "lang": "en",
     "orientation": "any",
-    "description": "Chat with Gemini Pro 1.5"
+    "description": "Intelligent Conversational AI Assistant"
 }

@@ -4,10 +4,12 @@ services:
     backend:
         image: extender777/allchat-backend
         ports:
-            - "6000:5000"
+            - "6001:5000"
+            - "6002:6002"
         environment:
             - NODE_ENV=production
             - GOOGLE_KEY=${GOOGLE_KEY}
+            - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
             - STABILITY_KEY=${STABILITY_KEY}
             - CLAUDE_KEY=${CLAUDE_KEY}
             - STRIPE_KEY=${STRIPE_KEY}
@@ -21,7 +23,8 @@ services:
             - FRONTEND_URL=${FRONTEND_URL}
             - TOGETHER_KEY=${TOGETHER_KEY}
             - OPENAI_KEY=${OPENAI_KEY}
-            - YOUTUBE_KEY=${YOUTUBE_KEY}
+            - GEMINI_KEY=${GEMINI_KEY}
+            - MISTRAL_KEY=${MISTRAL_KEY}
         restart: unless-stopped
         volumes:
             - ./allchat.json:/app/allchat.json

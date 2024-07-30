@@ -30,42 +30,30 @@ jobs:
                   local: "docker-compose.yml"
                   remote: "allchat/docker-compose.yml"
 
-            - name: Install dependencies
-              run: npm ci
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
 
-            - name: Run tests
-              run: npm run test
+            - name: Log in to Docker Hub
+              uses: docker/login-action@master
+              with:
+                  username: ${{ secrets.DOCKER_USERNAME }}
+                  password: ${{ secrets.DOCKER_PASSWORD }}
 
-            - name: Build and Push Backend Image
-              if: success()
+            - name: Build and Push Backend Image (arm64)
               run: |
-                  docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }} ./server
-                  docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ env.DOCKER_PASSWORD }}
-                  docker push ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }}
+                  docker buildx build \
+                  --platform linux/arm64/v8 \
+                  --output "type=image,push=true" \
+                  --tag ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }} \
+                  ./server
 
-            - name: Build and Push Frontend Image
+            - name: Build and Push Frontend Image (arm64)
               run: |
-                  docker build -t ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }} .
-                  docker push ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }}
-
-            # - name: Set up Docker Buildx
-            #   uses: docker/setup-buildx-action@v2
-
-            # - name: Build and Push Backend Image (arm64)
-            #   run: |
-            #       docker buildx build \
-            #       --platform linux/arm64 \
-            #       --output "type=image,push=true" \
-            #       --tag ${{ env.DOCKER_USERNAME }}/${{ env.BACKEND_IMAGE_NAME }}:arm64 \
-            #       ./server
-
-            # - name: Build and Push Frontend Image (arm64)
-            #   run: |
-            #       docker buildx build \
-            #       --platform linux/arm64/v8 \
-            #       --output "type=image,push=true" \
-            #       --tag ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }}:arm64 \
-            #       .
+                  docker buildx build \
+                  --platform linux/arm64/v8 \
+                  --output "type=image,push=true" \
+                  --tag ${{ env.DOCKER_USERNAME }}/${{ env.FRONTEND_IMAGE_NAME }} \
+                  .
 
     deploy:
         needs: build-and-push
