@@ -170,15 +170,25 @@ B --> F[External Services]
 # TODO
 
 [x] other user avatars, not always mine
+
 [x] custom GPT avatar auto create
+
 [x] shared chat manager for owners
+
 [x] broadcast update of shared chat - WebSockets
+
 [x] Coins and Achievments
+
 [x] Artifacts
+
 [x] Sonnet 3.5
 
 [x] OpenSCAD models
+
 [x] React type artifacts
+
 [x] Custom GPT Shop
+
 [ ] 4 CPU or websockets
+
 [ ] openSCAD colors
