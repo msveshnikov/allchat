@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "./model/User.js";
-import { sendResetEmail, sendWelcomeEmail, torIPs, whiteListCountries } from "./utils.js";
+import { sendResetEmail, sendWelcomeEmail } from "./utils.js";
 import { OAuth2Client } from "google-auth-library";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -61,11 +61,7 @@ export const registerUser = async (email, password, credential, req) => {
     try {
         const country = req.headers["geoip_country_code"];
         const ip = getIpFromRequest(req);
-        const existingUser = await User.findOne({ ip });
         let subscriptionStatus = "none";
-        if (existingUser || !whiteListCountries.includes(country) || torIPs.includes(ip)) {
-            subscriptionStatus = "canceled";
-        }
         let user;
         if (credential) {
             const verificationResponse = await verifyGoogleToken(req.body.credential);

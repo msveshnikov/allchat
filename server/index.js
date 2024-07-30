@@ -26,7 +26,7 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import { handleIncomingEmails } from "./email.js";
 import { getImage } from "./image.js";
-import { isCustomerBlacklisted, sendInviteEmail, sendWelcomeEmail } from "./utils.js";
+import { sendInviteEmail, sendWelcomeEmail } from "./utils.js";
 import cluster from "cluster";
 import promClient from "prom-client";
 import sharp from "sharp";
@@ -597,10 +597,6 @@ app.post("/stripe-webhook", express.raw({ type: "application/json" }), async (re
 async function handleSubscriptionUpdate(subscription) {
     console.log(subscription);
     const customer = await stripe.customers.retrieve(subscription.customer);
-    if (await isCustomerBlacklisted(customer?.name)) {
-        console.error("Customer blacklisted");
-        return;
-    }
     let user = await User.findOne({ email: customer.email });
     if (!user) {
         console.error("User not found, creating new one");

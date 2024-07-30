@@ -1,0 +1,280 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+# Constants
+readonly PROG_NAME=$(basename "$0")
+readonly ERROR_LOG="./error.log"
+readonly DEBUG_LOG="./debug.log"
+readonly MONGO_CONTAINER_NAME="allchat_mongo"
+readonly DEFAULT_PORT=3000
+
+# ANSI color codes
+readonly RESET='\033[0m'
+readonly BOLD='\033[1m'
+readonly ORANGE='\033[38;5;208m'
+readonly BLUE='\033[38;5;45m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[0;33m'
+readonly RED='\033[0;31m'
+readonly CYAN='\033[0;36m'
+
+# Globals
+VERBOSE=false
+OS=""
+PORT=$DEFAULT_PORT
+CLEANUP_DONE=false
+
+# Function to print usage information
+usage() {
+  cat <<EOF
+Usage: $PROG_NAME [OPTIONS]
+Start the AllChat application.
+
+Options:
+  -v, --verbose      Enable verbose output
+  -p, --port NUMBER  Specify a custom port (default: 3000)
+  -h, --help         Display this help message and exit
+EOF
+}
+
+# Function to log messages
+log() {
+  local color="$2"
+  echo -e "${color}[$(date '+%Y-%m-%d %H:%M:%S')] $1${RESET}" | tee -a "$DEBUG_LOG"
+}
+
+# Function to log verbose messages
+log_verbose() {
+  if [[ "$VERBOSE" == true ]]; then
+    log "$1" "$CYAN"
+  fi
+}
+
+# Error handling and cleanup
+handle_error() {
+  log "ERROR: $1" "$RED" >&2
+  echo "$(date '+%Y-%m-%d %H:%M:%S') - ERROR: $1" >> "$ERROR_LOG"
+  cleanup
+  exit 1
+}
+
+# Cleanup function to stop services
+cleanup() {
+  if [[ "$CLEANUP_DONE" == false ]]; then
+    CLEANUP_DONE=true
+    log "Cleaning up... Stopping services." "$YELLOW"
+    docker stop "$MONGO_CONTAINER_NAME" &>/dev/null || true
+    docker rm "$MONGO_CONTAINER_NAME" &>/dev/null || true
+    pkill -f "react-scripts start" || true
+    pkill -f "node server" || true
+    log "Services stopped." "$GREEN"
+  fi
+}
+
+# Function to print the ASCII art title
+print_title() {
+    echo -e "${BLUE}${BOLD}
+     _    _     _      ____ _           _   
+    / \  | |   | |    / ___| |__   __ _| |_ 
+   / _ \ | |   | |   | |   | '_ \ / _\` | __|
+  / ___ \| |___| |___| |___| | | | (_| | |_ 
+ /_/   \_\_____|_____|\____|_| |_|\__,_|\__|
+                                    
+    ${RESET}${ORANGE}Powered by Curious Cats${RESET}
+
+${YELLOW}https://github.com/msveshnikov/allchat
+allchatonline.ai@gmail.com
+
+${BLUE}${BOLD}https://allchat.online${RESET}"
+    echo
+}
+
+# Function to update progress
+update_progress() {
+  local step="$1"
+  local total="$2"
+  local message="$3"
+  local percent=$((step * 100 / total))
+  local filled=$((percent * 50 / 100))
+  local empty=$((50 - filled))
+  local bar_filled=$(printf '%0.s█' $(seq 1 $filled))
+  local bar_empty=$(printf '%0.s░' $(seq 1 $empty))
+
+  if [[ $percent -eq 100 ]]; then
+    # Ensure the bar is fully filled with no trailing empty characters
+    printf "${GREEN}[%-50s] %3d%% ${YELLOW}%s${RESET}\n" "$bar_filled" "$percent" "$message"
+  else
+    printf "${GREEN}[%-25s%-25s] %3d%% ${YELLOW}%s${RESET}\n" "$bar_filled" "$bar_empty" "$percent" "$message"
+  fi
+}
+
+# Function to check if a port is in use
+is_port_in_use() {
+  lsof -i :"$1" &>/dev/null
+}
+
+# Function to find an available port
+find_available_port() {
+  local port=$1
+  while is_port_in_use "$port"; do
+    ((port++))
+  done
+  echo "$port"
+}
+
+# Start MongoDB Container
+start_mongodb() {
+  log_verbose "Starting MongoDB container..."
+  if docker ps -q -f name="$MONGO_CONTAINER_NAME" > /dev/null 2>&1; then
+    log_verbose "MongoDB container is already running."
+  else
+    # Check if the container exists but is stopped
+    if docker ps -aq -f name="$MONGO_CONTAINER_NAME" > /dev/null 2>&1; then
+      log_verbose "Removing existing stopped MongoDB container."
+      docker rm "$MONGO_CONTAINER_NAME" > /dev/null 2>&1
+    fi
+
+    log_verbose "Running docker run command..."
+    if ! docker run --name "$MONGO_CONTAINER_NAME" -p 27017:27017 -d mongo > "$DEBUG_LOG" 2>&1; then
+      log "Docker run command failed. Checking for more information..." "$RED"
+      docker logs "$MONGO_CONTAINER_NAME" >> "$DEBUG_LOG" 2>&1 || true
+      cat "$DEBUG_LOG" >> "$ERROR_LOG"
+      handle_error "Failed to start MongoDB container. Check error.log for details."
+    fi
+  fi
+  update_progress 1 5 "MongoDB started"
+}
+
+# Install dependencies and run server
+setup_server() {
+  log_verbose "Setting up server..."
+  cd server || handle_error "Server directory not found."
+  log_verbose "Installing server dependencies..."
+  if [[ "$VERBOSE" == true ]]; then
+    npm install || handle_error "Failed to install server dependencies."
+  else
+    npm install --silent &>"$DEBUG_LOG" || handle_error "Failed to install server dependencies."
+  fi
+  update_progress 2 5 "Server dependencies installed"
+  
+  log_verbose "Starting server API..."
+  PORT=$DEFAULT_PORT npm run api &>"$DEBUG_LOG" &
+  local pid=$!
+  sleep 10
+  if ! kill -0 $pid 2>/dev/null; then
+    handle_error "Failed to start server API."
+  fi
+  update_progress 3 5 "Server API started"
+}
+
+# Install dependencies and start the main project
+setup_project_root() {
+  log_verbose "Setting up main project..."
+  cd .. || handle_error "Project root directory not found."
+  log_verbose "Installing project dependencies..."
+  if [[ "$VERBOSE" == true ]]; then
+    npm install || handle_error "Failed to install project dependencies."
+  else
+    npm install --silent &>"$DEBUG_LOG" || handle_error "Failed to install project dependencies."
+  fi
+  update_progress 4 5 "Project dependencies installed"
+  
+  PORT=$(find_available_port "$PORT")
+  log_verbose "Using port $PORT for the main project"
+  log_verbose "Starting main project..."
+  PORT=$PORT npm run start &>"$DEBUG_LOG" &
+  local pid=$!
+  local counter=0
+  while [ $counter -lt 30 ]; do
+    if kill -0 $pid 2>/dev/null; then
+      sleep 1
+      ((counter++))
+      if grep -q "Compiled successfully" "$DEBUG_LOG"; then
+        break
+      fi
+    else
+      cat "$DEBUG_LOG" >> "$ERROR_LOG"
+      handle_error "Failed to start main project. Check error.log for details."
+    fi
+  done
+  if [ $counter -eq 30 ]; then
+    handle_error "Timeout waiting for main project to start. Check error.log for details."
+  fi
+  log_verbose "Main project started successfully on port $PORT."
+  update_progress 5 5 "Main project started on port $PORT"
+}
+
+# Check for required commands
+check_dependencies() {
+  local deps=("docker" "npm" "lsof")
+  for dep in "${deps[@]}"; do
+    if ! command -v "$dep" &>/dev/null; then
+      handle_error "Required command '$dep' not found. Please install it and try again."
+    fi
+  done
+  
+  # Check Docker service
+  if ! docker info &>/dev/null; then
+    handle_error "Docker service is not running. Please start Docker and try again."
+  fi
+}
+
+# Main function
+main() {
+  print_title
+  log "Script started on $OS." "$GREEN"
+  [[ "$VERBOSE" == true ]] && log "Verbose mode is ON." "$YELLOW"
+  
+  check_dependencies
+  start_mongodb
+  setup_server
+  setup_project_root
+  
+  log "All tasks completed successfully." "$GREEN"
+  log "Main project is running on http://localhost:$PORT" "$BLUE"
+  log "Press Ctrl+C to shut down services." "$YELLOW"
+  wait
+}
+
+# Parse command-line arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -v|--verbose)
+      VERBOSE=true
+      shift
+      ;;
+    -p|--port)
+      PORT="$2"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $1" >&2
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+# Detect OS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  OS="macOS"
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  if [[ -f /proc/version ]] && grep -qi microsoft /proc/version; then
+    OS="WSL"
+  else
+    OS="Linux"
+  fi
+else
+  OS="Unknown"
+fi
+
+# Set up trap for proper cleanup
+trap 'echo -e "\n${YELLOW}Graceful shutdown initiated...${RESET}"; cleanup; exit 0' INT TERM
+
+# Run main function
+main
