@@ -134,6 +134,9 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
     const fetchCustomGPTs = async () => {
         try {
             const token = localStorage.getItem("token");
+            if (!token) {
+                return;
+            }
             const headers = {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,

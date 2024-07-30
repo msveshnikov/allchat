@@ -490,6 +490,9 @@ function Main({ themeMode, toggleTheme }) {
 
     const fetchUserData = async () => {
         const token = localStorage.getItem("token");
+        if (!token) {
+            return;
+        }
         const headers = {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
