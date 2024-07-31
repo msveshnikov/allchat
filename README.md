@@ -13,7 +13,7 @@ An AI assistant app that interacts with all major models, maintains history, gen
     -   [Environment variables](#environment-variables)
     -   [Run](#run)
 
-## PROD (with $4.99 subscription and Premium features: Avatar Builder, Shared Chats, Achievements, Artifacts and more)
+## PROD (with $4.99 subscription)
 
 https://allchat.online
 
@@ -25,6 +25,10 @@ https://allchat.online
 ## Features
 
 -   Gemini Pro 1.5, Claude 3.5 and GPT-4o
+-   Artifacts 
+-   Avatar Builder
+-   Shared Chats
+-   Achievements
 -   Audio Input in Gemini
 -   Video Input in Gemini
 -   Custom GPTs
