@@ -20,7 +20,7 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
         webTools = false;
     }
     if (model?.includes("gemini-1.5") && userId !== "65fe9b2dedac81e8fa3c19bc") {
-        model = "gemini-1.5-flash-preview-0514";
+        model = "gemini-1.5-flash-001";
     }
     const parts = [];
 
@@ -74,13 +74,7 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                       function_declarations: tools.map(renameProperty),
                   },
               ]
-            : [
-                  //       {
-                  //           googleSearchRetrieval: {
-                  //               disableAttribution: true,
-                  //           },
-                  //       },
-              ],
+            : [],
     };
 
     const generativeModel = vertex_ai.preview.getGenerativeModel({

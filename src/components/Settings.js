@@ -9,10 +9,10 @@ import ReactGA from "react-ga4";
 import CoinBalance from "./CoinBalance";
 
 export const models = {
-    "gemini-1.5-pro-preview-0514": ["image", "audio", "video", "document", "tools"],
-    "gemini-1.5-flash-preview-0514": ["image", "audio", "video", "document", "tools"],
+    "gemini-1.5-pro-001": ["image", "audio", "video", "document", "tools"],
+    "gemini-1.5-flash-001": ["image", "audio", "video", "document", "tools"],
     "gemini-experimental": ["image", "audio", "video", "document", "tools"],
-    "gemini-1.0-pro": ["document", "tools"],
+    "gemini-1.0-pro-002": ["document", "tools"],
     "claude-3-haiku-20240307": ["image", "document", "tools"],
     "claude-3-5-sonnet-20240620": ["image", "document", "tools"],
     "gpt-3.5-turbo": ["document", "tools"],

@@ -332,7 +332,7 @@ function Main({ themeMode, toggleTheme }) {
             method: "POST",
             headers,
             body: JSON.stringify({
-                model: "gemini-1.5-flash-preview-0514",
+                model: "gemini-1.5-flash-001",
                 temperature: 0.1,
                 referrer,
                 input: "Extract main topic of this chat in one simple short statement without formatting (30 chars max) and return it without anything else in [] ",
