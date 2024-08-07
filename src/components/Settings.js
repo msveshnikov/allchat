@@ -17,7 +17,7 @@ export const models = {
     "claude-3-5-sonnet-20240620": ["image", "document", "tools"],
     "gpt-3.5-turbo": ["document", "tools"],
     // "ft:gpt-3.5-turbo-0125:maxsoft:kate:9VGMfMmc": ["document", "admin"],
-    "gpt-4o": ["image", "document", "tools"],
+    "gpt-4o-2024-08-06": ["image", "document", "tools"],
     "gpt-4o-mini": ["image", "document", "tools"],
     "databricks/dbrx-instruct": ["document"],
     "mistralai/Mixtral-8x22B-Instruct-v0.1": ["document"],

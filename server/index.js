@@ -245,7 +245,7 @@ app.post("/interact", verifyToken, async (req, res) => {
 
         const recentArtifacts = await Artifact.find({ user: req.user.id }).sort({ updatedAt: -1 }).limit(1);
         const artifactsContext = tools
-            ? recentArtifacts.map((artifact) => `Artifact "${artifact.name}": ${artifact.content}`).join("\n\n")
+            ? "\nRecent Artifacts:\n"+ recentArtifacts.map((artifact) => `Artifact "${artifact.name}": ${artifact.content}`).join("\n\n")
             : "";
 
         const contextPrompt = model?.startsWith("ft")
@@ -256,7 +256,7 @@ app.post("/interact", verifyToken, async (req, res) => {
             : `System: ${instructions || systemPrompt} User country code: ${country} User Lang: ${lang}
                     ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
                     \nUser information: ${userInfo}
-                    \nRecent Artifacts:\n${artifactsContext}
+                    ${artifactsContext}
                     \nHuman: ${userInput || "what's this"}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
         let textResponse;
         let inputTokens = 0;
