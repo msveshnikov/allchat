@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Cosmic Bubble Blast</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                background-color: #000033;
+                font-family: Arial, sans-serif;
+            }
+            canvas {
+                display: block;
+            }
+            #startMenu {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                text-align: center;
+                color: #ffffff;
+            }
+            #startButton {
+                font-size: 24px;
+                padding: 10px 20px;
+                background-color: #4caf50;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            #startButton:hover {
+                background-color: #45a049;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="gameCanvas"></canvas>
+        <div id="startMenu">
+            <h1>Cosmic Bubble Blast</h1>
+            <button id="startButton">Start Game</button>
+        </div>
+        <script>
+            const canvas = document.getElementById("gameCanvas");
+            const ctx = canvas.getContext("2d");
+            const startMenu = document.getElementById("startMenu");
+            const startButton = document.getElementById("startButton");
+
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            // Game variables
+            let bubbles = [];
+            let playerX = canvas.width / 2;
+            let playerY = canvas.height - 50;
+            let bullets = [];
+            let score = 0;
+            let gameActive = false;
+
+            // Colors
+            const colors = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#FDCB6E", "#6C5CE7"];
+
+            // Audio context for generated sounds
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+            // Create stars for background
+            const stars = [];
+            for (let i = 0; i < 100; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 2,
+                    alpha: Math.random(),
+                });
+            }
+
+            function drawBackground() {
+                ctx.fillStyle = "#000033";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                stars.forEach((star) => {
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+                    ctx.fill();
+                });
+            }
+
+            function drawPlayer() {
+                // Draw the main body of the ship
+                ctx.beginPath();
+                ctx.moveTo(playerX, playerY - 30);
+                ctx.lineTo(playerX - 25, playerY + 20);
+                ctx.lineTo(playerX + 25, playerY + 20);
+                ctx.closePath();
+                ctx.fillStyle = "#4CAF50";
+                ctx.fill();
+
+                // Draw the cockpit
+                ctx.beginPath();
+                ctx.arc(playerX, playerY - 10, 10, 0, Math.PI * 2);
+                ctx.fillStyle = "#87CEEB";
+                ctx.fill();
+
+                // Draw the wings
+                ctx.beginPath();
+                ctx.moveTo(playerX - 25, playerY + 20);
+                ctx.lineTo(playerX - 40, playerY + 30);
+                ctx.lineTo(playerX - 20, playerY + 30);
+                ctx.closePath();
+                ctx.fillStyle = "#FFA500";
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(playerX + 25, playerY + 20);
+                ctx.lineTo(playerX + 40, playerY + 30);
+                ctx.lineTo(playerX + 20, playerY + 30);
+                ctx.closePath();
+                ctx.fillStyle = "#FFA500";
+                ctx.fill();
+
+                // Draw engine flames
+                ctx.beginPath();
+                ctx.moveTo(playerX - 15, playerY + 30);
+                ctx.lineTo(playerX, playerY + 50);
+                ctx.lineTo(playerX + 15, playerY + 30);
+                ctx.closePath();
+                ctx.fillStyle = "#FF4500";
+                ctx.fill();
+            }
+
+            function playResonanceSound() {
+                let audio = new Audio("https://mangatv.shop/api/music/galactic-beatdown.mp3");
+                audio.play();
+            }
+
+            function drawBubbles() {
+                bubbles.forEach((bubble) => {
+                    ctx.beginPath();
+                    ctx.arc(bubble.x, bubble.y, bubble.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = bubble.color;
+                    ctx.fill();
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // Add shine effect
+                    ctx.beginPath();
+                    ctx.arc(
+                        bubble.x - bubble.radius * 0.3,
+                        bubble.y - bubble.radius * 0.3,
+                        bubble.radius * 0.2,
+                        0,
+                        Math.PI * 2
+                    );
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+                    ctx.fill();
+                });
+            }
+
+            function drawBullets() {
+                bullets.forEach((bullet) => {
+                    ctx.beginPath();
+                    ctx.arc(bullet.x, bullet.y, 5, 0, Math.PI * 2);
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.fill();
+                });
+            }
+
+            function drawScore() {
+                ctx.fillStyle = "#FFFFFF";
+                ctx.font = "24px Arial";
+                ctx.textAlign = "left";
+                ctx.fillText(`Score: ${score}`, 20, 40);
+            }
+
+            function update() {
+                bubbles.forEach((bubble) => {
+                    bubble.y += bubble.speed;
+                    if (bubble.y > canvas.height + bubble.radius) {
+                        bubble.y = -bubble.radius;
+                        bubble.x = Math.random() * canvas.width;
+                    }
+                });
+
+                bullets.forEach((bullet, bulletIndex) => {
+                    bullet.y -= 10;
+                    if (bullet.y < 0) {
+                        bullets.splice(bulletIndex, 1);
+                    }
+
+                    bubbles.forEach((bubble, bubbleIndex) => {
+                        const dx = bullet.x - bubble.x;
+                        const dy = bullet.y - bubble.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < bubble.radius + 5) {
+                            bullets.splice(bulletIndex, 1);
+                            bubbles.splice(bubbleIndex, 1);
+                            score += 10;
+                            playBubblePopSound();
+
+                            // Add new bubble
+                            addBubble();
+                        }
+                    });
+                });
+            }
+
+            function addBubble() {
+                bubbles.push({
+                    x: Math.random() * canvas.width,
+                    y: -30,
+                    radius: 20 + Math.random() * 20,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speed: 1 + Math.random() * 2,
+                });
+            }
+
+            function gameLoop() {
+                if (!gameActive) return;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawBackground();
+                drawBubbles();
+                drawPlayer();
+                drawBullets();
+                drawScore();
+                update();
+
+                requestAnimationFrame(gameLoop);
+            }
+
+            function startGame() {
+                playResonanceSound();
+                gameActive = true;
+                startMenu.style.display = "none";
+
+                // Initialize bubbles
+                for (let i = 0; i < 10; i++) {
+                    addBubble();
+                }
+
+                gameLoop();
+            }
+
+            function playShootSound() {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.type = "sine";
+                oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.1);
+
+                gainNode.gain.setValueAtTime(1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+            }
+
+            function playBubblePopSound() {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.type = "sine";
+                oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(110, audioContext.currentTime + 0.1);
+
+                gainNode.gain.setValueAtTime(1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+            }
+
+            canvas.addEventListener("mousemove", (e) => {
+                if (gameActive) {
+                    playerX = e.clientX;
+                }
+            });
+
+            canvas.addEventListener("click", (e) => {
+                if (gameActive) {
+                    bullets.push({ x: playerX, y: playerY });
+                    playShootSound();
+                }
+            });
+
+            startButton.addEventListener("click", startGame);
+
+            // Initial draw of the background
+            drawBackground();
+        </script>
+    </body>
+</html>
