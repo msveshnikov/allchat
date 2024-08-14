@@ -285,6 +285,103 @@
                     margin-bottom: 40px;
                 }
             }
+            .pricing {
+                padding: 100px 0;
+                background: rgba(255, 255, 255, 0.02);
+            }
+            .pricing h2 {
+                text-align: center;
+                font-size: 36px;
+                margin-bottom: 60px;
+                color: #4facfe;
+            }
+            .pricing-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 40px;
+                justify-content: center;
+            }
+            .pricing-item {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 15px;
+                padding: 40px;
+                text-align: center;
+                transition: transform 0.3s, box-shadow 0.3s;
+                position: relative;
+                overflow: hidden;
+            }
+            .pricing-item:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 30px rgba(79, 172, 254, 0.2);
+            }
+            .pricing-item::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(45deg, transparent, rgba(79, 172, 254, 0.1), transparent);
+                transform: rotate(45deg);
+                transition: 0.5s;
+            }
+            .pricing-item:hover::before {
+                left: 100%;
+                top: 100%;
+            }
+            .pricing-item h3 {
+                font-size: 24px;
+                margin-bottom: 20px;
+                color: #fff;
+            }
+            .pricing-price {
+                font-size: 48px;
+                font-weight: bold;
+                color: #4facfe;
+                margin-bottom: 20px;
+            }
+            .pricing-features {
+                list-style-type: none;
+                padding: 0;
+                margin-bottom: 30px;
+            }
+            .pricing-features li {
+                margin-bottom: 10px;
+                color: #b3b3b3;
+            }
+            .pricing-cta {
+                display: inline-block;
+                background: linear-gradient(45deg, #00f2fe, #4facfe);
+                color: #fff;
+                padding: 12px 30px;
+                text-decoration: none;
+                border-radius: 30px;
+                font-size: 16px;
+                font-weight: 600;
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+            .pricing-cta:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 20px rgba(0, 242, 254, 0.3);
+            }
+            .pricing-item.featured {
+                border: 2px solid #4facfe;
+                transform: scale(1.05);
+            }
+            .pricing-item.featured:hover {
+                transform: scale(1.05) translateY(-10px);
+            }
+            @media (max-width: 768px) {
+                .pricing-grid {
+                    grid-template-columns: 1fr;
+                }
+                .pricing-item.featured {
+                    transform: scale(1);
+                }
+                .pricing-item.featured:hover {
+                    transform: translateY(-10px);
+                }
+            }
         </style>
         <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
     </head>
@@ -296,6 +393,7 @@
                     <div class="nav-links">
                         <a href="#features">Features</a>
                         <a href="#how-it-works">How It Works</a>
+                        <a href="#pricing">Pricing</a>
                         <a href="#testimonials">Testimonials</a>
                     </div>
                 </nav>
@@ -409,6 +507,48 @@
                     </div>
                 </div>
             </section>
+            <section id="pricing" class="pricing">
+                <div class="container">
+                    <h2>Choose Your Plan</h2>
+                    <div class="pricing-grid">
+                        <div class="pricing-item">
+                            <h3>Basic</h3>
+                            <div class="pricing-price">$4.99<span>/month</span></div>
+                            <ul class="pricing-features">
+                                <li>Access to Gemini Pro 1.5</li>
+                                <li>Basic image processing</li>
+                                <li>5 GB file upload limit</li>
+                                <li>Standard support</li>
+                            </ul>
+                            <a href="#" class="pricing-cta">Get Started</a>
+                        </div>
+                        <div class="pricing-item featured">
+                            <h3>Pro</h3>
+                            <div class="pricing-price">$19.99<span>/month</span></div>
+                            <ul class="pricing-features">
+                                <li>Access to all AI models</li>
+                                <li>Advanced image processing</li>
+                                <li>20 GB file upload limit</li>
+                                <li>Priority support</li>
+                                <li>Code execution</li>
+                            </ul>
+                            <a href="#" class="pricing-cta">Get Started</a>
+                        </div>
+                        <div class="pricing-item">
+                            <h3>Enterprise</h3>
+                            <div class="pricing-price">Custom</div>
+                            <ul class="pricing-features">
+                                <li>All Pro features</li>
+                                <li>Unlimited file upload</li>
+                                <li>Custom AI model integration</li>
+                                <li>24/7 dedicated support</li>
+                                <li>API access</li>
+                            </ul>
+                            <a href="#" class="pricing-cta">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
 
         <footer>
@@ -418,13 +558,11 @@
         </footer>
 
         <script>
-            // Sticky header
             window.addEventListener("scroll", function () {
                 const header = document.querySelector("header");
                 header.classList.toggle("sticky", window.scrollY > 0);
             });
 
-            // Smooth scrolling for navigation links
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                 anchor.addEventListener("click", function (e) {
                     e.preventDefault();
