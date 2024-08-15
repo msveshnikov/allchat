@@ -320,11 +320,22 @@
                 return card;
             }
 
+            function speakWord(word) {
+                if ("speechSynthesis" in window) {
+                    const utterance = new SpeechSynthesisUtterance(word);
+                    utterance.lang = "en-US";
+                    speechSynthesis.speak(utterance);
+                } else {
+                    console.log("Text-to-speech not supported in this browser.");
+                }
+            }
+
             function displayCurrentCard() {
                 cardContainer.innerHTML = "";
                 if (currentCardIndex < currentWords.length) {
                     const card = createWordCard(currentWords[currentCardIndex]);
                     cardContainer.appendChild(card);
+                    speakWord(currentWords[currentCardIndex].english);
                 }
                 cardContainer.appendChild(loadingOverlay);
             }
