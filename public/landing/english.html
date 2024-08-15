@@ -43,7 +43,7 @@
 
             .card-container {
                 width: 100%;
-                height: 80vh;
+                height: 70vh;
                 perspective: 1000px;
                 margin-bottom: 20px;
                 position: relative;
@@ -66,18 +66,26 @@
             }
 
             .word-english {
-                font-size: 3rem; /* Уменьшено с 3.5rem */
+                font-size: 3rem;
                 font-weight: 600;
                 margin-bottom: 20px;
                 color: var(--primary-color);
             }
 
             .word-russian {
-                font-size: 2.3rem; /* Уменьшено с 2.8rem */
+                font-size: 2.3rem;
                 color: var(--text-color);
             }
 
-            .new-words-btn {
+            .button-container {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .new-words-btn,
+            .stats-btn {
                 padding: 12px 30px;
                 background-color: var(--primary-color);
                 color: white;
@@ -90,7 +98,8 @@
                 box-shadow: 0 4px 6px rgba(108, 92, 231, 0.2);
             }
 
-            .new-words-btn:hover {
+            .new-words-btn:hover,
+            .stats-btn:hover {
                 background-color: #5b4cdb;
                 transform: translateY(-2px);
             }
@@ -151,12 +160,58 @@
                 }
             }
 
+            .stats-modal {
+                display: none;
+                position: fixed;
+                z-index: 20;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.4);
+            }
+
+            .stats-content {
+                background-color: var(--card-color);
+                margin: 15% auto;
+                padding: 20px;
+                border-radius: 20px;
+                width: 80%;
+                max-width: 400px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            .close {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            .close:hover,
+            .close:focus {
+                color: var(--text-color);
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+            .stats-item {
+                margin-bottom: 15px;
+            }
+
+            .stats-label {
+                font-weight: 600;
+                color: var(--secondary-color);
+            }
+
             @media (max-width: 600px) {
                 .word-english {
-                    font-size: 2.5rem; /* Уменьшено с 3rem */
+                    font-size: 2.5rem;
                 }
                 .word-russian {
-                    font-size: 2rem; /* Уменьшено с 2.3rem */
+                    font-size: 2rem;
                 }
             }
         </style>
@@ -168,22 +223,53 @@
                     <div class="loader"></div>
                 </div>
             </div>
-            <button class="new-words-btn" id="newWordsBtn">New Words</button>
+            <div class="button-container">
+                <button class="new-words-btn" id="newWordsBtn">New Words</button>
+                <button class="stats-btn" id="statsBtn">Statistics</button>
+            </div>
             <p class="swipe-instruction">Swipe left or right to see the next word</p>
             <div class="progress-bar">
                 <div class="progress" id="progressBar"></div>
             </div>
         </div>
 
+        <div id="statsModal" class="stats-modal">
+            <div class="stats-content">
+                <span class="close">&times;</span>
+                <h2 style="text-align: center; margin-bottom: 20px">Your Learning Statistics</h2>
+                <div class="stats-item">
+                    <span class="stats-label">Total Words Learned:</span>
+                    <span id="totalWordsLearned"></span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-label">Progress:</span>
+                    <span id="progressPercentage"></span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-label">Words to Goal:</span>
+                    <span id="wordsToGoal"></span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-label">Learning Streak:</span>
+                    <span id="learningStreak"></span> days
+                </div>
+            </div>
+        </div>
+
         <script>
             const cardContainer = document.getElementById("cardContainer");
             const newWordsBtn = document.getElementById("newWordsBtn");
+            const statsBtn = document.getElementById("statsBtn");
             const progressBar = document.getElementById("progressBar");
             const loadingOverlay = document.getElementById("loadingOverlay");
+            const statsModal = document.getElementById("statsModal");
+            const closeBtn = document.getElementsByClassName("close")[0];
 
             let learnedWords = JSON.parse(localStorage.getItem("learnedWords")) || [];
             let currentWords = [];
             let currentCardIndex = 0;
+            let learningStreak = parseInt(localStorage.getItem("learningStreak")) || 0;
+            let lastLearningDate = localStorage.getItem("lastLearningDate");
 
             async function fetchWords() {
                 try {
@@ -260,12 +346,52 @@
                 loadingOverlay.style.display = show ? "flex" : "none";
             }
 
+            function updateLearningStreak() {
+                const today = new Date().toDateString();
+                if (lastLearningDate !== today) {
+                    if (lastLearningDate === new Date(Date.now() - 86400000).toDateString()) {
+                        learningStreak++;
+                    } else {
+                        learningStreak = 1;
+                    }
+                    lastLearningDate = today;
+                    localStorage.setItem("learningStreak", learningStreak);
+                    localStorage.setItem("lastLearningDate", lastLearningDate);
+                }
+            }
+
+            function updateStats() {
+                document.getElementById("totalWordsLearned").textContent = learnedWords.length;
+                document.getElementById("progressPercentage").textContent = `${(
+                    (learnedWords.length / 1000) *
+                    100
+                ).toFixed(2)}%`;
+                document.getElementById("wordsToGoal").textContent = Math.max(0, 1000 - learnedWords.length);
+                document.getElementById("learningStreak").textContent = learningStreak;
+            }
+
             newWordsBtn.addEventListener("click", async () => {
                 learnedWords = [...new Set([...learnedWords, ...currentWords.map((w) => w.english)])];
                 localStorage.setItem("learnedWords", JSON.stringify(learnedWords));
                 updateProgressBar();
+                updateLearningStreak();
                 await updateWords();
             });
+
+            statsBtn.addEventListener("click", () => {
+                updateStats();
+                statsModal.style.display = "block";
+            });
+
+            closeBtn.onclick = function () {
+                statsModal.style.display = "none";
+            };
+
+            window.onclick = function (event) {
+                if (event.target == statsModal) {
+                    statsModal.style.display = "none";
+                }
+            };
 
             // Swipe functionality
             let touchStartX = 0;
@@ -299,6 +425,7 @@
                 showLoading(true);
                 await updateWords();
                 updateProgressBar();
+                updateLearningStreak();
                 showLoading(false);
             }
 
