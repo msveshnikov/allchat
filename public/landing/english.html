@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>WordMaster: Advanced English Vocabulary</title>
+        <title>WordMaster: Ultimate English Vocabulary</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
         <style>
             :root {
@@ -13,6 +13,7 @@
                 --surface-color: #34495e;
                 --text-color: #ecf0f1;
                 --card-color: #2c3e50;
+                --accent-color: #e74c3c;
             }
 
             * {
@@ -63,6 +64,18 @@
                 box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
                 transition: transform 0.5s, opacity 0.5s;
                 cursor: pointer;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .word-card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 5px;
+                background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
             }
 
             .word-english {
@@ -77,6 +90,17 @@
                 color: var(--text-color);
             }
 
+            .word-level {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                font-size: 0.8rem;
+                color: var(--secondary-color);
+                background-color: rgba(0, 206, 201, 0.1);
+                padding: 5px 10px;
+                border-radius: 10px;
+            }
+
             .button-container {
                 display: flex;
                 justify-content: space-between;
@@ -84,8 +108,7 @@
                 margin-bottom: 20px;
             }
 
-            .new-words-btn,
-            .stats-btn {
+            .btn {
                 padding: 12px 30px;
                 background-color: var(--primary-color);
                 color: white;
@@ -98,10 +121,22 @@
                 box-shadow: 0 4px 6px rgba(108, 92, 231, 0.2);
             }
 
-            .new-words-btn:hover,
-            .stats-btn:hover {
+            .btn:hover {
                 background-color: #5b4cdb;
                 transform: translateY(-2px);
+            }
+
+            .btn-secondary {
+                background-color: var(--secondary-color);
+            }
+
+            .btn-secondary:hover {
+                background-color: #00b5b5;
+            }
+
+            .progress-container {
+                width: 100%;
+                margin-top: 20px;
             }
 
             .progress-bar {
@@ -109,7 +144,6 @@
                 height: 10px;
                 background-color: var(--surface-color);
                 border-radius: 5px;
-                margin-top: 20px;
                 overflow: hidden;
             }
 
@@ -118,6 +152,13 @@
                 background-color: var(--secondary-color);
                 width: 0%;
                 transition: width 0.5s ease-in-out;
+            }
+
+            .progress-label {
+                text-align: center;
+                margin-top: 10px;
+                font-size: 0.9rem;
+                color: var(--text-color);
             }
 
             .swipe-instruction {
@@ -160,7 +201,7 @@
                 }
             }
 
-            .stats-modal {
+            .modal {
                 display: none;
                 position: fixed;
                 z-index: 20;
@@ -172,7 +213,7 @@
                 background-color: rgba(0, 0, 0, 0.4);
             }
 
-            .stats-content {
+            .modal-content {
                 background-color: var(--card-color);
                 margin: 15% auto;
                 padding: 20px;
@@ -206,6 +247,69 @@
                 color: var(--secondary-color);
             }
 
+            .achievement {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .achievement-icon {
+                font-size: 1.5rem;
+                margin-right: 10px;
+            }
+
+            .settings-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+            }
+
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 60px;
+                height: 34px;
+            }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: var(--surface-color);
+                transition: 0.4s;
+                border-radius: 34px;
+            }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: 0.4s;
+                border-radius: 50%;
+            }
+
+            input:checked + .slider {
+                background-color: var(--primary-color);
+            }
+
+            input:checked + .slider:before {
+                transform: translateX(26px);
+            }
+
             @media (max-width: 600px) {
                 .word-english {
                     font-size: 2.5rem;
@@ -224,17 +328,24 @@
                 </div>
             </div>
             <div class="button-container">
-                <button class="new-words-btn" id="newWordsBtn">New Words</button>
-                <button class="stats-btn" id="statsBtn">Statistics</button>
+                <button class="btn" id="newWordsBtn">New Words</button>
+                <button class="btn btn-secondary" id="statsBtn">Statistics</button>
+            </div>
+            <div class="button-container">
+                <button class="btn" id="customWordsBtn">Custom Words</button>
+                <button class="btn btn-secondary" id="settingsBtn">Settings</button>
             </div>
             <p class="swipe-instruction">Swipe left or right to see the next word</p>
-            <div class="progress-bar">
-                <div class="progress" id="progressBar"></div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress" id="progressBar"></div>
+                </div>
+                <p class="progress-label" id="progressLabel">Progress: 0%</p>
             </div>
         </div>
 
-        <div id="statsModal" class="stats-modal">
-            <div class="stats-content">
+        <div id="statsModal" class="modal">
+            <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2 style="text-align: center; margin-bottom: 20px">Your Learning Statistics</h2>
                 <div class="stats-item">
@@ -253,6 +364,51 @@
                     <span class="stats-label">Learning Streak:</span>
                     <span id="learningStreak"></span> days
                 </div>
+                <h3 style="margin-top: 20px; margin-bottom: 10px">Achievements</h3>
+                <div id="achievementsContainer"></div>
+            </div>
+        </div>
+
+        <div id="customWordsModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 style="text-align: center; margin-bottom: 20px">Add Custom Words</h2>
+                <textarea
+                    id="customWordsInput"
+                    rows="10"
+                    style="width: 100%; margin-bottom: 10px"
+                    placeholder="Enter your custom words in the format: English word - Russian translation (one pair per line)"
+                ></textarea>
+                <button class="btn" id="addCustomWordsBtn">Add Words</button>
+            </div>
+        </div>
+
+        <div id="settingsModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 style="text-align: center; margin-bottom: 20px">Settings</h2>
+                <div class="settings-item">
+                    <span>Dark Mode</span>
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle" />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="settings-item">
+                    <span>Language</span>
+                    <select id="languageSelect">
+                        <option value="en">English</option>
+                        <option value="ru">Русский</option>
+                    </select>
+                </div>
+                <div class="settings-item">
+                    <span>Difficulty Level</span>
+                    <select id="difficultySelect">
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
             </div>
         </div>
 
@@ -260,16 +416,64 @@
             const cardContainer = document.getElementById("cardContainer");
             const newWordsBtn = document.getElementById("newWordsBtn");
             const statsBtn = document.getElementById("statsBtn");
+            const customWordsBtn = document.getElementById("customWordsBtn");
+            const settingsBtn = document.getElementById("settingsBtn");
             const progressBar = document.getElementById("progressBar");
+            const progressLabel = document.getElementById("progressLabel");
             const loadingOverlay = document.getElementById("loadingOverlay");
             const statsModal = document.getElementById("statsModal");
-            const closeBtn = document.getElementsByClassName("close")[0];
+            const customWordsModal = document.getElementById("customWordsModal");
+            const settingsModal = document.getElementById("settingsModal");
+            const closeBtns = document.getElementsByClassName("close");
+            const addCustomWordsBtn = document.getElementById("addCustomWordsBtn");
+            const customWordsInput = document.getElementById("customWordsInput");
+            const darkModeToggle = document.getElementById("darkModeToggle");
+            const languageSelect = document.getElementById("languageSelect");
+            const difficultySelect = document.getElementById("difficultySelect");
 
             let learnedWords = JSON.parse(localStorage.getItem("learnedWords")) || [];
             let currentWords = [];
             let currentCardIndex = 0;
             let learningStreak = parseInt(localStorage.getItem("learningStreak")) || 0;
             let lastLearningDate = localStorage.getItem("lastLearningDate");
+            let achievements = JSON.parse(localStorage.getItem("achievements")) || [];
+            let customWords = JSON.parse(localStorage.getItem("customWords")) || [];
+            let settings = JSON.parse(localStorage.getItem("settings")) || {
+                darkMode: true,
+                language: "en",
+                difficulty: "medium",
+            };
+
+            function updateSettings() {
+                darkModeToggle.checked = settings.darkMode;
+                languageSelect.value = settings.language;
+                difficultySelect.value = settings.difficulty;
+                document.body.classList.toggle("dark-mode", settings.darkMode);
+                updateLanguage();
+            }
+
+            function updateLanguage() {
+                // Update all text elements based on the selected language
+                // This is a placeholder function, you should implement the actual translations
+            }
+
+            darkModeToggle.addEventListener("change", () => {
+                settings.darkMode = darkModeToggle.checked;
+                localStorage.setItem("settings", JSON.stringify(settings));
+                document.body.classList.toggle("dark-mode", settings.darkMode);
+            });
+
+            languageSelect.addEventListener("change", () => {
+                settings.language = languageSelect.value;
+                localStorage.setItem("settings", JSON.stringify(settings));
+                updateLanguage();
+            });
+
+            difficultySelect.addEventListener("change", () => {
+                settings.difficulty = difficultySelect.value;
+                localStorage.setItem("settings", JSON.stringify(settings));
+                updateWords();
+            });
 
             async function fetchWords() {
                 try {
@@ -303,17 +507,27 @@
                 const translatedWords = await Promise.all(
                     words.map(async (word) => {
                         const translation = await translateWord(word);
-                        return isValidTranslation(translation) ? { english: word, russian: translation } : null;
+                        return isValidTranslation(translation)
+                            ? { english: word, russian: translation, level: getWordLevel(word) }
+                            : null;
                     })
                 );
                 showLoading(false);
                 return translatedWords.filter((word) => word !== null).slice(0, 5);
             }
 
+            function getWordLevel(word) {
+                // This is a simple implementation. You might want to use a more sophisticated method to determine word level.
+                if (word.length <= 4) return "Easy";
+                if (word.length <= 7) return "Medium";
+                return "Hard";
+            }
+
             function createWordCard(word) {
                 const card = document.createElement("div");
                 card.classList.add("word-card");
                 card.innerHTML = `
+                <div class="word-level">${word.level}</div>
                 <div class="word-english">${word.english}</div>
                 <div class="word-russian">${word.russian}</div>
             `;
@@ -343,6 +557,7 @@
             function updateProgressBar() {
                 const progress = (learnedWords.length / 1000) * 100;
                 progressBar.style.width = `${progress}%`;
+                progressLabel.textContent = `Progress: ${progress.toFixed(2)}%`;
             }
 
             async function updateWords() {
@@ -379,6 +594,40 @@
                 ).toFixed(2)}%`;
                 document.getElementById("wordsToGoal").textContent = Math.max(0, 1000 - learnedWords.length);
                 document.getElementById("learningStreak").textContent = learningStreak;
+
+                const achievementsContainer = document.getElementById("achievementsContainer");
+                achievementsContainer.innerHTML = "";
+                achievements.forEach((achievement) => {
+                    const achievementElement = document.createElement("div");
+                    achievementElement.classList.add("achievement");
+                    achievementElement.innerHTML = `
+                    <span class="achievement-icon">${achievement.emoji}</span>
+                    <span>${achievement.description}</span>
+                `;
+                    achievementsContainer.appendChild(achievementElement);
+                });
+            }
+
+            function checkAchievements() {
+                const newAchievements = [];
+
+                if (learnedWords.length >= 100 && !achievements.some((a) => a.description === "Learned 100 words")) {
+                    newAchievements.push({ emoji: "🎉", description: "Learned 100 words" });
+                }
+
+                if (learningStreak >= 7 && !achievements.some((a) => a.description === "7-day learning streak")) {
+                    newAchievements.push({ emoji: "🔥", description: "7-day learning streak" });
+                }
+
+                if (newAchievements.length > 0) {
+                    achievements = [...achievements, ...newAchievements];
+                    localStorage.setItem("achievements", JSON.stringify(achievements));
+                    alert(
+                        `Congratulations! You've earned new achievements:\n${newAchievements
+                            .map((a) => `${a.emoji} ${a.description}`)
+                            .join("\n")}`
+                    );
+                }
             }
 
             newWordsBtn.addEventListener("click", async () => {
@@ -386,6 +635,7 @@
                 localStorage.setItem("learnedWords", JSON.stringify(learnedWords));
                 updateProgressBar();
                 updateLearningStreak();
+                checkAchievements();
                 await updateWords();
             });
 
@@ -394,13 +644,45 @@
                 statsModal.style.display = "block";
             });
 
-            closeBtn.onclick = function () {
-                statsModal.style.display = "none";
-            };
+            customWordsBtn.addEventListener("click", () => {
+                customWordsModal.style.display = "block";
+            });
+
+            settingsBtn.addEventListener("click", () => {
+                settingsModal.style.display = "block";
+            });
+
+            addCustomWordsBtn.addEventListener("click", () => {
+                const input = customWordsInput.value.trim();
+                const wordPairs = input.split("\n").map((pair) => {
+                    const [english, russian] = pair.split("-").map((word) => word.trim());
+                    return { english, russian, level: getWordLevel(english) };
+                });
+
+                customWords = [...customWords, ...wordPairs];
+                localStorage.setItem("customWords", JSON.stringify(customWords));
+                customWordsInput.value = "";
+                customWordsModal.style.display = "none";
+                alert("Custom words added successfully!");
+            });
+
+            Array.from(closeBtns).forEach((btn) => {
+                btn.onclick = function () {
+                    statsModal.style.display = "none";
+                    customWordsModal.style.display = "none";
+                    settingsModal.style.display = "none";
+                };
+            });
 
             window.onclick = function (event) {
                 if (event.target == statsModal) {
                     statsModal.style.display = "none";
+                }
+                if (event.target == customWordsModal) {
+                    customWordsModal.style.display = "none";
+                }
+                if (event.target == settingsModal) {
+                    settingsModal.style.display = "none";
                 }
             };
 
@@ -409,8 +691,10 @@
             let touchEndX = 0;
 
             function handleSwipe() {
-                if (touchStartX - touchEndX > 50 || touchEndX - touchStartX > 50) {
+                if (touchStartX - touchEndX > 50) {
                     showNextCard();
+                } else if (touchEndX - touchStartX > 50) {
+                    showPreviousCard();
                 }
             }
 
@@ -418,6 +702,14 @@
                 currentCardIndex++;
                 if (currentCardIndex >= currentWords.length) {
                     currentCardIndex = 0;
+                }
+                displayCurrentCard();
+            }
+
+            function showPreviousCard() {
+                currentCardIndex--;
+                if (currentCardIndex < 0) {
+                    currentCardIndex = currentWords.length - 1;
                 }
                 displayCurrentCard();
             }
@@ -431,9 +723,19 @@
                 handleSwipe();
             });
 
+            // Keyboard navigation
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "ArrowRight") {
+                    showNextCard();
+                } else if (e.key === "ArrowLeft") {
+                    showPreviousCard();
+                }
+            });
+
             // Initial load
             async function init() {
                 showLoading(true);
+                updateSettings();
                 await updateWords();
                 updateProgressBar();
                 updateLearningStreak();
