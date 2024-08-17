@@ -1,7 +1,7 @@
 /* eslint-disable no-new-func */
 import React, { useState, useEffect, useContext } from "react";
-import { Box, Typography, Button } from "@mui/material";
-import { Link } from "react-router-dom";
+
+import { Box, Typography } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "./CodeBlock";
 import { OpenScad } from "./OpenScad";
@@ -18,7 +18,7 @@ export const detectLanguage = (code) => {
     return "python";
 };
 
-export const ArtifactViewer = ({ type, content, name, artifactId }) => {
+export const ArtifactViewer = ({ type, content, name }) => {
     const [view, setView] = useState("preview");
     const [executionResult, setExecutionResult] = useState(null);
 
@@ -136,15 +136,7 @@ export const ArtifactViewer = ({ type, content, name, artifactId }) => {
                             <CodeBlock language="html" value={content} />
                         </Box>
                     )}
-                    <Button
-                        component={Link}
-                        to={`/artifact/${artifactId}/web`}
-                        variant="contained"
-                        color="primary"
-                        style={{ marginTop: "1rem" }}
-                    >
-                        View Full Page
-                    </Button>
+                
                 </Box>
             );
         case "react":

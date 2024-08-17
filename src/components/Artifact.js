@@ -1,15 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Box, Typography, Paper, IconButton } from "@mui/material";
+import { Box, Typography, Paper, IconButton, Snackbar } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import { ArtifactViewer } from "./ArtifactViewer";
 import { API_URL } from "./Main";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 const Artifact = () => {
     const [artifact, setArtifact] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { id } = useParams();
+
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+    const handleCopyUrl = () => {
+        const fullUrl = `${window.location.origin}/artifact/${id}/web`;
+        navigator.clipboard.writeText(fullUrl).then(() => {
+            setSnackbarOpen(true);
+        });
+    };
+
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+        setSnackbarOpen(false);
+    };
 
     useEffect(() => {
         const fetchArtifact = async () => {
@@ -57,9 +74,14 @@ const Artifact = () => {
                 <Box p={2}>
                     <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
                         <Typography variant="h4">{artifact.name}</Typography>
-                        <IconButton component={Link} to="/shop" color="primary" aria-label="home">
-                            <HomeIcon />
-                        </IconButton>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                            <IconButton component={Link} to="/shop" color="primary" aria-label="home">
+                                <HomeIcon />
+                            </IconButton>
+                            <IconButton onClick={handleCopyUrl} size="small" aria-label="copy url">
+                                <ContentCopyIcon />
+                            </IconButton>
+                        </Box>
                     </Box>
                     <Typography variant="body2" color="textSecondary" gutterBottom>
                         Type: {artifact.type}
@@ -69,14 +91,19 @@ const Artifact = () => {
                     </Typography>
                 </Box>
                 <Box p={2}>
-                    <ArtifactViewer
-                        artifactId={id}
-                        type={artifact.type}
-                        content={artifact.content}
-                        name={artifact.name}
-                    />
+                    <ArtifactViewer type={artifact.type} content={artifact.content} name={artifact.name} />
                 </Box>
             </Paper>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left",
+                }}
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={handleCloseSnackbar}
+                message="URL copied to clipboard"
+            />
         </Box>
     );
 };
