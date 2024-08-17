@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {  Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { API_URL } from "./Main";
 
 const ArtifactWeb = () => {
@@ -40,7 +40,15 @@ const ArtifactWeb = () => {
         return <Typography>No HTML artifact found.</Typography>;
     }
 
-    return <div dangerouslySetInnerHTML={{ __html: artifact.content }} style={{ width: "100%", height: "100vh" }} />;
+    return (
+        <Box width="100%" height="100vh">
+            <iframe
+                srcDoc={artifact.content}
+                style={{ width: "100%", height: "100%", border: "none" }}
+                title="HTML Artifact"
+            />
+        </Box>
+    );
 };
 
 export default ArtifactWeb;

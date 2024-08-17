@@ -78,9 +78,11 @@ const Artifact = () => {
                             <IconButton component={Link} to="/shop" color="primary" aria-label="home">
                                 <HomeIcon />
                             </IconButton>
-                            <IconButton onClick={handleCopyUrl} size="small" aria-label="copy url">
-                                <ContentCopyIcon />
-                            </IconButton>
+                            {id && (
+                                <IconButton onClick={handleCopyUrl} size="small" aria-label="copy url">
+                                    <ContentCopyIcon />
+                                </IconButton>
+                            )}
                         </Box>
                     </Box>
                     <Typography variant="body2" color="textSecondary" gutterBottom>
