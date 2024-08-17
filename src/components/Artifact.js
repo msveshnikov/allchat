@@ -15,7 +15,7 @@ const Artifact = () => {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
 
     const handleCopyUrl = () => {
-        const fullUrl = `${window.location.origin}/artifact/${id}/web`;
+        const fullUrl = `${window.location.origin}/artifact/${id ?? artifact._id}/web`;
         navigator.clipboard.writeText(fullUrl).then(() => {
             setSnackbarOpen(true);
         });
@@ -78,11 +78,9 @@ const Artifact = () => {
                             <IconButton component={Link} to="/shop" color="primary" aria-label="home">
                                 <HomeIcon />
                             </IconButton>
-                            {id && (
-                                <IconButton onClick={handleCopyUrl} size="small" aria-label="copy url">
-                                    <ContentCopyIcon />
-                                </IconButton>
-                            )}
+                            <IconButton onClick={handleCopyUrl} size="small" aria-label="copy url">
+                                <ContentCopyIcon />
+                            </IconButton>
                         </Box>
                     </Box>
                     <Typography variant="body2" color="textSecondary" gutterBottom>
