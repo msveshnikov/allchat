@@ -69,7 +69,12 @@ const Artifact = () => {
                     </Typography>
                 </Box>
                 <Box p={2}>
-                    <ArtifactViewer type={artifact.type} content={artifact.content} name={artifact.name} />
+                    <ArtifactViewer
+                        artifactId={id}
+                        type={artifact.type}
+                        content={artifact.content}
+                        name={artifact.name}
+                    />
                 </Box>
             </Paper>
         </Box>
