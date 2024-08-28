@@ -604,7 +604,7 @@ async function handleSubscriptionUpdate(subscription) {
             email: customer.email,
             password: customer.email,
         });
-        await sendWelcomeEmail(user);
+       // await sendWelcomeEmail(user);
     }
     user.subscriptionStatus = subscription.status;
     user.subscriptionId = subscription.id;
