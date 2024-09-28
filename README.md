@@ -1,4 +1,4 @@
-# AllChat
+# AllChat (built by [AutoCode](https://autocode.work))
 
 An AI assistant app that interacts with all major models, maintains history, generates and recognizes images, uploads PDFs/Word/Excel files, runs code, makes function calls to models, supports Markdown formatting, and more. Fully written by _Claude 3 Sonnet_.
 
