@@ -26,7 +26,7 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import { handleIncomingEmails } from "./email.js";
 import { getImage } from "./image.js";
-import { sendInviteEmail, sendWelcomeEmail } from "./utils.js";
+import { sendInviteEmail } from "./utils.js";
 import cluster from "cluster";
 import promClient from "prom-client";
 import sharp from "sharp";
@@ -170,7 +170,7 @@ app.post("/interact", verifyToken, async (req, res) => {
         const chatId = req.body.chatId;
         const tools = req.body.tools;
         const lang = req.body.lang;
-        const model = req.body.model || "gemini-1.5-pro-001";
+        const model = req.body.model || "gemini-1.5-pro-002";
         const customGPT = req.body.customGPT;
         // const referrer = req.body.referrer;
         const country = req.headers["geoip_country_code"];
