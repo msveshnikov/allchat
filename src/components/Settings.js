@@ -23,8 +23,8 @@ export const models = {
     "mistralai/Mixtral-8x22B-Instruct-v0.1": ["document"],
     "mistralai/Mixtral-8x7B-Instruct-v0.1": ["document", "tools"],
     "mistral-large-latest": ["document", "tools", "admin"],
-    "meta-llama/Llama-3-70b-chat-hf": ["document"],
-    "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo": ["document"],
+    // "meta-llama/Llama-3-70b-chat-hf": ["document"],
+    // "meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo": ["document"],
 };
 
 const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, selectedModel, onModelSelect }) => {
