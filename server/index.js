@@ -35,7 +35,7 @@ import { WebSocket, WebSocketServer } from "ws";
 import { getTextMistralLarge } from "./mistral.js";
 dotenv.config({ override: true });
 
-const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
+const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000", "http://localhost:5173", "https://mental-health-autocode.onrender.com"];
 export const MAX_SEARCH_RESULT_LENGTH = 7000;
 export const MAX_CONTEXT_LENGTH = 20000;
 export const MAX_CHAT_HISTORY_LENGTH = 40;
