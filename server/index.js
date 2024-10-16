@@ -949,7 +949,7 @@ app.post("/invite", verifyToken, async (req, res) => {
         let customGPTProfileUrl = null;
         if (customGPT) {
             const customGPTData = await CustomGPT.findOne({ name: customGPT });
-            customGPTProfileUrl = customGPTData.profileUrl;
+            customGPTProfileUrl = customGPTData?.profileUrl;
         } else {
             customGPTProfileUrl = "https://allchat.online/AllChat.png";
         }
