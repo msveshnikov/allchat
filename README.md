@@ -181,7 +181,7 @@ B --> F[External Services]
 
 [x] broadcast update of shared chat - WebSockets
 
-[x] Coins and Achievments
+[x] Coins and Achievements
 
 [x] Artifacts
 
