@@ -16,7 +16,7 @@ export const models = {
     "gemini-1.0-pro-002": ["document", "tools"],
     "claude-3-haiku-20240307": ["image", "document", "tools"],
     "claude-3.5-haiku-latest": ["image", "document", "tools"],
-    "claude-3-5-sonnet-20241122": ["image", "document", "tools"],
+    "claude-3-5-sonnet-20241022": ["image", "document", "tools"],
     "gpt-3.5-turbo": ["document", "tools"],
     "gpt-4o-2024-08-06": ["image", "document", "tools"],
     "gpt-4o-mini": ["image", "document", "tools"],
