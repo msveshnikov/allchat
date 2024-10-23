@@ -32,7 +32,6 @@ import promClient from "prom-client";
 import sharp from "sharp";
 import SharedChat from "./model/SharedChat .js";
 import { WebSocket, WebSocketServer } from "ws";
-import { getTextMistralLarge } from "./mistral.js";
 dotenv.config({ override: true });
 
 const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000", "http://localhost:5173", "https://mental-health-autocode.onrender.com"];
@@ -296,8 +295,6 @@ app.post("/interact", verifyToken, async (req, res) => {
                 model,
                 tools
             );
-        } else if (model?.startsWith("mistral-large")) {
-            textResponse = await getTextMistralLarge(contextPrompt, temperature, req.user.id, model, tools);
         } else {
             textResponse = await getTextTogether(contextPrompt, temperature, req.user.id, model, tools);
         }
