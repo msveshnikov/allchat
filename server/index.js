@@ -26,16 +26,20 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import { handleIncomingEmails } from "./email.js";
 import { getImage } from "./image.js";
-import { sendInviteEmail, sendWelcomeEmail } from "./utils.js";
+import { sendInviteEmail } from "./utils.js";
 import cluster from "cluster";
 import promClient from "prom-client";
 import sharp from "sharp";
 import SharedChat from "./model/SharedChat .js";
 import { WebSocket, WebSocketServer } from "ws";
-import { getTextMistralLarge } from "./mistral.js";
 dotenv.config({ override: true });
 
-const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000"];
+const ALLOWED_ORIGIN = [
+    process.env.FRONTEND_URL,
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://mental-health-autocode.onrender.com",
+];
 export const MAX_SEARCH_RESULT_LENGTH = 7000;
 export const MAX_CONTEXT_LENGTH = 20000;
 export const MAX_CHAT_HISTORY_LENGTH = 40;
@@ -170,17 +174,11 @@ app.post("/interact", verifyToken, async (req, res) => {
         const chatId = req.body.chatId;
         const tools = req.body.tools;
         const lang = req.body.lang;
-        const model = req.body.model || "gemini-1.5-pro-preview-0514";
+        const model = req.body.model || "gemini-1.5-pro-002";
         const customGPT = req.body.customGPT;
-        // const referrer = req.body.referrer;
         const country = req.headers["geoip_country_code"];
         const user = await User.findById(req.user.id);
-        if (
-            user?.subscriptionStatus !== "active" &&
-            user?.subscriptionStatus !== "trialing" &&
-            !user?.admin
-            // && referrer !== "android-app://online.allchat.twa/"
-        ) {
+        if (user?.subscriptionStatus !== "active" && user?.subscriptionStatus !== "trialing" && !user?.admin) {
             return res
                 .status(402)
                 .json({ error: "Subscription is not active. Please activate subscription in the Settings." });
@@ -245,7 +243,8 @@ app.post("/interact", verifyToken, async (req, res) => {
 
         const recentArtifacts = await Artifact.find({ user: req.user.id }).sort({ updatedAt: -1 }).limit(1);
         const artifactsContext = tools
-            ? recentArtifacts.map((artifact) => `Artifact "${artifact.name}": ${artifact.content}`).join("\n\n")
+            ? "\nRecent Artifacts:\n" +
+              recentArtifacts.map((artifact) => `Artifact "${artifact.name}": ${artifact.content}`).join("\n\n")
             : "";
 
         const contextPrompt = model?.startsWith("ft")
@@ -256,7 +255,7 @@ app.post("/interact", verifyToken, async (req, res) => {
             : `System: ${instructions || systemPrompt} User country code: ${country} User Lang: ${lang}
                     ${chatHistory.map((chat) => `Human: ${chat.user}\nAssistant:${chat.assistant}`).join("\n")}
                     \nUser information: ${userInfo}
-                    \nRecent Artifacts:\n${artifactsContext}
+                    ${artifactsContext}
                     \nHuman: ${userInput || "what's this"}\nAssistant:`.slice(-MAX_CONTEXT_LENGTH);
         let textResponse;
         let inputTokens = 0;
@@ -296,8 +295,6 @@ app.post("/interact", verifyToken, async (req, res) => {
                 model,
                 tools
             );
-        } else if (model?.startsWith("mistral-large")) {
-            textResponse = await getTextMistralLarge(contextPrompt, temperature, req.user.id, model, tools);
         } else {
             textResponse = await getTextTogether(contextPrompt, temperature, req.user.id, model, tools);
         }
@@ -604,7 +601,7 @@ async function handleSubscriptionUpdate(subscription) {
             email: customer.email,
             password: customer.email,
         });
-        await sendWelcomeEmail(user);
+        // await sendWelcomeEmail(user);
     }
     user.subscriptionStatus = subscription.status;
     user.subscriptionId = subscription.id;
@@ -949,7 +946,7 @@ app.post("/invite", verifyToken, async (req, res) => {
         let customGPTProfileUrl = null;
         if (customGPT) {
             const customGPTData = await CustomGPT.findOne({ name: customGPT });
-            customGPTProfileUrl = customGPTData.profileUrl;
+            customGPTProfileUrl = customGPTData?.profileUrl;
         } else {
             customGPTProfileUrl = "https://allchat.online/AllChat.png";
         }

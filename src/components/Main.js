@@ -51,7 +51,7 @@ function Main({ themeMode, toggleTheme }) {
     const [tools, setTools] = useState((localStorage.getItem("tools") ?? "true") === "true");
     const [temperature, setTemperature] = useState(Number(localStorage.getItem("temperature") || "0.7"));
     const [selectedModel, setSelectedModel] = useState(
-        localStorage.getItem("selectedModel") || "gemini-1.5-pro-preview-0514"
+        localStorage.getItem("selectedModel") || "gemini-1.5-pro-002"
     );
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
@@ -332,7 +332,7 @@ function Main({ themeMode, toggleTheme }) {
             method: "POST",
             headers,
             body: JSON.stringify({
-                model: "gemini-1.5-flash-preview-0514",
+                model: "gemini-1.5-flash-001",
                 temperature: 0.1,
                 referrer,
                 input: "Extract main topic of this chat in one simple short statement without formatting (30 chars max) and return it without anything else in [] ",

@@ -1,5 +1,6 @@
 /* eslint-disable no-new-func */
 import React, { useState, useEffect, useContext } from "react";
+
 import { Box, Typography } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "./CodeBlock";
@@ -135,6 +136,7 @@ export const ArtifactViewer = ({ type, content, name }) => {
                             <CodeBlock language="html" value={content} />
                         </Box>
                     )}
+                
                 </Box>
             );
         case "react":
