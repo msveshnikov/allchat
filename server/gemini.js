@@ -71,13 +71,7 @@ export async function getTextGemini(prompt, temperature, imageBase64, fileType, 
                       function_declarations: tools.map(renameProperty),
                   },
               ]
-            : [
-                  //       {
-                  //           googleSearchRetrieval: {
-                  //               disableAttribution: true,
-                  //           },
-                  //       },
-              ],
+            : [],
     };
 
     const generativeModel = vertex_ai.preview.getGenerativeModel({

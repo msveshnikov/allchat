@@ -12,6 +12,8 @@ import ReactGA from "react-ga4";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import AvatarBuilder from "./components/AvatarBuilder";
 import Shop from "./components/Shop";
+import ArtifactWeb from "./components/ArtifactWeb";
+
 const Admin = lazy(() => import("./components/Admin"));
 const Artifact = lazy(() => import("./components/Artifact"));
 
@@ -64,6 +66,7 @@ const App = () => {
                                     }
                                 />
                                 <Route path="/artifact/:id" element={<Artifact />} />
+                                <Route path="/artifact/:id/web" element={<ArtifactWeb />} />
                             </Routes>
                         </Router>
                     </Suspense>

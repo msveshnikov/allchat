@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Sea Battle</title>
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Russo+One&display=swap");
+
+            body {
+                font-family: "Arial", sans-serif;
+                margin: 0;
+                padding: 0;
+                background: linear-gradient(135deg, #1c92d2, #0a2a4d);
+                color: #ffffff;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                background-size: 400% 400%;
+                animation: gradientBG 15s ease infinite;
+            }
+
+            @keyframes gradientBG {
+                0% {
+                    background-position: 0% 50%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+                100% {
+                    background-position: 0% 50%;
+                }
+            }
+
+            #game-container {
+                max-width: 500px;
+                width: 100%;
+                background-color: rgba(255, 255, 255, 0.1);
+                border-radius: 20px;
+                box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+                padding: 30px;
+                backdrop-filter: blur(10px);
+            }
+
+            h1 {
+                font-family: "Russo One", sans-serif;
+                text-align: center;
+                color: #ffffff;
+                font-size: 3em;
+                margin-bottom: 30px;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+                letter-spacing: 2px;
+            }
+
+            #start-menu,
+            #placement-screen,
+            #game-screen,
+            #game-over-screen {
+                display: none;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(10, 1fr);
+                gap: 3px;
+                margin-bottom: 20px;
+                border: 2px solid #ffffff;
+                border-radius: 10px;
+                padding: 10px;
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+
+            .cell {
+                width: 30px;
+                height: 30px;
+                border: 1px solid #4a90e2;
+                background-color: rgba(74, 144, 226, 0.3);
+                transition: all 0.3s ease;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+
+            .ship {
+                background-color: #1a5fa0; /* Darker blue for higher contrast */
+                box-shadow: 0 0 15px #4a90e2, inset 0 0 10px #ffffff; /* Stronger glow and inner highlight */
+            }
+
+            .hit {
+                background-color: #ff4136;
+                box-shadow: 0 0 15px #ff4136;
+            }
+
+            .miss {
+                background-color: #7fdbff;
+            }
+
+            button {
+                display: block;
+                width: 100%;
+                padding: 15px;
+                margin: 15px 0;
+                background-color: #4a90e2;
+                color: #fff;
+                border: none;
+                border-radius: 30px;
+                font-size: 18px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-transform: uppercase;
+                font-weight: bold;
+                letter-spacing: 1px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            button:hover {
+                background-color: #357abd;
+                transform: translateY(-3px);
+                box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            button:active {
+                transform: translateY(1px);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+
+            button:disabled {
+                background-color: #cccccc;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+
+            #message {
+                text-align: center;
+                margin-bottom: 20px;
+                font-weight: bold;
+                font-size: 1.3em;
+                color: #ffffff;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+                padding: 10px;
+                background-color: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+            }
+
+            .grid-label {
+                text-align: center;
+                font-weight: bold;
+                margin-bottom: 10px;
+                font-size: 1.2em;
+                color: #4a90e2;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            }
+
+            #game-over-message {
+                font-size: 2em;
+                text-align: center;
+                margin-bottom: 30px;
+                color: #4a90e2;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            .ship-icon {
+                font-size: 1.5em;
+                margin-right: 5px;
+                vertical-align: middle;
+            }
+
+            @media (max-width: 500px) {
+                .cell {
+                    width: 25px;
+                    height: 25px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="game-container">
+            <h1>🚢 Sea Battle 🚢</h1>
+            <div id="start-menu">
+                <button id="start-button">Start Game</button>
+            </div>
+            <div id="placement-screen">
+                <div class="grid-label"><span class="ship-icon">🚢</span>Place Your Fleet</div>
+                <div id="player-grid" class="grid"></div>
+                <button id="rotate-button">Rotate Ship</button>
+                <button id="reset-button">Reset Ships</button>
+                <button id="start-battle-button" disabled>Start Battle</button>
+            </div>
+            <div id="game-screen">
+                <div id="message"></div>
+                <div class="grid-label"><span class="ship-icon">⚓</span>Your Fleet</div>
+                <div id="player-grid-game" class="grid"></div>
+                <div class="grid-label"><span class="ship-icon">🌊</span>Enemy Waters</div>
+                <div id="ai-grid" class="grid"></div>
+            </div>
+            <div id="game-over-screen">
+                <div id="game-over-message"></div>
+                <button id="play-again-button">Play Again</button>
+            </div>
+        </div>
+
+        <script>
+            const GRID_SIZE = 10;
+            const SHIPS = [
+                { name: "Battleship", size: 4, count: 1 },
+                { name: "Cruiser", size: 3, count: 2 },
+                { name: "Destroyer", size: 2, count: 3 },
+                { name: "Submarine", size: 1, count: 4 },
+            ];
+
+            let playerGrid = Array(GRID_SIZE)
+                .fill()
+                .map(() => Array(GRID_SIZE).fill(0));
+            let aiGrid = Array(GRID_SIZE)
+                .fill()
+                .map(() => Array(GRID_SIZE).fill(0));
+            let currentShipIndex = 0;
+            let currentShipCount = 0;
+            let isVertical = false;
+            let aiHits = [];
+
+            const startMenu = document.getElementById("start-menu");
+            const placementScreen = document.getElementById("placement-screen");
+            const gameScreen = document.getElementById("game-screen");
+            const gameOverScreen = document.getElementById("game-over-screen");
+            const playerGridElement = document.getElementById("player-grid");
+            const playerGridGameElement = document.getElementById("player-grid-game");
+            const aiGridElement = document.getElementById("ai-grid");
+            const messageElement = document.getElementById("message");
+            const gameOverMessageElement = document.getElementById("game-over-message");
+
+            // Sound effects
+            const hitSound = new Audio(
+                "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA"
+            );
+            const missSound = new Audio(
+                "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA"
+            );
+            const gameOverSound = new Audio(
+                "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA"
+            );
+
+            hitSound.src = "https://assets.mixkit.co/sfx/preview/mixkit-arcade-retro-changing-tab-206.mp3";
+            missSound.src = "https://assets.mixkit.co/sfx/preview/mixkit-click-error-1110.mp3";
+            gameOverSound.src = "https://assets.mixkit.co/sfx/preview/mixkit-trumpet-fanfare-2293.mp3";
+
+            document.getElementById("start-button").addEventListener("click", startPlacement);
+            document.getElementById("rotate-button").addEventListener("click", rotateShip);
+            document.getElementById("reset-button").addEventListener("click", resetShips);
+            document.getElementById("start-battle-button").addEventListener("click", startBattle);
+            document.getElementById("play-again-button").addEventListener("click", () => location.reload());
+
+            function startPlacement() {
+                startMenu.style.display = "none";
+                placementScreen.style.display = "block";
+                createGrid(playerGridElement, true);
+            }
+
+            function createGrid(gridElement, isPlayer) {
+                gridElement.innerHTML = "";
+                for (let i = 0; i < GRID_SIZE; i++) {
+                    for (let j = 0; j < GRID_SIZE; j++) {
+                        const cell = document.createElement("div");
+                        cell.classList.add("cell");
+                        cell.dataset.row = i;
+                        cell.dataset.col = j;
+                        if (isPlayer) {
+                            cell.addEventListener("click", () => placeShip(i, j));
+                        } else {
+                            cell.addEventListener("click", () => playerAttack(i, j));
+                        }
+                        gridElement.appendChild(cell);
+                    }
+                }
+            }
+
+            function placeShip(row, col) {
+                if (currentShipIndex >= SHIPS.length) return;
+
+                const ship = SHIPS[currentShipIndex];
+                if (canPlaceShip(row, col, ship.size)) {
+                    for (let i = 0; i < ship.size; i++) {
+                        const r = isVertical ? row + i : row;
+                        const c = isVertical ? col : col + i;
+                        playerGrid[r][c] = 1;
+                        playerGridElement.querySelector(`[data-row="${r}"][data-col="${c}"]`).classList.add("ship");
+                    }
+                    currentShipCount++;
+                    if (currentShipCount === ship.count) {
+                        currentShipIndex++;
+                        currentShipCount = 0;
+                    }
+                    if (currentShipIndex === SHIPS.length) {
+                        document.getElementById("start-battle-button").disabled = false;
+                    }
+                }
+            }
+
+            function canPlaceShip(row, col, size) {
+                for (let i = 0; i < size; i++) {
+                    const r = isVertical ? row + i : row;
+                    const c = isVertical ? col : col + i;
+                    if (r >= GRID_SIZE || c >= GRID_SIZE || playerGrid[r][c] === 1) {
+                        return false;
+                    }
+                    // Check surrounding cells
+                    for (let dr = -1; dr <= 1; dr++) {
+                        for (let dc = -1; dc <= 1; dc++) {
+                            const nr = r + dr;
+                            const nc = c + dc;
+                            if (nr >= 0 && nr < GRID_SIZE && nc >= 0 && nc < GRID_SIZE && playerGrid[nr][nc] === 1) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function rotateShip() {
+                isVertical = !isVertical;
+            }
+
+            function resetShips() {
+                playerGrid = Array(GRID_SIZE)
+                    .fill()
+                    .map(() => Array(GRID_SIZE).fill(0));
+                currentShipIndex = 0;
+                currentShipCount = 0;
+                createGrid(playerGridElement, true);
+                document.getElementById("start-battle-button").disabled = true;
+            }
+
+            function startBattle() {
+                placementScreen.style.display = "none";
+                gameScreen.style.display = "block";
+                createGrid(playerGridGameElement, false);
+                createGrid(aiGridElement, false);
+                placeAIShips();
+                updateGridDisplay();
+                messageElement.textContent = "Your turn! Click on the AI's grid to attack.";
+            }
+
+            function placeAIShips() {
+                for (const ship of SHIPS) {
+                    for (let i = 0; i < ship.count; i++) {
+                        let placed = false;
+                        while (!placed) {
+                            const row = Math.floor(Math.random() * GRID_SIZE);
+                            const col = Math.floor(Math.random() * GRID_SIZE);
+                            const vertical = Math.random() < 0.5;
+                            if (canPlaceAIShip(row, col, ship.size, vertical)) {
+                                for (let j = 0; j < ship.size; j++) {
+                                    const r = vertical ? row + j : row;
+                                    const c = vertical ? col : col + j;
+                                    aiGrid[r][c] = 1;
+                                }
+                                placed = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            function canPlaceAIShip(row, col, size, vertical) {
+                for (let i = 0; i < size; i++) {
+                    const r = vertical ? row + i : row;
+                    const c = vertical ? col : col + i;
+                    if (r >= GRID_SIZE || c >= GRID_SIZE || aiGrid[r][c] === 1) {
+                        return false;
+                    }
+                    // Check surrounding cells
+                    for (let dr = -1; dr <= 1; dr++) {
+                        for (let dc = -1; dc <= 1; dc++) {
+                            const nr = r + dr;
+                            const nc = c + dc;
+                            if (nr >= 0 && nr < GRID_SIZE && nc >= 0 && nc < GRID_SIZE && aiGrid[nr][nc] === 1) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function playerAttack(row, col) {
+                if (aiGrid[row][col] > 1) return;
+
+                if (aiGrid[row][col] === 1) {
+                    aiGrid[row][col] = 2;
+                    messageElement.textContent = "Hit! Your turn again.";
+                    hitSound.play();
+                } else {
+                    aiGrid[row][col] = 3;
+                    messageElement.textContent = "Miss! AI's turn.";
+                    missSound.play();
+                    setTimeout(aiAttack, 1000);
+                }
+                updateGridDisplay();
+                checkGameOver();
+            }
+
+            function aiAttack() {
+                let row, col;
+
+                if (aiHits.length > 0) {
+                    const lastHit = aiHits[aiHits.length - 1];
+                    const directions = [
+                        [-1, 0],
+                        [1, 0],
+                        [0, -1],
+                        [0, 1],
+                    ];
+                    const validMoves = directions.filter(([dr, dc]) => {
+                        const r = lastHit.row + dr;
+                        const c = lastHit.col + dc;
+                        return r >= 0 && r < GRID_SIZE && c >= 0 && c < GRID_SIZE && playerGrid[r][c] <= 1;
+                    });
+
+                    if (validMoves.length > 0) {
+                        const [dr, dc] = validMoves[Math.floor(Math.random() * validMoves.length)];
+                        row = lastHit.row + dr;
+                        col = lastHit.col + dc;
+                    } else {
+                        aiHits.pop();
+                        return aiAttack();
+                    }
+                } else {
+                    do {
+                        row = Math.floor(Math.random() * GRID_SIZE);
+                        col = Math.floor(Math.random() * GRID_SIZE);
+                    } while (playerGrid[row][col] > 1);
+                }
+
+                if (playerGrid[row][col] === 1) {
+                    playerGrid[row][col] = 2;
+                    messageElement.textContent = "AI Hit! AI's turn again.";
+                    aiHits.push({ row, col });
+                    hitSound.play();
+                    setTimeout(aiAttack, 1000);
+                } else {
+                    playerGrid[row][col] = 3;
+                    messageElement.textContent = "AI Miss! Your turn.";
+                    missSound.play();
+                }
+                updateGridDisplay();
+                checkGameOver();
+            }
+
+            function updateGridDisplay() {
+                for (let i = 0; i < GRID_SIZE; i++) {
+                    for (let j = 0; j < GRID_SIZE; j++) {
+                        const playerCell = playerGridGameElement.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+                        const aiCell = aiGridElement.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+
+                        if (playerGrid[i][j] === 1) playerCell.classList.add("ship");
+                        if (playerGrid[i][j] === 2) playerCell.classList.add("hit");
+                        if (playerGrid[i][j] === 3) playerCell.classList.add("miss");
+
+                        if (aiGrid[i][j] === 2) aiCell.classList.add("hit");
+                        if (aiGrid[i][j] === 3) aiCell.classList.add("miss");
+                    }
+                }
+            }
+
+            function checkGameOver() {
+                const playerLost = playerGrid.every((row) => row.every((cell) => cell !== 1));
+                const aiLost = aiGrid.every((row) => row.every((cell) => cell !== 1));
+
+                if (playerLost || aiLost) {
+                    gameScreen.style.display = "none";
+                    gameOverScreen.style.display = "block";
+                    gameOverMessageElement.textContent = playerLost
+                        ? "Game Over! AI Wins!"
+                        : "Congratulations! You Win!";
+                    gameOverSound.play();
+                }
+            }
+
+            startMenu.style.display = "block";
+        </script>
+    </body>
+</html>
