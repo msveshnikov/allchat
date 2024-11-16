@@ -5,9 +5,6 @@ import dotenv from "dotenv";
 dotenv.config({ override: true });
 
 export const getTextGpt = async (prompt, temperature, fileBytesBase64, fileType, userId, model, webTools) => {
-    if (model.startsWith("gpt-4o") && userId !== "65fe9b2dedac81e8fa3c19bc") {
-        model = "gpt-4o-mini";
-    }
 
     const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY });
     const openAiTools = tools.map(renameProperty).map((f) => ({ type: "function", function: f }));

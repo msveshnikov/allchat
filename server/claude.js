@@ -25,8 +25,6 @@ const resizeImage = async (imageBase64, maxSize = 2 * 1024 * 1024) => {
 
 export const getTextClaude = async (prompt, temperature, fileBytesBase64, fileType, userId, model, webTools) => {
     const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_KEY });
-
-
     const messages = [
         {
             role: "user",

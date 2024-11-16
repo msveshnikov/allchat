@@ -2,10 +2,7 @@ import path from "path";
 import nodemailer from "nodemailer";
 import hbs from "nodemailer-express-handlebars";
 import dotenv from "dotenv";
-import fs from "fs";
 dotenv.config();
-
-export const torIPs = fs.readFileSync("./tor.txt").toString().split("\r\n");
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -111,23 +108,3 @@ export const sendInviteEmail = async (email, model, customGPT, chatId, inviterPr
 
     sendEmail(mailOptions);
 };
-
-export const whiteListCountries = [
-    // all paying countries so far
-    "US",
-    "CA",
-    "GB",
-    "AU",
-    "IT",
-    "AT",
-    "CH",
-    "FR",
-    "NL",
-    "ES",
-    "DK",
-    "PT",
-    "DE",
-    "SE",
-    "JP",
-    "NO",
-];

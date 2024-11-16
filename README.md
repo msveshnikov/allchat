@@ -1,4 +1,4 @@
-# AllChat
+# AllChat (built by [AutoCode](https://autocode.work))
 
 An AI assistant app that interacts with all major models, maintains history, generates and recognizes images, uploads PDFs/Word/Excel files, runs code, makes function calls to models, supports Markdown formatting, and more. Fully written by _Claude 3 Sonnet_.
 
@@ -12,12 +12,6 @@ An AI assistant app that interacts with all major models, maintains history, gen
 -   [Run Locally](#run-locally)
     -   [Environment variables](#environment-variables)
     -   [Run](#run)
--   [Docker Deploy](#docker-deploy)
-    -   [Backend (Node.js)](#backend-nodejs)
-    -   [Frontend (React MUI)](#frontend-react-mui)
-    -   [Running the Containers](#running-the-containers)
--   [Nginx](#nginx)
--   [Monitoring](#monitoring)
 
 ## PROD (with $4.99 subscription)
 
@@ -30,12 +24,16 @@ https://allchat.online
 
 ## Features
 
--   Gemini Pro 1.5, Claude 3 and GPT-3.5
+-   Gemini Pro 1.5, Claude 3.5 and GPT-4o
+-   Artifacts
+-   Avatar Builder
+-   Shared Chats
+-   Achievements
 -   Audio Input in Gemini
 -   Video Input in Gemini
--   Custom GPTs (best to use with LlaMa-3)
+-   Custom GPTs
 -   Email respond (with attachments, like PDFs, Word, etc)
--   Memory (for Gemini & Claude) - any information about user which you agreed to persist
+-   Memory - any information about user which you agreed to persist
 -   Scheduling any action (hourly or daily) to your email
 -   YouTube video summary
 -   Image Input (png/jpeg) in Gemini and Claude
@@ -83,119 +81,6 @@ You have to get some of those APIs and set environment variables (or put to .env
 -   Start local Mongo DB (or containerized: `docker run -p 27017:27017 -d mongo`)
 -   In the server folder, `npm i` then `npm run api`
 -   In the root folder, `npm i` then `npm run start`
--   (Optional) In the python-scripts folder, `python shell.py`
-
-# DOCKER DEPLOY
-
-To containerize the Node.js backend and React MUI frontend for easy deployment, we can use Docker. Here's how you can create Docker containers for your application:
-
-**Backend (Node.js)**
-
--   Build the Docker image by running the following command in the backend directory:
-
-```
-docker build -t allchat-backend .
-```
-
-Replace `allchat-backend` with your desired image name. Push to Hub if needed.
-
-**Frontend (React MUI)**
-
--   Replace ENV VITE_API_URL in the root Dockerfile with your host
--   Build the Docker image by running the following command in the frontend directory:
-
-```
-docker build -t allchat-frontend .
-```
-
-Replace `allchat-frontend` with your desired image name. Push to Hub if needed.
-
-**Running the Containers**
-
-After building the Docker images, you can run the containers using Docker Compose.
-
--   Make sure to replace `allchat-backend` and `allchat-frontend` with the names you used when building the Docker images.
--   Put .env file to the same folder as docker-compose.yml
--   Start the containers by running the following command in that folder:
-
-```
-docker-compose up
-```
-
-This will start both the backend and frontend containers, and the frontend will be accessible at `http://localhost`.
-
-With this setup, you can easily deploy your containerized application to any Docker-compatible environment, such as a cloud platform or a local server.
-
-# NGINX
-
-To configure Nginx as a reverse proxy for your containerized Node.js backend and React MUI frontend applications, you can follow these steps:
-
-1. **Install Nginx**
-
-If Nginx is not already installed on your VM instance, you can install it using the appropriate package manager for your operating system. For example, on Ubuntu or Debian-based distributions, you can run:
-
-```
-sudo apt-get update
-sudo apt-get install nginx
-```
-
-2. **Configure Nginx**
-
-Open the default Nginx configuration file, usually located at `/etc/nginx/nginx.conf` or `/etc/nginx/conf.d/default.conf`. You can use a text editor like `nano` or `vim`.
-
-```
-sudo nano /etc/nginx/conf.d/default.conf
-```
-
-3. **Configure Server Blocks**
-
-Next, configure the server blocks for your domain. Inside the `http` block, add the following:
-
-```nginx
-server {
-    server_name allchat.online www.allchat.online;
-
-    location /api/ {
-        proxy_pass http://localhost:6000/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP       $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
-
-    location / {
-        proxy_pass http://localhost:8585;
-        proxy_set_header Host $host;
-	    proxy_set_header X-Real-IP       $remote_addr;
-	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
-
-    listen 443 ssl; # managed by Certbot
-    ssl_certificate /etc/letsencrypt/live/allchat.online/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/allchat.online/privkey.pem; # managed by Certbot
-    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-
-}
-
-```
-
-This configuration listens on port 80 for requests to `allchat.online` and `www.allchat.online`. It forwards requests to `/api` to your backend container, and all other requests to your frontend container.
-
-5. **Restart Nginx**
-
-Save the changes to the configuration file, and restart Nginx for the changes to take effect:
-
-```
-sudo systemctl restart nginx
-```
-
-After completing these steps, your Nginx server should now be correctly configured to act as a reverse proxy for your containerized Node.js backend and React MUI frontend applications, serving them at `allchat.online` and `www.allchat.online`.
-
-Note: Make sure that your backend and frontend containers are running and accessible from your Nginx server. You may need to adjust the firewall rules or security groups on your VM instance to allow incoming traffic on the necessary ports.
-
-# Monitoring
-
-Check /server/monitoring folder for dockerized monitoring solution (Loki+Grafana)
 
 ```mermaid
 graph LR
@@ -235,6 +120,52 @@ graph LR
    class Backend,Frontend,PythonShell,MongoDB,Prometheus,NodeExporter,Grafana,Loki serviceName;
 ```
 
+```mermaid
+graph TD
+A[AllChat API] --> B[Express Server]
+B --> C[Routes]
+B --> D[Middleware]
+B --> E[Database]
+B --> F[External Services]
+
+    C --> C1[User Management]
+    C --> C2[Chat Interactions]
+    C --> C3[Tool Calls]
+    C --> C4[Subscriptions]
+
+    D --> D1[CORS]
+    D --> D2[Rate Limiting]
+    D --> D3[Authentication]
+    D --> D4[Logging]
+
+    E --> E1[MongoDB]
+
+    F --> F1[AI Models]
+    F --> F2[Email Service]
+    F --> F3[Telegram Bot]
+    F --> F4[Payment Gateway]
+    F --> F5[Web Scraping]
+    F --> F6[File Processing]
+
+    F1 --> F1A[Anthropic AI]
+    F1 --> F1B[Google Vertex AI]
+    F1 --> F1C[OpenAI]
+
+    F6 --> F6A[PDF Parsing]
+    F6 --> F6B[Word Document Processing]
+    F6 --> F6C[Excel Spreadsheet Handling]
+
+    B --> G[WebSocket Server]
+
+    H[Utilities] --> H1[Sitemap Generation]
+    H --> H2[Cron Jobs]
+    H --> H3[Image Processing]
+```
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=msveshnikov/allchat&type=Date)](https://star-history.com/#msveshnikov/allchat&Date)
+
 [![Stargazers repo roster for @msveshnikov/allchat](https://reporoster.com/stars/msveshnikov/allchat)](https://github.com/msveshnikov/allchat/stargazers)
 
 [![Forkers repo roster for @msveshnikov/allchat](https://reporoster.com/forks/msveshnikov/allchat)](https://github.com/msveshnikov/allchat/network/members)
@@ -242,15 +173,21 @@ graph LR
 # TODO
 
 [x] other user avatars, not always mine
+
 [x] custom GPT avatar auto create
+
 [x] shared chat manager for owners
+
 [x] broadcast update of shared chat - WebSockets
-[x] Coins and Achievments
+
+[x] Coins and Achievements
+
 [x] Artifacts
+
 [x] Sonnet 3.5
 
 [x] OpenSCAD models
+
 [x] React type artifacts
+
 [x] Custom GPT Shop
-[ ] 4 CPU or websockets
-[ ] openSCAD colors

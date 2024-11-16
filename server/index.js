@@ -34,7 +34,12 @@ import SharedChat from "./model/SharedChat .js";
 import { WebSocket, WebSocketServer } from "ws";
 dotenv.config({ override: true });
 
-const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000", "http://localhost:5173", "https://mental-health-autocode.onrender.com"];
+const ALLOWED_ORIGIN = [
+    process.env.FRONTEND_URL,
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://mental-health-autocode.onrender.com",
+];
 export const MAX_SEARCH_RESULT_LENGTH = 7000;
 export const MAX_CONTEXT_LENGTH = 20000;
 export const MAX_CHAT_HISTORY_LENGTH = 40;
@@ -171,15 +176,9 @@ app.post("/interact", verifyToken, async (req, res) => {
         const lang = req.body.lang;
         const model = req.body.model || "gemini-1.5-pro-002";
         const customGPT = req.body.customGPT;
-        // const referrer = req.body.referrer;
         const country = req.headers["geoip_country_code"];
         const user = await User.findById(req.user.id);
-        if (
-            user?.subscriptionStatus !== "active" &&
-            user?.subscriptionStatus !== "trialing" &&
-            !user?.admin
-            // && referrer !== "android-app://online.allchat.twa/"
-        ) {
+        if (user?.subscriptionStatus !== "active" && user?.subscriptionStatus !== "trialing" && !user?.admin) {
             return res
                 .status(402)
                 .json({ error: "Subscription is not active. Please activate subscription in the Settings." });
@@ -244,7 +243,8 @@ app.post("/interact", verifyToken, async (req, res) => {
 
         const recentArtifacts = await Artifact.find({ user: req.user.id }).sort({ updatedAt: -1 }).limit(1);
         const artifactsContext = tools
-            ? "\nRecent Artifacts:\n"+ recentArtifacts.map((artifact) => `Artifact "${artifact.name}": ${artifact.content}`).join("\n\n")
+            ? "\nRecent Artifacts:\n" +
+              recentArtifacts.map((artifact) => `Artifact "${artifact.name}": ${artifact.content}`).join("\n\n")
             : "";
 
         const contextPrompt = model?.startsWith("ft")
@@ -601,7 +601,7 @@ async function handleSubscriptionUpdate(subscription) {
             email: customer.email,
             password: customer.email,
         });
-       // await sendWelcomeEmail(user);
+        // await sendWelcomeEmail(user);
     }
     user.subscriptionStatus = subscription.status;
     user.subscriptionId = subscription.id;
