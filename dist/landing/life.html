@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conway's Game of Life - Dynamic Version</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            display: block;
+        }
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+        }
+        #stats {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <div id="controls">
+        <label>Simulation Speed: <input type="range" id="speedSlider" min="1" max="100" value="50"></label><br>
+        <label>Energy Decay: <input type="range" id="energyDecaySlider" min="1" max="100" value="50"></label><br>
+        <label>Hazard Frequency: <input type="range" id="hazardSlider" min="0" max="100" value="20"></label><br>
+        <button id="resetBtn">Reset Simulation</button>
+    </div>
+    <div id="stats">
+        <div id="populationStats"></div>
+    </div>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const CELL_SIZE = 10;
+        let COLS, ROWS;
+        let grid;
+        let particles = [];
+        let zoom = 1;
+        let offsetX = 0, offsetY = 0;
+
+        const CELL_TYPES = {
+            NORMAL: { color: '#3498db', energyGain: 1, energyLoss: 1 },
+            PREDATOR: { color: '#e74c3c', energyGain: 2, energyLoss: 2 },
+            PREY: { color: '#2ecc71', energyGain: 1.5, energyLoss: 1.5 },
+            RESOURCE: { color: '#f1c40f', energyGain: 0.5, energyLoss: 0 }
+        };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            COLS = Math.floor(canvas.width / CELL_SIZE);
+            ROWS = Math.floor(canvas.height / CELL_SIZE);
+            initGrid();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function initGrid() {
+            grid = new Array(COLS).fill(null).map(() => new Array(ROWS).fill(null));
+            for (let i = 0; i < COLS; i++) {
+                for (let j = 0; j < ROWS; j++) {
+                    if (Math.random() < 0.3) {
+                        grid[i][j] = createCell(i, j);
+                    }
+                }
+            }
+        }
+
+        function createCell(x, y) {
+            const type = Math.random() < 0.7 ? 'NORMAL' : (Math.random() < 0.5 ? 'PREDATOR' : 'PREY');
+            return {
+                type: type,
+                energy: 100,
+                x: x,
+                y: y
+            };
+        }
+
+        function drawGrid() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.save();
+            ctx.scale(zoom, zoom);
+            ctx.translate(-offsetX, -offsetY);
+
+            for (let i = 0; i < COLS; i++) {
+                for (let j = 0; j < ROWS; j++) {
+                    if (grid[i][j]) {
+                        const cell = grid[i][j];
+                        ctx.fillStyle = CELL_TYPES[cell.type].color;
+                        ctx.globalAlpha = cell.energy / 100;
+                        ctx.fillRect(i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1);
+                        ctx.globalAlpha = 1;
+                    }
+                }
+            }
+
+            // Draw particles
+            for (let particle of particles) {
+                ctx.fillStyle = particle.color;
+                ctx.globalAlpha = particle.life;
+                ctx.fillRect(particle.x, particle.y, 2, 2);
+                ctx.globalAlpha = 1;
+            }
+
+            ctx.restore();
+        }
+
+        function updateGrid() {
+            const newGrid = new Array(COLS).fill(null).map(() => new Array(ROWS).fill(null));
+            const energyDecay = document.getElementById('energyDecaySlider').value / 1000;
+
+            for (let i = 0; i < COLS; i++) {
+                for (let j = 0; j < ROWS; j++) {
+                    const neighbors = countNeighbors(i, j);
+                    const current = grid[i][j];
+
+                    if (current) {
+                        current.energy -= CELL_TYPES[current.type].energyLoss * energyDecay;
+
+                        if (current.energy > 0) {
+                            if (neighbors >= 2 && neighbors <= 3) {
+                                newGrid[i][j] = {...current};
+                                newGrid[i][j].energy = Math.min(100, current.energy + CELL_TYPES[current.type].energyGain);
+                            } else {
+                                createParticleExplosion(i * CELL_SIZE, j * CELL_SIZE, CELL_TYPES[current.type].color);
+                            }
+                        }
+                    } else if (neighbors === 3) {
+                        const parentType = getParentType(i, j);
+                        newGrid[i][j] = createCell(i, j);
+                        newGrid[i][j].type = parentType;
+                        createParticleExplosion(i * CELL_SIZE, j * CELL_SIZE, CELL_TYPES[parentType].color);
+                    }
+                }
+            }
+
+            // Add environmental hazards
+            if (Math.random() < document.getElementById('hazardSlider').value / 1000) {
+                const hazardX = Math.floor(Math.random() * COLS);
+                const hazardY = Math.floor(Math.random() * ROWS);
+                createParticleExplosion(hazardX * CELL_SIZE, hazardY * CELL_SIZE, '#ffffff');
+                for (let x = -1; x <= 1; x++) {
+                    for (let y = -1; y <= 1; y++) {
+                        const targetX = (hazardX + x + COLS) % COLS;
+                        const targetY = (hazardY + y + ROWS) % ROWS;
+                        if (newGrid[targetX][targetY]) {
+                            newGrid[targetX][targetY].energy -= 50;
+                        }
+                    }
+                }
+            }
+
+            grid = newGrid;
+        }
+
+        function countNeighbors(x, y) {
+            let count = 0;
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    if (i === 0 && j === 0) continue;
+                    const col = (x + i + COLS) % COLS;
+                    const row = (y + j + ROWS) % ROWS;
+                    if (grid[col][row]) count++;
+                }
+            }
+            return count;
+        }
+
+        function getParentType(x, y) {
+            const types = {};
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    if (i === 0 && j === 0) continue;
+                    const col = (x + i + COLS) % COLS;
+                    const row = (y + j + ROWS) % ROWS;
+                    if (grid[col][row]) {
+                        types[grid[col][row].type] = (types[grid[col][row].type] || 0) + 1;
+                    }
+                }
+            }
+            return Object.keys(types).reduce((a, b) => types[a] > types[b] ? a : b);
+        }
+
+        function createParticleExplosion(x, y, color) {
+            for (let i = 0; i < 10; i++) {
+                particles.push({
+                    x: x + Math.random() * CELL_SIZE,
+                    y: y + Math.random() * CELL_SIZE,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    color: color,
+                    life: 1
+                });
+            }
+        }
+
+        function updateParticles() {
+            particles = particles.filter(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.02;
+                return p.life > 0;
+            });
+        }
+
+        function updateStats() {
+            const stats = Object.keys(CELL_TYPES).reduce((acc, type) => {
+                acc[type] = 0;
+                return acc;
+            }, {});
+
+            for (let i = 0; i < COLS; i++) {
+                for (let j = 0; j < ROWS; j++) {
+                    if (grid[i][j]) {
+                        stats[grid[i][j].type]++;
+                    }
+                }
+            }
+
+            let statsHtml = '';
+            for (let type in stats) {
+                statsHtml += `${type}: ${stats[type]}<br>`;
+            }
+            document.getElementById('populationStats').innerHTML = statsHtml;
+        }
+
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const zoomSpeed = 0.1;
+            const oldZoom = zoom;
+            zoom *= e.deltaY > 0 ? (1 - zoomSpeed) : (1 + zoomSpeed);
+            zoom = Math.max(0.5, Math.min(5, zoom));
+
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+
+            offsetX += (mouseX / oldZoom - mouseX / zoom);
+            offsetY += (mouseY / oldZoom - mouseY / zoom);
+        });
+
+        let isDragging = false;
+        let lastX, lastY;
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastX = e.clientX;
+            lastY = e.clientY;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const dx = e.clientX - lastX;
+                const dy = e.clientY - lastY;
+                offsetX -= dx / zoom;
+                offsetY -= dy / zoom;
+                lastX = e.clientX;
+                lastY = e.clientY;
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', initGrid);
+
+        function gameLoop() {
+            const speed = document.getElementById('speedSlider').value;
+            updateGrid();
+            updateParticles();
+            drawGrid();
+            updateStats();
+            setTimeout(() => requestAnimationFrame(gameLoop), 100 - speed);
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>

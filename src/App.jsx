@@ -40,7 +40,7 @@ const App = () => {
 
     return (
         <ThemeProvider theme={theme(themeMode)}>
-            <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
                 <I18nextProvider>
                     <Suspense fallback={<div>Loading...</div>}>
                         <Router>

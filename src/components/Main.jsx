@@ -36,8 +36,8 @@ const achievementSounds = ["/ach1.mp3", "/ach2.mp3", "/ach3.mp3", "/ach4.mp3"];
 const MAX_CHAT_HISTORY_LENGTH = 40;
 const MAX_CHATS = 6;
 
-export const API_URL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_API_URL : "http://localhost:5000";
-export const WS_URL = process.env.NODE_ENV === "production" ? process.env.REACT_APP_WS_URL : "ws://localhost:5000";
+export const API_URL = import.meta.env.NODE_ENV === "production" ? import.meta.env.VITE_API_URL : "http://localhost:5000";
+export const WS_URL = import.meta.env.NODE_ENV === "production" ? import.meta.env.VITE_WS_URL : "ws://localhost:5000";
 
 function Main({ themeMode, toggleTheme }) {
     const [input, setInput] = useState("");

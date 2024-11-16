@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>AllChat - Unleash AI Power</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: "Poppins", sans-serif;
+                line-height: 1.6;
+                color: #ffffff;
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+            header {
+                position: fixed;
+                width: 100%;
+                top: 0;
+                z-index: 1000;
+                background-color: rgba(26, 26, 46, 0.8);
+                backdrop-filter: blur(10px);
+                transition: background-color 0.3s ease;
+            }
+            nav {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px 0;
+            }
+            .logo {
+                font-size: 24px;
+                font-weight: bold;
+                background: linear-gradient(45deg, #00f2fe, #4facfe);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .nav-links a {
+                color: #fff;
+                text-decoration: none;
+                margin-left: 20px;
+                transition: color 0.3s ease;
+            }
+            .nav-links a:hover {
+                color: #4facfe;
+            }
+            .hero {
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                position: relative;
+                overflow: hidden;
+            }
+            .hero::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url("https://img.freepik.com/free-photo/ai-technology-brain-background-digital-transformation-concept_53876-124672.jpg")
+                    repeat;
+                opacity: 0.1;
+                animation: backgroundScroll 20s linear infinite;
+            }
+            @keyframes backgroundScroll {
+                from {
+                    background-position: 0 0;
+                }
+                to {
+                    background-position: -1000px 1000px;
+                }
+            }
+            h1 {
+                font-size: 64px;
+                margin-bottom: 20px;
+                background: linear-gradient(45deg, #00f2fe, #4facfe);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                animation: gradientText 3s ease-in-out infinite;
+            }
+            @keyframes gradientText {
+                0%,
+                100% {
+                    background-size: 200% 200%;
+                    background-position: left center;
+                }
+                50% {
+                    background-size: 200% 200%;
+                    background-position: right center;
+                }
+            }
+            .subtitle {
+                font-size: 24px;
+                color: #b3b3b3;
+                margin-bottom: 40px;
+            }
+            .cta-button {
+                display: inline-block;
+                background: linear-gradient(45deg, #00f2fe, #4facfe);
+                color: #fff;
+                padding: 15px 40px;
+                text-decoration: none;
+                border-radius: 30px;
+                font-size: 18px;
+                font-weight: 600;
+                transition: transform 0.3s, box-shadow 0.3s;
+                position: relative;
+                overflow: hidden;
+            }
+            .cta-button:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 20px rgba(0, 242, 254, 0.3);
+            }
+            .cta-button::after {
+                content: "";
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: rgba(255, 255, 255, 0.2);
+                transform: rotate(45deg);
+                transition: 0.5s;
+            }
+            .cta-button:hover::after {
+                left: 100%;
+                top: 100%;
+            }
+            .features {
+                padding: 100px 0;
+            }
+            .features h2 {
+                text-align: center;
+                font-size: 36px;
+                margin-bottom: 60px;
+                color: #4facfe;
+            }
+            .feature-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 40px;
+            }
+            .feature-item {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 15px;
+                padding: 30px;
+                text-align: center;
+                transition: transform 0.3s, box-shadow 0.3s;
+                position: relative;
+                overflow: hidden;
+            }
+            .feature-item:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 30px rgba(79, 172, 254, 0.2);
+            }
+            .feature-item::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(45deg, transparent, rgba(79, 172, 254, 0.1), transparent);
+                transform: rotate(45deg);
+                transition: 0.5s;
+            }
+            .feature-item:hover::before {
+                left: 100%;
+                top: 100%;
+            }
+            .feature-item i {
+                font-size: 48px;
+                color: #4facfe;
+                margin-bottom: 20px;
+            }
+            .feature-item h3 {
+                font-size: 24px;
+                margin-bottom: 15px;
+                color: #fff;
+            }
+            .feature-item p {
+                color: #b3b3b3;
+            }
+            .how-it-works {
+                padding: 100px 0;
+                background: rgba(255, 255, 255, 0.02);
+            }
+            .how-it-works h2 {
+                text-align: center;
+                font-size: 36px;
+                margin-bottom: 60px;
+                color: #4facfe;
+            }
+            .steps {
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+            }
+            .step {
+                flex-basis: 30%;
+                text-align: center;
+                padding: 20px;
+            }
+            .step-number {
+                font-size: 48px;
+                font-weight: bold;
+                color: #4facfe;
+                margin-bottom: 20px;
+            }
+            .testimonials {
+                padding: 100px 0;
+            }
+            .testimonials h2 {
+                text-align: center;
+                font-size: 36px;
+                margin-bottom: 60px;
+                color: #4facfe;
+            }
+            .testimonial-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 40px;
+            }
+            .testimonial-item {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 15px;
+                padding: 30px;
+                text-align: center;
+            }
+            .testimonial-avatar {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                margin: 0 auto 20px;
+                overflow: hidden;
+            }
+            .testimonial-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .testimonial-text {
+                font-style: italic;
+                color: #b3b3b3;
+                margin-bottom: 20px;
+            }
+            .testimonial-author {
+                font-weight: bold;
+                color: #4facfe;
+            }
+            footer {
+                background-color: rgba(26, 26, 46, 0.8);
+                color: #fff;
+                text-align: center;
+                padding: 20px 0;
+            }
+            @media (max-width: 768px) {
+                h1 {
+                    font-size: 36px;
+                }
+                .subtitle {
+                    font-size: 18px;
+                }
+                .feature-grid,
+                .testimonial-grid {
+                    grid-template-columns: 1fr;
+                }
+                .step {
+                    flex-basis: 100%;
+                    margin-bottom: 40px;
+                }
+            }
+            .pricing {
+                padding: 100px 0;
+                background: rgba(255, 255, 255, 0.02);
+            }
+            .pricing h2 {
+                text-align: center;
+                font-size: 36px;
+                margin-bottom: 60px;
+                color: #4facfe;
+            }
+            .pricing-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 40px;
+                justify-content: center;
+            }
+            .pricing-item {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 15px;
+                padding: 40px;
+                text-align: center;
+                transition: transform 0.3s, box-shadow 0.3s;
+                position: relative;
+                overflow: hidden;
+            }
+            .pricing-item:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 30px rgba(79, 172, 254, 0.2);
+            }
+            .pricing-item::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(45deg, transparent, rgba(79, 172, 254, 0.1), transparent);
+                transform: rotate(45deg);
+                transition: 0.5s;
+            }
+            .pricing-item:hover::before {
+                left: 100%;
+                top: 100%;
+            }
+            .pricing-item h3 {
+                font-size: 24px;
+                margin-bottom: 20px;
+                color: #fff;
+            }
+            .pricing-price {
+                font-size: 48px;
+                font-weight: bold;
+                color: #4facfe;
+                margin-bottom: 20px;
+            }
+            .pricing-features {
+                list-style-type: none;
+                padding: 0;
+                margin-bottom: 30px;
+            }
+            .pricing-features li {
+                margin-bottom: 10px;
+                color: #b3b3b3;
+            }
+            .pricing-cta {
+                display: inline-block;
+                background: linear-gradient(45deg, #00f2fe, #4facfe);
+                color: #fff;
+                padding: 12px 30px;
+                text-decoration: none;
+                border-radius: 30px;
+                font-size: 16px;
+                font-weight: 600;
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+            .pricing-cta:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 20px rgba(0, 242, 254, 0.3);
+            }
+            .pricing-item.featured {
+                border: 2px solid #4facfe;
+                transform: scale(1.05);
+            }
+            .pricing-item.featured:hover {
+                transform: scale(1.05) translateY(-10px);
+            }
+            @media (max-width: 768px) {
+                .pricing-grid {
+                    grid-template-columns: 1fr;
+                }
+                .pricing-item.featured {
+                    transform: scale(1);
+                }
+                .pricing-item.featured:hover {
+                    transform: translateY(-10px);
+                }
+            }
+        </style>
+        <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                <nav>
+                    <div class="logo">AllChat</div>
+                    <div class="nav-links">
+                        <a href="#features">Features</a>
+                        <a href="#how-it-works">How It Works</a>
+                        <a href="#pricing">Pricing</a>
+                        <a href="#testimonials">Testimonials</a>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div class="container">
+                    <h1>Unleash the Power of AI</h1>
+                    <p class="subtitle">One app to rule them all: Gemini, Claude, GPT-4, and more!</p>
+                    <a href="https://allchat.online/" class="cta-button">Get Started</a>
+                </div>
+            </section>
+
+            <section id="features" class="features">
+                <div class="container">
+                    <h2>Key Features</h2>
+                    <div class="feature-grid">
+                        <div class="feature-item">
+                            <i class="fas fa-robot"></i>
+                            <h3>Multiple AI Models</h3>
+                            <p>Access Gemini Pro 1.5, Claude 3.5, GPT-4, and more in one place.</p>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-image"></i>
+                            <h3>Image Processing</h3>
+                            <p>Generate and recognize images with ease.</p>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-file-upload"></i>
+                            <h3>File Upload</h3>
+                            <p>Upload PDFs, Word, and Excel files for AI processing.</p>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-code"></i>
+                            <h3>Code Execution</h3>
+                            <p>Run Python code directly within the app.</p>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-globe"></i>
+                            <h3>Web Tools</h3>
+                            <p>Access weather, stocks, email, and more with AI assistance.</p>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-mobile-alt"></i>
+                            <h3>Mobile Friendly</h3>
+                            <p>Use AllChat on any device with our responsive design.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="how-it-works" class="how-it-works">
+                <div class="container">
+                    <h2>How It Works</h2>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <h3>Sign Up</h3>
+                            <p>Create your account in seconds</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <h3>Choose Your AI</h3>
+                            <p>Select from multiple AI models</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <h3>Start Chatting</h3>
+                            <p>Engage with AI and unlock its potential</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="testimonials" class="testimonials">
+                <div class="container">
+                    <h2>What Our Users Say</h2>
+                    <div class="testimonial-grid">
+                        <div class="testimonial-item">
+                            <div class="testimonial-avatar">
+                                <img src="https://i.pravatar.cc/150?img=1" alt="User Avatar" />
+                            </div>
+                            <p class="testimonial-text">
+                                "AllChat has revolutionized the way I interact with AI. It's like having a
+                                super-intelligent assistant at my fingertips!"
+                            </p>
+                            <p class="testimonial-author">- Sarah J.</p>
+                        </div>
+                        <div class="testimonial-item">
+                            <div class="testimonial-avatar">
+                                <img src="https://i.pravatar.cc/150?img=2" alt="User Avatar" />
+                            </div>
+                            <p class="testimonial-text">
+                                "The variety of AI models and tools available in one app is incredible. AllChat has
+                                become an essential part of my daily workflow."
+                            </p>
+                            <p class="testimonial-author">- Michael R.</p>
+                        </div>
+                        <div class="testimonial-item">
+                            <div class="testimonial-avatar">
+                                <img src="https://i.pravatar.cc/150?img=3" alt="User Avatar" />
+                            </div>
+                            <p class="testimonial-text">
+                                "As a developer, I love how easy it is to run code and integrate AI into my projects
+                                with AllChat. It's a game-changer!"
+                            </p>
+                            <p class="testimonial-author">- Emily T.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="pricing" class="pricing">
+                <div class="container">
+                    <h2>Choose Your Plan</h2>
+                    <div class="pricing-grid">
+                        <div class="pricing-item">
+                            <h3>Basic</h3>
+                            <div class="pricing-price">$4.99<span>/month</span></div>
+                            <ul class="pricing-features">
+                                <li>Access to Gemini Pro 1.5</li>
+                                <li>Basic image processing</li>
+                                <li>5 GB file upload limit</li>
+                                <li>Standard support</li>
+                            </ul>
+                            <a href="https://allchat.online/" class="pricing-cta">Get Started</a>
+                        </div>
+                        <div class="pricing-item featured">
+                            <h3>Pro</h3>
+                            <div class="pricing-price">$19.99<span>/month</span></div>
+                            <ul class="pricing-features">
+                                <li>Access to all AI models</li>
+                                <li>Advanced image processing</li>
+                                <li>20 GB file upload limit</li>
+                                <li>Priority support</li>
+                                <li>Code execution</li>
+                            </ul>
+                            <a href="https://allchat.online/" class="pricing-cta">Get Started</a>
+                        </div>
+                        <div class="pricing-item">
+                            <h3>Enterprise</h3>
+                            <div class="pricing-price">Custom</div>
+                            <ul class="pricing-features">
+                                <li>All Pro features</li>
+                                <li>Unlimited file upload</li>
+                                <li>Custom AI model integration</li>
+                                <li>24/7 dedicated support</li>
+                                <li>API access</li>
+                            </ul>
+                            <a href="#" class="pricing-cta">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="container">
+                <p>&copy; 2023 AllChat. All rights reserved.</p>
+            </div>
+        </footer>
+
+        <script>
+            window.addEventListener("scroll", function () {
+                const header = document.querySelector("header");
+                header.classList.toggle("sticky", window.scrollY > 0);
+            });
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                anchor.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute("href")).scrollIntoView({
+                        behavior: "smooth",
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
