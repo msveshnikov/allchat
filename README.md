@@ -101,7 +101,7 @@ Replace `allchat-backend` with your desired image name. Push to Hub if needed.
 
 **Frontend (React MUI)**
 
--   Replace ENV REACT_APP_API_URL in the root Dockerfile with your host
+-   Replace ENV VITE_API_URL in the root Dockerfile with your host
 -   Build the Docker image by running the following command in the frontend directory:
 
 ```
