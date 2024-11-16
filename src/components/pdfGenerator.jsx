@@ -1,9 +1,6 @@
 import * as pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
 import Markdown from "markdown-it";
 import htmlToPdfmake from "html-to-pdfmake";
-
-// pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const md = new Markdown();
 
