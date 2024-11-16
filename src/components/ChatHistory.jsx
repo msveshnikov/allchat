@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import { Link as RouterLink } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { CodeBlock } from "./CodeBlock";
 import { Lightbox } from "react-modal-image";
 import { API_URL } from "./Main";
@@ -35,6 +36,7 @@ const getFileTypeIcon = (mimeType) => {
             return "📁";
     }
 };
+
 const toolEmojis = {
     get_weather: "☀️",
     get_stock_price: "📈",
@@ -97,6 +99,10 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
         const updatedChatHistory = [...chatHistory];
         updatedChatHistory.splice(index, 1);
         onDelete(updatedChatHistory);
+    };
+
+    const handleCopyClick = (text) => {
+        navigator.clipboard.writeText(text);
     };
 
     const handleKeyDown = (e) => {
@@ -280,6 +286,7 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                         padding={1}
                         marginTop={1}
                         borderRadius={2}
+                        position="relative"
                     >
                         {isModelResponding &&
                             chat.assistant === null &&
@@ -305,6 +312,13 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                                         }}
                                     />
                                 </Box>
+                                <IconButton
+                                    size="small"
+                                    style={{ position: "absolute", top: 5, right: 5 }}
+                                    onClick={() => handleCopyClick(chat.assistant)}
+                                >
+                                    <ContentCopyIcon fontSize="small" />
+                                </IconButton>
                                 <ReactMarkdown
                                     components={{
                                         code({ node, inline, className, children, ...props }) {
@@ -322,7 +336,6 @@ const ChatHistory = memo(({ chatHistory, isModelResponding, onRun, onChange, onD
                                                 </code>
                                             );
                                         },
-                                        // eslint-disable-next-line jsx-a11y/anchor-has-content
                                         a: ({ node, ...props }) => <a style={linkStyle} {...props} />,
                                     }}
                                 >

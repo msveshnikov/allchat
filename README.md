@@ -25,7 +25,7 @@ https://allchat.online
 ## Features
 
 -   Gemini Pro 1.5, Claude 3.5 and GPT-4o
--   Artifacts 
+-   Artifacts
 -   Avatar Builder
 -   Shared Chats
 -   Achievements
@@ -33,7 +33,7 @@ https://allchat.online
 -   Video Input in Gemini
 -   Custom GPTs
 -   Email respond (with attachments, like PDFs, Word, etc)
--   Memory  - any information about user which you agreed to persist
+-   Memory - any information about user which you agreed to persist
 -   Scheduling any action (hourly or daily) to your email
 -   YouTube video summary
 -   Image Input (png/jpeg) in Gemini and Claude
@@ -81,7 +81,6 @@ You have to get some of those APIs and set environment variables (or put to .env
 -   Start local Mongo DB (or containerized: `docker run -p 27017:27017 -d mongo`)
 -   In the server folder, `npm i` then `npm run api`
 -   In the root folder, `npm i` then `npm run start`
-
 
 ```mermaid
 graph LR
@@ -192,7 +191,3 @@ B --> F[External Services]
 [x] React type artifacts
 
 [x] Custom GPT Shop
-
-[ ] 4 CPU or websockets
-
-[ ] openSCAD colors
