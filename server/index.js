@@ -32,9 +32,16 @@ import promClient from "prom-client";
 import sharp from "sharp";
 import SharedChat from "./model/SharedChat .js";
 import { WebSocket, WebSocketServer } from "ws";
+import { fruitRoutes } from "./fruit.js";
 dotenv.config({ override: true });
 
-const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000", "http://localhost:5173", "https://mental-health-autocode.onrender.com"];
+const ALLOWED_ORIGIN = [
+    process.env.FRONTEND_URL,
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://mental-health-autocode.onrender.com",
+    "http://127.0.0.1:5500",
+];
 export const MAX_SEARCH_RESULT_LENGTH = 7000;
 export const MAX_CONTEXT_LENGTH = 20000;
 export const MAX_CHAT_HISTORY_LENGTH = 40;
@@ -158,6 +165,8 @@ mongoose
 
 export let toolsUsed = [];
 
+fruitRoutes(app);
+
 app.post("/interact", verifyToken, async (req, res) => {
     try {
         toolsUsed = [];
@@ -244,7 +253,8 @@ app.post("/interact", verifyToken, async (req, res) => {
 
         const recentArtifacts = await Artifact.find({ user: req.user.id }).sort({ updatedAt: -1 }).limit(1);
         const artifactsContext = tools
-            ? "\nRecent Artifacts:\n"+ recentArtifacts.map((artifact) => `Artifact "${artifact.name}": ${artifact.content}`).join("\n\n")
+            ? "\nRecent Artifacts:\n" +
+              recentArtifacts.map((artifact) => `Artifact "${artifact.name}": ${artifact.content}`).join("\n\n")
             : "";
 
         const contextPrompt = model?.startsWith("ft")
@@ -601,7 +611,7 @@ async function handleSubscriptionUpdate(subscription) {
             email: customer.email,
             password: customer.email,
         });
-       // await sendWelcomeEmail(user);
+        // await sendWelcomeEmail(user);
     }
     user.subscriptionStatus = subscription.status;
     user.subscriptionId = subscription.id;
