@@ -40,7 +40,6 @@ const ALLOWED_ORIGIN = [
     "http://localhost:3000",
     "http://localhost:5173",
     "https://mental-health-autocode.onrender.com",
-    "http://127.0.0.1:5500",
 ];
 export const MAX_SEARCH_RESULT_LENGTH = 7000;
 export const MAX_CONTEXT_LENGTH = 20000;
