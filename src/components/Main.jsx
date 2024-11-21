@@ -36,8 +36,8 @@ const achievementSounds = ["/ach1.mp3", "/ach2.mp3", "/ach3.mp3", "/ach4.mp3"];
 const MAX_CHAT_HISTORY_LENGTH = 40;
 const MAX_CHATS = 6;
 
-export const API_URL = import.meta.env.NODE_ENV !== "DEV" ? import.meta.env.VITE_API_URL : "http://localhost:5000";
-export const WS_URL = import.meta.env.NODE_ENV !== "DEV" ? import.meta.env.VITE_WS_URL : "ws://localhost:5000";
+export const API_URL = import.meta.env.PROD ? import.meta.env.VITE_API_URL : "http://localhost:5000";
+export const WS_URL = import.meta.env.PROD ? import.meta.env.VITE_WS_URL : "ws://localhost:5000";
 
 function Main({ themeMode, toggleTheme }) {
     const [input, setInput] = useState("");
@@ -50,9 +50,7 @@ function Main({ themeMode, toggleTheme }) {
     const [sound, setSound] = useState(localStorage.getItem("sound") === "true");
     const [tools, setTools] = useState((localStorage.getItem("tools") ?? "true") === "true");
     const [temperature, setTemperature] = useState(Number(localStorage.getItem("temperature") || "0.7"));
-    const [selectedModel, setSelectedModel] = useState(
-        localStorage.getItem("selectedModel") || "gemini-1.5-pro-002"
-    );
+    const [selectedModel, setSelectedModel] = useState(localStorage.getItem("selectedModel") || "gemini-1.5-pro-002");
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
     const [openAuthModal, setOpenAuthModal] = useState(false);
