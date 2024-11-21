@@ -13,19 +13,6 @@ async function initScoresFile() {
     }
 }
 export const fruitRoutes = (app) => {
-    async function updateScores(countryCode, countryName, score) {
-        const scores = JSON.parse(await fs.readFile(SCORES_FILE));
-
-        if (!scores[countryCode] || scores[countryCode].score < score) {
-            scores[countryCode] = {
-                name: countryName,
-                score: score,
-                timestamp: Date.now(),
-            };
-            await fs.writeFile(SCORES_FILE, JSON.stringify(scores));
-        }
-    }
-
     function countryCodeToFlag(code) {
         return code
             .toUpperCase()
@@ -34,8 +21,21 @@ export const fruitRoutes = (app) => {
             .join("");
     }
 
+    async function updateScores(countryCode, countryName, score) {
+        const scores = JSON.parse(await fs.readFile(SCORES_FILE, "utf8")); // Use 'utf8' encoding
+
+        if (!scores[countryCode] || scores[countryCode].score < score) {
+            scores[countryCode] = {
+                name: countryName,
+                score: score,
+                timestamp: Date.now(),
+            };
+            await fs.writeFile(SCORES_FILE, JSON.stringify(scores, null, 2), "utf8"); // Use 'utf8' encoding
+        }
+    }
+
     async function getTop3Countries() {
-        const scores = JSON.parse(await fs.readFile(SCORES_FILE));
+        const scores = JSON.parse(await fs.readFile(SCORES_FILE, "utf8")); // Use 'utf8' encoding
         return Object.entries(scores)
             .sort(([, a], [, b]) => b.score - a.score)
             .slice(0, 3)
