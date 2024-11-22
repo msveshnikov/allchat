@@ -5,7 +5,8 @@ dotenv.config({ override: true });
 export const getImage = async (prompt, avatar) => {
     prompt = prompt.substring(0, 700);
     const translated = await getTextClaude(
-        avatar ? prompt : "Translate sentences in brackets [] into English:\n[" + prompt + "]\n"
+        avatar ? prompt : "Translate sentences in brackets [] into English:\n[" + prompt + "]\n",
+        0, null, null, null, "claude-3-haiku-20240307"
     );
     if (translated) {
         prompt = translated;
