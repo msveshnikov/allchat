@@ -28,6 +28,7 @@ services:
         restart: unless-stopped
         volumes:
             - ./allchat.json:/app/allchat.json
+            - ./scores.json:/app/scores.json
         depends_on:
             - mongodb
 
