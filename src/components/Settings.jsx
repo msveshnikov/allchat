@@ -9,16 +9,15 @@ import ReactGA from "react-ga4";
 import CoinBalance from "./CoinBalance";
 
 export const models = {
-    "gemini-1.5-pro-002": ["image", "audio", "video", "document", "tools"],
+    "gemini-1.5-pro": ["image", "audio", "video", "document", "tools"],
     "gemini-pro-experimental": ["image", "audio", "video", "document", "tools"],
-    "gemini-1.5-flash-002": ["image", "audio", "video", "document", "tools"],
+    "gemini-1.5-flash": ["image", "audio", "video", "document", "tools"],
     "gemini-flash-experimental": ["image", "audio", "video", "document", "tools"],
-    // "gemini-1.0-pro-002": ["document", "tools"],
     "claude-3-haiku-20240307": ["image", "document", "tools"],
     "claude-3-5-haiku-latest": ["image", "document", "tools"],
     "claude-3-5-sonnet-20241022": ["image", "document", "tools"],
     "gpt-3.5-turbo": ["document", "tools"],
-    "gpt-4o-latest": ["image", "document", "tools"],
+    "gpt-4o": ["image", "document", "tools"],
     "gpt-4o-mini": ["image", "document", "tools"],
 };
 
