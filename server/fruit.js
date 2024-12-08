@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const SCORES_FILE = path.join(__dirname, "scores.json");
@@ -22,7 +23,7 @@ export const fruitRoutes = (app) => {
     }
 
     async function updateScores(countryCode, countryName, score) {
-        const scores = JSON.parse(await fs.readFile(SCORES_FILE, "utf8")); // Use 'utf8' encoding
+        const scores = JSON.parse(await fs.readFile(SCORES_FILE, "utf8")); 
 
         if (!scores[countryCode] || scores[countryCode].score < score) {
             scores[countryCode] = {
@@ -30,12 +31,12 @@ export const fruitRoutes = (app) => {
                 score: score,
                 timestamp: Date.now(),
             };
-            await fs.writeFile(SCORES_FILE, JSON.stringify(scores, null, 2), "utf8"); // Use 'utf8' encoding
+            await fs.writeFile(SCORES_FILE, JSON.stringify(scores, null, 2), "utf8"); 
         }
     }
 
     async function getTop3Countries() {
-        const scores = JSON.parse(await fs.readFile(SCORES_FILE, "utf8")); // Use 'utf8' encoding
+        const scores = JSON.parse(await fs.readFile(SCORES_FILE, "utf8")); 
         return Object.entries(scores)
             .sort(([, a], [, b]) => b.score - a.score)
             .slice(0, 3)
