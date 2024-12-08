@@ -60,6 +60,7 @@ export const fruitRoutes = (app) => {
             await updateScores(countryCode, countryName, score);
             res.json({ success: true });
         } catch (error) {
+            console.error(error)
             res.status(500).json({ error: "Server error" });
         }
     });
@@ -69,6 +70,7 @@ export const fruitRoutes = (app) => {
             const topCountries = await getTop3Countries();
             res.json(topCountries);
         } catch (error) {
+            console.error(error)
             res.status(500).json({ error: "Server error" });
         }
     });
