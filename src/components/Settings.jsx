@@ -13,6 +13,8 @@ export const models = {
     "gemini-pro-experimental": ["image", "audio", "video", "document", "tools"],
     "gemini-1.5-flash": ["image", "audio", "video", "document", "tools"],
     "gemini-flash-experimental": ["image", "audio", "video", "document", "tools"],
+    "gemini-2.0-flash-exp": ["image", "audio", "video", "document", "tools"],
+    "gemini-exp-1206": ["image", "audio", "video", "document", "tools"],
     "claude-3-haiku-20240307": ["image", "document", "tools"],
     "claude-3-5-haiku-latest": ["image", "document", "tools"],
     "claude-3-5-sonnet-20241022": ["image", "document", "tools"],
