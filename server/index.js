@@ -40,7 +40,7 @@ const ALLOWED_ORIGIN = [
     "http://localhost:3000",
     "http://localhost:5173",
     "https://mental-health-autocode.onrender.com",
-    "https://training-management-system.netlify.app/",
+    "https://training-management-system.netlify.app",
     "https://holidaycard.shop",
 ];
 
