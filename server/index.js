@@ -43,6 +43,7 @@ const ALLOWED_ORIGIN = [
     "https://training-management-system.netlify.app",
     "https://ai-coach.club",
     "https://holidaycard.shop",
+    "https://genious.name",
 ];
 
 export const MAX_SEARCH_RESULT_LENGTH = 7000;
