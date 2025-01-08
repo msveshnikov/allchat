@@ -29,6 +29,7 @@ services:
         volumes:
             - ./allchat.json:/app/allchat.json
             - ./scores.json:/app/scores.json
+            - ./waitlist.txt:/app/waitlist.txt
         depends_on:
             - mongodb
 

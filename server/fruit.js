@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const SCORES_FILE = path.join(__dirname, "scores.json");
+const WAITLIST_FILE = path.join(__dirname, "waitlist.txt");
 
 async function initScoresFile() {
     try {
@@ -13,6 +14,7 @@ async function initScoresFile() {
         await fs.writeFile(SCORES_FILE, JSON.stringify({}));
     }
 }
+
 export const fruitRoutes = (app) => {
     function countryCodeToFlag(code) {
         return code
@@ -23,7 +25,7 @@ export const fruitRoutes = (app) => {
     }
 
     async function updateScores(countryCode, countryName, score) {
-        const scores = JSON.parse(await fs.readFile(SCORES_FILE, "utf8")); 
+        const scores = JSON.parse(await fs.readFile(SCORES_FILE, "utf8"));
 
         if (!scores[countryCode] || scores[countryCode].score < score) {
             scores[countryCode] = {
@@ -31,12 +33,12 @@ export const fruitRoutes = (app) => {
                 score: score,
                 timestamp: Date.now(),
             };
-            await fs.writeFile(SCORES_FILE, JSON.stringify(scores, null, 2), "utf8"); 
+            await fs.writeFile(SCORES_FILE, JSON.stringify(scores, null, 2), "utf8");
         }
     }
 
     async function getTop3Countries() {
-        const scores = JSON.parse(await fs.readFile(SCORES_FILE, "utf8")); 
+        const scores = JSON.parse(await fs.readFile(SCORES_FILE, "utf8"));
         return Object.entries(scores)
             .sort(([, a], [, b]) => b.score - a.score)
             .slice(0, 3)
@@ -61,7 +63,7 @@ export const fruitRoutes = (app) => {
             await updateScores(countryCode, countryName, score);
             res.json({ success: true });
         } catch (error) {
-            console.error(error)
+            console.error(error);
             res.status(500).json({ error: "Server error" });
         }
     });
@@ -71,7 +73,23 @@ export const fruitRoutes = (app) => {
             const topCountries = await getTop3Countries();
             res.json(topCountries);
         } catch (error) {
-            console.error(error)
+            console.error(error);
+            res.status(500).json({ error: "Server error" });
+        }
+    });
+
+    app.post("/waitlist", async (req, res) => {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ error: "Email is required" });
+        }
+
+        try {
+            await fs.appendFile(WAITLIST_FILE, email + "\n");
+            res.json({ success: true });
+        } catch (error) {
+            console.error(error);
             res.status(500).json({ error: "Server error" });
         }
     });
