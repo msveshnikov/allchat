@@ -19,6 +19,8 @@ export const models = {
     "gpt-3.5-turbo": ["document", "tools"],
     "gpt-4o": ["image", "document", "tools"],
     "gpt-4o-mini": ["image", "document", "tools"],
+    "deepseek-reasoner": ["image", "document"],
+    "deepseek-chat": ["image", "document", "tools"],
 };
 
 const Settings = ({ user, handleCancelSubscription, handleCloseSettingsModal, selectedModel, onModelSelect }) => {

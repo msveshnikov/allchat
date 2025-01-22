@@ -33,6 +33,7 @@ import sharp from "sharp";
 import SharedChat from "./model/SharedChat .js";
 import { WebSocket, WebSocketServer } from "ws";
 import { fruitRoutes } from "./fruit.js";
+import { getTextDeepseek } from "./deepseek.js";
 dotenv.config({ override: true });
 
 const ALLOWED_ORIGIN = [
@@ -308,7 +309,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 tools
             );
         } else {
-            textResponse = await getTextTogether(contextPrompt, temperature, req.user.id, model, tools);
+            textResponse = await getTextDeepseek(contextPrompt, temperature, req.user.id, model, tools);
         }
         outputTokens = countTokens(textResponse);
 
