@@ -11,7 +11,6 @@ import mongoose from "mongoose";
 import * as xlsx from "xlsx";
 import { getTextGemini, getTextGeminiFinetune } from "./gemini.js";
 import { getTextClaude } from "./claude.js";
-import { getTextTogether } from "./together.js";
 import { getTextGpt } from "./openai.js";
 import { authenticateUser, completePasswordReset, registerUser, resetPassword, verifyToken } from "./auth.js";
 import { fetchPageContent } from "./search.js";
