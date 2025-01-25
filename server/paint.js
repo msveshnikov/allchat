@@ -1,49 +1,49 @@
 const paintingWords = [
     // English
-    "paint",
-    "painting",
-    "picture",
-    "draw",
-    "image",
-    "drawing",
-    "generate",
-    "sketch",
+    // "paint",
+    // "painting",
+    // "picture",
+    // "draw",
+    // "image",
+    // "drawing",
+    // "generate",
+    // "sketch",
 
-    // Spanish
-    "pintar",
-    "pintura",
-    "dibujar",
-    "dibujo",
-    "pincel",
-    "lienzo",
-    "boceto",
+    // // Spanish
+    // "pintar",
+    // "pintura",
+    // "dibujar",
+    // "dibujo",
+    // "pincel",
+    // "lienzo",
+    // "boceto",
 
-    // Russian
-    "рисовать",
-    "нарисовать",
-    "нарисуй",
-    "картина",
-    "живопись",
-    "рисунок",
-    "искусство",
+    // // Russian
+    // "рисовать",
+    // "нарисовать",
+    // "нарисуй",
+    // "картина",
+    // "живопись",
+    // "рисунок",
+    // "искусство",
 
-    // Portuguese
-    "pintar",
-    "pintura",
-    "desenhar",
-    "desenho",
-    "pincel",
-    "tela",
-    "esboço",
+    // // Portuguese
+    // "pintar",
+    // "pintura",
+    // "desenhar",
+    // "desenho",
+    // "pincel",
+    // "tela",
+    // "esboço",
 
-    // French
-    "peindre",
-    "peinture",
-    "dessin",
-    "dessiner",
-    "pinceau",
-    "couleur",
-    "esquisse",
+    // // French
+    // "peindre",
+    // "peinture",
+    // "dessin",
+    // "dessiner",
+    // "pinceau",
+    // "couleur",
+    // "esquisse",
     
 ];
 

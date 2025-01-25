@@ -78,7 +78,7 @@ export const getTextClaude = async (prompt, temperature, fileBytesBase64, fileTy
         return anthropic.messages.create(
             {
                 model,
-                max_tokens: model.includes("sonnet") ? 8192 : 4096,
+                max_tokens: model?.includes("sonnet") ? 8192 : 4096,
                 temperature: temperature || 0.7,
                 tools: webTools ? tools : [],
                 messages,
