@@ -3,3 +3,20 @@
 db.getCollection("artifacts").updateOne({ _id: ObjectId("667a64fc2dd6e3de331499ca") }, { $set: { type: "react" } });
 use("allchat");
 db.getCollection("users").updateOne({ email: "msveshnikov@gmail.com" }, { $set: { country: "RU" } });
+
+db.getCollection("artifacts").updateOne(
+    { _id: ObjectId("673b3c2bdb417df52ad3d6d1") },
+    { $set: { 
+        "content": { 
+            $function: {
+                body: function(html, oldUrl, newUrl) {
+                    return html.replace(oldUrl, newUrl);
+                },
+                args: ["$content", "https://assets.mixkit.co/active_storage/sfx/2043/2043-preview.mp3", "https://blog.mangatv.shop/sword.mp3"],
+                lang: "js"
+            }
+        }
+    }}
+)
+
+db.getCollection("artifacts").updateOne( { _id: ObjectId("673b3abfdb417df52ad3d683") }, [ { $set: { content: { $replaceAll: { input: "$content", find: "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3", replacement: "https://blog.mangatv.shop/sword.mp3" } } } } ] )

@@ -11,7 +11,6 @@ import mongoose from "mongoose";
 import * as xlsx from "xlsx";
 import { getTextGemini, getTextGeminiFinetune } from "./gemini.js";
 import { getTextClaude } from "./claude.js";
-import { getTextTogether } from "./together.js";
 import { getTextGpt } from "./openai.js";
 import { authenticateUser, completePasswordReset, registerUser, resetPassword, verifyToken } from "./auth.js";
 import { fetchPageContent } from "./search.js";
@@ -32,14 +31,11 @@ import promClient from "prom-client";
 import sharp from "sharp";
 import SharedChat from "./model/SharedChat .js";
 import { WebSocket, WebSocketServer } from "ws";
+import { getTextDeepseek } from "./deepseek.js";
 dotenv.config({ override: true });
 
-const ALLOWED_ORIGIN = [
-    process.env.FRONTEND_URL,
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "https://mental-health-autocode.onrender.com",
-];
+const ALLOWED_ORIGIN = [process.env.FRONTEND_URL, "http://localhost:3000", "http://localhost:5173"];
+
 export const MAX_SEARCH_RESULT_LENGTH = 7000;
 export const MAX_CONTEXT_LENGTH = 20000;
 export const MAX_CHAT_HISTORY_LENGTH = 40;
@@ -174,7 +170,7 @@ app.post("/interact", verifyToken, async (req, res) => {
         const chatId = req.body.chatId;
         const tools = req.body.tools;
         const lang = req.body.lang;
-        const model = req.body.model || "gemini-1.5-pro-002";
+        const model = req.body.model || "gemini-1.5-pro";
         const customGPT = req.body.customGPT;
         const country = req.headers["geoip_country_code"];
         const user = await User.findById(req.user.id);
@@ -296,7 +292,7 @@ app.post("/interact", verifyToken, async (req, res) => {
                 tools
             );
         } else {
-            textResponse = await getTextTogether(contextPrompt, temperature, req.user.id, model, tools);
+            textResponse = await getTextDeepseek(contextPrompt, temperature, req.user.id, model, tools);
         }
         outputTokens = countTokens(textResponse);
 

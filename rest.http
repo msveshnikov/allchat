@@ -5,3 +5,6 @@ Content-Type: application/json
 {
   "inputScad": "cube([10, 10, 10]);"
 }
+###
+
+GET http://localhost:5000/fruit/score

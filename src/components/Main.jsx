@@ -50,9 +50,7 @@ function Main({ themeMode, toggleTheme }) {
     const [sound, setSound] = useState(localStorage.getItem("sound") === "true");
     const [tools, setTools] = useState((localStorage.getItem("tools") ?? "true") === "true");
     const [temperature, setTemperature] = useState(Number(localStorage.getItem("temperature") || "0.7"));
-    const [selectedModel, setSelectedModel] = useState(
-        localStorage.getItem("selectedModel") || "gemini-1.5-pro-002"
-    );
+    const [selectedModel, setSelectedModel] = useState(localStorage.getItem("selectedModel") || "gemini-1.5-pro");
     const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token"));
     const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || "");
     const [openAuthModal, setOpenAuthModal] = useState(false);

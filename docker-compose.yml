@@ -24,10 +24,13 @@ services:
             - TOGETHER_KEY=${TOGETHER_KEY}
             - OPENAI_KEY=${OPENAI_KEY}
             - GEMINI_KEY=${GEMINI_KEY}
+            - DEEPSEEK_KEY=${DEEPSEEK_KEY}
             - MISTRAL_KEY=${MISTRAL_KEY}
         restart: unless-stopped
         volumes:
             - ./allchat.json:/app/allchat.json
+            - ./scores.json:/app/scores.json
+            - ./waitlist.txt:/app/waitlist.txt
         depends_on:
             - mongodb
 
