@@ -73,7 +73,7 @@ const Shop = () => {
                                     height: 200,
                                     objectFit: "cover",
                                 }}
-                                image={gpt.profileUrl || "https://via.placeholder.com/200"}
+                                image={gpt.profileUrl || "https://placeholder.photo/avatar/200.svg?style=layered&seed=allchat-user"}
                                 alt={gpt.name}
                             />
                             <CardContent sx={{ flexGrow: 1 }}>
