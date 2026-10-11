@@ -1140,36 +1140,37 @@ app.delete("/artifacts/:id", verifyToken, async (req, res) => {
     }
 });
 
-app.post("/convert-to-stl", async (req, res) => {
+app.post("/convert-to-stl", verifyToken, async (req, res) => {
+    const { inputScad } = req.body;
+    if (!inputScad) {
+        return res.status(400).json({ error: "Missing inputScad in request body" });
+    }
+    const tempId = crypto.randomBytes(16).toString("hex");
+    const inputFile = `input_${tempId}.scad`;
+    const outputFile = `output_${tempId}.stl`;
     try {
-        const { inputScad } = req.body;
-        if (!inputScad) {
-            return res.status(400).json({ error: "Missing inputScad in request body" });
-        }
-        const tempId = crypto.randomBytes(16).toString("hex");
-        const inputFile = `input_${tempId}.scad`;
-        const outputFile = `output_${tempId}.stl`;
         fs.writeFileSync(inputFile, inputScad);
         const command =
             (process.env.NODE_ENV === "production" ? "" : "wsl ") + `openscad -o ${outputFile} ${inputFile}`;
-        const { stdout, stderr } = await execAsync(command);
+        const { stdout, stderr } = await execAsync(command, { timeout: 15000 });
         if (stderr) {
             console.error(`stderr: ${stderr}`);
         }
         console.log(`stdout: ${stdout}`);
         const stlContent = fs.readFileSync(outputFile, "utf8");
-        fs.unlinkSync(inputFile);
-        fs.unlinkSync(outputFile);
         res.json({ stlContent });
     } catch (error) {
         console.error(`error`, error);
         res.status(500).json({ error: "Error converting file" });
+    } finally {
+        fs.rm(inputFile, { force: true }, () => {});
+        fs.rm(outputFile, { force: true }, () => {});
     }
 });
 
-function execAsync(command) {
+function execAsync(command, options = {}) {
     return new Promise((resolve, reject) => {
-        exec(command, (error, stdout, stderr) => {
+        exec(command, options, (error, stdout, stderr) => {
             if (error) {
                 reject(error);
             } else {
